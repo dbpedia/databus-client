@@ -8,14 +8,14 @@ object SelectQuery {
 
   def execute(queryString:String) {
     var query: Query = QueryFactory.create(queryString)
-    var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query)
+    var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
 
     try {
       var results: ResultSet = qexec.execSelect
 
       while (results.hasNext()) {
-        println(results.next())
+        println(results.nextSolution())
 
       }
     } finally qexec.close()

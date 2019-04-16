@@ -1,0 +1,5 @@
+SELECT DISTINCT * WHERE {
+    ?dataset ?o ?egal .
+}
+Limit 2 Offset 2  
+ 

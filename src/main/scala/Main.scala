@@ -2,7 +2,7 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
-    var filename:String = "./src/query/query2"
+    var filename:String = "./src/query/query"
     var filereader = FileRead
     var queryString:String  = filereader.fileread(filename)
 
