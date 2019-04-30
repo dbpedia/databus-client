@@ -13,10 +13,11 @@ object SelectQuery {
 
     try {
       var results: ResultSet = qexec.execSelect
+      var handleFile = FileHandling
 
       while (results.hasNext()) {
-        println(results.nextSolution())
-
+        var resource = results.next().getResource("?file")
+        handleFile.fileDownloader(resource.toString())
       }
     } finally qexec.close()
 
