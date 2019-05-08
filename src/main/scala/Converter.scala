@@ -1,15 +1,16 @@
-import java.io.{BufferedInputStream, File, FileInputStream, FileOutputStream}
+import java.io.{BufferedInputStream, FileInputStream, FileOutputStream}
 
+import better.files.File
 import org.apache.commons.compress.compressors.{CompressorInputStream, CompressorStreamFactory}
 import org.apache.commons.compress.utils.IOUtils
 
-object ConvertCompression {
+object Converter {
 
   def decompress(input: File, output: File): Unit = {
     try {
-      println(CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(input))))
-      val in: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(new BufferedInputStream(new FileInputStream(input)))
-      val out = new FileOutputStream(output)
+      println(CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(input.toJava))))
+      val in: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(new BufferedInputStream(new FileInputStream(input.toJava)))
+      val out = new FileOutputStream(output.toJava)
       try {
         IOUtils.copy(in, out)
       }
@@ -18,6 +19,11 @@ object ConvertCompression {
       }
     }
   }
+
+  def getCompressionType(file: File): String ={
+    CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(file.toJava)))
+  }
+
 }
 
 

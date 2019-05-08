@@ -8,12 +8,16 @@ object Main {
     val conf = new CLIConf(args)
 
 
+    var file = File("/home")
+    val du = file / "fabian"
+
     //Test if query is a File or a Query
     var queryString:String = ""
     File(conf.query()).exists() match {
       case true => {
         // "./src/query/query"
-        queryString = FileHandler.readQuery(conf.query())
+        val file = File(conf.query())
+        queryString = FileHandler.readQuery(file)
       }
       case false => {
         queryString = conf.query()
@@ -26,7 +30,8 @@ object Main {
 
     SelectQuery.execute(queryString)
 
-    FileHandler.convertFile("./downloaded_files/geo-coordinates-mappingbased_lang=be.ttl.bz2", conf.localrepo())
+    file = File("./downloaded_files/geo-coordinates-mappingbased_lang=be.ttl.bz2")
+    FileHandler.convertFile("./downloaded_files/geo-coordinates-mappingbased_lang=be.ttl.bz2", conf.localrepo(),file)
 
   }
 

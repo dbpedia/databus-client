@@ -1,8 +1,10 @@
 import java.net.URL
-import java.io.File
-import sys.process._
 
+import sys.process._
 import java.nio.file.{Files, Paths, StandardCopyOption}
+
+import better.files.File
+
 import scala.io.Source
 
 
@@ -11,12 +13,11 @@ object FileHandler {
   val src_dir: String="./downloaded_files/"
 
 
-  def readQuery(filepath:String) : String = {
+  def readQuery(file:File) : String = {
 
     var queryString:String = ""
-    for (line <- Source.fromFile(filepath).getLines) {
-      queryString = queryString.concat(line)
-      queryString = queryString.concat("\n")
+    for (line <- Source.fromFile(file.toJava).getLines) {
+      queryString = queryString.concat(line).concat("\n")
     }
     return queryString
   }
@@ -26,30 +27,27 @@ object FileHandler {
     var filename = url.split("/").map(_.trim).last
     println(filename)
     filename = src_dir.concat(filename)
-    new URL(url) #> new File(filename) !!
+    new URL(url) #> File(filename).toJava !!
   }
 
 
-  def convertFile(filepath:String, dest_dir:String): Unit = {
-    var extension:String = null
+  def convertFile(filepath:String, dest_dir:String, inputFile:File): Unit = {
 
-    if (filepath.contains(".")) {
-      extension = filepath.substring(filepath.lastIndexOf(".") + 1)
-    }
+    val fileType = Converter.getCompressionType(inputFile)
+
 
     //if file already in gzip format, just copy to the destination dir
-    if (extension=="gzip"){
+    if (fileType=="gzip"){
       moveFile(filepath, dest_dir)
     }
     else{
-      var inputFile:File = new File(filepath)
-
-      var filepath_new = filepath.substring(filepath.lastIndexOf("/") + 1)
+      // BESSER MACHEN
+      var filepath_new = inputFile.toString().substring(inputFile.toString().lastIndexOf("/") + 1)
       filepath_new = dest_dir.concat(filepath_new.substring(0,filepath_new.lastIndexOf(".")))
-      var outputFile:File = new File(filepath_new)
-      println(filepath)
 
-      ConvertCompression.decompress(inputFile,outputFile)
+      var outputFile = File(filepath_new)
+
+      Converter.decompress(inputFile,outputFile)
 
     }
   }
