@@ -6,13 +6,12 @@ import java.nio.file.{Files, Paths, StandardCopyOption}
 import scala.io.Source
 
 
-object FileHandling {
+object FileHandler {
 
-  val dest_dir:String="./converted_files/"
   val src_dir: String="./downloaded_files/"
 
 
-  def fileread(filepath:String) : String = {
+  def readQuery(filepath:String) : String = {
 
     var queryString:String = ""
     for (line <- Source.fromFile(filepath).getLines) {
@@ -22,7 +21,7 @@ object FileHandling {
     return queryString
   }
 
-  def fileDownloader(url: String): Unit = {
+  def downloadFile(url: String): Unit = {
 
     var filename = url.split("/").map(_.trim).last
     println(filename)
@@ -31,7 +30,7 @@ object FileHandling {
   }
 
 
-  def convertFile(filepath:String): Unit ={
+  def convertFile(filepath:String, dest_dir:String): Unit = {
     var extension:String = null
 
     if (filepath.contains(".")) {
@@ -40,24 +39,22 @@ object FileHandling {
 
     //if file already in gzip format, just copy to the destination dir
     if (extension=="gzip"){
-      moveFile(filepath)
+      moveFile(filepath, dest_dir)
     }
     else{
       var inputFile:File = new File(filepath)
 
       var filepath_new = filepath.substring(filepath.lastIndexOf("/") + 1)
-      filepath_new = "./converted_files/".concat(filepath_new.substring(0,filepath_new.lastIndexOf(".")))
+      filepath_new = dest_dir.concat(filepath_new.substring(0,filepath_new.lastIndexOf(".")))
       var outputFile:File = new File(filepath_new)
+      println(filepath)
 
-      var convert = ConvertCompression
-      convert.decompress(inputFile,outputFile)
-      convert.decompressing(filepath)
-      //convert.decompressingFile(inputFile)
+      ConvertCompression.decompress(inputFile,outputFile)
 
     }
   }
 
-  def moveFile(sourceFilename:String): Unit ={
+  def moveFile(sourceFilename:String, dest_dir:String): Unit = {
 
     var filename = sourceFilename.substring(sourceFilename.lastIndexOf("/") + 1)
     var destinationFilename = dest_dir.concat(filename)

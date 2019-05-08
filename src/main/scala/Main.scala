@@ -1,17 +1,32 @@
+import better.files.File
+import org.rogach.scallop._
+
 object Main {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]) {
 
-    var filename:String = "./src/query/query"
-    var filehandler = FileHandling
-    var queryString:String  = filehandler.fileread(filename)
+    val conf = new CLIConf(args)
 
+
+    //Test if query is a File or a Query
+    var queryString:String = ""
+    File(conf.query()).exists() match {
+      case true => {
+        // "./src/query/query"
+        queryString = FileHandler.readQuery(conf.query())
+      }
+      case false => {
+        queryString = conf.query()
+      }
+    }
+
+
+   // val dest_dir:String="./converted_files/"
     println(queryString)
 
-    var selectQuery = SelectQuery
-    selectQuery.execute(queryString)
+    SelectQuery.execute(queryString)
 
-    filehandler.convertFile("./downloaded_files/geo-coordinates-mappingbased_lang=be.ttl.bz2")
+    FileHandler.convertFile("./downloaded_files/geo-coordinates-mappingbased_lang=be.ttl.bz2", conf.localrepo())
 
   }
 

@@ -24,6 +24,16 @@
             <version>1.18</version>
         </dependency>
         <dependency>
+            <groupId>org.rogach</groupId>
+            <artifactId>scallop_2.11</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pathikrit</groupId>
+            <artifactId>better-files_2.11</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
@@ -31,8 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
-            <artifactId>apache-jena-libs</artifactId>
-            <type>pom</type>
+            <artifactId>jena-arq</artifactId>
             <version>3.10.0</version>
         </dependency>
     </dependencies>
@@ -45,7 +54,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>4.0.1</version>
+                <version>3.4.1  </version>
                 <executions>
                     <execution>
                         <goals>
@@ -56,6 +65,12 @@
                 </executions>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
+                    <launchers>
+                        <launcher>
+                            <id>download</id>
+                            <mainClass>Main</mainClass>
+                        </launcher>
+                    </launchers>
                 </configuration>
             </plugin>
         </plugins>
