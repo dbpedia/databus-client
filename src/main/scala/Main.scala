@@ -1,15 +1,12 @@
 import better.files.File
-import org.rogach.scallop._
 
 object Main {
 
   def main(args: Array[String]) {
 
     val conf = new CLIConf(args)
+    val dir_download = "./downloaded_files/"
 
-
-    var file = File("/home")
-    val du = file / "fabian"
 
     //Test if query is a File or a Query
     var queryString:String = ""
@@ -23,16 +20,24 @@ object Main {
         queryString = conf.query()
       }
     }
-
-
-   // val dest_dir:String="./converted_files/"
     println(queryString)
-
     SelectQuery.execute(queryString)
 
-    file = File("./downloaded_files/geo-coordinates-mappingbased_lang=be.ttl.bz2")
-    FileHandler.convertFile("./downloaded_files/geo-coordinates-mappingbased_lang=be.ttl.bz2", conf.localrepo(),file)
+
+    var dir = File(dir_download)
+    var files = dir.listRecursively.toSeq
+    for (file <- files) {
+        if (! file.isDirectory){
+          FileHandler.convertFile(file, conf.localrepo())
+        }
+    }
 
   }
 
 }
+
+/*
+    var file = File("/home")
+    val du = file / "fabian"
+
+ */
