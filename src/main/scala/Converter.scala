@@ -1,12 +1,12 @@
-import java.io.{BufferedInputStream, FileInputStream, FileOutputStream}
+import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
 
 import better.files.File
-import org.apache.commons.compress.compressors.{CompressorInputStream, CompressorStreamFactory}
+import org.apache.commons.compress.compressors.{CompressorInputStream, CompressorOutputStream, CompressorStreamFactory}
 import org.apache.commons.compress.utils.IOUtils
 
 object Converter {
 
-  def decompress(input: File, output: File): Unit = {
+/*  def decompress(input: File, output: File): Unit = {
     try {
       println(CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(input.toJava))))
       val in: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(new BufferedInputStream(new FileInputStream(input.toJava)))
@@ -18,14 +18,39 @@ object Converter {
         in.close()
       }
     }
+  }*/
+
+  def decompress(file: File): CompressorInputStream = {
+    try {
+      println(CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(file.toJava))))
+      val in: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(new BufferedInputStream(new FileInputStream(file.toJava)))
+      return in
+    }
   }
 
   def getCompressionType(file: File): String ={
     CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(file.toJava)))
   }
 
-}
 
+  def convertFormat(file: File, outputFormat:String)={
+
+  }
+
+  def compress(input: CompressorInputStream, output:File) = {
+    try {
+      var myOutputStream = new FileOutputStream(output.toJava)
+      val out: CompressorOutputStream = new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, myOutputStream);
+      try {
+        IOUtils.copy(input, out)
+      }
+      finally if (out != null) {
+        out.close()
+      }
+    }
+  }
+
+}
 
 /*
   def decompressing(filepath: String): Unit = {

@@ -28,7 +28,7 @@ object Main {
     var files = dir.listRecursively.toSeq
     for (file <- files) {
         if (! file.isDirectory){
-          FileHandler.convertFile(file, conf.localrepo())
+          FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), conf.outputCompression() )
         }
     }
 
