@@ -18,9 +18,10 @@ object FileHandler {
   }
 
   def downloadFile(url: String): Unit = {
-
+    println(url)
     //filepath from url without http://
-    var filepath = src_dir.concat(url.split("//").map(_.trim).last)
+    var filepath = src_dir.concat(url.split("http://|https://").map(_.trim).last)
+    //var filepath = src_dir.concat(url)
     var file = File(filepath)
     file.parent.createDirectoryIfNotExists(createParents = true)
     new URL(url) #> file.toJava !!
@@ -43,16 +44,22 @@ object FileHandler {
   def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
 
     var filepath_new = inputFile.toString().replaceAll(src_dir.substring(1),dest_dir.substring(1))
-    println(filepath_new)
+    val nameWithoutExtension = File(filepath_new).nameWithoutExtension
+    val name = File(filepath_new).name
 
-    // CATCH EXCEPTION WHEN FILE ALREADY EXISTS
-    try{
-      var outputFile = File(filepath_new).changeExtensionTo(".".concat(outputFormat).concat(".").concat(outputCompression))
-      println(outputFile.toString())
-      //create necessary parent directories to write the outputfile there, later
-      outputFile.parent.createDirectoryIfNotExists(createParents = true)
-      return outputFile
-    }
+    // changeExtensionTo() funktioniert nicht, deswegen ausweichen über Stringmanipulation
+
+    filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
+    filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
+
+
+    var outputFile = File(filepath_new)
+
+    //create necessary parent directories to write the outputfile there, later
+    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+
+
+    return outputFile
 
   }
 

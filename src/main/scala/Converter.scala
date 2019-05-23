@@ -25,6 +25,7 @@ object Converter {
 
   def compress(inputStream: InputStream, outputCompression:String, output:File) = {
     try {
+      // file is created here
       val myOutputStream = new FileOutputStream(output.toJava)
 
       val out: CompressorOutputStream = outputCompression match{
@@ -45,7 +46,7 @@ object Converter {
       }
 
       try {
-        IOUtils.copy(inputStream, out)
+        //IOUtils.copy(inputStream, out)
       }
       finally if (out != null) {
         out.close()
