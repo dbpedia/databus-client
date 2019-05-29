@@ -1,3 +1,5 @@
+package org.dbpedia.databus
+
 import better.files.File
 
 object Main {
@@ -35,9 +37,3 @@ object Main {
   }
 
 }
-
-/*
-    var file = File("/home")
-    val du = file / "fabian"
-
- */

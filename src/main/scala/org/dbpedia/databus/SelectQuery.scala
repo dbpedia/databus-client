@@ -1,8 +1,6 @@
-import org.apache.jena.query.ResultSet
-import org.apache.jena.query.Query
-import org.apache.jena.query.QueryExecution
-import org.apache.jena.query.QueryExecutionFactory
-import org.apache.jena.query.QueryFactory
+package org.dbpedia.databus
+
+import org.apache.jena.query._
 
 object SelectQuery {
 
@@ -26,4 +24,3 @@ object SelectQuery {
 
 
 }
-

@@ -1,3 +1,5 @@
+package org.dbpedia.databus
+
 import org.rogach.scallop._
 
 

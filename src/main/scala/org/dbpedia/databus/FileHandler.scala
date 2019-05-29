@@ -1,7 +1,9 @@
-import java.net.URL
-import sys.process._
-import better.files.File
+package org.dbpedia.databus
 
+import java.net.URL
+
+import better.files.File
+import org.apache.commons.io.FileUtils
 
 object FileHandler {
 
@@ -21,10 +23,11 @@ object FileHandler {
     println(url)
     //filepath from url without http://
     var filepath = src_dir.concat(url.split("http://|https://").map(_.trim).last)
-    //var filepath = src_dir.concat(url)
     var file = File(filepath)
     file.parent.createDirectoryIfNotExists(createParents = true)
-    new URL(url) #> file.toJava !!
+
+    /*new URL(url) #> file.toJava !!*/
+    FileUtils.copyURLToFile(new URL(url),file.toJava)
   }
 
 
@@ -37,13 +40,15 @@ object FileHandler {
 
     val compressedFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
 
+
     Converter.compress(decompressedStream, outputCompression, compressedFile)
   }
 
 
   def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
 
-    var filepath_new = inputFile.toString().replaceAll(src_dir.substring(1),dest_dir.substring(1))
+    var filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString)
+
     val nameWithoutExtension = File(filepath_new).nameWithoutExtension
     val name = File(filepath_new).name
 
@@ -56,6 +61,8 @@ object FileHandler {
     var outputFile = File(filepath_new)
 
     //create necessary parent directories to write the outputfile there, later
+//    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
+
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
 
