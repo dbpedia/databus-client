@@ -23,13 +23,24 @@ object FileHandler {
     println(url)
     //filepath from url without http://
     var filepath = src_dir.concat(url.split("http://|https://").map(_.trim).last)
+
     var file = File(filepath)
     file.parent.createDirectoryIfNotExists(createParents = true)
 
     /*new URL(url) #> file.toJava !!*/
     FileUtils.copyURLToFile(new URL(url),file.toJava)
+
+    downloadDataID(url)
   }
 
+  def downloadDataID(url: String)={
+    var dataIdURL = url.substring(0,url.lastIndexOf("/")).concat("/dataid.ttl")
+    var filepath = src_dir.concat(dataIdURL.split("http://|https://").map(_.trim).last)
+    if(File(filepath).notExists){
+      var file = File(filepath)
+      FileUtils.copyURLToFile(new URL(dataIdURL),file.toJava)
+    }
+  }
 
   def convertFile(inputFile:File, dest_dir:String, outputFormat:String, outputCompression:String): Unit = {
 

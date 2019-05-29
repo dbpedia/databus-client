@@ -3,7 +3,7 @@ package org.dbpedia.databus
 import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream}
 
 import better.files.File
-import org.apache.commons.compress.compressors.{CompressorInputStream, CompressorOutputStream, CompressorStreamFactory}
+import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorOutputStream, CompressorStreamFactory}
 import org.apache.commons.io.IOUtils
 
 
@@ -13,13 +13,19 @@ object Converter {
     CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(file.toJava)))
   }
 
-  def decompress(file: File): CompressorInputStream = {
+  def decompress(file: File): InputStream = {
     try {
-      println(file.toJava.getAbsolutePath)
       //println(CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(file.toJava))))
       val in: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(new BufferedInputStream(new FileInputStream(file.toJava)))
       return in
     }
+    catch{
+      case noCompressor: CompressorException => handleNoCompressorException(file)
+    }
+  }
+
+  def handleNoCompressorException(file: File): BufferedInputStream ={
+    new BufferedInputStream(new FileInputStream(file.toJava))
   }
 
   def convertFormat(input: InputStream, outputFormat:String)={
