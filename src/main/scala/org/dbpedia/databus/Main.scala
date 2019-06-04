@@ -16,7 +16,7 @@ object Main {
       case true => {
         // "./src/query/query"
         val file = File(conf.query())
-        queryString = FileHandler.readQuery(file)
+        queryString = FileHandler.readQueryFile(file)
       }
       case false => {
         queryString = conf.query()

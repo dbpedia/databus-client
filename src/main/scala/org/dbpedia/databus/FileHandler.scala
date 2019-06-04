@@ -10,7 +10,7 @@ object FileHandler {
   val src_dir: String="./downloaded_files/"
 
 
-  def readQuery(file:File) : String = {
+  def readQueryFile(file:File) : String = {
 
     var queryString:String = ""
     for (line <- file.lineIterator) {
@@ -23,43 +23,44 @@ object FileHandler {
     println(url)
     //filepath from url without http://
     var filepath = src_dir.concat(url.split("http://|https://").map(_.trim).last)
-
     var file = File(filepath)
+
     file.parent.createDirectoryIfNotExists(createParents = true)
 
     /*new URL(url) #> file.toJava !!*/
     FileUtils.copyURLToFile(new URL(url),file.toJava)
 
-    downloadDataID(url)
-  }
+    //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
+    if (!file.parent.contains(file.parent/"dataid.ttl")){
+        println("gibt keine Dataid.ttl")
+        downloadDataID(url)
+      }
+    }
 
   def downloadDataID(url: String)={
     var dataIdURL = url.substring(0,url.lastIndexOf("/")).concat("/dataid.ttl")
     var filepath = src_dir.concat(dataIdURL.split("http://|https://").map(_.trim).last)
-    if(File(filepath).notExists){
-      var file = File(filepath)
-      FileUtils.copyURLToFile(new URL(dataIdURL),file.toJava)
-    }
+    var file = File(filepath)
+    FileUtils.copyURLToFile(new URL(dataIdURL),file.toJava)
   }
 
   def convertFile(inputFile:File, dest_dir:String, outputFormat:String, outputCompression:String): Unit = {
 
     val decompressedStream = Converter.decompress(inputFile)
-
     //noch ohne Funktion
     val convertedStream = Converter.convertFormat(decompressedStream, outputFormat)
-
     val compressedFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
-
 
     Converter.compress(decompressedStream, outputCompression, compressedFile)
   }
 
-
   def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
 
-    var filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString)
+    if (inputFile.parent.contains(File("dataid.ttl"))){
+      println("MOINI")
+    }
 
+    var filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString)
     val nameWithoutExtension = File(filepath_new).nameWithoutExtension
     val name = File(filepath_new).name
 
@@ -71,9 +72,11 @@ object FileHandler {
 
     var outputFile = File(filepath_new)
 
-    //create necessary parent directories to write the outputfile there, later
-//    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
 
+    //    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
+
+
+    //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
 
@@ -81,8 +84,30 @@ object FileHandler {
 
   }
 
-
-
+  //  def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
+  //
+  //    var filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString)
+  //
+  //    val nameWithoutExtension = File(filepath_new).nameWithoutExtension
+  //    val name = File(filepath_new).name
+  //
+  //    // changeExtensionTo() funktioniert nicht, deswegen ausweichen über Stringmanipulation
+  //
+  //    filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
+  //    filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
+  //
+  //
+  //    var outputFile = File(filepath_new)
+  //
+  //    //create necessary parent directories to write the outputfile there, later
+  ////    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
+  //
+  //    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+  //
+  //
+  //    return outputFile
+  //
+  //  }
 
   /*  def convertFileCompression(inputFile:File, dest_dir:String): Unit = {
 
