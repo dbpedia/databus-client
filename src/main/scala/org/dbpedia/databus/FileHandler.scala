@@ -4,6 +4,10 @@ import java.net.URL
 
 import better.files.File
 import org.apache.commons.io.FileUtils
+import org.apache.jena.query.{QueryExecutionFactory, QueryFactory}
+import org.apache.jena.rdf.model.Model
+import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
+import org.dbpedia.databus.sparql.DataIdQueries
 
 object FileHandler {
 
@@ -31,7 +35,7 @@ object FileHandler {
     FileUtils.copyURLToFile(new URL(url),file.toJava)
 
     //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
-    if (!file.parent.contains(file.parent/"dataid.ttl")){
+    if (!(file.parent / "dataid.ttl").exists()){
         println("gibt keine Dataid.ttl")
         downloadDataID(url)
       }
@@ -56,33 +60,34 @@ object FileHandler {
 
   def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
 
-    if (inputFile.parent.contains(File("dataid.ttl"))){
-      println("MOINI")
+
+    val nameWithoutExtension = inputFile.nameWithoutExtension
+    val name = inputFile.name
+    var filepath_new:String = ""
+    val dataIdFile = inputFile.parent / "dataid.ttl"
+
+    if(dataIdFile.exists) {
+      var dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
+      filepath_new = dest_dir.concat("/")
+      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
+      filepath_new = filepath_new.concat(nameWithoutExtension)
+    }
+    else{
+      filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString.concat("/NoDataID"))
+      // changeExtensionTo() funktioniert nicht, deswegen ausweichen über Stringmanipulation
+      filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
     }
 
-    var filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString)
-    val nameWithoutExtension = File(filepath_new).nameWithoutExtension
-    val name = File(filepath_new).name
-
-    // changeExtensionTo() funktioniert nicht, deswegen ausweichen über Stringmanipulation
-
-    filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
     filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
-
+    println(filepath_new)
 
     var outputFile = File(filepath_new)
-
-
-    //    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
-
-
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
-
-
     return outputFile
-
   }
+  //    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
+}
 
   //  def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
   //
@@ -144,4 +149,4 @@ object FileHandler {
       println(s"could NOT copy the file $sourceFilename")
     }
   }*/
-}
+

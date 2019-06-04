@@ -23,7 +23,7 @@ object Main {
       }
     }
     println(queryString)
-    SelectQuery.execute(queryString)
+    QueryHandler.executeSelectQuery(queryString)
 
 
     var dir = File(dir_download)
