@@ -8,6 +8,7 @@ WORKDIR /root/
 
 RUN git clone https://git.informatik.uni-leipzig.de/fg60hyfy/dbpediaclient.git
 #COPY . ./dbpediaclient
+RUN git pull
 
 RUN echo 2 | update-alternatives --config java
 
