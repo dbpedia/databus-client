@@ -10,6 +10,7 @@ object Main {
     val dir_download = "./downloaded_files/"
 
     println("TEST")
+    println("Test für Docker")
     //Test if query is a File or a Query
     var queryString:String = ""
     File(conf.query()).exists() match {
