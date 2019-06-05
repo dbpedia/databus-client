@@ -1,8 +1,9 @@
 #!/bin/sh
 
 #mvn scala:run -Dlauncher=execute -DaddArgs="-q|$*|--outCompression|gz"
-mvn scala:run -Dlauncher=execute -DaddArgs="-q|/root/dbpediaclient/src/query/query|--outCompression|gz"
+mvn scala:run -Dlauncher=execute -DaddArgs="-q|/root/dbpediaclient/src/query/query|--compression|gz"
 
-mv -t /toLoad $(find . -name "*.ttl.gz") 
+mkdir /data/toLoad
+mv -t /data/toLoad $(find . -name "*.ttl.gz") 
 
-/virtuoso.sh
+bash /virtuoso.sh

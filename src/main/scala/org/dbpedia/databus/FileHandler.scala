@@ -79,7 +79,7 @@ object FileHandler {
     }
 
     filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
-    println(filepath_new)
+//    println(filepath_new)
 
     var outputFile = File(filepath_new)
     //create necessary parent directories to write the outputfile there, later
