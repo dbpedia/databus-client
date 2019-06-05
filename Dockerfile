@@ -6,9 +6,9 @@ RUN apt-get -y install git openjdk-8-jdk  maven
 
 WORKDIR /root/
 
-RUN git clone https://git.informatik.uni-leipzig.de/fg60hyfy/dbpediaclient.git
-#COPY . ./dbpediaclient
-CMD git pull
+#RUN git clone https://git.informatik.uni-leipzig.de/fg60hyfy/dbpediaclient.git
+COPY . ./dbpediaclient
+#CMD git pull
 
 RUN echo 2 | update-alternatives --config java
 

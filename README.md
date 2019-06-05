@@ -3,18 +3,14 @@ DBpedia-Client
 
 1. Open Terminal
 2. docker build -t dbpedia-client .
-3. docker run -p 8890:8890 --name dbpediaclient dbpedia-client
+3. docker run -p 8890:8890 --name client -e QUERY=/root/dbpediaclient/src/query/query dbpedia-client
 
 
-You need to manipulate the run.sh file to change the program variables.
+You can pass all the variables that are shown in Example2 as Environment Variables (-e).
+But you have to write the Environment Variables in Capital Letters.
+Example: docker run -p 8890:8890 --name client -e QUERY=... -e FORMAT=ttl -e COMPRESSION=gz -e REPO=test dbpedia-client
 
-There you can change all the variables that are shown in Example2. The only difference is that you have to delimit the variables with pipe-symbols.
-
-Example (run.sh):
-mvn scala:run -Dlauncher=execute -DaddArgs="-q|/root/dbpediaclient/src/query/query|--compression|gz|"
-
-4. You can load any ?file query. You have the choice either to pass the query directly as a program variable (-q), or save a query in a file and pass the filepath as variable
-
+4. You can load any ?file query. You have the choice either to pass the query directly as a program variable (-e QUERY="..."), or save a query in a file and pass the filepath as variable
 
 
 Example2 (pass the program variable --help to get following information): 
@@ -37,5 +33,4 @@ format: "ttl"   <-- format conversion isn't working yet
 compression: "bz2"
 
 
-
-4. docker stop dbpediaclient
+4. docker stop client

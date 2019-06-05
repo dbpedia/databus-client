@@ -1,5 +1,10 @@
-SELECT DISTINCT * WHERE {
-    ?dataset ?o ?egal .
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+SELECT DISTINCT ?file WHERE {
+    ?dataset dataid:artifact <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased> .
+    ?dataset dcat:distribution ?distribution .
+    ?distribution dcat:downloadURL ?file .
 }
-Limit 2 Offset 2  
+Limit 10 Offset 10 
  
