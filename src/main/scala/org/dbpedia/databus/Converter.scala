@@ -29,7 +29,6 @@ object Converter {
 
   def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
     try {
-      println(CompressorStreamFactory.detect(bufferedInputStream))
       val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)
       return compressorIn
     }
@@ -53,7 +52,6 @@ object Converter {
       val myOutputStream = new FileOutputStream(output.toJava)
       val out: OutputStream = outputCompression match{
         case "bz2" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BZIP2, myOutputStream)
-        case "bzip2" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BZIP2, myOutputStream)
         case "gz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, myOutputStream)
         case "br" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BROTLI, myOutputStream)
         case "deflate" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.DEFLATE, myOutputStream)

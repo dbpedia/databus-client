@@ -24,14 +24,12 @@ object Main {
 //    println(queryString)
 //    QueryHandler.executeSelectQuery(queryString)
 
-    println(conf.outputCompression)
-    println(conf.outputFormat)
     var dir = File(dir_download)
     var files = dir.listRecursively.toSeq
     for (file <- files) {
         if (! file.isDirectory){
           if (!file.name.equals("dataid.ttl")){
-            println(s"Konvertiere: ${file.pathAsString}")
+            println(s"Konvertiere: ${file.pathAsString} zu ${conf.outputFormat()}.${conf.outputCompression()}")
             FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), conf.outputCompression() )
           }
         }

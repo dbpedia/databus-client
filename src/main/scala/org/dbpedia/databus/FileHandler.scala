@@ -1,6 +1,6 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
+import java.io.{BufferedInputStream, BufferedOutputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.net.URL
 
 import better.files.File
@@ -17,7 +17,7 @@ object FileHandler {
       val compressionInputFile = Converter.getCompressionType(bufferedInputStream)
       val formatInputFile = Converter.getFormatType(Converter.decompress(bufferedInputStream))
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
-      copyStream(bufferedInputStream, outputStream)
+      copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
     else if (outputCompression=="same" && outputFormat!="same"){
       val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
@@ -32,29 +32,26 @@ object FileHandler {
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
     }
-//    else if (outputCompression!="same" && outputFormat=="same"){
-//      val decompressedInStream = Converter.decompress(inputFile)
-//      val format = Converter.getFormatType(decompressedInStream)
-//      val compressedFile = getOutputFile(inputFile, format, outputCompression, dest_dir)
-//      //file is created here
-//      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
-//      //file is written here
-//      copyStream(decompressedInStream, compressedOutStream)
-//    }
-//    else{
-//      val decompressedInStream = Converter.decompress(inputFile)
-//
-//      //noch ohne Funktion
-//      val convertedStream = Converter.convertFormat(decompressedInStream, outputFormat)
-//
-//      val compressedFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
-//
-//      //file is created here
-//      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
-//
-//      //file is written here
-//      copyStream(decompressedInStream, compressedOutStream)
-//    }
+    else if (outputCompression!="same" && outputFormat=="same"){
+      val decompressedInStream = Converter.decompress(bufferedInputStream)
+      val format = Converter.getFormatType(decompressedInStream)
+      val compressedFile = getOutputFile(inputFile, format, outputCompression, dest_dir)
+      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
+
+      //file is written here
+      copyStream(decompressedInStream, compressedOutStream)
+    }
+    else{
+      val decompressedInStream = Converter.decompress(bufferedInputStream)
+      //noch ohne Funktion
+      val convertedStream = Converter.convertFormat(decompressedInStream, outputFormat)
+
+      val compressedFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
+      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
+
+      //file is written here
+      copyStream(decompressedInStream, compressedOutStream)
+    }
   }
 
   def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
@@ -83,8 +80,6 @@ object FileHandler {
     else{
       filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
     }
-
-//    println(filepath_new)
 
     var outputFile = File(filepath_new)
     //create necessary parent directories to write the outputfile there, later
