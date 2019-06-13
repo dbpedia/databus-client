@@ -37,6 +37,7 @@ object QueryHandler {
     try {
       val results = qexec.execSelect
       if (results.hasNext()) {
+        //split the URI at the slashes and take the last cell
         var publisher = results.next().getResource("?o").toString().split("/").map(_.trim).last
         dir_structure = dir_structure :+ publisher
       }

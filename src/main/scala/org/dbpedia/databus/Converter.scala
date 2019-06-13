@@ -1,6 +1,6 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream}
+import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
 
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorOutputStream, CompressorStreamFactory}
@@ -9,36 +9,51 @@ import org.apache.commons.io.IOUtils
 
 object Converter {
 
-  def getCompressionType(file: File): String ={
-    CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(file.toJava)))
-  }
+  def getCompressionType(fileInputStream: BufferedInputStream): String ={
 
-  def decompress(file: File): InputStream = {
-    try {
-      //println(CompressorStreamFactory.detect(new BufferedInputStream(new FileInputStream(file.toJava))))
-      val in: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(new BufferedInputStream(new FileInputStream(file.toJava)))
-      return in
+    try{
+      var ctype = CompressorStreamFactory.detect(fileInputStream)
+      if (ctype == "bzip2"){
+        ctype="bz2"
+      }
+      return ctype
     }
     catch{
-      case noCompressor: CompressorException => handleNoCompressorException(file)
+      case noCompression: CompressorException => ""
     }
   }
 
-  def handleNoCompressorException(file: File): BufferedInputStream ={
-    new BufferedInputStream(new FileInputStream(file.toJava))
+  def getFormatType(in: InputStream): String ={
+    "ttl"
   }
+
+  def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
+    try {
+      println(CompressorStreamFactory.detect(bufferedInputStream))
+      val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)
+      return compressorIn
+    }
+    catch{
+      case noCompression: CompressorException => bufferedInputStream
+    }
+  }
+
+//  def handleNoCompressorException(fileInputStream: FileInputStream): BufferedInputStream ={
+//    new BufferedInputStream(fileInputStream)
+//  }
+
 
   def convertFormat(input: InputStream, outputFormat:String)={
     val convertedStream = input
   }
 
-  def compress(inputStream: InputStream, outputCompression:String, output:File) = {
+  def compress(outputCompression:String, output:File): OutputStream = {
     try {
       // file is created here
       val myOutputStream = new FileOutputStream(output.toJava)
-
-      val out: CompressorOutputStream = outputCompression match{
+      val out: OutputStream = outputCompression match{
         case "bz2" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BZIP2, myOutputStream)
+        case "bzip2" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BZIP2, myOutputStream)
         case "gz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, myOutputStream)
         case "br" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BROTLI, myOutputStream)
         case "deflate" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.DEFLATE, myOutputStream)
@@ -52,15 +67,14 @@ object Converter {
         case "xz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.XZ, myOutputStream)
         case "z" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.Z, myOutputStream)
         case "zstd" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.ZSTANDARD, myOutputStream)
+        case "" => myOutputStream //if outputCompression is empty
       }
 
-      try {
-        IOUtils.copy(inputStream, out)
-      }
-      finally if (out != null) {
-        out.close()
-      }
+      return out
     }
   }
+
+
+
 
 }
