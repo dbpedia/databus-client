@@ -1,10 +1,12 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
+import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream}
 
 import better.files.File
-import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorOutputStream, CompressorStreamFactory}
-import org.apache.commons.io.IOUtils
+import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
+import net.sansa_stack.rdf.spark.io._
+import org.apache.jena.riot.Lang
+import org.apache.spark.sql.SparkSession
 
 
 object Converter {
@@ -43,7 +45,29 @@ object Converter {
 
 
   def convertFormat(input: InputStream, outputFormat:String)={
-    val convertedStream = input
+//    val convertedStream = input
+
+    val spark= SparkSession.builder.
+      master("local")
+      .appName("spark session test")
+      .getOrCreate()
+
+//    val df = spark.read
+//      .format("csv")
+//      .option("header", "true") //first line in file has headers
+//      .load("./downloaded_files/New Folder/geo-coordinates-mappingbased_lang=ca.ttl")
+
+
+    val lang = Lang.NTRIPLES
+    val triples = spark.rdf(lang)("./downloaded_files/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2")
+
+    triples.take(5).foreach(println(_))
+
+
+//    val args = Array("") //./downloaded_files/New Folder/test.csv
+//    TripleReader.main(args)
+
+    input
   }
 
   def compress(outputCompression:String, output:File): OutputStream = {
