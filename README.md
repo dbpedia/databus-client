@@ -1,21 +1,26 @@
 DBpedia-Client
 ----------------------------------------
 
+Example(Docker)
+
 1. Open Terminal
 2. docker build -t dbpedia-client .
 3. docker run -p 8890:8890 --name client -e QUERY=/root/dbpediaclient/src/query/query dbpedia-client
 
-
-You can pass all the variables that are shown in Example2 as Environment Variables (-e).
-But you have to write the Environment Variables in Capital Letters.
-Example: docker run -p 8890:8890 --name client -e QUERY=... -e FORMAT=ttl -e COMPRESSION=gz -e REPO=test dbpedia-client
+You can pass all the variables that are shown in Example(Terminal) as Environment Variables (-e).
+You have to write the Environment Variables in Capital Letters, if you use docker to execute.
+Example: docker run -p 8890:8890 --name client -e QUERY=... -e F=ttl -e C=gz -e REPO=test dbpedia-client
 
 4. You can load any ?file query. You have the choice either to pass the query directly as a program variable (-e QUERY="..."), or save a query in a file and pass the filepath as variable
+5. You can choose different compression formats and additionally you can choose between "same" (no change of compression) or "no" for no compression
 
+IMPORTANT: If you use docker to execute, you can't change the repository yet.
 
-Example2 (pass the program variable --help to get following information): 
 -----------------------------------------
-Example: scala main.scala -q ./src/query/downloadquery  --repo converted_files/ --compression gz -f ttl
+Example(Terminal) (pass the program variable --help to get following information): 
+
+scalac main.scala
+scala main -q ./src/query/downloadquery --repo converted_files/ --compression gz -f ttl
 
 For usage see below:
     
@@ -29,8 +34,8 @@ For usage see below:
 All program variables have default values:
 query: the query by default is loaded from the "./src/query/query" file
 repo: "./converted_files/"
-format: "ttl"   <-- format conversion isn't working yet
-compression: "bz2"
-
+format: "same"   <-- format conversion isn't working yet
+compression: "same"
 
 4. docker stop client
+

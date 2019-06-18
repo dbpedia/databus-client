@@ -5,8 +5,12 @@ import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
 import net.sansa_stack.rdf.spark.io._
+import net.sansa_stack.rdf.spark.streaming.StreamReader
+import org.apache.jena.graph
 import org.apache.jena.riot.Lang
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.dstream.DStream
 
 
 object Converter {
@@ -47,10 +51,10 @@ object Converter {
   def convertFormat(input: InputStream, outputFormat:String)={
 //    val convertedStream = input
 
-    val spark= SparkSession.builder.
-      master("local")
-      .appName("spark session test")
-      .getOrCreate()
+//    val spark= SparkSession.builder.
+//      master("local")
+//      .appName("spark session test")
+//      .getOrCreate()
 
 //    val df = spark.read
 //      .format("csv")
@@ -58,14 +62,23 @@ object Converter {
 //      .load("./downloaded_files/New Folder/geo-coordinates-mappingbased_lang=ca.ttl")
 
 
-    val lang = Lang.NTRIPLES
-    val triples = spark.rdf(lang)("./downloaded_files/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2")
-
-    triples.take(5).foreach(println(_))
-
-
-//    val args = Array("") //./downloaded_files/New Folder/test.csv
-//    TripleReader.main(args)
+//    val lang = Lang.NTRIPLES
+//    new StreamReader {
+//      override def load(ssc: StreamingContext): DStream[graph.Triple] = ???
+//    }
+//    val triples = spark.rdf(lang)("./downloaded_files/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2")
+////    "./downloaded_files/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2"
+//
+//    triples.take(5).foreach(println(_))
+//
+//
+//
+//    val df =  spark.rdf(lang)
+//    val someRDD = df.rdd
+//    val newDF = spark.createDataFrame(someRDD, df.schema)
+//
+////    val args = Array("") //./downloaded_files/New Folder/test.csv
+////    TripleReader.main(args)
 
     input
   }

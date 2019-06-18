@@ -1,6 +1,6 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, BufferedOutputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
+import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.net.URL
 
 import better.files.File
