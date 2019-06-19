@@ -38,7 +38,6 @@ object QueryHandler {
     var query: Query = QueryFactory.create(queryString)
     var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
-
     try {
       var results: ResultSet = qexec.execSelect
       var fileHandler = FileHandler
@@ -107,6 +106,32 @@ object QueryHandler {
     return dir_structure
   }
 
+  def getMediatypesOfQuery (list: List[String]) ={
+    val files = list.mkString("> , <")
+    println(files)
+    var queryString=s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                    SELECT DISTINCT ?type WHERE {
+                    ?distribution dcat:mediaType ?type .
+                    ?distribution dcat:downloadURL ?du .
+                    FILTER (?du in (<$files>))
+                    }
+                    GROUP BY ?type"""
 
+    var query: Query = QueryFactory.create(queryString)
+    var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+
+
+    try {
+      var results: ResultSet = qexec.execSelect
+      var fileHandler = FileHandler
+
+      while (results.hasNext()) {
+        val mediaType = results.next().getResource("?type").toString()
+        println(mediaType)
+      }
+    } finally qexec.close()
+
+  }
 
 }
