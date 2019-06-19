@@ -116,82 +116,13 @@ object FileHandler {
     /*new URL(url) #> file.toJava !!*/
     FileUtils.copyURLToFile(new URL(url),file.toJava)
 
+
+    var dataIdFile = file.parent / "dataid.ttl"
     //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
-    if (!(file.parent / "dataid.ttl").exists()){
+    if (!dataIdFile.exists()){
       println("gibt keine Dataid.ttl")
-      downloadDataIdFile(url)
+      QueryHandler.getDataIdFile(url ,dataIdFile)
     }
   }
 
-  def downloadDataIdFile(url: String)={
-    var dataIdURL = url.substring(0,url.lastIndexOf("/")).concat("/dataid.ttl")
-    var filepath = src_dir.concat(dataIdURL.split("http://|https://").map(_.trim).last)
-    var file = File(filepath)
-    FileUtils.copyURLToFile(new URL(dataIdURL),file.toJava)
-  }
 }
-
-//    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
-
-
-  //  def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
-  //
-  //    var filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString)
-  //
-  //    val nameWithoutExtension = File(filepath_new).nameWithoutExtension
-  //    val name = File(filepath_new).name
-  //
-  //    // changeExtensionTo() funktioniert nicht, deswegen ausweichen über Stringmanipulation
-  //
-  //    filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
-  //    filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
-  //
-  //
-  //    var outputFile = File(filepath_new)
-  //
-  //    //create necessary parent directories to write the outputfile there, later
-  ////    val newFileName = s"${inputFile.nameWithoutExtension(false)}.$outputFormat.$outputCompression"
-  //
-  //    outputFile.parent.createDirectoryIfNotExists(createParents = true)
-  //
-  //
-  //    return outputFile
-  //
-  //  }
-
-  /*  def convertFileCompression(inputFile:File, dest_dir:String): Unit = {
-
-      val fileType = Converter.getCompressionType(inputFile)
-      var outputFile = getOutputFileForDecompress(inputFile)
-
-      //if file already in gzip format, just copy to the destination dir
-      if (fileType=="gzip"){
-        if (outputFile.exists){
-          inputFile.delete()
-        } else {
-          inputFile.moveTo(outputFile, overwrite = false)
-        }
-      }
-      else{
-        //Converter.decompress(inputFile,outputFile)
-      }
-    }*/
-
-  /*def moveFile(sourceFilename:String, dest_dir:String): Unit = {
-
-    var filename = sourceFilename.substring(sourceFilename.lastIndexOf("/") + 1)
-    var destinationFilename = dest_dir.concat(filename)
-
-    val path = Files.copy(
-      Paths.get(sourceFilename),
-      Paths.get(destinationFilename),
-      StandardCopyOption.REPLACE_EXISTING
-    )
-
-    if (path != null) {
-      println(s"copy the file $sourceFilename successfully")
-    } else {
-      println(s"could NOT copy the file $sourceFilename")
-    }
-  }*/
-

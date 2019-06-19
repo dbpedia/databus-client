@@ -1,6 +1,9 @@
 package org.dbpedia.databus
 
+import java.net.URL
+
 import better.files.File
+import org.apache.commons.io.FileUtils
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
@@ -22,6 +25,31 @@ object QueryHandler {
         fileHandler.downloadFile(resource.toString())
       }
     } finally qexec.close()
+  }
+
+  def getDataIdFile(url:String, dataIdFile: File) ={
+    var queryString=s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                    SELECT DISTINCT ?dataset WHERE {
+                    ?dataset dataid:version ?version .
+                    ?dataset dcat:distribution ?distribution .
+                    ?distribution dcat:downloadURL <$url> }"""
+
+    var query: Query = QueryFactory.create(queryString)
+    var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+
+
+    try {
+      var results: ResultSet = qexec.execSelect
+      var fileHandler = FileHandler
+
+      if (results.hasNext()) {
+        var dataidURL = results.next().getResource("?dataset").toString()
+        println(dataidURL)
+        FileUtils.copyURLToFile(new URL(dataidURL),dataIdFile.toJava)
+      }
+    } finally qexec.close()
+
   }
 
   def executeDataIdQuery(dataIdFile:File):List[String] ={
