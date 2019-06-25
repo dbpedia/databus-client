@@ -19,19 +19,6 @@ object FileHandler {
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
-    else if (outputCompression=="same" && outputFormat!="same"){
-      val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
-      val decompressedInStream = Converter.decompress(bufferedInputStream)
-
-      //noch ohne Funktion
-      val convertedStream = Converter.convertFormat(decompressedInStream, outputFormat)
-
-      val compressedFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
-      val compressedOutStream = Converter.compress(compressionInputFile, compressedFile)
-
-      //file is written here
-      copyStream(decompressedInStream, compressedOutStream)
-    }
     else if (outputCompression!="same" && outputFormat=="same"){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
       val format = Converter.getFormatType(decompressedInStream)
@@ -41,10 +28,24 @@ object FileHandler {
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
     }
+//  With FILEFORMAT CONVERTATION
+    else if (outputCompression=="same" && outputFormat!="same"){
+      val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
+      val decompressedInStream = Converter.decompress(bufferedInputStream)
+
+      //noch ohne Funktion
+      val convertedStream = Converter.convertFormat(inputFile, outputFormat)
+
+      val compressedFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
+      val compressedOutStream = Converter.compress(compressionInputFile, compressedFile)
+
+      //file is written here
+      copyStream(decompressedInStream, compressedOutStream)
+    }
     else{
       val decompressedInStream = Converter.decompress(bufferedInputStream)
       //noch ohne Funktion
-      val convertedStream = Converter.convertFormat(decompressedInStream, outputFormat)
+      val convertedStream = Converter.convertFormat(inputFile, outputFormat)
 
       val compressedFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)

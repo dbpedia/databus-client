@@ -9,7 +9,6 @@ object Main {
     val conf = new CLIConf(args)
     val dir_download = "./downloaded_files/"
 
-    Validator.validate()
     //Test if query is a File or a Query
     var queryString:String = ""
     File(conf.query()).exists() match {

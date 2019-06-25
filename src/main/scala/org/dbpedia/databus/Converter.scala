@@ -1,15 +1,16 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream}
+import java.io.{BufferedInputStream, BufferedReader, FileOutputStream, InputStream, InputStreamReader, OutputStream}
 
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
-import net.sansa_stack.rdf.spark.io._
 import net.sansa_stack.rdf.spark.streaming.StreamReader
+import net.sansa_stack.rdf.spark.io._
+import org.apache.jena.riot.Lang
 import org.apache.jena.graph
 import org.apache.jena.riot.Lang
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.streaming.{Minutes, Seconds, StreamingContext}
 import org.apache.spark.streaming.dstream.DStream
 
 
@@ -48,40 +49,43 @@ object Converter {
 //  }
 
 
-  def convertFormat(input: InputStream, outputFormat:String)={
-//    val convertedStream = input
+  def convertFormat(inputFile: File, outputFormat:String)={
 
-//    val spark= SparkSession.builder.
-//      master("local")
-//      .appName("spark session test")
-//      .getOrCreate()
+    val lang = Lang.NTRIPLES
+    new StreamReader {
+      override def load(ssc: StreamingContext): DStream[graph.Triple] = ???
+    }
 
-//    val df = spark.read
-//      .format("csv")
-//      .option("header", "true") //first line in file has headers
-//      .load("./downloaded_files/New Folder/geo-coordinates-mappingbased_lang=ca.ttl")
+    val spark = SparkSession.builder().master("local").getOrCreate()
+    val data = NTripleReader.load(spark, inputFile.pathAsString)
+    data.saveAsNTriplesFile("./test")
 
+    val triples = spark.rdf(lang)(inputFile.pathAsString)
 
-//    val lang = Lang.NTRIPLES
-//    new StreamReader {
-//      override def load(ssc: StreamingContext): DStream[graph.Triple] = ???
-//    }
-//    val triples = spark.rdf(lang)("./downloaded_files/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2")
-////    "./downloaded_files/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2"
-//
-//    triples.take(5).foreach(println(_))
-//
-//
-//
-//    val df =  spark.rdf(lang)
-//    val someRDD = df.rdd
-//    val newDF = spark.createDataFrame(someRDD, df.schema)
-//
-////    val args = Array("") //./downloaded_files/New Folder/test.csv
-////    TripleReader.main(args)
+    triples.take(5).foreach(println(_))
 
-    input
   }
+
+
+//  def convertFormat(input: InputStream, outputFormat:String)= {
+//
+//    val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
+//    val ssc = new StreamingContext(conf, Seconds(10))
+//
+//    val inputstreamReceiver = ssc.receiverStream(new InputstreamReceiver(input))
+//      .flatMap(_.split(" "))
+//
+//    inputstreamReceiver.foreachRDD(rdd => {
+//      val topList = rdd.collect
+//      println("\nLast minute popular domains (%s total):".format(rdd.count()))
+//      topList.foreach { case (count) => println("%s (%s clicks)".format(count)) }
+//    })
+//
+//    ssc.start()
+//    ssc.stop(true, true)
+//
+//    input
+//  }
 
   def compress(outputCompression:String, output:File): OutputStream = {
     try {
