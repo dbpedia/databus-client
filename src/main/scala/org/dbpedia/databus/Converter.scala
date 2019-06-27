@@ -49,22 +49,30 @@ object Converter {
 //  }
 
 
-  def convertFormat(inputFile: File, outputFormat:String)={
+  def convertFormat(inputFile: File, outputFormat:String, targetFile: File)= {
 
     val lang = Lang.NTRIPLES
-    new StreamReader {
-      override def load(ssc: StreamingContext): DStream[graph.Triple] = ???
-    }
+    //    val relativePath = targetFile.pathAsString.substring(targetFile.pathAsString.lastIndexOf("/")+1)
 
     val spark = SparkSession.builder().master("local").getOrCreate()
     val data = NTripleReader.load(spark, inputFile.pathAsString)
-    data.saveAsNTriplesFile("./test")
-
-    val triples = spark.rdf(lang)(inputFile.pathAsString)
-
-    triples.take(5).foreach(println(_))
+    try {
+      data.saveAsNTriplesFile(targetFile.pathAsString)
+    }
+    catch {
+      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
+    }
 
   }
+
+  def deleteAndRestart(inputFile:File , outputFormat:String, file: File): Unit ={
+    file.delete()
+    convertFormat(inputFile, outputFormat, file)
+  }
+//    val triples = spark.rdf(lang)(filePath)
+//
+//    triples.take(5).foreach(println(_))
+
 
 
 //  def convertFormat(input: InputStream, outputFormat:String)= {

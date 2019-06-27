@@ -28,30 +28,33 @@ object FileHandler {
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
     }
-//  With FILEFORMAT CONVERTATION
+    //  With FILEFORMAT CONVERSION
     else if (outputCompression=="same" && outputFormat!="same"){
       val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
-      val decompressedInStream = Converter.decompress(bufferedInputStream)
+      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
+//      val decompressedInStream = Converter.decompress(bufferedInputStream)
 
-      //noch ohne Funktion
-      val convertedStream = Converter.convertFormat(inputFile, outputFormat)
+      //wird gebaut
+      val convertedStream = Converter.convertFormat(inputFile, outputFormat, targetFile)
 
-      val compressedFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
-      val compressedOutStream = Converter.compress(compressionInputFile, compressedFile)
+//      val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
 
       //file is written here
-      copyStream(decompressedInStream, compressedOutStream)
+//      copyStream(decompressedInStream, compressedOutStream)
     }
     else{
-      val decompressedInStream = Converter.decompress(bufferedInputStream)
-      //noch ohne Funktion
-      val convertedStream = Converter.convertFormat(inputFile, outputFormat)
+      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
 
-      val compressedFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
-      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
+//      val decompressedInStream = Converter.decompress(bufferedInputStream)
+
+      //noch ohne Funktion
+      val convertedStream = Converter.convertFormat(inputFile, outputFormat, targetFile)
+
+
+//      val compressedOutStream = Converter.compress(outputCompression, targetFile)
 
       //file is written here
-      copyStream(decompressedInStream, compressedOutStream)
+//      copyStream(decompressedInStream, compressedOutStream)
     }
   }
 
