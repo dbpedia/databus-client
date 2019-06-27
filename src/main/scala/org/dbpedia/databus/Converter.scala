@@ -2,13 +2,17 @@ package org.dbpedia.databus
 
 import java.io.{BufferedInputStream, BufferedReader, FileOutputStream, InputStream, InputStreamReader, OutputStream}
 
+import scala.sys.process._
+import scala.language.postfixOps
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
 import net.sansa_stack.rdf.spark.streaming.StreamReader
 import net.sansa_stack.rdf.spark.io._
+import org.apache.commons.io.FileUtils
 import org.apache.jena.riot.Lang
 import org.apache.jena.graph
 import org.apache.jena.riot.Lang
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.streaming.{Minutes, Seconds, StreamingContext}
 import org.apache.spark.streaming.dstream.DStream
@@ -56,8 +60,16 @@ object Converter {
 
     val spark = SparkSession.builder().master("local").getOrCreate()
     val data = NTripleReader.load(spark, inputFile.pathAsString)
+    val tempDir = s"${targetFile.parent.pathAsString}/temp"
+
     try {
-      data.saveAsNTriplesFile(targetFile.pathAsString)
+      data.saveAsNTriplesFile(tempDir)
+
+      val findTripleFiles = s"find $tempDir/ -name part*" !!
+      val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
+
+      if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir).toJava)
+      else System.err.println(s"[WARN] failed to merge $tempDir/*")
     }
     catch {
       case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
