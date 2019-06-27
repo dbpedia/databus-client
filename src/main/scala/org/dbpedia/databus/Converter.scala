@@ -43,11 +43,6 @@ object Converter {
     }
   }
 
-//  def handleNoCompressorException(fileInputStream: FileInputStream): BufferedInputStream ={
-//    new BufferedInputStream(fileInputStream)
-//  }
-
-
   def convertFormat(input: InputStream, outputFormat:String)={
 //    val convertedStream = input
 
