@@ -15,13 +15,13 @@ object FileHandler {
 
     if (outputCompression=="same" && outputFormat=="same"){
       val compressionInputFile = Converter.getCompressionType(bufferedInputStream)
-      val formatInputFile = Converter.getFormatType(Converter.decompress(bufferedInputStream))
+      val formatInputFile = Converter.getFormatType(inputFile) //NOCH OHNE FUNKTION
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
     else if (outputCompression!="same" && outputFormat=="same"){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
-      val format = Converter.getFormatType(decompressedInStream)
+      val format = Converter.getFormatType(inputFile) // NOCH OHNE FUNKTION
       val compressedFile = getOutputFile(inputFile, format, outputCompression, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
 
@@ -34,27 +34,25 @@ object FileHandler {
       val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
 //      val decompressedInStream = Converter.decompress(bufferedInputStream)
 
-      //wird gebaut
-      val convertedStream = Converter.convertFormat(inputFile, outputFormat, targetFile)
+      val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
 
-//      val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
+      val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
 
       //file is written here
-//      copyStream(decompressedInStream, compressedOutStream)
+      copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
+      typeConvertedFile.delete()
     }
     else{
       val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
-
 //      val decompressedInStream = Converter.decompress(bufferedInputStream)
 
-      //noch ohne Funktion
-      val convertedStream = Converter.convertFormat(inputFile, outputFormat, targetFile)
+      val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
 
-
-//      val compressedOutStream = Converter.compress(outputCompression, targetFile)
+      val compressedOutStream = Converter.compress(outputCompression, targetFile)
 
       //file is written here
-//      copyStream(decompressedInStream, compressedOutStream)
+      copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
+      typeConvertedFile.delete()
     }
   }
 
@@ -63,7 +61,7 @@ object FileHandler {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
     val name = inputFile.name
-    var filepath_new:String = ""
+    var filepath_new = ""
     val dataIdFile = inputFile.parent / "dataid.ttl"
 
     if(dataIdFile.exists) {
@@ -124,7 +122,7 @@ object FileHandler {
     var dataIdFile = file.parent / "dataid.ttl"
     //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
     if (!dataIdFile.exists()){
-      println("gibt keine Dataid.ttl")
+      println("Download Dataid.ttl")
       QueryHandler.getDataIdFile(url ,dataIdFile)
     }
   }

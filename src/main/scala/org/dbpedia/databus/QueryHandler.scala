@@ -134,4 +134,21 @@ object QueryHandler {
 
   }
 
+  def getTypeOfFile (fileURL:String, dataIdFile:File): String ={
+    var fileType = ""
+
+    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString,RDFLanguages.NTRIPLES)
+
+    var query: Query = QueryFactory.create(DataIdQueries.queryGetType(fileURL))
+    var qexec = QueryExecutionFactory.create(query,dataidModel)
+
+    try {
+      val results = qexec.execSelect
+      if (results.hasNext()) {
+        fileType = results.next().getLiteral("?type").toString //WARUM GEHT getResource nicht??
+      }
+    } finally qexec.close()
+
+    return fileType
+  }
 }
