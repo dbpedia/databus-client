@@ -4,7 +4,7 @@ DBpedia-Client
 Example(Docker)
 
 1. Open Terminal
-2. docker build -t dbpedia-client .
+2. '''docker build -t dbpedia-client .'''
 3. docker run -p 8890:8890 --name client -e QUERY=/root/dbpediaclient/src/query/query dbpedia-client
 
 You can pass all the variables that are shown in Example(Terminal) as Environment Variables (-e).
