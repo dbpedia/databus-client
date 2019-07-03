@@ -71,8 +71,8 @@ object FileHandler {
       filepath_new = filepath_new.concat(nameWithoutExtension)
     }
     else{
+      // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
       filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString.concat("/NoDataID"))
-      // changeExtensionTo() funktioniert nicht, deswegen ausweichen über Stringmanipulation
       filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
     }
 
@@ -86,6 +86,9 @@ object FileHandler {
     var outputFile = File(filepath_new)
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
+
+    println(s"Converted File: ${outputFile.pathAsString}\n")
+
     return outputFile
   }
 

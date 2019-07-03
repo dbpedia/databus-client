@@ -1,15 +1,17 @@
 package org.dbpedia.databus
 
 import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream}
+import scala.sys.process._
 import scala.language.postfixOps
+import scala.util.control.Breaks._
+import scala.io.Source
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
-import net.sansa_stack.rdf.spark.io._
+import org.apache.commons.io.FileUtils
 import org.apache.jena.riot.Lang
 import org.apache.spark.sql.SparkSession
-import scala.util.control.Breaks._
+import net.sansa_stack.rdf.spark.io._
 
-import scala.io.Source
 
 object Converter {
 
@@ -36,15 +38,16 @@ object Converter {
     var fileURL = ""
 
     for(line<-lines){
-      breakable { for(x<-regex.findAllMatchIn(line)) {
-        fileURL = x.toString().replace(">","").replace("<","")
-        break
-      } }
+      breakable {
+        for(x<-regex.findAllMatchIn(line)) {
+          fileURL = x.toString().replace(">","").replace("<","")
+          break
+        }
+      }
     }
-    println(fileURL)
-    val fileType = QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
 
-    println(fileType)
+
+    val fileType = QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
     return fileType
   }
 
@@ -63,61 +66,60 @@ object Converter {
 //  }
 
 
-//  def convertFormat(inputFile: File, outputFormat:String): File= {
-//
-//    val lang = Lang.RDFXML
-//    //    val relativePath = targetFile.pathAsString.substring(targetFile.pathAsString.lastIndexOf("/")+1)
-//    val outputFormat = "nt"
-//
-//    val spark = SparkSession.builder().master("local").getOrCreate()
-//    val data = NTripleReader.load(spark, inputFile.pathAsString)
-//    val tempDir = s"${inputFile.parent.pathAsString}/temp"
-//    val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
-//    println(targetFile.pathAsString)
-//
-//    try {
-//      data.saveAsNTriplesFile(tempDir)
-//
-//      val findTripleFiles = s"find $tempDir/ -name part*" !!
-//      val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
-//
-//      if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir).toJava)
-//      else System.err.println(s"[WARN] failed to merge $tempDir/*")
-//    }
-//    catch {
-//      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
-//    }
-//    return targetFile
-//  }
+  def convertFormat(inputFile: File, outputFormat:String): File= {
+
+    val lang = Lang.RDFXML
+    val outputFormat = "nt"
+
+    val spark = SparkSession.builder().master("local").getOrCreate()
+    val data = NTripleReader.load(spark, inputFile.pathAsString)
+    val tempDir = s"${inputFile.parent.pathAsString}/temp"
+    val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
+
+
+    try {
+      data.saveAsNTriplesFile(tempDir)
+
+      val findTripleFiles = s"find $tempDir/ -name part*" !!
+      val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
+
+      if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir).toJava)
+      else System.err.println(s"[WARN] failed to merge $tempDir/*")
+    }
+    catch {
+      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
+    }
+    return targetFile
+  }
 
   def deleteAndRestart(inputFile:File , outputFormat:String, file: File): Unit ={
     file.delete()
     convertFormat(inputFile, outputFormat)
   }
 
-  def convertFormat(inputFile: File, outputFormat:String): File= {
-
-    val spark = SparkSession.builder
-      .appName(s"Triple reader  ${inputFile.name}")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
-
-    val lang = Lang.NTRIPLES
-    val triples = spark.rdf(lang)(inputFile.pathAsString)
-
-    val tempDir = s"${inputFile.parent.pathAsString}/temp"
-
-    val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
-    println(targetFile.pathAsString)
-
-    return targetFile
-  }
-
-
-  //    val triples = spark.rdf(lang)(filePath)
+//  def convertFormat(inputFile: File, outputFormat:String): File= {
 //
-//    triples.take(5).foreach(println(_))
+//    val spark = SparkSession.builder
+//      .appName(s"Triple reader  ${inputFile.name}")
+//      .master("local[*]")
+//      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+//      .getOrCreate()
+//
+//    val lang = Lang.NTRIPLES
+//    val triples = spark.rdf(lang)(inputFile.pathAsString)
+//
+//    val tempDir = s"${inputFile.parent.pathAsString}/temp"
+//
+//    val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
+//    println(targetFile.pathAsString)
+//
+//
+//    //    val triples = spark.rdf(lang)(filePath)
+//    //
+//    //    triples.take(5).foreach(println(_))
+//
+//    return targetFile
+//  }
 
 
   def compress(outputCompression:String, output:File): OutputStream = {

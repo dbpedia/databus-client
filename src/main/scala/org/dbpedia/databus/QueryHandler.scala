@@ -11,7 +11,7 @@ import org.dbpedia.databus.sparql.DataIdQueries
 
 object QueryHandler {
 
-  def executeSelectQuery(queryString:String) = {
+  def executeDownloadQuery(queryString:String) = {
     var query: Query = QueryFactory.create(queryString)
     var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
