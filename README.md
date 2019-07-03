@@ -27,7 +27,7 @@ Example: `docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz dbpe
     - *"zstd"*  
     - additionally you can choose between *"same"* (no change of compression) or *"no"* for no compression.
 
-**Important: If you use docker to execute, you can't change the "_REPO_" yet.**
+**Important: If you use docker to execute, you can't change the "_REPO_" yet.**  
 **Important: At the moment only conversion to ntriples(_"nt"_) or _"same"_ possible**
 
 To stop the image *client* in the container *dbpedia-client* use `docker stop client`
