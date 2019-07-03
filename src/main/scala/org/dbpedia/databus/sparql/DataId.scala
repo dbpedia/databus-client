@@ -37,4 +37,12 @@ object DataIdQueries {
        |           dataid:version ?o .
        |}
     """.stripMargin
+
+  def queryGetType(fileURL:String): String =
+    s"""
+       |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+       |SELECT ?type {
+       |  <$fileURL> dataid:formatExtension ?type .
+       |}
+    """.stripMargin
 }

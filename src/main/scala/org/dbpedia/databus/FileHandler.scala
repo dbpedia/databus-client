@@ -15,42 +15,44 @@ object FileHandler {
 
     if (outputCompression=="same" && outputFormat=="same"){
       val compressionInputFile = Converter.getCompressionType(bufferedInputStream)
-      val formatInputFile = Converter.getFormatType(Converter.decompress(bufferedInputStream))
+      val formatInputFile = Converter.getFormatType(inputFile) //NOCH OHNE FUNKTION
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
-    else if (outputCompression=="same" && outputFormat!="same"){
-      val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
-      val decompressedInStream = Converter.decompress(bufferedInputStream)
-
-      //noch ohne Funktion
-      val convertedStream = Converter.convertFormat(decompressedInStream, outputFormat)
-
-      val compressedFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
-      val compressedOutStream = Converter.compress(compressionInputFile, compressedFile)
-
-      //file is written here
-      copyStream(decompressedInStream, compressedOutStream)
-    }
     else if (outputCompression!="same" && outputFormat=="same"){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
-      val format = Converter.getFormatType(decompressedInStream)
+      val format = Converter.getFormatType(inputFile) // NOCH OHNE FUNKTION
       val compressedFile = getOutputFile(inputFile, format, outputCompression, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
 
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
     }
-    else{
-      val decompressedInStream = Converter.decompress(bufferedInputStream)
-      //noch ohne Funktion
-      val convertedStream = Converter.convertFormat(decompressedInStream, outputFormat)
+    //  With FILEFORMAT CONVERSION
+    else if (outputCompression=="same" && outputFormat!="same"){
+      val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
+      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
+//      val decompressedInStream = Converter.decompress(bufferedInputStream)
 
-      val compressedFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
-      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
+      val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
+
+      val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
 
       //file is written here
-      copyStream(decompressedInStream, compressedOutStream)
+      copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
+      typeConvertedFile.delete()
+    }
+    else{
+      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
+//      val decompressedInStream = Converter.decompress(bufferedInputStream)
+
+      val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
+
+      val compressedOutStream = Converter.compress(outputCompression, targetFile)
+
+      //file is written here
+      copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
+      typeConvertedFile.delete()
     }
   }
 
@@ -59,7 +61,7 @@ object FileHandler {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
     val name = inputFile.name
-    var filepath_new:String = ""
+    var filepath_new = ""
     val dataIdFile = inputFile.parent / "dataid.ttl"
 
     if(dataIdFile.exists) {
@@ -69,8 +71,8 @@ object FileHandler {
       filepath_new = filepath_new.concat(nameWithoutExtension)
     }
     else{
+      // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
       filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString.concat("/NoDataID"))
-      // changeExtensionTo() funktioniert nicht, deswegen ausweichen über Stringmanipulation
       filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
     }
 
@@ -84,6 +86,9 @@ object FileHandler {
     var outputFile = File(filepath_new)
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
+
+    println(s"Converted File: ${outputFile.pathAsString}\n")
+
     return outputFile
   }
 
@@ -120,7 +125,7 @@ object FileHandler {
     var dataIdFile = file.parent / "dataid.ttl"
     //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
     if (!dataIdFile.exists()){
-      println("gibt keine Dataid.ttl")
+      println("Download Dataid.ttl")
       QueryHandler.getDataIdFile(url ,dataIdFile)
     }
   }
