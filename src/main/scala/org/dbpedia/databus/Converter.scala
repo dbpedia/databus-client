@@ -68,14 +68,12 @@ object Converter {
 
   def convertFormat(inputFile: File, outputFormat:String): File= {
 
-    val lang = Lang.RDFXML
     val outputFormat = "nt"
 
     val spark = SparkSession.builder().master("local").getOrCreate()
     val data = NTripleReader.load(spark, inputFile.pathAsString)
     val tempDir = s"${inputFile.parent.pathAsString}/temp"
     val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
-
 
     try {
       data.saveAsNTriplesFile(tempDir)
