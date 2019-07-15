@@ -9,17 +9,9 @@ import scala.io.Source
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
 import org.apache.commons.io.FileUtils
-import org.apache.jena.riot.Lang
 import org.apache.spark.sql.SparkSession
 import net.sansa_stack.rdf.spark.io._
-import org.apache.jena.graph
-import net.sansa_stack.rdf.spark.partition.RDFPartition
-import org.apache.spark.HashPartitioner
-import org.apache.spark._
-import org.apache.spark.rdd.{MapPartitionsRDD, RDD}
-import org.apache.jena.graph.{NodeFactory, Triple}
-
-import scala.collection.mutable.ListBuffer
+import org.apache.jena.graph.{Triple}
 
 
 object Converter {
@@ -39,7 +31,6 @@ object Converter {
   }
 
   def getFormatType(inputFile: File): String ={
-
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
     val lines = Source.fromFile((inputFile.parent / "dataid.ttl").pathAsString).getLines().filter(_ contains s"${inputFile.name}")
 
@@ -54,7 +45,6 @@ object Converter {
         }
       }
     }
-
 
     val fileType = QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
     return fileType
@@ -74,13 +64,7 @@ object Converter {
 //    new BufferedInputStream(fileInputStream)
 //  }
 
-
   def convertFormat(inputFile: File, outputFormat:String): File= {
-
-    val outputFormat = "nt"
-
-    val conf = new SparkConf().setAppName(s"Triple reader  ${inputFile.name}").setMaster("local[*]")
-    val sc = new SparkContext(conf)
 
     val spark = SparkSession.builder()
       .appName(s"Triple reader  ${inputFile.name}")
@@ -89,63 +73,63 @@ object Converter {
       .getOrCreate()
 
     println(inputFile.pathAsString)
-    var data = NTripleReader.load(spark, inputFile.pathAsString)
-    val tempDir = s"${inputFile.parent.pathAsString}/temp"
+
+    val data = NTripleReader.load(spark, inputFile.pathAsString)
     val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
-    println(data.getClass)
+    val tempDir = s"${inputFile.parent.pathAsString}/temp"
 
-    data.take(5)
-
-    val tempDir2="test/temp"
-    val targetFile2=File("test/result")
-
-//    val sortedTriples = data.map(triple ⇒ (triple.getSubject, triple.toString))
-//      .groupByKey();
-//
-//    val sortedTriples = sc.parallelize(Seq(new Triple(NodeFactory.createBlankNode(),NodeFactory.createBlankNode(),NodeFactory.createBlankNode())))
-//    println(sortedTriples.getClass)
-    var tripleSeq: Seq[String] = Seq()
-    var list = List[String]()//List(new Triple(NodeFactory.createBlankNode(),NodeFactory.createBlankNode(),NodeFactory.createBlankNode()))
-    list = "hallo"::list
-
-    val sortedIterTriples = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
-//    sortedIterTriples.foreach(iterTriple => iterTriple.foreach(triple => println(triple)))
-    sortedIterTriples.foreach(iterTriple => iterTriple.foreach(triple => {list = triple.toString::list}))
-//    sortedTriples.productIterator.foreach(println)
-
-    list.foreach(x=>println(x))
-
-    //listb.toList.foreach(x => println(x))
-
-    val sortedTripleRDD = sc.parallelize(tripleSeq)
-
-//    data.groupBy(triple ⇒ triple.getSubject).foreach(_._2.foreach(x => println(x.getSubject.toString())))
+    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
+    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2).collect()
+    //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
 
 
-    sortedTripleRDD.saveAsTextFile(tempDir2)
 
-//    var subjects = data.g
-//    subjects.getPartition(1)
+    if (outputFormat=="nt"){
+      data.saveAsNTriplesFile(tempDir)
+    }
+    else{
+      //Erstelle Vector von allen Tripeln
+      var triples: Vector[Triple] = Vector.empty
+      tripleIterators.foreach(tripleIter => tripleIter.foreach(triple => triples = triples :+ triple))
+      triples.foreach(println(_))
 
-//    val y = data.groupBy(word => word.charAt(0))
-    // y: org.apache.spark.rdd.RDD[(Char, Iterable[String])] =
-    //  ShuffledRDD[18] at groupBy at <console>:23
+      val convertedTriples = outputFormat match {
+        case "tsv" => convertTriplesToTSV(triples)
+      }
 
-//    y.collect
+      val sortedTripleRDD = spark.sparkContext.parallelize(convertedTriples)
 
-//    try {
-//
-//      val findTripleFiles = s"find $tempDir2/ -name part*" !!
-//      val concatFiles = s"cat $findTripleFiles" #> targetFile2.toJava !
-//
-//      if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir2).toJava)
-//      else System.err.println(s"[WARN] failed to merge $tempDir2/*")
-//    }
-//    catch {
-//      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
-//    }
+      val tempDir2="test/temp"
+      val targetFile2=File("test/result")
+
+      sortedTripleRDD.saveAsTextFile(tempDir)
+    }
+
+    try {
+
+      val findTripleFiles = s"find $tempDir/ -name part*" !!
+      val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
+
+      if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir).toJava)
+      else System.err.println(s"[WARN] failed to merge $tempDir/*")
+    }
+    catch {
+      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
+    }
+
     return targetFile
+  }
+
+  def convertTriplesToTSV(triples: Vector[Triple]):Vector[String] ={
+    var convertedTriples:Vector[String] = Vector.empty
+
+    triples.foreach(triple => {
+      var tripleString = triple.getSubject.toString + "\t" + triple.getObject.toString + "\t" + triple.getPredicate.toString
+      convertedTriples=convertedTriples:+tripleString
+    })
+
+    return convertedTriples
   }
 
   def deleteAndRestart(inputFile:File , outputFormat:String, file: File): Unit ={
