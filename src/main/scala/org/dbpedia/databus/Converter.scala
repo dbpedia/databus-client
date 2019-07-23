@@ -1,6 +1,7 @@
 package org.dbpedia.databus
 
 import java.io.{BufferedInputStream, BufferedWriter, FileOutputStream, FileWriter, InputStream, OutputStream}
+import java.nio.file.NoSuchFileException
 
 import scala.sys.process._
 import scala.language.postfixOps
@@ -87,23 +88,30 @@ object Converter {
 
     val tempDir = s"${inputFile.parent.pathAsString}/temp"
 
+    try{
+      File(tempDir).delete()
+    } catch {
+        case t: NoSuchFileException =>
+    }
+
 
     if (outputFormat=="nt"){
       data.saveAsNTriplesFile(tempDir)
     }
     else{
-      //Erstelle Vector von allen Tripeln
-//      var triples: Vector[Triple] = Vector.empty
-//      tripleIterators.foreach(tripleIter => tripleIter.foreach(triple => triples = triples :+ triple))
-//      //triples.foreach(println(_))
-//
       val convertedTriples = outputFormat match {
         case "tsv" => convertToTSV(data, spark)
-//        case "jsonld" => convertToJSONLD(data, spark)
+        case "jsonld" => convertToJSONLD(data)
       }
 
       val tempDir2="test/temp"
       val targetFile2=File("test/result")
+
+      try{
+        File(tempDir2).delete()
+      }catch {
+        case t: NoSuchFileException =>
+      }
 
       convertedTriples.saveAsTextFile(tempDir)
     }
@@ -123,11 +131,6 @@ object Converter {
     return targetFile
   }
 
-//  def convertTriplesToTSV(tripleIters: RDD[Iterable[Triple]]): RDD[String] ={
-//    val convertedTriples:RDD[String]= tripleIters.map(iterable => convertIter(iterable))
-////ripleIters.map(y => y.map(z => s"${z.getSubject}\t${z.getObject}\t${z.getPredicate}"))
-//    return convertedTriples
-//  }
 
   def convertToTSV(data: RDD[Triple], spark: SparkSession): RDD[String]={
 
@@ -139,14 +142,14 @@ object Converter {
     var predicateVector = allPredicates.collect.toVector
     predicateVector.foreach(println(_))
 
-    val predicates = "resource\t".concat(predicateVector.mkString("\t"))
-
-    println(s"PREDICATES: $predicates")
-
     val triplesRDD = tripleIterators.map(iterable => convertIterableToTSV(iterable, predicateVector))
 
+    val predicates = "resource\t".concat(predicateVector.mkString("\t"))
+    println(s"PREDICATES: $predicates")
     val header = spark.sparkContext.parallelize(Seq(predicates))
+
     val TSVTriples = header ++ triplesRDD
+
     TSVTriples.sortBy(_(1), ascending = false)
 
     return TSVTriples
@@ -178,28 +181,72 @@ object Converter {
     return str
   }
 
-//  def convertToJSONLD(data: RDD[Triple]): RDD[String]={
-//    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
-//    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
-//
-//    val triplesRDD = tripleIterators.map(iterable => convertIterableToJSONLD(iterable))
-//
-//    val triples = allPredicates.union(triplesRDD)
-//
-//    return triples
-//  }
-//
-//
-//  def convertIterableToJSONLD(iter :Iterable[Triple]):Vector[String] ={
-//    var str=s"""{"@id"${iter.last.getSubject.toString}"""
-//
-//    iter.foreach(triple => {
-//      var tripleString = triple.getSubject.toString + "\t" + triple.getObject.toString + "\t" + triple.getPredicate.toString
-//      convertedTriples=convertedTriples:+tripleString
-//    })
-//
-//    return convertedTriples
-//  }
+  def convertToJSONLD(data: RDD[Triple]): RDD[String]={
+    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
+    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+
+    val triples = tripleIterators.map(iterable => convertIterableToJSONLD(iterable))
+
+    return triples
+  }
+
+
+  def convertIterableToJSONLD(iter :Iterable[Triple]): String ={
+
+    var JSONstr=s"""{"@id": ${iter.last.getSubject.toString},"""
+
+    var vectorTriples = Vector(Vector[String]())
+
+    iter.foreach(triple => {
+      val predicate = triple.getPredicate.toString()
+      val obj = triple.getObject.toString()
+      var alreadyContainsPredicate = false
+
+      var i=0
+      vectorTriples.foreach(vect => {
+        if (vect.contains(predicate)){
+          alreadyContainsPredicate = true
+          vectorTriples = vectorTriples.updated(i, vect:+obj)
+        }
+        i+=1
+      })
+
+      if (alreadyContainsPredicate==false){
+        vectorTriples = vectorTriples :+ Vector(predicate, obj)
+      }
+    })
+
+    println("VEKTOR")
+    vectorTriples.foreach(vect=> {
+      vect.foreach(println(_))
+      println("\n")
+    })
+
+    vectorTriples.foreach(vector=> {
+      if (vector.nonEmpty) {
+        JSONstr = JSONstr.concat(s""""${vector(0)}": """)
+        var k = 0
+        vector.foreach(element => {
+          if (k>0) {
+            if (element.contains("^^")){
+//              HIER GEHTS WEITER
+              var spl = element.toString
+              val split = spl.split("""^^""")
+              split.foreach(println(_))
+              JSONstr = JSONstr.concat(s""""${split(0)}":""")
+              JSONstr = JSONstr.concat(s"""[{"@value":${split(1)}}]""")
+            }else{
+              JSONstr = JSONstr.concat(s"[$element],")
+            }
+          }
+          k+=1
+        })
+        JSONstr.dropRight(1).concat("},")
+      }
+    })
+
+    return JSONstr
+  }
 
   def deleteAndRestart(inputFile:File , outputFormat:String, file: File): Unit ={
     file.delete()
