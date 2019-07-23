@@ -14,6 +14,9 @@ import net.sansa_stack.rdf.spark.io._
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
 
+import scala.collection.immutable.Vector
+import scala.collection.mutable.ListBuffer
+
 
 object Converter {
 
@@ -73,14 +76,16 @@ object Converter {
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 
+
+    val sparkContext = spark.sparkContext
+    sparkContext.setLogLevel("WARN")
+
     println(inputFile.pathAsString)
 
     val data = NTripleReader.load(spark, inputFile.pathAsString)
     val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
     val tempDir = s"${inputFile.parent.pathAsString}/temp"
-
-
 
 
     if (outputFormat=="nt"){
@@ -93,10 +98,9 @@ object Converter {
 //      //triples.foreach(println(_))
 //
       val convertedTriples = outputFormat match {
-        case "tsv" => convertToTSV(data)
+        case "tsv" => convertToTSV(data, spark)
+//        case "jsonld" => convertToJSONLD(data, spark)
       }
-
-//      val sortedTripleRDD = spark.sparkContext.parallelize(convertedTriples)
 
       val tempDir2="test/temp"
       val targetFile2=File("test/result")
@@ -125,32 +129,71 @@ object Converter {
 //    return convertedTriples
 //  }
 
-  def convertToTSV(data: RDD[Triple]): RDD[Iterable[Triple]]={
+  def convertToTSV(data: RDD[Triple], spark: SparkSession): RDD[String]={
 
     //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
-    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)//.collect
-    val allPredicates = data.groupBy(triple => triple.getPredicate).map(_._1)
+    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+    val allPredicates = data.groupBy(triple => triple.getPredicate.toString()).map(_._1)
     //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
 
-    var objectString = ""
-    allPredicates.foreach(o => objectString = objectString.concat(s"${o.toString}\t"))
-    objectString.dropRight(1)
+    var predicateVector = allPredicates.collect.toVector
+    predicateVector.foreach(println(_))
 
-    tripleIterators.map(iterable => convertIterableToTSV(iterable))
+    val predicates = "resource\t".concat(predicateVector.mkString("\t"))
 
-    return tripleIterators
+    println(s"PREDICATES: $predicates")
+
+    val triplesRDD = tripleIterators.map(iterable => convertIterableToTSV(iterable, predicateVector))
+
+    val header = spark.sparkContext.parallelize(Seq(predicates))
+    val TSVTriples = header ++ triplesRDD
+    TSVTriples.sortBy(_(1), ascending = false)
+
+    return TSVTriples
   }
 
-  def convertIterableToTSV(iter :Iterable[Triple]): String={
-    var str=""
-    iter.foreach(z => str = str.concat(s"${z.getSubject}\t${z.getPredicate}\n"))
+  def convertIterableToTSV(iter :Iterable[Triple], allPredicates: Vector[String]): String={
+    var str=iter.last.getSubject.toString
+
+    allPredicates.foreach(predicate => {
+      var include=false
+      var tripleObject = ""
+
+      iter.foreach(z => {
+        val triplePredicate = z.getPredicate.toString()
+        if(predicate == triplePredicate) {
+          include = true
+          tripleObject = z.getObject.toString()
+        }
+      })
+
+      if(include == true) {
+        str = str.concat(s"\t$tripleObject")
+      }
+      else{
+        str = str.concat("\t")
+      }
+    })
+
     return str
   }
 
-//  def convertTriplesToTSV(triples: Vector[Triple]):Vector[String] ={
-//    var convertedTriples:Vector[String] = Vector.empty
+//  def convertToJSONLD(data: RDD[Triple]): RDD[String]={
+//    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
+//    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
 //
-//    triples.foreach(triple => {
+//    val triplesRDD = tripleIterators.map(iterable => convertIterableToJSONLD(iterable))
+//
+//    val triples = allPredicates.union(triplesRDD)
+//
+//    return triples
+//  }
+//
+//
+//  def convertIterableToJSONLD(iter :Iterable[Triple]):Vector[String] ={
+//    var str=s"""{"@id"${iter.last.getSubject.toString}"""
+//
+//    iter.foreach(triple => {
 //      var tripleString = triple.getSubject.toString + "\t" + triple.getObject.toString + "\t" + triple.getPredicate.toString
 //      convertedTriples=convertedTriples:+tripleString
 //    })
