@@ -11,7 +11,8 @@ import org.apache.commons.compress.compressors.{CompressorException, CompressorI
 import org.apache.commons.io.FileUtils
 import org.apache.spark.sql.SparkSession
 import net.sansa_stack.rdf.spark.io._
-import org.apache.jena.graph.{Triple}
+import org.apache.jena.graph.Triple
+import org.apache.spark.rdd.RDD
 
 
 object Converter {
@@ -79,9 +80,6 @@ object Converter {
 
     val tempDir = s"${inputFile.parent.pathAsString}/temp"
 
-    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
-    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2).collect()
-    //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
 
 
 
@@ -90,20 +88,20 @@ object Converter {
     }
     else{
       //Erstelle Vector von allen Tripeln
-      var triples: Vector[Triple] = Vector.empty
-      tripleIterators.foreach(tripleIter => tripleIter.foreach(triple => triples = triples :+ triple))
-      triples.foreach(println(_))
-
+//      var triples: Vector[Triple] = Vector.empty
+//      tripleIterators.foreach(tripleIter => tripleIter.foreach(triple => triples = triples :+ triple))
+//      //triples.foreach(println(_))
+//
       val convertedTriples = outputFormat match {
-        case "tsv" => convertTriplesToTSV(triples)
+        case "tsv" => convertToTSV(data)
       }
 
-      val sortedTripleRDD = spark.sparkContext.parallelize(convertedTriples)
+//      val sortedTripleRDD = spark.sparkContext.parallelize(convertedTriples)
 
       val tempDir2="test/temp"
       val targetFile2=File("test/result")
 
-      sortedTripleRDD.saveAsTextFile(tempDir)
+      convertedTriples.saveAsTextFile(tempDir)
     }
 
     try {
@@ -121,16 +119,44 @@ object Converter {
     return targetFile
   }
 
-  def convertTriplesToTSV(triples: Vector[Triple]):Vector[String] ={
-    var convertedTriples:Vector[String] = Vector.empty
+//  def convertTriplesToTSV(tripleIters: RDD[Iterable[Triple]]): RDD[String] ={
+//    val convertedTriples:RDD[String]= tripleIters.map(iterable => convertIter(iterable))
+////ripleIters.map(y => y.map(z => s"${z.getSubject}\t${z.getObject}\t${z.getPredicate}"))
+//    return convertedTriples
+//  }
 
-    triples.foreach(triple => {
-      var tripleString = triple.getSubject.toString + "\t" + triple.getObject.toString + "\t" + triple.getPredicate.toString
-      convertedTriples=convertedTriples:+tripleString
-    })
+  def convertToTSV(data: RDD[Triple]): RDD[Iterable[Triple]]={
 
-    return convertedTriples
+    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
+    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)//.collect
+    val allPredicates = data.groupBy(triple => triple.getPredicate).map(_._1)
+    //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
+
+    var objectString = ""
+    allPredicates.foreach(o => objectString = objectString.concat(s"${o.toString}\t"))
+    objectString.dropRight(1)
+
+    tripleIterators.map(iterable => convertIterableToTSV(iterable))
+
+    return tripleIterators
   }
+
+  def convertIterableToTSV(iter :Iterable[Triple]): String={
+    var str=""
+    iter.foreach(z => str = str.concat(s"${z.getSubject}\t${z.getPredicate}\n"))
+    return str
+  }
+
+//  def convertTriplesToTSV(triples: Vector[Triple]):Vector[String] ={
+//    var convertedTriples:Vector[String] = Vector.empty
+//
+//    triples.foreach(triple => {
+//      var tripleString = triple.getSubject.toString + "\t" + triple.getObject.toString + "\t" + triple.getPredicate.toString
+//      convertedTriples=convertedTriples:+tripleString
+//    })
+//
+//    return convertedTriples
+//  }
 
   def deleteAndRestart(inputFile:File , outputFormat:String, file: File): Unit ={
     file.delete()
