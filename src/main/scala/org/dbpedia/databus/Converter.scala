@@ -1,8 +1,7 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, BufferedWriter, FileOutputStream, FileWriter, InputStream, OutputStream}
+import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream}
 import java.nio.file.NoSuchFileException
-
 import scala.sys.process._
 import scala.language.postfixOps
 import scala.util.control.Breaks._
@@ -14,15 +13,12 @@ import org.apache.spark.sql.SparkSession
 import net.sansa_stack.rdf.spark.io._
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
-
 import scala.collection.immutable.Vector
-import scala.collection.mutable.ListBuffer
 
 
 object Converter {
 
   def getCompressionType(fileInputStream: BufferedInputStream): String ={
-
     try{
       var ctype = CompressorStreamFactory.detect(fileInputStream)
       if (ctype == "bzip2"){
@@ -38,7 +34,6 @@ object Converter {
   def getFormatType(inputFile: File): String ={
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
     val lines = Source.fromFile((inputFile.parent / "dataid.ttl").pathAsString).getLines().filter(_ contains s"${inputFile.name}")
-
     val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
     var fileURL = ""
 
@@ -77,7 +72,6 @@ object Converter {
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 
-
     val sparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
@@ -88,10 +82,11 @@ object Converter {
 
     val tempDir = s"${inputFile.parent.pathAsString}/temp"
 
+    //delete temp directory if exists
     try{
       File(tempDir).delete()
     } catch {
-        case t: NoSuchFileException =>
+        case noFile: NoSuchFileException => ""
     }
 
 
@@ -104,20 +99,11 @@ object Converter {
         case "jsonld" => convertToJSONLD(data)
       }
 
-      val tempDir2="test/temp"
-      val targetFile2=File("test/result")
-
-      try{
-        File(tempDir2).delete()
-      }catch {
-        case t: NoSuchFileException =>
-      }
-
       convertedTriples.saveAsTextFile(tempDir)
     }
 
+    //union all part files of Sansa
     try {
-
       val findTripleFiles = s"find $tempDir/ -name part*" !!
       val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
@@ -135,78 +121,73 @@ object Converter {
   def convertToTSV(data: RDD[Triple], spark: SparkSession): RDD[String]={
 
     //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
-    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
-    val allPredicates = data.groupBy(triple => triple.getPredicate.toString()).map(_._1)
-    //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
+    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+    val allPredicates = data.groupBy(triple => triple.getPredicate.toString()).map(_._1) //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
 
-    var predicateVector = allPredicates.collect.toVector
-    predicateVector.foreach(println(_))
+    val allPredicateVector = allPredicates.collect.toVector
 
-    val triplesRDD = tripleIterators.map(iterable => convertIterableToTSV(iterable, predicateVector))
+    val triplesTSV = triplesGroupedBySubject.map(allTriplesOfSubject => convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, allPredicateVector))
 
-    val predicates = "resource\t".concat(predicateVector.mkString("\t"))
-    println(s"PREDICATES: $predicates")
-    val header = spark.sparkContext.parallelize(Seq(predicates))
+    val headerString = "resource\t".concat(allPredicateVector.mkString("\t"))
+    val header = spark.sparkContext.parallelize(Seq(headerString))
 
-    val TSVTriples = header ++ triplesRDD
+    val TSV_RDD = header ++ triplesTSV
 
-    TSVTriples.sortBy(_(1), ascending = false)
+    TSV_RDD.sortBy(_(1), ascending = false)
 
-    return TSVTriples
+    return TSV_RDD
   }
 
-  def convertIterableToTSV(iter :Iterable[Triple], allPredicates: Vector[String]): String={
-    var str=iter.last.getSubject.toString
+  def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], allPredicates: Vector[String]): String={
+    var TSVstr = triples.last.getSubject.toString
 
     allPredicates.foreach(predicate => {
-      var include=false
+      var alreadyIncluded=false
       var tripleObject = ""
 
-      iter.foreach(z => {
+      triples.foreach(z => {
         val triplePredicate = z.getPredicate.toString()
         if(predicate == triplePredicate) {
-          include = true
+          alreadyIncluded = true
           tripleObject = z.getObject.toString()
         }
       })
 
-      if(include == true) {
-        str = str.concat(s"\t$tripleObject")
+      if(alreadyIncluded == true) {
+        TSVstr = TSVstr.concat(s"\t$tripleObject")
       }
       else{
-        str = str.concat("\t")
+        TSVstr = TSVstr.concat("\t")
       }
     })
 
-    return str
+    return TSVstr
   }
 
   def convertToJSONLD(data: RDD[Triple]): RDD[String]={
     //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
-    val tripleIterators = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+    val JSONTriples = triplesGroupedBySubject.map(allTriplesOfSubject => convertIterableToJSONLD(allTriplesOfSubject))
 
-    val triples = tripleIterators.map(iterable => convertIterableToJSONLD(iterable))
-
-    return triples
+    return JSONTriples
   }
 
 
-  def convertIterableToJSONLD(iter :Iterable[Triple]): String ={
+  def convertIterableToJSONLD(triples :Iterable[Triple]): String ={
 
-    var JSONstr=s"""{"@id": ${iter.last.getSubject.toString},"""
-
+    var JSONstr=s"""{"@id": "${triples.last.getSubject.toString}","""
     var vectorTriples = Vector(Vector[String]())
 
-    iter.foreach(triple => {
+    triples.foreach(triple => {
       val predicate = triple.getPredicate.toString()
       val obj = triple.getObject.toString()
       var alreadyContainsPredicate = false
 
       var i=0
-      vectorTriples.foreach(vect => {
-        if (vect.contains(predicate)){
+      vectorTriples.foreach(vector => {
+        if (vector.contains(predicate)){
           alreadyContainsPredicate = true
-          vectorTriples = vectorTriples.updated(i, vect:+obj)
+          vectorTriples = vectorTriples.updated(i, vector:+obj)
         }
         i+=1
       })
@@ -216,35 +197,31 @@ object Converter {
       }
     })
 
-    println("VEKTOR")
-    vectorTriples.foreach(vect=> {
-      vect.foreach(println(_))
-      println("\n")
-    })
+//    println("VEKTOR")
+//    vectorTriples.foreach(vect=> {
+//      vect.foreach(println(_))
+//      println("\n")
+//    })
 
     vectorTriples.foreach(vector=> {
       if (vector.nonEmpty) {
-        JSONstr = JSONstr.concat(s""""${vector(0)}": """)
+        JSONstr = JSONstr.concat(s""""${vector(0)}": """) // PRAEDIKAT WIRD OHNE KLAMMERN HINZUGEFUEGT
         var k = 0
         vector.foreach(element => {
-          if (k>0) {
-            if (element.contains("^^")){
-//              HIER GEHTS WEITER
-              var spl = element.toString
-              val split = spl.split("""^^""")
-              split.foreach(println(_))
-              JSONstr = JSONstr.concat(s""""${split(0)}":""")
-              JSONstr = JSONstr.concat(s"""[{"@value":${split(1)}}]""")
-            }else{
-              JSONstr = JSONstr.concat(s"[$element],")
+          if (k>0) { // OBJEKTE
+            if (element.contains("^^")) {
+              val split = element.split("\\^\\^")
+              JSONstr = JSONstr.concat(s"""[{"@value":${split(0)},""")
+              JSONstr = JSONstr.concat(s""""@type":"${split(1)}"}],""")
+            } else {
+              JSONstr = JSONstr.concat(s"""["$element"],""")
             }
           }
           k+=1
         })
-        JSONstr.dropRight(1).concat("},")
       }
     })
-
+    JSONstr = JSONstr.dropRight(1).concat("},")
     return JSONstr
   }
 
@@ -252,7 +229,6 @@ object Converter {
     file.delete()
     convertFormat(inputFile, outputFormat)
   }
-
 
   def compress(outputCompression:String, output:File): OutputStream = {
     try {

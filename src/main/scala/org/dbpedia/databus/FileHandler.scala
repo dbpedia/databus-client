@@ -24,7 +24,6 @@ object FileHandler {
       val format = Converter.getFormatType(inputFile) // NOCH OHNE FUNKTION
       val compressedFile = getOutputFile(inputFile, format, outputCompression, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
-
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
     }
@@ -32,24 +31,16 @@ object FileHandler {
     else if (outputCompression=="same" && outputFormat!="same"){
       val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
       val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
-//      val decompressedInStream = Converter.decompress(bufferedInputStream)
-
       val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
-
       val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
-
       //file is written here
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
       typeConvertedFile.delete()
     }
     else{
       val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
-//      val decompressedInStream = Converter.decompress(bufferedInputStream)
-
       val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
-
       val compressedOutStream = Converter.compress(outputCompression, targetFile)
-
       //file is written here
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
       typeConvertedFile.delete()
@@ -58,14 +49,13 @@ object FileHandler {
 
   def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
 
-
     val nameWithoutExtension = inputFile.nameWithoutExtension
     val name = inputFile.name
     var filepath_new = ""
     val dataIdFile = inputFile.parent / "dataid.ttl"
 
     if(dataIdFile.exists) {
-      var dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
+      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
       filepath_new = dest_dir.concat("/")
       dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
       filepath_new = filepath_new.concat(nameWithoutExtension)
@@ -83,7 +73,7 @@ object FileHandler {
       filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
     }
 
-    var outputFile = File(filepath_new)
+    val outputFile = File(filepath_new)
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
@@ -102,7 +92,6 @@ object FileHandler {
   }
 
   def readQueryFile(file:File) : String = {
-
     var queryString:String = ""
     for (line <- file.lineIterator) {
       queryString = queryString.concat(line).concat("\n")
@@ -112,19 +101,13 @@ object FileHandler {
 
   def downloadFile(url: String): Unit = {
     println(url)
-    //filepath from url without http://
-    var filepath = src_dir.concat(url.split("http://|https://").map(_.trim).last)
-    var file = File(filepath)
-
+    val filepath = src_dir.concat(url.split("http://|https://").map(_.trim).last) //filepath from url without http://
+    val file = File(filepath)
     file.parent.createDirectoryIfNotExists(createParents = true)
-
-    /*new URL(url) #> file.toJava !!*/
     FileUtils.copyURLToFile(new URL(url),file.toJava)
 
-
-    var dataIdFile = file.parent / "dataid.ttl"
-    //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
-    if (!dataIdFile.exists()){
+    val dataIdFile = file.parent / "dataid.ttl"
+    if (!dataIdFile.exists()){  //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
       println("Download Dataid.ttl")
       QueryHandler.getDataIdFile(url ,dataIdFile)
     }

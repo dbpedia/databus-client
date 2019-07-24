@@ -10,23 +10,23 @@ object Main {
     val dir_download = "./downloaded_files/"
 
     //Test if query is a File or a Query
-//    var queryString:String = ""
-//    File(conf.query()).exists() match {
-//      case true => {
-//        // "./src/query/query"
-//        val file = File(conf.query())
-//        queryString = FileHandler.readQueryFile(file)
-//      }
-//      case false => {
-//        queryString = conf.query()
-//      }
-//    }
-//    println(s"DownloadQuery: \n\n$queryString")
-//    println("--------------------------------------------------------\n")
-//    println("Files to download:")
-//    QueryHandler.executeDownloadQuery(queryString)
-//
-//    println("\n--------------------------------------------------------\n")
+    var queryString:String = ""
+    File(conf.query()).exists() match {
+      case true => {
+        // "./src/query/query"
+        val file = File(conf.query())
+        queryString = FileHandler.readQueryFile(file)
+      }
+      case false => {
+        queryString = conf.query()
+      }
+    }
+    println(s"DownloadQuery: \n\n$queryString")
+    println("--------------------------------------------------------\n")
+    println("Files to download:")
+    QueryHandler.executeDownloadQuery(queryString)
+
+    println("\n--------------------------------------------------------\n")
 
     //  if "no" compression wanted change the value to an empty string
     var outputCompression = conf.outputCompression()
@@ -35,8 +35,8 @@ object Main {
     }
 
     println("Conversion:\n")
-    var dir = File(dir_download)
-    var files = dir.listRecursively.toSeq
+    val dir = File(dir_download)
+    val files = dir.listRecursively.toSeq
     for (file <- files) {
         if (! file.isDirectory){
           if (!file.name.equals("dataid.ttl")){
@@ -45,6 +45,8 @@ object Main {
           }
         }
     }
+//    var file = File("/home/eisenbahnplatte/git/dbpediaclient/downloaded_files/test/test.ttl")
+//    FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
   }
 
 }
