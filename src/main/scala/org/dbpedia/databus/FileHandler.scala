@@ -5,6 +5,7 @@ import java.net.URL
 
 import better.files.File
 import org.apache.commons.io.{FileUtils, IOUtils}
+import scala.sys.process._
 
 object FileHandler {
 
@@ -113,4 +114,28 @@ object FileHandler {
     }
   }
 
+  def unionFiles(tempDir:String, targetFile:File)={
+    //union all part files of Sansa
+
+    val findTripleFiles = s"find $tempDir/ -name part*" !!
+    val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
+
+    if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir).toJava)
+    else System.err.println(s"[WARN] failed to merge $tempDir/*")
+
+  }
+
+  def unionFilesWithHeaderFile(headerTempDir:String, tempDir:String, targetFile:File)={
+    //union all part files of Sansa
+
+    val findTripleFiles = s"find $headerTempDir/ -name part*" #&& s"find $tempDir/ -name part*" !!
+    val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
+
+    if( concatFiles == 0 ){
+      FileUtils.deleteDirectory(File(tempDir).toJava)
+      FileUtils.deleteDirectory(File(headerTempDir).toJava)
+    }
+    else System.err.println(s"[WARN] failed to merge $tempDir/*")
+
+  }
 }
