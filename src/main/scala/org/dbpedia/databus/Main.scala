@@ -34,19 +34,19 @@ object Main {
       outputCompression=""
     }
 
-//    println("Conversion:\n")
-//    val dir = File(dir_download)
-//    val files = dir.listRecursively.toSeq
-//    for (file <- files) {
-//        if (! file.isDirectory){
-//          if (!file.name.equals("dataid.ttl")){
-//            println(s"InputFile: ${file.pathAsString}") //${conf.outputFormat()}.${outputCompression}
-//            FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
-//          }
-//        }
-//    }
-    var file = File("/home/eisenbahnplatte/git/dbpediaclient/downloaded_files/test/test2.ttl")
-    FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
+    println("Conversion:\n")
+    val dir = File(dir_download)
+    val files = dir.listRecursively.toSeq
+    for (file <- files) {
+        if (! file.isDirectory){
+          if (!file.name.equals("dataid.ttl")){
+            println(s"InputFile: ${file.pathAsString}") //${conf.outputFormat()}.${outputCompression}
+            FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
+          }
+        }
+    }
+//    var file = File("/home/eisenbahnplatte/git/dbpediaclient/downloaded_files/test/test2.ttl")
+//    FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
   }
 
 }

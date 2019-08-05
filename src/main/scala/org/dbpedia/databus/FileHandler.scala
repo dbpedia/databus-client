@@ -2,7 +2,7 @@ package org.dbpedia.databus
 
 import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.net.URL
-
+import java.nio.file.NoSuchFileException
 import better.files.File
 import org.apache.commons.io.{FileUtils, IOUtils}
 import scala.sys.process._
@@ -13,24 +13,23 @@ object FileHandler {
 
   def convertFile(inputFile:File, dest_dir:String, outputFormat:String, outputCompression:String): Unit = {
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
+    val compressionInputFile = Converter.getCompressionType(bufferedInputStream)
+    val formatInputFile = Converter.getFormatType(inputFile) //NOCH OHNE FUNKTION
 
     if (outputCompression=="same" && outputFormat=="same"){
-      val compressionInputFile = Converter.getCompressionType(bufferedInputStream)
-      val formatInputFile = Converter.getFormatType(inputFile) //NOCH OHNE FUNKTION
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
     else if (outputCompression!="same" && outputFormat=="same"){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
-      val format = Converter.getFormatType(inputFile) // NOCH OHNE FUNKTION
-      val compressedFile = getOutputFile(inputFile, format, outputCompression, dest_dir)
+      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
     }
     //  With FILEFORMAT CONVERSION
+//      MUSS NOCHMAL UEBERARBEITET WERDEN
     else if (outputCompression=="same" && outputFormat!="same"){
-      val compressionInputFile= Converter.getCompressionType(bufferedInputStream)
       val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
       val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
       val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
@@ -40,11 +39,30 @@ object FileHandler {
     }
     else{
       val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
-      val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
+      var typeConvertedFile = File("")
+
+      if(!(compressionInputFile=="")){
+        val decompressedInStream = Converter.decompress(bufferedInputStream)
+        val decompressedFile = inputFile.parent / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
+        copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
+        println(decompressedFile.pathAsString)
+        typeConvertedFile = Converter.convertFormat(decompressedFile, outputFormat)
+        decompressedFile.delete()
+      }
+      else{
+        typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
+      }
+
       val compressedOutStream = Converter.compress(outputCompression, targetFile)
       //file is written here
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
-      typeConvertedFile.delete()
+
+      try {
+        typeConvertedFile.delete()
+      }
+      catch {
+        case noSuchFileException: NoSuchFileException => ""
+      }
     }
   }
 

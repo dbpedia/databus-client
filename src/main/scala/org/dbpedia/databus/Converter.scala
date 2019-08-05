@@ -1,25 +1,20 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, BufferedOutputStream, ByteArrayInputStream, ByteArrayOutputStream, FileOutputStream, InputStream, OutputStream}
+
+import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream}
 import java.nio.file.NoSuchFileException
-import java.util.{Spliterator, Spliterators}
-import java.util.stream.StreamSupport
 
 import scala.language.postfixOps
 import scala.util.control.Breaks._
-import scala.io.{Codec, Source}
-import better.files.File
-import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
-import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
-import net.sansa_stack.rdf.spark.io._
-import org.apache.commons.io.IOUtils
-import org.apache.jena.graph.Triple
-import org.apache.jena.rdf.model.ModelFactory
-import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
-import org.apache.jena.riot.system.StreamRDFWriter
-import org.apache.spark.rdd.RDD
+import scala.io.Source
 
-import scala.collection.immutable.Vector
+import better.files.File
+
+import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
+import org.apache.spark.sql.SparkSession
+
+import net.sansa_stack.rdf.spark.io._
+import org.dbpedia.databus.converters.{ConverterJSONLD, ConverterTSV}
 
 
 object Converter {
@@ -34,6 +29,8 @@ object Converter {
     }
     catch {
       case noCompression: CompressorException => ""
+      case inInitializerError: ExceptionInInitializerError => ""
+      case noClassDefFoundError: NoClassDefFoundError => ""
     }
   }
 
@@ -62,13 +59,11 @@ object Converter {
       return compressorIn
     }
     catch {
-      case noCompression: CompressorException => bufferedInputStream
+      case noCompression: CompressorException => return bufferedInputStream
+      case inInitializerError: ExceptionInInitializerError => return bufferedInputStream
+      case noClassDefFoundError: NoClassDefFoundError => return bufferedInputStream
     }
   }
-
-  //  def handleNoCompressorException(fileInputStream: FileInputStream): BufferedInputStream ={
-  //    new BufferedInputStream(fileInputStream)
-  //  }
 
   def convertFormat(inputFile: File, outputFormat: String): File = {
 
@@ -97,33 +92,20 @@ object Converter {
     }
 
 
-    if (outputFormat == "nt") {
-      data.saveAsNTriplesFile(tempDir)
-    }
-    else if (outputFormat == "tsv") {
-      val solution = convertToTSV(data, spark)
-      solution(1).write.option("delimiter", "\t").csv(tempDir)
-      solution(0).write.option("delimiter", "\t").csv(headerTempDir)
-    }
-    else if (outputFormat == "jsonld") {
-      val inStream = convertToJSONLD(inputFile.pathAsString).toByteArray
-      IOUtils.copy(new ByteArrayInputStream(inStream),new FileOutputStream(targetFile.toJava))
-    }
-    else {
-      val convertedTriples = outputFormat match {
-        case "asdasd" => ""
+    outputFormat match {
+      case "nt" => data.saveAsNTriplesFile(tempDir)
+      case "tsv" => {
+        val solution = ConverterTSV.convertToTSV(data, spark)
+        solution(1).write.option("delimiter", "\t").csv(tempDir)
+        solution(0).write.option("delimiter", "\t").csv(headerTempDir)
       }
-
-//      convertedTriples.saveAsTextFile(tempDir)
+      case "jsonld" => ConverterJSONLD.convertToJSONLD(data).saveAsTextFile(tempDir)
     }
-
 
     try {
-      if (outputFormat == "tsv") {
-        FileHandler.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
-      }
-      else if (outputFormat == "nt") {
-        FileHandler.unionFiles(tempDir, targetFile)
+      outputFormat match {
+        case "tsv" => FileHandler.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
+        case "jsonld" | "nt" => FileHandler.unionFiles(tempDir, targetFile)
       }
     }
     catch {
@@ -135,120 +117,90 @@ object Converter {
   }
 
 
-  def convertToTSV(data: RDD[Triple], spark: SparkSession): Vector[DataFrame] = {
-    val sql = spark.sqlContext
-
-    import sql.implicits._
-    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
-    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
-    val allPredicates = data.groupBy(triple => triple.getPredicate.toString()).map(_._1) //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
-
-    val allPredicateVector = allPredicates.collect.toVector
-    val triplesTSV = triplesGroupedBySubject.map(allTriplesOfSubject => convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, allPredicateVector))
-
-    val tsvheader: Vector[String] = "resource" +: allPredicateVector
-    //    tsvheader.foreach(println(_))
-    val triplesDS = sql.createDataset(triplesTSV)
-    val triplesDF = triplesDS.select((0 until tsvheader.size).map(r => triplesDS.col("value").getItem(r)): _*)
-
-    val headerDS = sql.createDataset(Vector((tsvheader)))
-    headerDS.show(false)
-    val headerDF = headerDS.select((0 until tsvheader.size).map(r => headerDS.col("value").getItem(r)): _*)
-    headerDF.show(false)
-
-    val TSV_Solution = Vector(headerDF, triplesDF)
-
-    return TSV_Solution
+  def deleteAndRestart(inputFile: File, outputFormat: String, file: File): Unit = {
+    file.delete()
+    convertFormat(inputFile, outputFormat)
   }
 
-  def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], allPredicates: Vector[String]): Seq[String] = {
-    var TSVseq: Seq[String] = Seq(triples.last.getSubject.toString)
-
-    allPredicates.foreach(predicate => {
-      var alreadyIncluded = false
-      var tripleObject = ""
-
-      triples.foreach(z => {
-        val triplePredicate = z.getPredicate.toString()
-        if (predicate == triplePredicate) {
-          alreadyIncluded = true
-          tripleObject = z.getObject.toString()
-        }
-      })
-
-      if (alreadyIncluded == true) {
-        TSVseq = TSVseq :+ tripleObject
+  def compress(outputCompression: String, output: File): OutputStream = {
+    try {
+      // file is created here
+      val myOutputStream = new FileOutputStream(output.toJava)
+      val out: OutputStream = outputCompression match {
+        case "bz2" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BZIP2, myOutputStream)
+        case "gz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, myOutputStream)
+        case "br" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BROTLI, myOutputStream)
+        case "deflate" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.DEFLATE, myOutputStream)
+        case "deflate64" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.DEFLATE64, myOutputStream)
+        case "lz4-block" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZ4_BLOCK, myOutputStream)
+        case "lz4-framed" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZ4_FRAMED, myOutputStream)
+        case "lzma" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZMA, myOutputStream)
+        case "pack200" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.PACK200, myOutputStream)
+        case "snappy-framed" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_FRAMED, myOutputStream)
+        case "snappy-raw" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_RAW, myOutputStream)
+        case "xz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.XZ, myOutputStream)
+        case "z" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.Z, myOutputStream)
+        case "zstd" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.ZSTANDARD, myOutputStream)
+        case "" => myOutputStream //if outputCompression is empty
       }
-      else {
-        TSVseq = TSVseq :+ ""
-      }
-    })
-
-    return TSVseq
+      return out
+    }
   }
 
+}
 
-  def convertToJSONLD(path:String): ByteArrayOutputStream = {
 
-    val model = ModelFactory.createDefaultModel()
-    model.read(path)
-    val os = new ByteArrayOutputStream()
-    RDFDataMgr.write(os, model, RDFFormat.JSONLD)
+
+
+
+
+
+
+//  def convertToTSV(data: RDD[Triple], spark: SparkSession): RDD[String]={
 //
-//    def lines = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines()
+//    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
+//    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+//    val allPredicates = data.groupBy(triple => triple.getPredicate.toString()).map(_._1) //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
 //
+//    val allPredicateVector = allPredicates.collect.toVector
 //
-//    lines.foreach(println(_))
-
-    return os
-  }
-
-
-  //  def convertToTSV(data: RDD[Triple], spark: SparkSession): RDD[String]={
-  //
-  //    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
-  //    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
-  //    val allPredicates = data.groupBy(triple => triple.getPredicate.toString()).map(_._1) //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
-  //
-  //    val allPredicateVector = allPredicates.collect.toVector
-  //
-  //    val triplesTSV = triplesGroupedBySubject.map(allTriplesOfSubject => convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, allPredicateVector))
-  //
-  //    val headerString = "resource\t".concat(allPredicateVector.mkString("\t"))
-  //    val header = spark.sparkContext.parallelize(Seq(headerString))
-  //
-  //    val TSV_RDD = header ++ triplesTSV
-  //
-  //    TSV_RDD.sortBy(_(1), ascending = false)
-  //
-  //    return TSV_RDD
-  //  }
-  //
-  //  def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], allPredicates: Vector[String]): String={
-  //    var TSVstr = triples.last.getSubject.toString
-  //
-  //    allPredicates.foreach(predicate => {
-  //      var alreadyIncluded=false
-  //      var tripleObject = ""
-  //
-  //      triples.foreach(z => {
-  //        val triplePredicate = z.getPredicate.toString()
-  //        if(predicate == triplePredicate) {
-  //          alreadyIncluded = true
-  //          tripleObject = z.getObject.toString()
-  //        }
-  //      })
-  //
-  //      if(alreadyIncluded == true) {
-  //        TSVstr = TSVstr.concat(s"\t$tripleObject")
-  //      }
-  //      else{
-  //        TSVstr = TSVstr.concat("\t")
-  //      }
-  //    })
-  //
-  //    return TSVstr
-  //  }
+//    val triplesTSV = triplesGroupedBySubject.map(allTriplesOfSubject => convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, allPredicateVector))
+//
+//    val headerString = "resource\t".concat(allPredicateVector.mkString("\t"))
+//    val header = spark.sparkContext.parallelize(Seq(headerString))
+//
+//    val TSV_RDD = header ++ triplesTSV
+//
+//    TSV_RDD.sortBy(_(1), ascending = false)
+//
+//    return TSV_RDD
+//  }
+//
+//  def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], allPredicates: Vector[String]): String={
+//    var TSVstr = triples.last.getSubject.toString
+//
+//    allPredicates.foreach(predicate => {
+//      var alreadyIncluded=false
+//      var tripleObject = ""
+//
+//      triples.foreach(z => {
+//        val triplePredicate = z.getPredicate.toString()
+//        if(predicate == triplePredicate) {
+//          alreadyIncluded = true
+//          tripleObject = z.getObject.toString()
+//        }
+//      })
+//
+//      if(alreadyIncluded == true) {
+//        TSVstr = TSVstr.concat(s"\t$tripleObject")
+//      }
+//      else{
+//        TSVstr = TSVstr.concat("\t")
+//      }
+//    })
+//
+//    return TSVstr
+//  }
 
 //  def convertToJSONLD(data: RDD[Triple]): RDD[String] = {
 //    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
@@ -312,35 +264,3 @@ object Converter {
 //    JSONstr = JSONstr.dropRight(1).concat("},")
 //    return JSONstr
 //  }
-
-  def deleteAndRestart(inputFile: File, outputFormat: String, file: File): Unit = {
-    file.delete()
-    convertFormat(inputFile, outputFormat)
-  }
-
-  def compress(outputCompression: String, output: File): OutputStream = {
-    try {
-      // file is created here
-      val myOutputStream = new FileOutputStream(output.toJava)
-      val out: OutputStream = outputCompression match {
-        case "bz2" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BZIP2, myOutputStream)
-        case "gz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, myOutputStream)
-        case "br" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BROTLI, myOutputStream)
-        case "deflate" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.DEFLATE, myOutputStream)
-        case "deflate64" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.DEFLATE64, myOutputStream)
-        case "lz4-block" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZ4_BLOCK, myOutputStream)
-        case "lz4-framed" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZ4_FRAMED, myOutputStream)
-        case "lzma" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZMA, myOutputStream)
-        case "pack200" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.PACK200, myOutputStream)
-        case "snappy-framed" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_FRAMED, myOutputStream)
-        case "snappy-raw" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_RAW, myOutputStream)
-        case "xz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.XZ, myOutputStream)
-        case "z" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.Z, myOutputStream)
-        case "zstd" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.ZSTANDARD, myOutputStream)
-        case "" => myOutputStream //if outputCompression is empty
-      }
-      return out
-    }
-  }
-
-}
