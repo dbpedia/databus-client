@@ -1,11 +1,16 @@
 package org.dbpedia.databus
 
-import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
+import java.io.{BufferedInputStream, FileInputStream, FileNotFoundException, FileOutputStream, InputStream, OutputStream}
 import java.net.URL
 import java.nio.file.NoSuchFileException
+
 import better.files.File
+import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.apache.commons.io.{FileUtils, IOUtils}
+
+import scala.io.Source
 import scala.sys.process._
+import scala.util.control.Breaks.{break, breakable}
 
 object FileHandler {
 
@@ -13,8 +18,19 @@ object FileHandler {
 
   def convertFile(inputFile:File, temp_dir:String, dest_dir:String, outputFormat:String, outputCompression:String): Unit = {
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
-    val compressionInputFile = Converter.getCompressionType(bufferedInputStream)
-    val formatInputFile = Converter.getFormatType(inputFile) //NOCH OHNE FUNKTION
+    val compressionInputFile = getCompressionType(bufferedInputStream)
+
+    val formatInputFile = {
+      try {
+        if(!(getFormatType(inputFile) == "")){
+          getFormatType(inputFile)
+        } else {
+          getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+        }
+      } catch {
+        case fileNotFoundException: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+      }
+    }
 
     if (outputCompression=="same" && outputFormat=="same"){
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, temp_dir, dest_dir).toJava)
@@ -130,6 +146,53 @@ object FileHandler {
 //      println("Download Dataid.ttl")
       QueryHandler.getDataIdFile(url ,dataIdFile)
     }
+  }
+
+  def getCompressionType(fileInputStream: BufferedInputStream): String = {
+    try {
+      var ctype = CompressorStreamFactory.detect(fileInputStream)
+      if (ctype == "bzip2") {
+        ctype = "bz2"
+      }
+      return ctype
+    }
+    catch {
+      case noCompression: CompressorException => ""
+      case inInitializerError: ExceptionInInitializerError => ""
+      case noClassDefFoundError: NoClassDefFoundError => ""
+    }
+  }
+
+  def getFormatType(inputFile: File): String = {
+    // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
+    val lines = Source.fromFile((inputFile.parent / "dataid.ttl").pathAsString).getLines().filter(_ contains s"${inputFile.name}")
+    val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
+    var fileURL = ""
+
+    for (line <- lines) {
+      breakable {
+        for (x <- regex.findAllMatchIn(line)) {
+          fileURL = x.toString().replace(">", "").replace("<", "")
+          break
+        }
+      }
+    }
+
+    val fileType = QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
+    return fileType
+  }
+
+  def getFormatTypeWithoutDataID(inputFile: File, compression: String): String = {
+    var split = inputFile.name.split("\\.")
+    var fileType = ""
+
+    if (compression == ""){
+      fileType = split(split.size-1)
+    } else {
+      fileType = split(split.size-2)
+    }
+
+    return fileType
   }
 
   def unionFiles(tempDir:String, targetFile:File)={

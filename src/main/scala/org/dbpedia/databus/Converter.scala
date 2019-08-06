@@ -19,40 +19,6 @@ import org.dbpedia.databus.converters.{ConverterJSONLD, ConverterTSV}
 
 object Converter {
 
-  def getCompressionType(fileInputStream: BufferedInputStream): String = {
-    try {
-      var ctype = CompressorStreamFactory.detect(fileInputStream)
-      if (ctype == "bzip2") {
-        ctype = "bz2"
-      }
-      return ctype
-    }
-    catch {
-      case noCompression: CompressorException => ""
-      case inInitializerError: ExceptionInInitializerError => ""
-      case noClassDefFoundError: NoClassDefFoundError => ""
-    }
-  }
-
-  def getFormatType(inputFile: File): String = {
-    // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
-    val lines = Source.fromFile((inputFile.parent / "dataid.ttl").pathAsString).getLines().filter(_ contains s"${inputFile.name}")
-    val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
-    var fileURL = ""
-
-    for (line <- lines) {
-      breakable {
-        for (x <- regex.findAllMatchIn(line)) {
-          fileURL = x.toString().replace(">", "").replace("<", "")
-          break
-        }
-      }
-    }
-
-    val fileType = QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
-    return fileType
-  }
-
   def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
     try {
       val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)

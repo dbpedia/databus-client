@@ -106,6 +106,24 @@ object QueryHandler {
     return dir_structure
   }
 
+  def getTypeOfFile (fileURL:String, dataIdFile:File): String ={
+    var fileType = ""
+
+    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString,RDFLanguages.NTRIPLES)
+
+    val query: Query = QueryFactory.create(DataIdQueries.queryGetType(fileURL))
+    val qexec = QueryExecutionFactory.create(query,dataidModel)
+
+    try {
+      val results = qexec.execSelect
+      if (results.hasNext()) {
+        fileType = results.next().getLiteral("?type").toString //WARUM GEHT getResource nicht??
+      }
+    } finally qexec.close()
+
+    return fileType
+  }
+
   def getMediatypesOfQuery (list: List[String]) ={
     val files = list.mkString("> , <")
     println(files)
@@ -132,23 +150,5 @@ object QueryHandler {
       }
     } finally qexec.close()
 
-  }
-
-  def getTypeOfFile (fileURL:String, dataIdFile:File): String ={
-    var fileType = ""
-
-    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString,RDFLanguages.NTRIPLES)
-
-    val query: Query = QueryFactory.create(DataIdQueries.queryGetType(fileURL))
-    val qexec = QueryExecutionFactory.create(query,dataidModel)
-
-    try {
-      val results = qexec.execSelect
-      if (results.hasNext()) {
-        fileType = results.next().getLiteral("?type").toString //WARUM GEHT getResource nicht??
-      }
-    } finally qexec.close()
-
-    return fileType
   }
 }
