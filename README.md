@@ -27,16 +27,20 @@ Example: `docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz dbpe
     - *"zstd"*  
     - additionally you can choose between *"same"* (no change of compression) or *"no"* for no compression.
 
-**Important: If you use docker to execute, you can't change the "_REPO_" yet.**  
-**Important: At the moment only conversion to ntriples(_"nt"_) or _"same"_ possible**
+**Important: If you use docker to execute, you can't change the "_TARGETREPO_" yet.**  
+**Important: At the moment only conversion to NTriples(_"nt"_), TSV(_"tsv"_), Json-LD(_"jsonld"_) or _"same"_ possible**
 
 To stop the image *client* in the container *dbpedia-client* use `docker stop client`
 
 ***
-#### Example(Terminal)   
+#### Examples(Terminal)   
 
-1. ```scalac main.scala```    
-2. ```scala main -q ./src/query/downloadquery -r converted_files/ -c gz -f ttl```
+##### Download and Convert
+```mvn scala:run -Dlauncher=downloadconverter -q ./src/query/downloadquery --targetrepo converted_files/ -c gz -f jsonld```
+##### Download only
+```mvn scala:run -Dlauncher=downloader -q ./src/query/downloadquery -t ./downloaded_files/```
+##### Convert only
+```mvn scala:run -Dlauncher=converter --src ./downloaded_files/ -t ./converted_files/ -c gz -f jsonld```
 
 ***
 
@@ -48,7 +52,8 @@ For usage see below:
   -c, --compression  <arg>  &emsp;set the compressionformat of the outputfile  
   -f, --format  <arg>       &emsp;set the fileformat of the outputfile  
   -q, --query  <arg>        &emsp;any ?file query; You can pass the query directly or save it in a textfile and pass the filepath  
-  -r, --repo  <arg>         &emsp;set the destination directory for converted files  
+  -t, --targetrepo  <arg>   &emsp;set the destination directory for converted files  
+  -s, --src  <arg>          &emsp;set the source directory for files you want to convert
       --help                &emsp;Show this message  
       
 ***
@@ -56,8 +61,7 @@ For usage see below:
 ##### Default Values
 All program variables have default values:  
 *query: "./src/query/query" &emsp;<- the query is loaded from this file by default  
-repo: "./converted_files/"  
+targetrepo: "./converted_files/"  
+src: "./tempdir_downloaded_files/"   
 format: "same"  
-compression: "same"*  
-
-
+compression: "same"*
