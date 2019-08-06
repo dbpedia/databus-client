@@ -20,9 +20,9 @@ then
     ENV_VARIABLES="$ENV_VARIABLES$NEW"
 fi
 
-if { [ -z "$REPO" ] && [ ! -z "$R" ]; } || { [ ! -z "$REPO" ] && [ -z "$R" ]; };
+if { [ -z "$TARGETREPO" ] && [ ! -z "$T" ]; } || { [ ! -z "$TARGETREPO" ] && [ -z "$T" ]; };
 then
-    NEW="--repo|$REPO$R|"
+    NEW="--targetrepo|$TARGETREPO$T|"
     ENV_VARIABLES="$ENV_VARIABLES$NEW"
 fi
     
