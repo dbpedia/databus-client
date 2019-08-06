@@ -9,20 +9,20 @@ import scala.sys.process._
 
 object FileHandler {
 
-  val src_dir: String="./downloaded_files/"
+//  val src_dir  = "./downloaded_files/"
 
-  def convertFile(inputFile:File, dest_dir:String, outputFormat:String, outputCompression:String): Unit = {
+  def convertFile(inputFile:File, temp_dir:String, dest_dir:String, outputFormat:String, outputCompression:String): Unit = {
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
     val compressionInputFile = Converter.getCompressionType(bufferedInputStream)
     val formatInputFile = Converter.getFormatType(inputFile) //NOCH OHNE FUNKTION
 
     if (outputCompression=="same" && outputFormat=="same"){
-      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
+      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, temp_dir, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
     else if (outputCompression!="same" && outputFormat=="same"){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
-      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, dest_dir)
+      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, temp_dir, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
@@ -30,7 +30,7 @@ object FileHandler {
     //  With FILEFORMAT CONVERSION
 //      MUSS NOCHMAL UEBERARBEITET WERDEN
     else if (outputCompression=="same" && outputFormat!="same"){
-      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, dest_dir)
+      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, temp_dir, dest_dir)
       val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
       val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
       //file is written here
@@ -38,14 +38,14 @@ object FileHandler {
       typeConvertedFile.delete()
     }
     else{
-      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
+      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, temp_dir, dest_dir)
       var typeConvertedFile = File("")
 
       if(!(compressionInputFile=="")){
         val decompressedInStream = Converter.decompress(bufferedInputStream)
         val decompressedFile = inputFile.parent / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
         copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
-        println(decompressedFile.pathAsString)
+//        println(decompressedFile.pathAsString)
         typeConvertedFile = Converter.convertFormat(decompressedFile, outputFormat)
         decompressedFile.delete()
       }
@@ -66,7 +66,7 @@ object FileHandler {
     }
   }
 
-  def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String, dest_dir: String): File ={
+  def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String,src_dir: String, dest_dir: String): File ={
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
     val name = inputFile.name
@@ -110,7 +110,7 @@ object FileHandler {
     }
   }
 
-  def readQueryFile(file:File) : String = {
+  def readQueryFile(file:File): String = {
     var queryString:String = ""
     for (line <- file.lineIterator) {
       queryString = queryString.concat(line).concat("\n")
@@ -118,16 +118,16 @@ object FileHandler {
     return queryString
   }
 
-  def downloadFile(url: String): Unit = {
+  def downloadFile(url: String, targetdir:String): Unit = {
     println(url)
-    val filepath = src_dir.concat(url.split("http://|https://").map(_.trim).last) //filepath from url without http://
+    val filepath = targetdir.concat(url.split("http://|https://").map(_.trim).last) //filepath from url without http://
     val file = File(filepath)
     file.parent.createDirectoryIfNotExists(createParents = true)
     FileUtils.copyURLToFile(new URL(url),file.toJava)
 
     val dataIdFile = file.parent / "dataid.ttl"
     if (!dataIdFile.exists()){  //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
-      println("Download Dataid.ttl")
+//      println("Download Dataid.ttl")
       QueryHandler.getDataIdFile(url ,dataIdFile)
     }
   }

@@ -11,7 +11,7 @@ import org.dbpedia.databus.sparql.DataIdQueries
 
 object QueryHandler {
 
-  def executeDownloadQuery(queryString:String) = {
+  def executeDownloadQuery(queryString:String, targetdir:String) = {
     val query: Query = QueryFactory.create(queryString)
     val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
@@ -22,7 +22,7 @@ object QueryHandler {
 
       while (results.hasNext()) {
         val resource = results.next().getResource("?file")
-        fileHandler.downloadFile(resource.toString())
+        fileHandler.downloadFile(resource.toString(), targetdir)
       }
     } finally qexec.close()
   }
@@ -44,7 +44,7 @@ object QueryHandler {
 
       if (results.hasNext()) {
         val dataidURL = results.next().getResource("?dataset").toString()
-        println(dataidURL)
+//        println(dataidURL)
         FileUtils.copyURLToFile(new URL(dataidURL),dataIdFile.toJava)
       }
     } finally qexec.close()

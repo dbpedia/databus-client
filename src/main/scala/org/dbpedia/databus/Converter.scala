@@ -76,7 +76,7 @@ object Converter {
     val sparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
-    println(inputFile.pathAsString)
+//    println(inputFile.pathAsString)
 
     val data = NTripleReader.load(spark, inputFile.pathAsString)
     val targetFile: File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
