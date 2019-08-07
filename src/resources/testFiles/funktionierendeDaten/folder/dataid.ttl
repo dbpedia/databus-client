@@ -1,0 +1,95 @@
+
+
+######
+#     #   ##   #####   ##   #####  #    #  ####
+#     #  #  #    #    #  #  #    # #    # #
+#     # #    #   #   #    # #####  #    #  ####
+#     # ######   #   ###### #    # #    #      #
+#     # #    #   #   #    # #    # #    # #    #
+######  #    #   #   #    # #####   ####   ####
+
+# Plugin version 1.3-SNAPSHOT - https://github.com/dbpedia/databus-maven-plugin
+
+
+@prefix databus: <https://databus.dbpedia.org/> .
+@prefix dataid-mt: <http://dataid.dbpedia.org/ns/mt#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dataid-cv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid-pl: <http://dataid.dbpedia.org/ns/pl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+<https://databus.dbpedia.org/dbpedia/wikidata/sameas-all-wikis>
+        a       dataid:Artifact .
+
+<https://databus.dbpedia.org/dbpedia/wikidata/sameas-all-wikis/2019.07.01>
+        a       dataid:Version .
+
+<https://databus.dbpedia.org/dbpedia/wikidata>
+        a       dataid:Group .
+
+<https://downloads.dbpedia.org/repo/lts/wikidata/sameas-all-wikis/2019.07.01/dataid.ttl#sameas-all-wikis.ttl.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Sameas for all wikis"@en ;
+        rdfs:label                   "Wikidata SameAs All Wikis"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "ttl" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/wikidata/sameas-all-wikis/2019.07.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <https://alismayilov.github.io/webid-ali.ttl#this> ;
+        dataid:nonEmptyLines         "65121440"^^xsd:decimal ;
+        dataid:preview               "<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://an.dbpedia.org/resource/Africa> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://sl.dbpedia.org/resource/Afrika> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://rue.dbpedia.org/resource/Африка> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://crh.dbpedia.org/resource/Afrika> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://uk.dbpedia.org/resource/Африка> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://ko.dbpedia.org/resource/아프리카> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://fr.dbpedia.org/resource/Afrique> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://mi.dbpedia.org/resource/Āwherika> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://ckb.dbpedia.org/resource/ئەفریقا> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://my.dbpedia.org/resource/အာဖရိက> ." ;
+        dataid:sha256sum             "f2576a45a6267035d21011bbb5bde613cf9d348fc3d782835e200ec08c92f286" ;
+        dataid:signature             "TXN7eCGknYcaFDP+/Eh1JnvWKuBf+Mo1+oKToZZh/aoCJOytIb58nAW1TAxGUt0eDGEiDO7uXqAbk823bKmoc1BqgGP3F5rXMpjspGe1j7S6WH/IJQfpD71jpflbBHeMM+scndlm4hbsifLl/GBN9FGslBGczZwsYb1Ndd2A5iDXlu+0AYCVFqkDuCbLCE3MpXhWnydk1LKniOKvNlg1vCUxDVG/sTyZW/xAI1OVoQAfG+zYBikXieQ+hNj9t2E0TIThCLT1HrZM6Czues7rpDvqniPBOCttJTvRQUAQJul3WK6mYlvCeKBSE5u3kJi1cPsjD7V1yt3Ci5797yRJBg==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "810669671"^^xsd:decimal ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.07.01" ;
+        dct:issued                   "2019-07-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-08-05T13:03:33Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Wikidata SameAs All Wikis"@en ;
+        dcat:byteSize                "572634840"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/wikidata/sameas-all-wikis/2019.07.01/sameas-all-wikis.ttl.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/wikidata/sameas-all-wikis/2019.07.01/dataid.ttl#Dataset>
+        a                       dataid:Dataset ;
+        rdfs:comment            "Sameas for all wikis"@en ;
+        rdfs:label              "Wikidata SameAs All Wikis"@en ;
+        dataid:account          databus:dbpedia ;
+        dataid:artifact         <https://databus.dbpedia.org/dbpedia/wikidata/sameas-all-wikis> ;
+        dataid:associatedAgent  <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:group            <https://databus.dbpedia.org/dbpedia/wikidata> ;
+        dataid:maintainer       <https://alismayilov.github.io/webid-ali.ttl#this> ;
+        dataid:version          <https://databus.dbpedia.org/dbpedia/wikidata/sameas-all-wikis/2019.07.01> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:description         "Contains the interlanguage links\n\n# Group Documentation\n## Origin\nThis dataset was extracted using the XML wikidata-dumps available on https://www.wikidata.org/wiki/Wikidata:Database_download\nThe extraction is performed using the DBpedia Extraction-Framework available at https://github.com/dbpedia/extraction-framework\nYou may find more details on the Wikidata extractions at \"Wikidata through the eyes of DBpedia\" by Ali Ismayilov, Dimitris Kontokostas, Sören Auer, Jens Lehmann and Sebastian Hellmann.\nYou may download the article from http://www.semantic-web-journal.net/content/wikidata-through-eyes-dbpedia-1\n\n## How to contribute\nDBpedia is a community project, help us with this dataset:\n* Extend and/or improve the Wikidata class & ontology mappings at the DBpedia mappings wiki (http://mappings.dbpedia.org)\n* Extend and/or improve the Wikidata json mappings at https://github.com/dbpedia/extraction-framework/blob/master/core/src/main/resources/wikidatar2r.json\n* Improve this documentation in the pom.xml at https://github.com/dbpedia/databus-maven-plugin/tree/master/dbpedia/wikidata/pom.xml\n* Improve the software at: https://github.com/dbpedia/extraction-framework\n\n## Known Issues\n* RDF parsing and sorting failed for artifacts rediects, references, raw and sameas*\n* we are attempting to switch from rapper to Sansa-Stack: http://sansa-stack.net/sansa-parser-performance-improved/\n\n## Group Changelog\n### 2018.07.20 to 2018.11.30\n* were created as new modular releases, some issues remain\n* removed wikidata-sameas\n* removed raw for now\n* mappingbased objects are not cleaned\n* we used rapper 2.0.14 to parse and `LC_ALL=C sort` to sort and ascii2uni -a U to unescape unicdoe\ncharacters\n* link to Wikimedia dump version is missing\n## 2018.10.01\n* deleted due to bzip2 non-recoverable bad blocks" ;
+        dct:hasVersion          "2019.07.01" ;
+        dct:issued              "2019-07-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:publisher           <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title               "Wikidata SameAs All Wikis"@en ;
+        dcat:distribution       <https://downloads.dbpedia.org/repo/lts/wikidata/sameas-all-wikis/2019.07.01/dataid.ttl#sameas-all-wikis.ttl.bz2> .
+
+dataid-mt:ApplicationNTriples
+        a                dataid-mt:MediaType ;
+        dataid:mimetype  "application/n-triples" .
+
+<https://downloads.dbpedia.org/repo/lts/wikidata/sameas-all-wikis/2019.07.01/dataid.ttl>
+        a                       dataid:DataId ;
+        rdfs:comment            "Metadata created by the DBpedia Databus Maven Plugin: https://github.com/dbpedia/databus-maven-plugin (Version 1.3-SNAPSHOT)\nThe DataID ontology is a metadata omnibus, which can be extended to be interoperable with all metadata formats\nNote that the metadata (the dataid.ttl file) is always CC-0, the files are licensed individually\nMetadata created by https://webid.dbpedia.org/webid.ttl#this" ;
+        rdfs:label              "DataID metadata for wikidata/sameas-all-wikis"@en ;
+        dataid:associatedAgent  <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion          "1.3-SNAPSHOT" ;
+        dct:issued              "2019-08-05T13:15:00Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-zero1.0> ;
+        dct:publisher           <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title               "DataID metadata for wikidata/sameas-all-wikis"@en .

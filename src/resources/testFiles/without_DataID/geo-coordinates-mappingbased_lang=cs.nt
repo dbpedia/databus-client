@@ -1,0 +1,55 @@
+<http://cs.dbpedia.org/resource/Kostel_Božího_hrobu_(Paříž)> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "48.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Kostel_Božího_hrobu_(Paříž)> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "2.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Kostel_Božího_hrobu_(Paříž)> <http://www.georss.org/georss/point> "48.0 2.0" .
+<http://cs.dbpedia.org/resource/Sbor_Církve_adventistů_sedmého_dne_Praha-Michle> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Sbor_Církve_adventistů_sedmého_dne_Praha-Michle> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "50.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Sbor_Církve_adventistů_sedmého_dne_Praha-Michle> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "14.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Sbor_Církve_adventistů_sedmého_dne_Praha-Michle> <http://www.georss.org/georss/point> "50.0 14.0" .
+<http://cs.dbpedia.org/resource/Stara_Wieś_(okres_Bílsko-Bělá)> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Stara_Wieś_(okres_Bílsko-Bělá)> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "49.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Stara_Wieś_(okres_Bílsko-Bělá)> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "19.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Stara_Wieś_(okres_Bílsko-Bělá)> <http://www.georss.org/georss/point> "49.0 19.0" .
+<http://cs.dbpedia.org/resource/Kostel_svatého_Víta_(Brno)> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Kostel_svatého_Víta_(Brno)> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "49.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Kostel_svatého_Víta_(Brno)> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "16.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Kostel_svatého_Víta_(Brno)> <http://www.georss.org/georss/point> "49.0 16.0" .
+<http://cs.dbpedia.org/resource/Bazsi> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Bazsi> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "46.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Bazsi> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "17.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Bazsi> <http://www.georss.org/georss/point> "46.0 17.0" .
+<http://cs.dbpedia.org/resource/Letiště_Kalabo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Letiště_Kalabo> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "-14.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Letiště_Kalabo> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "22.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Letiště_Kalabo> <http://www.georss.org/georss/point> "-14.0 22.0" .
+<http://cs.dbpedia.org/resource/Apácatorna> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Apácatorna> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "47.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Apácatorna> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "17.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Apácatorna> <http://www.georss.org/georss/point> "47.0 17.0" .
+<http://cs.dbpedia.org/resource/Řepín_(zámek)> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Řepín_(zámek)> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "50.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Řepín_(zámek)> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "14.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Řepín_(zámek)> <http://www.georss.org/georss/point> "50.0 14.0" .
+<http://cs.dbpedia.org/resource/Goczałkowice-Zdrój> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Goczałkowice-Zdrój> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "49.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Goczałkowice-Zdrój> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "18.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Goczałkowice-Zdrój> <http://www.georss.org/georss/point> "49.0 18.0" .
+<http://cs.dbpedia.org/resource/Reľov> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Reľov> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "49.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Reľov> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "20.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Reľov> <http://www.georss.org/georss/point> "49.0 20.0" .
+<http://cs.dbpedia.org/resource/Kaple_svatého_Václava_(Sedlec)> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Kaple_svatého_Václava_(Sedlec)> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "50.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Kaple_svatého_Václava_(Sedlec)> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "14.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Kaple_svatého_Václava_(Sedlec)> <http://www.georss.org/georss/point> "50.0 14.0" .
+<http://cs.dbpedia.org/resource/Aiguille_de_Chambeyron> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Aiguille_de_Chambeyron> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "44.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Aiguille_de_Chambeyron> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "6.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Aiguille_de_Chambeyron> <http://www.georss.org/georss/point> "44.0 6.0" .
+<http://cs.dbpedia.org/resource/Wandelovo_moře> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Wandelovo_moře> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "82.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Wandelovo_moře> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-18.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Wandelovo_moře> <http://www.georss.org/georss/point> "82.0 -18.0" .
+<http://cs.dbpedia.org/resource/Lincolnovo_moře> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+<http://cs.dbpedia.org/resource/Lincolnovo_moře> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "82.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Lincolnovo_moře> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-57.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://cs.dbpedia.org/resource/Lincolnovo_moře> <http://www.georss.org/georss/point> "82.0 -57.0" .

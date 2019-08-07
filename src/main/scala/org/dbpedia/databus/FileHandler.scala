@@ -74,7 +74,7 @@ object FileHandler {
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
 
       try {
-        typeConvertedFile.delete()
+        typeConvertedFile.parent.delete()
       }
       catch {
         case noSuchFileException: NoSuchFileException => ""
@@ -201,8 +201,7 @@ object FileHandler {
     val findTripleFiles = s"find $tempDir/ -name part*" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
-    if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir).toJava)
-    else System.err.println(s"[WARN] failed to merge $tempDir/*")
+    if (! (concatFiles == 0) ) System.err.println(s"[WARN] failed to merge $tempDir/*")
 
   }
 
@@ -213,7 +212,6 @@ object FileHandler {
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
     if( concatFiles == 0 ){
-      FileUtils.deleteDirectory(File(tempDir).toJava)
       FileUtils.deleteDirectory(File(headerTempDir).toJava)
     }
     else System.err.println(s"[WARN] failed to merge $tempDir/*")

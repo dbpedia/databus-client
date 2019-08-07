@@ -5,16 +5,14 @@ import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream
 import java.nio.file.NoSuchFileException
 
 import scala.language.postfixOps
-import scala.util.control.Breaks._
-import scala.io.Source
-
 import better.files.File
-
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
 import org.apache.spark.sql.SparkSession
-
 import net.sansa_stack.rdf.spark.io._
-import org.dbpedia.databus.converters.{ConverterJSONLD, ConverterTSV}
+import org.apache.spark.rdd.RDD
+import org.dbpedia.databus.converters.{ConverterJSONLD, ConverterTSV, ConverterTTL}
+import org.slf4j.LoggerFactory
+import org.apache.jena.graph.Triple
 
 
 object Converter {
@@ -31,7 +29,7 @@ object Converter {
     }
   }
 
-  def convertFormat(inputFile: File, outputFormat: String): File = {
+  def convertFormat(inputFile: File, inputFormat:String, outputFormat: String): File = {
 
     val spark = SparkSession.builder()
       .appName(s"Triple reader  ${inputFile.name}")
@@ -42,13 +40,16 @@ object Converter {
     val sparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
-//    println(inputFile.pathAsString)
+    val data = inputFormat match {
+      case "nt" | "ttl" | "rdf" => readTriplesWithSansa(spark,inputFile)
+      case "jsonld" => readTriplesJSONLD(spark, inputFile)
+    }
 
-    val data = NTripleReader.load(spark, inputFile.pathAsString)
-    val targetFile: File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
     val tempDir = s"${inputFile.parent.pathAsString}/temp"
     val headerTempDir = s"${inputFile.parent.pathAsString}/tempheader"
+
+    val targetFile: File = File(tempDir) / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
     //delete temp directory if exists
     try {
@@ -65,17 +66,18 @@ object Converter {
         solution(1).write.option("delimiter", "\t").csv(tempDir)
         solution(0).write.option("delimiter", "\t").csv(headerTempDir)
       }
+      case "ttl" => ConverterTTL.convertToJSONLD(data).saveAsTextFile(tempDir)
       case "jsonld" => ConverterJSONLD.convertToJSONLD(data).saveAsTextFile(tempDir)
     }
 
     try {
       outputFormat match {
         case "tsv" => FileHandler.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
-        case "jsonld" | "nt" => FileHandler.unionFiles(tempDir, targetFile)
+        case "jsonld" | "nt" | "ttl" => FileHandler.unionFiles(tempDir, targetFile)
       }
     }
     catch {
-      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
+      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile ,inputFormat, outputFormat, targetFile: File)
     }
 
 
@@ -83,9 +85,19 @@ object Converter {
   }
 
 
-  def deleteAndRestart(inputFile: File, outputFormat: String, file: File): Unit = {
+  def readTriplesWithSansa(spark: SparkSession, inputFile:File): RDD[Triple] = {
+    val logger = LoggerFactory.getLogger("ErrorlogReadTriples")
+    NTripleReader.load(spark, inputFile.pathAsString, ErrorParseMode.SKIP, WarningParseMode.IGNORE, false, logger)
+  }
+
+  def readTriplesJSONLD(spark: SparkSession, inputFile:File): RDD[Triple] = {
+    val logger = LoggerFactory.getLogger("ErrorlogReadTriples")
+    NTripleReader.load(spark, inputFile.pathAsString, ErrorParseMode.SKIP, WarningParseMode.IGNORE, false, logger)
+  }
+
+  def deleteAndRestart(inputFile: File, inputFormat:String, outputFormat: String, file: File): Unit = {
     file.delete()
-    convertFormat(inputFile, outputFormat)
+    convertFormat(inputFile, inputFormat, outputFormat)
   }
 
   def compress(outputCompression: String, output: File): OutputStream = {
