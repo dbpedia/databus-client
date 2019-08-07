@@ -12,7 +12,8 @@ import net.sansa_stack.rdf.spark.io._
 import org.apache.spark.rdd.RDD
 import org.dbpedia.databus.converters.{ConverterJSONLD, ConverterTSV, ConverterTTL}
 import org.slf4j.LoggerFactory
-import org.apache.jena.graph.Triple
+import org.apache.jena.graph.{NodeFactory, Triple}
+import org.apache.jena.riot.RDFDataMgr
 
 
 object Converter {
@@ -91,8 +92,21 @@ object Converter {
   }
 
   def readTriplesJSONLD(spark: SparkSession, inputFile:File): RDD[Triple] = {
-    val logger = LoggerFactory.getLogger("ErrorlogReadTriples")
-    NTripleReader.load(spark, inputFile.pathAsString, ErrorParseMode.SKIP, WarningParseMode.IGNORE, false, logger)
+    val sc = spark.sparkContext
+    val statements = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements()
+    var data = sc.emptyRDD[Triple]
+
+    while (statements.hasNext()){
+      val statement =statements.nextStatement()
+      val triple = Triple.create(
+        NodeFactory.createLiteral(statement.getSubject.toString),
+        NodeFactory.createLiteral(statement.getPredicate.toString),
+        NodeFactory.createLiteral(statement.getLiteral.toString))
+      val dataTriple = sc.parallelize(Seq(triple))
+      data = sc.union(data, dataTriple)
+    }
+
+    return data
   }
 
   def deleteAndRestart(inputFile: File, inputFormat:String, outputFormat: String, file: File): Unit = {
