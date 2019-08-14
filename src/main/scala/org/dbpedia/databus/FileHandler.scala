@@ -47,7 +47,7 @@ object FileHandler {
 //      MUSS NOCHMAL UEBERARBEITET WERDEN
     else if (outputCompression=="same" && outputFormat!="same"){
       val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, temp_dir, dest_dir)
-      val typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
+      val typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)
       val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
       //file is written here
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
@@ -62,11 +62,11 @@ object FileHandler {
         val decompressedFile = inputFile.parent / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
         copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
 //        println(decompressedFile.pathAsString)
-        typeConvertedFile = Converter.convertFormat(decompressedFile, outputFormat)
+        typeConvertedFile = Converter.convertFormat(decompressedFile, formatInputFile, outputFormat)
         decompressedFile.delete()
       }
       else{
-        typeConvertedFile = Converter.convertFormat(inputFile, outputFormat)
+        typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)
       }
 
       val compressedOutStream = Converter.compress(outputCompression, targetFile)

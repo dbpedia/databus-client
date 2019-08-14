@@ -28,11 +28,7 @@
             <artifactId>scala-reflect</artifactId>
             <version>${scala.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.18</version>
-        </dependency>
+
         <dependency>
             <groupId>org.rogach</groupId>
             <artifactId>scallop_2.11</artifactId>
@@ -44,41 +40,41 @@
             <version>3.7.1</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.jena/jena -->
-        <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena</artifactId>
             <version>3.12.0</version>
             <type>pom</type>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.sansa-stack/sansa-rdf-spark -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.18</version>
+        </dependency>
         <dependency>
             <groupId>net.sansa-stack</groupId>
             <artifactId>sansa-rdf-spark_2.11</artifactId>
             <version>0.5.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.scopt/scopt -->
-        <dependency>
-            <groupId>com.github.scopt</groupId>
-            <artifactId>scopt_2.11</artifactId>
-            <version>3.7.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.11</artifactId>
             <version>2.4.3</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.scalatest/scalatest -->
+        <dependency>
+            <groupId>org.w3</groupId>
+            <artifactId>banana-rdf_2.11</artifactId>
+            <version>0.8.1</version>
+        </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.11</artifactId>
             <version>3.1.0-RC1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -91,6 +87,7 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
         </dependency>
+
     </dependencies>
 
 
