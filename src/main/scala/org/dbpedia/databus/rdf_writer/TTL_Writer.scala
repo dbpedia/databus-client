@@ -1,4 +1,4 @@
-package org.dbpedia.databus.converters
+package org.dbpedia.databus.rdf_writer
 
 import java.io.ByteArrayOutputStream
 
@@ -9,7 +9,7 @@ import org.apache.spark.rdd.RDD
 
 import scala.io.{Codec, Source}
 
-object ConverterTTL {
+object TTL_Writer {
 
   def convertToJSONLD(data: RDD[Triple]): RDD[String] = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)

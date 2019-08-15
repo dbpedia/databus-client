@@ -1,4 +1,4 @@
-package org.dbpedia.databus.converters
+package org.dbpedia.databus.rdf_writer
 
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
@@ -6,7 +6,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
 import scala.collection.immutable.Vector
 
-object ConverterTSV {
+object TSV_Writer {
 
   def convertToTSV(data: RDD[Triple], spark: SparkSession): Vector[DataFrame] = {
     val sql = spark.sqlContext

@@ -1,4 +1,4 @@
-package org.dbpedia.databus
+package org.dbpedia.databus.cli
 
 import org.rogach.scallop._
 

@@ -7,6 +7,7 @@ import java.nio.file.NoSuchFileException
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.apache.commons.io.{FileUtils, IOUtils}
+import org.dbpedia.databus.sparql.QueryHandler
 
 import scala.io.Source
 import scala.sys.process._
