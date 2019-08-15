@@ -1,4 +1,4 @@
-# DBpedia-Client
+# DBpedia Databus Client
 ***
 
 #### Example(Docker)
