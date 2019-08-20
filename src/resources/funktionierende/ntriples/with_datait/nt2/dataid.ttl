@@ -1,0 +1,1400 @@
+
+
+######
+#     #   ##   #####   ##   #####  #    #  ####
+#     #  #  #    #    #  #  #    # #    # #
+#     # #    #   #   #    # #####  #    #  ####
+#     # ######   #   ###### #    # #    #      #
+#     # #    #   #   #    # #    # #    # #    #
+######  #    #   #   #    # #####   ####   ####
+
+# Plugin version 1.3-SNAPSHOT - https://github.com/dbpedia/databus-maven-plugin
+
+
+@prefix databus: <https://databus.dbpedia.org/> .
+@prefix dataid-mt: <http://dataid.dbpedia.org/ns/mt#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dataid-cv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid-pl: <http://dataid.dbpedia.org/ns/pl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=eurostatwbsg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "eurostatwbsg" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "137"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/1995_enlargement_of_the_European_Union> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/countries/European_Union_(_Eu-15_)> .\n<http://dbpedia.org/resource/2004_enlargement_of_the_European_Union> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/countries/European_Union_(_Eu-25_)> .\n<http://dbpedia.org/resource/Abruzzo> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Abruzzo> .\n<http://dbpedia.org/resource/Alentejo> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Alentejo> .\n<http://dbpedia.org/resource/Algarve> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Algarve> .\n<http://dbpedia.org/resource/Alsace> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Alsace> .\n<http://dbpedia.org/resource/Apulia> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Puglia> .\n<http://dbpedia.org/resource/Aquitaine> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Aquitaine> .\n<http://dbpedia.org/resource/Arnsberg> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/regions/Arnsberg> .\n<http://dbpedia.org/resource/Austria> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/eurostat/resource/countries/\\u00D6sterreich> ." ;
+        dataid:sha256sum             "d1346de672e120fcf67a7f9571b6326fc9eb1a4dd81b39830daeebe8a7bf133b" ;
+        dataid:signature             "FK7WZpP8RKQLpA4foMjXfqFbXDD4XLV0xewRbx7Ve9siZAufhWUwVnYkvzWdIINTVmyHTfvYKhyjJrFSvPHBqSsLzFKpWLA8raW4LwdTJ53xhfZozgDcqw5i7nrGflCOMhfWumcY9jv0UWp+SfVK/pDqntwWqDdELuUKDoTg7u40IJowd2Rx1pFuG4H4Q1FijiB2UTfE6MLOysodtJFjr6CmBVbbdG28V3hKCUxKNvouBYwR1FprToA1QAtdPKu4rVL6XY5cPH9JUmyHBNLif1Cho/9yOEAOIqmiFwh2EmqjcYlfNy9YtTHvgP+lLDgdJV68c16lyMk8J6DsW7DJ0g==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "20805"^^xsd:decimal ;
+        dataid-cv:domain             "eurostatwbsg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "1680"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=eurostatwbsg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=organisation_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "organisation" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "7012"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/AAA_Foundation_for_Traffic_Safety> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/US-DcWaAAA> .\n<http://dbpedia.org/resource/AAA_Foundation_for_Traffic_Safety> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .\n<http://dbpedia.org/resource/Abbott_Independent_School_District> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/US-TxAoISD> .\n<http://dbpedia.org/resource/Abbott_Independent_School_District> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .\n<http://dbpedia.org/resource/ABC-CLIO> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/US-CaStbABC> .\n<http://dbpedia.org/resource/ABC-CLIO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .\n<http://dbpedia.org/resource/Aberdeen_High_School> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/US-IdAbHS> .\n<http://dbpedia.org/resource/Aberdeen_High_School> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .\n<http://dbpedia.org/resource/Abernathy_Independent_School_District> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/US-TxAbrISD> .\n<http://dbpedia.org/resource/Abernathy_Independent_School_District> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> ." ;
+        dataid:sha256sum             "dd3803cd29a5e8ff66084e3c95287adebcf7fb2864a2cd518bcb0478b1137385" ;
+        dataid:signature             "eBq4xqs0/IAdnHk4jiNRRwFLnru/mSk7ahxzRm5GlQzElneI1pLyiqhq8QU0vqX7naGtq/XM7UGMxZVrtpuxX8EWUZzvxLApI9SMZ6IhZ43CgmVOb0Ps6arD74toolSH65OapVHgR8nOFTRxnphRocUp79OUP/yz0UsXOt8Ljv2Nm8oBQMDcFOavekx68V6Bdrobm4Q9t6L3wvNqq420UuYDBvrUC0ySo3JRgKI8128fxVZSUleCY9CwPQflsWXew/gH7nK7TsAwpnCmpgK+ThFmA7j2mp+D9HKZfOB3fzTZB1nwAqipF6ZY447qTF2yhmTRbwIl56TrCp1jnYD9sQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1007412"^^xsd:decimal ;
+        dataid-cv:domain             "organisation" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "47759"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=organisation_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=www4wiwissfuberlinde_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "www4wiwissfuberlinde" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "16049"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/11%CE%B2-hydroxysteroid_dehydrogenase_type_1> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/diseasome/resource/genes/HSD11B1> .\n<http://dbpedia.org/resource/11%CE%B2-hydroxysteroid_dehydrogenase_type_1> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/364> .\n<http://dbpedia.org/resource/11%CE%B2-hydroxysteroid_dehydrogenase_type_1> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/5729> .\n<http://dbpedia.org/resource/11-Deoxycorticosterone> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB01134> .\n<http://dbpedia.org/resource/120_Days_of_Sodom> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/class/Book> .\n<http://dbpedia.org/resource/120_Days_of_Sodom> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/bookmashup/books/0099629607> .\n<http://dbpedia.org/resource/1,2,3-Triazole> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB03594> .\n<http://dbpedia.org/resource/1,2,4-Triazole> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB03594> .\n<http://dbpedia.org/resource/1,25-Dihydroxycholecalciferol> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00136> .\n<http://dbpedia.org/resource/12alpha-hydroxysteroid_dehydrogenase> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/3671> ." ;
+        dataid:sha256sum             "bcc1550398327fca9c8388203c039ac71def216a0de8f5c8020049d9f59f0522" ;
+        dataid:signature             "qVkIlSxRyKyNm2iUdNp4QIs9LIAeFfoqILyoSM87DlwVxJVRPFmhvEIjLykKogTErSHuuvMFZkXLjg5ajF8Kl7jWJECLu5Z5AN8U67NH0L7yD2wVPegc8tEf7fg73j0vzovYoCPxteL8y7IYN2Z3bSbsVE6w325EPhnmV8MG5/EC49yZZBgzuDZ3qT3XMkI8wmc993RuVHIewhlAA6JWb1evB/1B0WoGhv2NHWbXStUJCsc6viRh1eh/54IxG0QCs5fxNL79BfRRqq+nRd+VddW1l3SQEZ6qA8zwBEFPns5Vb0Umhum4xp4NeJ7kNNtDtuRe6Jj8gklhc/r0nmS5kA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "2382854"^^xsd:decimal ;
+        dataid-cv:domain             "www4wiwissfuberlinde" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "130824"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=www4wiwissfuberlinde_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=bricklink_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "bricklink" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "10090"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Lego_Space> <http://www.w3.org/2002/07/owl#sameAs> <http://data.kasabi.com/dataset/bricklink/category/34> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/0064> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/022332> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/0590438751> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/0687b1> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/087585> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/1000426> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/102703UK> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/102706NL> .\n<http://dbpedia.org/resource/The_Lego_Group> <http://purl.org/dc/terms/publisher> <http://data.kasabi.com/dataset/bricklink/book/102707I> ." ;
+        dataid:sha256sum             "f43c69afe8dd6db825adfe3f61e83c0384bc23e54c430577dbb0864bdf6f65b7" ;
+        dataid:signature             "wd62Vb223HdX7A09pqK8IQIwKQSuijm3LFwv57FlmCiAqOz5VtDdP67WfpmfeKxssFEK/EEUAxurlCvA30POVgh255ISjpx7uFZR/nrkfDzmg0j8b7w+8VJ9bUR25I50IQcKdbeJya1ts9EAUxxyXZmMMMrLAleZqp/ghZsDxivNKNenQnBrjuuCw0drjgUoQd+TIOpVvWA8UvwdbhKBRpm9iD2u4Sp0ItcFVXx6MV+ig+qnEPgP9MtzF2XP8AZOQCjI0dgcqQyNbDVB5eJRSuQymZTJkOrk+EuaBitokSWzjO6lmLxGHpaaL6NgPPIVQZ+7IVoIz2T0fjyMukhehg==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1401344"^^xsd:decimal ;
+        dataid-cv:domain             "bricklink" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "25568"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=bricklink_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=nytimes_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "nytimes" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "9672"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/14th_Dalai_Lama> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/56976163044688148173> .\n<http://dbpedia.org/resource/1994_Brooklyn_Bridge_shooting> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/61959866575405932133> .\n<http://dbpedia.org/resource/1st_Constitution_Bancorp> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/57418680423821607002> .\n<http://dbpedia.org/resource/1st_Source> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/N5369371855479843982> .\n<http://dbpedia.org/resource/2006_Winter_Olympics> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/63675591820156548190> .\n<http://dbpedia.org/resource/2008_Summer_Olympics> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/63653425665740584030> .\n<http://dbpedia.org/resource/3Com> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/18500028756424423372> .\n<http://dbpedia.org/resource/3D_Systems> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/N86616940901679995922> .\n<http://dbpedia.org/resource/3M> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/N38115567920937854392> .\n<http://dbpedia.org/resource/47th_Street_(Manhattan)> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/45780386135028844841> ." ;
+        dataid:sha256sum             "a6f8ab3828c8d622f94ace7ca297a26f2e96a92453faa86d4bb710768ee91c98" ;
+        dataid:signature             "pQ7Lxt4jjcuh/r1syjmMv7vcUKNiciEQloceqlfhxfxgCZ/rVAwUT3mkUkptHCOzlQ1fNoi70ZfmRlKwQcvyc7m8F/y/3ZUsFZfP23NAaRku2mL+5j3/lQq26+9RPTwTjIpJdMh6j/Dxgh4/krI4RVyNPaaN3IdS0XmFPX4mVB1Chbe5jV33rpzvj5Ulrml/+g1Uhwyi8c0BjxWLBJzjthIeCrVx0tYZ88aMSWg/XEXnKCloOnv5Uy4p9nG0lfNrT3wxiak1cplrKtOvkR1R9TvLDeLBLTkK5VRninCkPdzx1Im/+6jBe9B5bFgYO6Ua89KRlUnmSEZEXLcTvQ52lw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1298158"^^xsd:decimal ;
+        dataid-cv:domain             "nytimes" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "150955"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=nytimes_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=rdfdataeioneteuropaeu_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "rdfdataeioneteuropaeu" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "307"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/%C5%81%C3%B3d%C5%BA_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL11> .\n<http://dbpedia.org/%C5%9Awi%C4%99tokrzyskie_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL33> .\n<http://dbpedia.org/Greater_Poland_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL41> .\n<http://dbpedia.org/Kuyavian-Pomeranian_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL61> .\n<http://dbpedia.org/Lesser_Poland_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL21> .\n<http://dbpedia.org/Lower_Silesian_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL51> .\n<http://dbpedia.org/Lubusz_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL31> .\n<http://dbpedia.org/Lubusz_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL43> .\n<http://dbpedia.org/Masovian_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL12> .\n<http://dbpedia.org/Opole_Voivodeship> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://rdfdata.eionet.europa.eu/ramon/nuts/PL52> ." ;
+        dataid:sha256sum             "b84bd4c2ee02017c7d52a4f82e66030428c385097f2266e7bf22ab3e91350f65" ;
+        dataid:signature             "JjlhSzKGXhmNtXBa5CHh/zly6orSuLJymZ4IuDObCMzgD8IGWfJ30M41J4+eXBoQF7pPIR2Ata77S2hjzHfyKno9c9DRevC6tWio+CFpqCdoi8PP756d3Jr5vtEZ2fsIauPwK6RoHMp21Jj492lAU8joK1xqD4uB7tPIr7+/XOGgHp/0sr/HCDFEGWvTZgen7/UyNT1zSAFNTNxrh0sCssEv0BRKQzDYjFGAdxffL4Xmd8hkDXT/pb8QVTngqKhJZ4/qjE1FzcarELPvDkLS8U2HCUQZcUsxoGfTzHI5LZZUk10OB+pYHw2X7RseDm7gSNcJGL8fDhfAtKFRdObrgw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "45200"^^xsd:decimal ;
+        dataid-cv:domain             "rdfdataeioneteuropaeu" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "2943"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=rdfdataeioneteuropaeu_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=eurostatlinkedstatisticsorg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "eurostatlinkedstatisticsorg" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "253"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Afghanistan> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/c_ctrl#AF> .\n<http://dbpedia.org/resource/Albania> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/c_ctrl#AL> .\n<http://dbpedia.org/resource/Algeria> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/c_ctrl#DZ> .\n<http://dbpedia.org/resource/Ammonia> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/ai#NH3> .\n<http://dbpedia.org/resource/Ammonium_hydroxide> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/ai#NH3> .\n<http://dbpedia.org/resource/Andorra> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/c_ctrl#AD> .\n<http://dbpedia.org/resource/Angola> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/c_ctrl#AO> .\n<http://dbpedia.org/resource/Antigua_and_Barbuda> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/c_ctrl#AG> .\n<http://dbpedia.org/resource/Antonov_An-32> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/aircraft#AN3> .\n<http://dbpedia.org/resource/Argentina> <http://www.w3.org/2002/07/owl#sameAs> <http://eurostat.linked-statistics.org/dic/c_ctrl#AR> ." ;
+        dataid:sha256sum             "956d6446f59f8224d3022eca2d42ca6039637f309edb809957d27a6dda5ec850" ;
+        dataid:signature             "QE3Ow3wT0jW+GdYU4zIoBna+TzFr8A9Odo4dFyrgzQGJMwcDUvHHNSUQa8ivZPKIkQAkDauFnt6nTajSKCQaC4+5Jv+l8t5ZWlqJF+MhFhUibkZaHn2eG5lufgmBBHuJIu+azN3TH8Is3wE/EvFMxYDRNLz/g37UIX8hlyS2ikvB9Y81p9/6f3uolJDWoHyCD4iOYu1pVnFrkmKm6TRuQGphLnn7uTDKrnszFt30PBTnVIRxKFVzy4iUrPlJlvBb63hiTyNHJ/debxDEFmfj3S9KvRyD+YdFP3W4zRy/vqBX7ubZzIILwRql7ZxTUYyGCCC+/8xzWPrch2wFhiZ1uQ==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "34335"^^xsd:decimal ;
+        dataid-cv:domain             "eurostatlinkedstatisticsorg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "2317"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=eurostatlinkedstatisticsorg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+dataid-cv:lang  rdfs:subPropertyOf  dataid:contentVariant .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=gadmgeovocaborg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "gadmgeovocaborg" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "38793"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/%C3%80ger> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/4_14737> .\n<http://dbpedia.org/resource/%C3%81balos,_La_Rioja> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/4_16990> .\n<http://dbpedia.org/resource/%C3%81g> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/0_102> .\n<http://dbpedia.org/resource/%C3%81greda> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/4_12533> .\n<http://dbpedia.org/resource/%C3%81gua_Branca,_Alagoas> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/2_3627> .\n<http://dbpedia.org/resource/%C3%81gua_Fria> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/2_3812> .\n<http://dbpedia.org/resource/%C3%81gua_Longa> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/3_91044> .\n<http://dbpedia.org/resource/%C3%81gua_Retorta> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/3_88383> .\n<http://dbpedia.org/resource/%C3%81gua_Santa> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/2_7431> .\n<http://dbpedia.org/resource/%C3%81gua_de_Alto> <http://www.w3.org/2002/07/owl#sameAs> <http://gadm.geovocab.org/id/3_88438> ." ;
+        dataid:sha256sum             "d5cefbb1ba3e9cebaa9187047038fa20eedd75b1f8d9bbce1f609928092b643b" ;
+        dataid:signature             "GqX/bqN5OTe6LMwPx+e5ozJIXkPK+r7NQzDfMBOkJkljMpttKMbd13ZKuB+pXOkwbg3QSYUWiPMGCYOyKV+0YhwhHfeS1abHfRsvbiBEh9hyHpVHMCJLcI4a/WsNPeNHu0UvmD/1WDBUZ87YKss0gu7a4/X00zL5qNYTEXb106sSh4jPKFVcXEmHVcdcrVK8RBurM9iTUKlj06PfeoVA/+3S6a8Z/gFz9TmmJNHYomv3hj9wySUMoNwzYLlZzNoyIg4UufSBxDwnhNA2Klay9JTMyIPcFia/hZZH4PIRFWNdC7gJnq9R31zB26CgXVmFEosnFHfckcXN7fGhK9W5pQ==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "4885995"^^xsd:decimal ;
+        dataid-cv:domain             "gadmgeovocaborg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "299334"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=gadmgeovocaborg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=dblp_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "dblp" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "192"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Abraham_Silberschatz> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/106997> .\n<http://dbpedia.org/resource/Adrian_Stephens> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/146900> .\n<http://dbpedia.org/resource/Alain_Colmerauer> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/172016> .\n<http://dbpedia.org/resource/Alain_Fournier> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/137457> .\n<http://dbpedia.org/resource/Alan_Bundy> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/101226> .\n<http://dbpedia.org/resource/Alan_Burns> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/106556> .\n<http://dbpedia.org/resource/Alan_M._Davis> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/100212> .\n<http://dbpedia.org/resource/Alex_Pentland> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/100424> .\n<http://dbpedia.org/resource/Allan_Borodin> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/102627> .\n<http://dbpedia.org/resource/Andrew_B._Whinston> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/dblp/resource/person/100182> ." ;
+        dataid:sha256sum             "65aae4644fd6d2fcb29c2d8c4f1a024349f3a0d105b55564c820e6bf95b5856e" ;
+        dataid:signature             "pXYvIXoOGLGQlJX/c8Xc+f5Ml+6bUlqDALWasDbkvQCRE9VcGuHr9lmwTB/CpvfEYt52j1Z/QHmKLwdKn5wbop78YSuLkSbftMb0xrLao8tcadkPyA0q+z+4jcQUoLST5GHajhbltuoSB5VRprfqMRIrDKpewYiWKQg2DXElFjHIxsaOe0Q7ox+MfB8gbnNT1ei8C24k/4rAetKTtHfuJsmkJ4qaM3l0dDDHy6dN8TBoMHvPi35PHL8EolUxht/uK47xlHdRO+dG2oPwoGLnG5L/SxCgItxX7K8yOa/nhzZvmnxoB4JM9yhYC71ohJbz2IrKhBWPAxEzdOWKV817zQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "28345"^^xsd:decimal ;
+        dataid-cv:domain             "dblp" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "2448"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=dblp_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=revyu_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "revyu" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "6"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Babel_(film)> <http://www.w3.org/2002/07/owl#sameAs> <http://revyu.com/things/babel-film-movie-brad-pitt-cate-blanchett-gael-garcia-ber> .\n<http://dbpedia.org/resource/Broken_Flowers> <http://www.w3.org/2002/07/owl#sameAs> <http://revyu.com/things/broken-flowers-film-movie-bill-murray-jim-jarmusch-sharon> .\n<http://dbpedia.org/resource/Idiocracy> <http://www.w3.org/2002/07/owl#sameAs> <http://revyu.com/things/idiocracy-movie-film-luke-wilson-mike-judge-science-ficti> .\n<http://dbpedia.org/resource/Licence_to_Kill> <http://www.w3.org/2002/07/owl#sameAs> <http://revyu.com/things/licence-to-kill-james-bond-film-movie-action> .\n<http://dbpedia.org/resource/The_Departed> <http://www.w3.org/2002/07/owl#sameAs> <http://revyu.com/things/the-departed-film-movie-boston-jack-nicholson-leonardo-di> .\n<http://dbpedia.org/resource/The_Prestige_(film)> <http://www.w3.org/2002/07/owl#sameAs> <http://revyu.com/things/the-prestige-movie-film-drama-period-entertainment-magic> ." ;
+        dataid:sha256sum             "adaa49620eeb40d91e10bd8c40118ad81f44e81f73cd81d0ec6650633e113368" ;
+        dataid:signature             "cukeCFmkO/d+O4cpDu8tq4Q8AkbvH4eOLp93LEU0WqCO9k1IPtx6IZKKCorREIyLDR45F+NH2WvQocE6hG+fQPl7PYAxnYhj1LJpDSaatRIS+5OnGpzS3E66A5mlUWeD0kfqrhJg1PCElRHBmbRs6ikRdfACcl66v7I3ylOKfZTwsh/bEMHM1WRTdzA/zNwvhwT9bBBlpXbkcCjvb6GcqxagMEkKRzKKYDNID+PhYc+8ucYd3ifGA1fDqpWSz3ytv9WZaaj0iFk1GrwCqw8pgqzNfGymJWnVDRxBDTUFlrq7ZgFH+1B+NyOAaQJ4VROo2oTErOYVjgh586S9PniFBQ==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "1003"^^xsd:decimal ;
+        dataid-cv:domain             "revyu" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "437"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=revyu_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=transparency270ainfo_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "transparency270ainfo" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "183"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Afghanistan> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AF> .\n<http://dbpedia.org/resource/Albania> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AL> .\n<http://dbpedia.org/resource/Algeria> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/DZ> .\n<http://dbpedia.org/resource/Angola> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AO> .\n<http://dbpedia.org/resource/Argentina> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AR> .\n<http://dbpedia.org/resource/Armenia> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AM> .\n<http://dbpedia.org/resource/Australia> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AU> .\n<http://dbpedia.org/resource/Austria> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AT> .\n<http://dbpedia.org/resource/Azerbaijan> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/AZ> .\n<http://dbpedia.org/resource/Bahrain> <http://www.w3.org/2002/07/owl#sameAs> <http://transparency.270a.info/classification/country/BH> ." ;
+        dataid:sha256sum             "15315d807a1970a8f19574469051f13e9e165e28f0fc798b25b36de3b895bb73" ;
+        dataid:signature             "f0Izb9KBUhlwqlGMZf6IXZ9Ot6oPVMj0wS39kcl0wlgyQzrFA75BHuX8XSlsjYG/HGyPoFDJjkaB2DQAMLoKA/93mwOhGUh0XwHLzIW12FXBtxDywlss9Wrj/3uoPBR0bC6rpFky8qMqLD/mhylLYC+y8FGVmZMuWuMSneXRA0WvrwNfwwDk6l5KZU4Yi06isM+bbTtsKHDgyzDpUZQymI++Y/0EuJ1/Rq723UW8jAx033sJcgDNG5bUxl46+LKrlYY5s6rzyFL2+uhauE0Lsiw1fjKimYArVk9TWxa1wn+LyUOz1DkQjPStjdNtAkHpzzMaljY0KFRlRGysSiJy4w==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "25383"^^xsd:decimal ;
+        dataid-cv:domain             "transparency270ainfo" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "1781"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=transparency270ainfo_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://databus.dbpedia.org/dbpedia/transition/links>
+        a       dataid:Artifact .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=cordis_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "cordis" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "295"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Airbus_Helicopters> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/8948702> .\n<http://dbpedia.org/resource/Airbus_Helicopters> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/9495568> .\n<http://dbpedia.org/resource/Airbus_Helicopters> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/9590002> .\n<http://dbpedia.org/resource/American_University_of_Beirut> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/9002510> .\n<http://dbpedia.org/resource/American_University_of_Beirut> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/9766932> .\n<http://dbpedia.org/resource/An-Najah_National_University> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/10086113> .\n<http://dbpedia.org/resource/Australian_National_University> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/10192222> .\n<http://dbpedia.org/resource/Banaras_Hindu_University> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/8772900> .\n<http://dbpedia.org/resource/Carleton_University> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/9010548> .\n<http://dbpedia.org/resource/Chulalongkorn_University> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/cordis/resource/Organization/8851540> ." ;
+        dataid:sha256sum             "6adb08f584d4f6c5fea6330a3d6b3c8a52a5499b3a5fae632a946b0d770e8eea" ;
+        dataid:signature             "SodMDC17R1cXP1T01Tw5+hBuIbtt7xmSbLW6t0LZXJLkWVbILJ+1FC2JsWUpVAx/dUwc9jQ/YPbk4S+ppnhJMoFofH4rd6lmPO02RM/X5ZCrGvCoi10PGAoX/dY/qtoFi7MlUf5izZcf5Z7BU7u3Zqv2VTyr6FKIABCCdZhFcwVxJD3vwl3yiTu0ARH1AMXidS+QBoFwJ7VOi79pQc/7UVPNT36KP7OxrgEPPElQ31hhn0Q3aPi/RMgoQjbjuIi4GlEBCCZdU2A5qXb9GtCK8oxTmcchv20uttQU6QbyQIJOc6MIeJz21xI3abFR3lUyn/juEStWzVp5ut+RM8OWyw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "49078"^^xsd:decimal ;
+        dataid-cv:domain             "cordis" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "2454"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=cordis_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=amsterdammuseum_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "amsterdammuseum" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "617"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Aa_(architect)> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-42781> .\n<http://dbpedia.org/resource/Abel_Ferreira> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-25693> .\n<http://dbpedia.org/resource/Abel_G\\u00F3mez_Moreno> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-25693> .\n<http://dbpedia.org/resource/Abel,_King_of_Denmark> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-25693> .\n<http://dbpedia.org/resource/Abel_Miglietti> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-25693> .\n<http://dbpedia.org/resource/Achille_Casanova> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-50648> .\n<http://dbpedia.org/resource/Adolf_Holzhaus> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-38374> .\n<http://dbpedia.org/resource/Adonis_(musician)> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-25729> .\n<http://dbpedia.org/resource/Agust\\u00EDn_de_Iturbide_y_Green> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-37976> .\n<http://dbpedia.org/resource/Ainslie_Roberts> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/collections/nl/am/p-42940> ." ;
+        dataid:sha256sum             "4730380a97e94fd7246fc049f99789da9acdc263a4255045a8f3001d5ddd9fa0" ;
+        dataid:signature             "RssKKbQMxV8u2Vb023UBJuwG99Q0MiOKEryqjRqll6LkHCYzwLxHHps38AagWItuimjCE1vrmKYOdzSNVDNVp8OagO/QvopKid7LJcSn0pUAbZosmOXi6kG2NEhK4SRQoC0Bd6DCrmaCHmNTZk9Y9CHr9cgjeYHGLXzgG+D5NRw8KsU1SbGSAZf2ykftYPOck3zDrP6D2e876XGq771+T8HKbhLCOLfXNbU+2RelgBEVcHjZJ6hooqzit2ebCJChrnPnann4/qFPFmpRH0o6S2t6jCfhPREjdf2cJMACWSUeo3oCP9rFHdwO2iTlKAGIQzPVg3IUbdgWdDo1KnSmdg==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "84648"^^xsd:decimal ;
+        dataid-cv:domain             "amsterdammuseum" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "6725"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=amsterdammuseum_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=sider_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "sider" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "1967"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Abdominal_aortic_aneurysm> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/side_effects/C0162871> .\n<http://dbpedia.org/resource/Abscess> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/side_effects/C0000833> .\n<http://dbpedia.org/resource/Abscess> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/side_effects/C0149777> .\n<http://dbpedia.org/resource/Abscess> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/side_effects/C0270629> .\n<http://dbpedia.org/resource/Acamprosate> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/drugs/71158> .\n<http://dbpedia.org/resource/Acanthosis_nigricans> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/side_effects/C0000889> .\n<http://dbpedia.org/resource/Acarbose> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/drugs/41774> .\n<http://dbpedia.org/resource/Acebutolol> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/drugs/1978> .\n<http://dbpedia.org/resource/Acenocoumarol> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/drugs/9052> .\n<http://dbpedia.org/resource/Acetazolamide> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/sider/resource/drugs/1986> ." ;
+        dataid:sha256sum             "798eb35c10fad72671cfd6c21aaa8f051e1aefde72c8fa9c138e00190c1b57fa" ;
+        dataid:signature             "S0H/KI/jwVEmMXIBnpOxzPRpIQW491eihkK/IWmXpwtBQuWuxSjYjCqGcsrfHlEgscLPrCep+b7kOcA14XhCUjQgXML/8+A9l+Sub/UY1RHjEJVO9BFKk+bQtoXQSUlu1qQym6YptMQFuDbbKXwqYLZK998jv38Vdox6oqR4uaFy16eZYiwQhUsDv0cukuTdWhIdsA2Dtbc+IV5YVM4iaJo+boUZHoA00oLpx0FxyXBLKCmYaZ5m+awAujSLYtj2qQBlg+gOf3dIx9xRfQW6KgAgrQrdO2+gFPeCQyVuq6LVFEURQbBe63Q55jmht2D8vK/r3m6/KDCZ3v29YUmsyQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "300980"^^xsd:decimal ;
+        dataid-cv:domain             "sider" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "16740"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=sider_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=datalogainmie_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "datalogainmie" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "1482"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Abbey_Street> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/1393640> .\n<http://dbpedia.org/resource/Abbeyfeale> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/1411623> .\n<http://dbpedia.org/resource/Abbeyknockmoy> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/1411727> .\n<http://dbpedia.org/resource/Abbeylara> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/1414153> .\n<http://dbpedia.org/resource/Abbeylara> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/32778> .\n<http://dbpedia.org/resource/Abbeyleix> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/1411621> .\n<http://dbpedia.org/resource/Abbeyshrule> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/1414154> .\n<http://dbpedia.org/resource/Abbeyshrule> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/32501> .\n<http://dbpedia.org/resource/Abington_(hamlet)> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/31131> .\n<http://dbpedia.org/resource/Achill_Island> <http://www.w3.org/2002/07/owl#sameAs> <http://data.logainm.ie/place/36851> ." ;
+        dataid:sha256sum             "abdc8646f475cd5b743301ddf9bdbbc3c9c14955f94e54520e25ee6e1a17de0e" ;
+        dataid:signature             "EBPbX/vhcaqAg0AgLCVMIgnWAu+SMVbH/jPvsJ43s3au+EToQdP1zmDXGDmBUayG+vcB31IT0Iga/HAadFCPkO+pn/sDvIjpgG0j9WP5kHhCE3Du2sW7LfIgyjJyBavqqQnUqoM7RfAnE2iJeCR5f8CMu3tu2uZxZJkWz1plsDFQxgEzAk0CBuxpQ9g/B444kFCx5xLt2vavoi9jUmHVx0mHZZ+oZArMQmPygHW8x+8+gDyYZ27BISVFFN+fDbxc+GenQgv6ZqKqiwyOGkEM130xxiu2D1Zloje6FLHQTHF/isDVWCtygfu0uc5dKi/SEh7cWuB2e/ZIQv+TG0czbA==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "180208"^^xsd:decimal ;
+        dataid-cv:domain             "datalogainmie" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "10814"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=datalogainmie_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=datalinkedmdborg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "datalinkedmdborg" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "13758"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/008:_Operation_Exterminate> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/57157> .\n<http://dbpedia.org/resource/1001_Danish_Delights> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/66998> .\n<http://dbpedia.org/resource/100_Rifles> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/42033> .\n<http://dbpedia.org/resource/101_Dalmatians_(1996_film)> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/38813> .\n<http://dbpedia.org/resource/102_Dalmatians> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/41783> .\n<http://dbpedia.org/resource/10:30_P.M._Summer> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/53838> .\n<http://dbpedia.org/resource/10_Things_I_Hate_About_You_(film)> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/39318> .\n<http://dbpedia.org/resource/10th_&_Wolf> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/5305> .\n<http://dbpedia.org/resource/11:14> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/4287> .\n<http://dbpedia.org/resource/12_Angry_Men_(1957_film)> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedmdb.org/resource/film/38511> ." ;
+        dataid:sha256sum             "f8e66ac66905c5b4ef0f6a1080c2d0ebb1942f7612fa6b19ce9833f9e6493a13" ;
+        dataid:signature             "KZ05KFfNg1+QtNHrkd+2c+7VgksI9/ef4fSosdixYglF8iAu5QzLH1BDWL4989EQTMdEcuEObBiR23Bg+33YNHjjGlx2VmucQhHMwtrGxmKZ+csCK1qYfGHSU1ly0NsrUOA3rG+yXByMMrVffsJDhylV+7XVWn1DiAdYR0Eqwr7yylbICrw1SAbdpfcVuv6UR0wIZR2rmXVoHXRG5K3R1o80qKXLI3cwRLQrCUms1vc9qC1vhuCJIWTZ9vNOz+Ahk6rAqXUtkj5h32TWxoMHAbqrIFqi1R9rhULWVfyzJ+567Ryb+ZxA8NtAzv65WtSQwOVTijX9EYA7SWFxV80Lrw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1894862"^^xsd:decimal ;
+        dataid-cv:domain             "datalinkedmdborg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "130411"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=datalinkedmdborg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=datiisprambienteit_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "datiisprambienteit" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "6861"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Abano_Terme>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/28001> .\n<http://dbpedia.org/resource/Abbadia_Cerreto>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/98001> .\n<http://dbpedia.org/resource/Abbadia_Lariana>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/97001> .\n<http://dbpedia.org/resource/Abbadia_San_Salvatore>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/52001> .\n<http://dbpedia.org/resource/Abbateggio>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/68001> .\n<http://dbpedia.org/resource/Abetone>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/47001> .\n<http://dbpedia.org/resource/Abriola>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/76001> .\n<http://dbpedia.org/resource/Acate>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/88001> .\n<http://dbpedia.org/resource/Accadia>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/71001> .\n<http://dbpedia.org/resource/Acceglio>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.isprambiente.it/id/place/4001> ." ;
+        dataid:sha256sum             "14430f0994919cc91124771e06f782b278cfc5805b04bfea3c9d79a38aa96402" ;
+        dataid:signature             "tyvrbloIzNHqkStuS7Uh35qrY7HN9Ep1OsPiOEqBSE6P62GHK+dbGpzPi678iVgkl9z/O0IQoBU+itb3lUxiPPNNFkN8EA3OXCoMZ/Y2PyM8Tsw4bJxnrcIc/kOyezKjdLLhXay2A0arQnECA1fy80lTBJBVshIQF/XaIHbwkAUQRaC62gjrWpddFcXkrzAmCUiVbOX5LbGFgQeE91nRC7dGSCh2MHrIgCKY+29f28MwrN33F4l+263AWISsDYN4bHD8nC3+LrwOFo9gh0K470qVcfSRFsT47aZUOuOMUZHmV8wcW7H/z9i/2m4CCWifdMYyjvxwdc2uiqYDmDATJw==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "883044"^^xsd:decimal ;
+        dataid-cv:domain             "datiisprambienteit" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "43237"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=datiisprambienteit_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=linkedgeodataorg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "linkedgeodataorg" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "103618"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/100_Mile_House_Airport> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node1042023784> .\n<http://dbpedia.org/resource/1_Decembrie> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node254749496> .\n<http://dbpedia.org/resource/23_August,_Constan%C5%A3a> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node442022886> .\n<http://dbpedia.org/resource/3_Rivers_Recreation_Area_Airport> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node1042051196> .\n<http://dbpedia.org/resource/%60Ali_Sabieh> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node316805035> .\n<http://dbpedia.org/resource/%60Ara%60ir> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node799020716> .\n<http://dbpedia.org/resource/%60Arta> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node838704777> .\n<http://dbpedia.org/resource/%60Urjan_al_Gharbiyah> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node798906999> .\n<http://dbpedia.org/resource/Aabenraa> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node25425345> .\n<http://dbpedia.org/resource/Aach,_Baden-W%C3%BCrttemberg> <http://www.w3.org/2002/07/owl#sameAs> <http://linkedgeodata.org/triplify/node240122718> ." ;
+        dataid:sha256sum             "ed92b8b009165ba8fe39468777864d81ca6113223a5d99cf38dfc6c8c8c66d2f" ;
+        dataid:signature             "FMN870XjIoS4UCi0xG1g0p1+Iac+Eifk27Y5wGPPDqDiakGyW3yXxTNEb0Jg+AMOaUUcdXI5v6hvi7pdNlMnT0zqqJL6ltFePDFz9NIGwDZvwNVvxq3oeZ9lUVUiUEGBKXbMr5iar08jyb3dYRcjHUlPuF3mTkfmRFeupdS8MhDV3MikClvvyR+ajo1rw0mRCQ5Tnzx1jGgJ8bHvbuyIZWQ1ANTKSp2V7yAp4Q5j8umcR+75FBu6hUuHeEmqhBBWYYUfsiyRmfeSEZYuzG5IAYphUl4X7YXJh8Cjt9X+JRtSu7XOaeB2K0XaPFdU0exAT5K80hs2mbSRyd5oSVIShw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "14097507"^^xsd:decimal ;
+        dataid-cv:domain             "linkedgeodataorg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "933459"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=linkedgeodataorg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=learningproviderdataacuk_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "learningproviderdataacuk" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "174"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/1994_Group> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/group/1994_Group> .\n<http://dbpedia.org/resource/Million%2B> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/group/Million_Plus> .\n<http://dbpedia.org/resource/N8_Research_Partnership> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/group/N8_Research_Partnership> .\n<http://dbpedia.org/resource/NCUK> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/group/NCUK> .\n<http://dbpedia.org/resource/Russell_Group> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/group/Russell_Group> .\n<http://dbpedia.org/resource/University_Alliance> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/group/University_Alliance> .\n<http://dbpedia.org/resource/White_Rose_University_Consortium> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/group/White_Rose_University_Consortium> .\n<http://dbpedia.org/resource/Anglia_Ruskin_University> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/ukprn/10000291> .\n<http://dbpedia.org/resource/The_Arts_University_College_at_Bournemouth> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/ukprn/10000385> .\n<http://dbpedia.org/resource/Bath_Spa_University> <http://www.w3.org/2002/07/owl#sameAs> <http://id.learning-provider.data.ac.uk/ukprn/10000571> ." ;
+        dataid:sha256sum             "a3a2f5cb8afd9c9a528a72f5a567081c29bfdc75c02520f1c59a18ffdb4365c1" ;
+        dataid:signature             "bAT97ByNQ/P2giSDCKLhDWisDJ8xCT1PG9m5fGGlsvqcDIu71/GGOtNvvDK/bk/AAOkghZsy1pEFRmhHbAqULRzfRlYl6mI8bUY3mNDyeYjZIq9GukF8qdJMoKQo12sbQV+ugt7s0d2Nbg/UlABNd4hYEWjpWQZAJ8PCq4HgTBfAw8IA/W4vKtjKXRjjSn6dNAvjcttP5J5ZT/omMYdhMD/XbovJ6q7OhRZLjIPlYdjh+SyKLkQl6vd89vZkqv4UVLriZHFjMbschVxtczI6uihMJoYuZCYgrvceIqGoknOF/8OKzK/gW2W4atWvNvbAQrbr+ZLrNsTbXJlMUzHZDQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "26770"^^xsd:decimal ;
+        dataid-cv:domain             "learningproviderdataacuk" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "2200"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=learningproviderdataacuk_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwwgeonamesorg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "wwwgeonamesorg" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "86547"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/108_Mile_Ranch,_British_Columbia> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/5881648/> .\n<http://dbpedia.org/resource/28_de_Noviembre> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/3833094/> .\n<http://dbpedia.org/resource/2_Mai> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/679035/> .\n<http://dbpedia.org/resource/Aabenraa> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/2625070/> .\n<http://dbpedia.org/resource/Aabybro> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/2625037/> .\n<http://dbpedia.org/resource/Aachen_Hauptbahnhof> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/3337400/> .\n<http://dbpedia.org/resource/Aachen> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/3247449/> .\n<http://dbpedia.org/resource/Aa_en_Hunze> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/6544296/> .\n<http://dbpedia.org/resource/Aagtdorp> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/2760149/> .\n<http://dbpedia.org/resource/Aagtekerke> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/2760147/> ." ;
+        dataid:sha256sum             "2b18c8f3628a8f6d489124c1862850c6b207ebf1070bf7dac5a2dec382b81088" ;
+        dataid:signature             "IzIv2slNjBjXYNcDac+3Yl8cySDoiI/022GRX10hHha5bD+VjMXkEjl1g79eg8k7gK8hSmHughcTaiPaoJzOft6VBb3ZLnQhl75jjakYV5aYW0U2Nbb8RuzLSSSwcgZ7m+qQl+zjWk5DctVhXurC1+m0eoSXfRgiKtO3fz/Q+O/g9MuQbVPyInbQ4keOEdK6Aq3IPeKsoKfGICk2zLGgbZFL4YdRUGeyRRHnrCUxyESsM9ArVY0OHoPaNqjul+NyGDzrGUtjlwG6r7zE//LxPUvZ/TpgTKAVCU6nUXv7jidCwzo7LFG8ZIm9d8ZTg3FS1xaHFAd3rUNGCGfIgmLNNA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "10520134"^^xsd:decimal ;
+        dataid-cv:domain             "wwwgeonamesorg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "697363"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=wwwgeonamesorg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=worldbank270ainfo_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "worldbank270ainfo" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "214"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Afghanistan> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AF> .\n<http://dbpedia.org/resource/Albania> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AL> .\n<http://dbpedia.org/resource/Algeria> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/DZ> .\n<http://dbpedia.org/resource/American_Samoa> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AS> .\n<http://dbpedia.org/resource/Andorra> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AD> .\n<http://dbpedia.org/resource/Angola> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AO> .\n<http://dbpedia.org/resource/Antigua_and_Barbuda> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AG> .\n<http://dbpedia.org/resource/Argentina> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AR> .\n<http://dbpedia.org/resource/Armenia> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AM> .\n<http://dbpedia.org/resource/Aruba> <http://www.w3.org/2002/07/owl#sameAs> <http://worldbank.270a.info/classification/country/AW> ." ;
+        dataid:sha256sum             "a946b7fa14dbd55e3f0237cb276a29df0dbb3f8397a78521b4c0719e165f67eb" ;
+        dataid:signature             "LznYvPyqRV+Dr7cIUNheTdD5hJsOXHY+0SkJ49BA3qtnqPRVwfwEgXecjaM6OSN6eMGIcHXbPVNgn8XO0w8zwLLk1gJ2SQSMG1POEJDD9IkH374uPDpKW3IO6JC5oPliHFK8aluSFCjLoZI+7CQZ69iwi8KhRZGrQvy1YLCjN15gofy8eZx3oHupHD9J4RFLM7Nzd45otL4vEasLFsuk6nZj4iSLhsmBYkSNbK2N4xThFbrhfvxgRnCHeE7h9dKgj/t1AdpIGj7tyMp+6Xw4i2ossdwlnskXl7iudsGVko5ALM93HQbeRStRDmZm2jCTHkxsov0cvI+anHJSzlIGVQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "29198"^^xsd:decimal ;
+        dataid-cv:domain             "worldbank270ainfo" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "2029"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=worldbank270ainfo_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=vocabularywolterskluwerde_courts_lang=de.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "courts" , "de" , "vocabularywolterskluwerde" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "997"^^xsd:decimal ;
+        dataid:preview               "<http://de.dbpedia.org/resource/Internationaler_Gerichtshof> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10003> .\n<http://de.dbpedia.org/resource/ISGH> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10004> .\n<http://de.dbpedia.org/resource/Internationaler_Seegerichtshof> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10004> .\n<http://de.dbpedia.org/resource/Internationaler_Strafgerichtshof> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10005> .\n<http://de.dbpedia.org/resource/Kriegsverbrechertribunal> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10006> .\n<http://de.dbpedia.org/resource/UN-Kriegsverbrechertribunal> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10006> .\n<http://de.dbpedia.org/resource/CPVO> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10008> .\n<http://de.dbpedia.org/resource/EGMR> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10009> .\n<http://de.dbpedia.org/resource/Europ\\u00E4ischer_Gerichtshof_f\\u00FCr_Menschenrechte> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10009> .\n<http://de.dbpedia.org/resource/Europ\\u00E4isches_Patentamt> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/court/10010> ." ;
+        dataid:sha256sum             "3ead77492361df2aa6b7da7e1a803673e167edfc87315881079e558ff6866e2e" ;
+        dataid:signature             "UW6AnrW/RR6ToHU3IP6bNGESZQJG4WpV2Wy9mERv84yss/RjitUbxClSPwKrh+4jxMJJ+HbqEiRRX/9pXbkZna2rF1PfH5TXqVEhvVVal74im8Jo6VMh1N04t7s2eFmuNUcg6uFBQDrihMeb465/VgWlb2EdRFG4718OmG7TdRFIlnzJpwz5+PsKjNxdw64nHb/iXBJ8IGlNFNz9xI5R1OwN7cBKPGH3fbQsDf13QH06D/+jNBkg6GtjhIMhUGei87ZzX8bYtOSIwRd8wx2lSYuF+IU76/X4MdFFQJK42rCOwclb9WCRytbgHn3OZU/MtI2etejC4+B6SnuP+F/rZQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "158037"^^xsd:decimal ;
+        dataid-cv:domain             "vocabularywolterskluwerde" ;
+        dataid-cv:lang               "de" ;
+        dataid-cv:tag                "courts" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "7191"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=vocabularywolterskluwerde_courts_lang=de.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=lobidorg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "lobidorg" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "20937"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/101_Philosophy_Problems> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT016625462> .\n<http://dbpedia.org/resource/101_Philosophy_Problems> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://vocab.org/frbr/core#Work> .\n<http://dbpedia.org/resource/101_Philosophy_Problems> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://lobid.org/resource/HT016625462> .\n<http://dbpedia.org/resource/1Q84> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT016416802> .\n<http://dbpedia.org/resource/1Q84> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://vocab.org/frbr/core#Work> .\n<http://dbpedia.org/resource/1Q84> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://lobid.org/resource/HT016416802> .\n<http://dbpedia.org/resource/%22K%22_Is_for_Killer> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT006839630> .\n<http://dbpedia.org/resource/%22K%22_Is_for_Killer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://vocab.org/frbr/core#Work> .\n<http://dbpedia.org/resource/%22K%22_Is_for_Killer> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://lobid.org/resource/HT006839630> .\n<http://dbpedia.org/resource/%27Tis_Pity_She%27s_a_Whore> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT000472845> ." ;
+        dataid:sha256sum             "b19d47a656e6984d8351af109e0b91b9313c791f5456f850a0af0387d1a94417" ;
+        dataid:signature             "nDi/dI0dzpP6iMrT9fq2lN/xp5mPETNkMnvNajfElx3b/FgA/8gP/xhGJhDDheWTQgrSCB5jA9e7qh8SO7aDQXI6n88LyMOiRkn/a2JXD1ANON7u74t0c4YawrzrRTSvb5PMSAkz1YROF0ielI7gv67ilHETXnJ0wA4F3ynLyCiamWY+fPho8Acsje+inQw/DhmgQ14L2xcXPq70FWntTlvqa3p8xKyuQ2sS59OpxvzZYNHWbEW4fJtwKyBchpsnJcDZwvEyxuhXEHAR/oMMbDZSd/3mC2nWWHflAtOuf8NF0hAIoWRaxtP8ueLh2e5+Z6QZjm6MWup6JMibU/+dqw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "3038543"^^xsd:decimal ;
+        dataid-cv:domain             "lobidorg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "139978"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=lobidorg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=factbook_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "factbook" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "545"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Afghanistan> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Afghanistan> .\n<http://dbpedia.org/resource/Akkala_Sami_language> <http://dbpedia.org/ontology/spokenIn> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Russia> .\n<http://dbpedia.org/resource/Albania> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Albania> .\n<http://dbpedia.org/resource/Algeria> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Algeria> .\n<http://dbpedia.org/resource/Algerian_Arabic> <http://dbpedia.org/ontology/spokenIn> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Algeria> .\n<http://dbpedia.org/resource/Andorra> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Andorra> .\n<http://dbpedia.org/resource/Angola> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Angola> .\n<http://dbpedia.org/resource/Anguilla> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Anguilla> .\n<http://dbpedia.org/resource/Antarctica> <http://www.w3.org/2002/07/owl#sameAs> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Antarctica> .\n<http://dbpedia.org/resource/Arakanese_language> <http://dbpedia.org/ontology/spokenIn> <http://www4.wiwiss.fu-berlin.de/factbook/resource/Bangladesh> ." ;
+        dataid:sha256sum             "8b0ce397b8e45c9779aa222b865c1a6bc04daa9169629a213cff116d9a248084" ;
+        dataid:signature             "bQYcEXUwwvBF4P5afoS7qwWbIGEO/WOiLtLppTUVpfM9MIJUe4egnQpAa/x30xkgHPFzUx2225wPq068D+HB7XRynyJ0WTSfZlNbeDGxXyPBWh9lmV+NNdO7wsayNKRXL6DqNtkqksl1mJJ3ZqCd6u2c44uEW/zmRtmJyqvDq7yqF56EpmD+zKPNUZdqDlYCAPd0+ryS6rdN6cpSF2zhlyRDdve2PEnvfnL6soMpLsOrfIO67YKT06KgYN890mdk2ixN7B3oHhxe+IId+b0UPpdXkmTbOPJjvnUSlsrAMl63lrFdf0qpon22cncTIb+zfEmidVDtewMtRMvk68tDzw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "79442"^^xsd:decimal ;
+        dataid-cv:domain             "factbook" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "3920"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=factbook_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwww3org_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "wwww3org" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "437797"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/002_Operazione_Luna> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-movie-noun-1> .\n<http://dbpedia.org/resource/0078h_(single)> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-phonograph_record-noun-1> .\n<http://dbpedia.org/resource/009-1> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-cartoon-noun-2> .\n<http://dbpedia.org/resource/01_Communique> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-company-noun-1> .\n<http://dbpedia.org/resource/0340_(television_program)> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-telecast-noun-1> .\n<http://dbpedia.org/resource/'03_Bonnie_&_Clyde> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-phonograph_record-noun-1> .\n<http://dbpedia.org/resource/040_TA_Ouest> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-locomotive-noun-1> .\n<http://dbpedia.org/resource/06/05> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-movie-noun-1> .\n<http://dbpedia.org/resource/061502> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-phonograph_record-noun-1> .\n<http://dbpedia.org/resource/.07%25> <http://dbpedia.org/property/wordnet_type> <http://www.w3.org/2006/03/wn/wn20/instances/synset-serial-noun-1> ." ;
+        dataid:sha256sum             "500e034d8a69082e74faa8519de0b23b82d291176329b0a82b6dc7e49293a7fa" ;
+        dataid:signature             "tWFafKt48MMw13DJ073Bjnk8XmqCVWqYAswzktxWETUXDkXSOB9o8DuHLD9wcCuI5GecEumegvR8v+88KyZWaUy/PhRyH14N/rEjFdflN3f4fW7dd4ASJ/E0KjukS0fdtcjgxgRMc7h+f8BRVtj6OsGdiHP9eVEEHkETZZx3ROtbxLk8GtvFS4S4TqIxST6f5zfgpcNO9RhNPnRhsXf4YGjIJMnOQILlPtsTyAa0cZx0Oay1q/Y89CdtN3pyU/2CBe0xTXWLp43O+g/a5aIIEUo3SW3dAV/7UR9t+yN2af+yGSxKl8swlGyZ3zYXlczLujoSHlsUSiG+TwuEO2BuDQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "71436198"^^xsd:decimal ;
+        dataid-cv:domain             "wwww3org" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "3146081"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=wwww3org_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://databus.dbpedia.org/dbpedia/transition>
+        a       dataid:Group .
+
+dataid-cv:tag  rdfs:subPropertyOf  dataid:contentVariant .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=geospecies_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "geospecies" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "15972"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Aardvark> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/IASf2> .\n<http://dbpedia.org/resource/Abagrotis_alternata> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/4pZxA> .\n<http://dbpedia.org/resource/Abagrotis_anchocelioides> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/x5Bxh> .\n<http://dbpedia.org/resource/Abagrotis_cupida> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/vPYfO> .\n<http://dbpedia.org/resource/Aba_roundleaf_bat> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/sL3rY> .\n<http://dbpedia.org/resource/Abbott's_babbler> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/VmhQV> .\n<http://dbpedia.org/resource/Abbott's_duiker> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/doGwZ> .\n<http://dbpedia.org/resource/Abbott's_moray_eel> <http://www.w3.org/2002/07/owl#sameAs> <http://ecowlim.tfri.gov.tw/lode/resource/taibnet/Species/Gymnothorax_eurostus> .\n<http://dbpedia.org/resource/Abbott's_starling> <http://www.w3.org/2002/07/owl#sameAs> <http://lod.geospecies.org/ses/XsdHQ> .\n<http://dbpedia.org/resource/Abelmoschus_moschatus> <http://www.w3.org/2002/07/owl#sameAs> <http://ecowlim.tfri.gov.tw/lode/resource/taibnet/Species/Abelmoschus_moschatus> ." ;
+        dataid:sha256sum             "ccc5d73a8d9583490177af73a4045de5a41b2ce80caeaa6b02f479c7707ba289" ;
+        dataid:signature             "U4MP8q1kxtaL435AHMnpak2Ws6LQlrnqdAdAvQT10k+dUjfvP9Lr5VaJfrNpOMyKu2Lal0OPhFRLpjPuqhrklPOxfzwFVhkTTm92HigLGuxEwlwjXvThipNFL1N7ZnpbJwBd2DL7v+CVKM3fHiLuGCt16rnw2Z+PjLqoC8aCr1Jj08RKyS56/hHq2Zs8y6IxNpZkEhoP1+5ZyWTFE8t5MQM0uw214Rh+3aAdiVWT9bJmPvjZS/uo4ba59tOksJOaODWvAPO7GXRQdpO+H5ruxRkRKRIHVJ/wX683TVqQXhtFxYo0uLRBDhpI+FrL6RIaWPt/VyCm7Ga9Q7y24RhaBw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "2171691"^^xsd:decimal ;
+        dataid-cv:domain             "geospecies" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "179865"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=geospecies_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl>
+        a                       dataid:DataId ;
+        rdfs:comment            "Metadata created by the DBpedia Databus Maven Plugin: https://github.com/dbpedia/databus-maven-plugin (Version 1.3-SNAPSHOT)\nThe DataID ontology is a metadata omnibus, which can be extended to be interoperable with all metadata formats\nNote that the metadata (the dataid.ttl file) is always CC-0, the files are licensed individually\nMetadata created by https://webid.dbpedia.org/webid.ttl#this" ;
+        rdfs:label              "DataID metadata for transition/links"@en ;
+        dataid:associatedAgent  <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion          "1.3-SNAPSHOT" ;
+        dct:issued              "2019-02-22T02:28:34Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-zero1.0> ;
+        dct:publisher           <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title               "DataID metadata for transition/links"@en .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwwbbccouk_things_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "wwwbbccouk" , "things" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "4557"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/%C3%89douard_Manet> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/013edcc1-636b-4001-90da-96715f9fbb69#id> .\n<http://dbpedia.org/resource/2014_California_wildfires> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/5ba0cece-1e97-47a4-a9a8-9d6518634a6e#id> .\n<http://dbpedia.org/resource/2014_Crimean_crisis> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/c1400025-cfb7-43cd-8489-91786486f5e3#id> .\n<http://dbpedia.org/resource/2014_FIFA_World_Cup_qualification> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/2c36e6b7-796d-4518-9e02-2f90f15ee8e3#id> .\n<http://dbpedia.org/resource/3D_printing> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/2fe46bfc-a650-4e19-af7c-0928ce64ef4e#id> .\n<http://dbpedia.org/resource/A.F.C._Telford_United> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/1da3b5d2-c5d5-48a0-a6c2-e83a29abf99a#id> .\n<http://dbpedia.org/resource/AFC_Ajax> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/eb8f2a69-9b31-4be4-93e5-b85985ef5d9d#id> .\n<http://dbpedia.org/resource/AFC_Wimbledon> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/39885edd-5611-b540-ae3a-43026125bfd8#id> .\n<http://dbpedia.org/resource/ARM_Holdings> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/6f02f0de-6535-471a-a342-e8cd4e157131#id> .\n<http://dbpedia.org/resource/AS_Monaco_FC> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/things/b6f551ab-5c37-44b2-b001-ba73285cc958#id> ." ;
+        dataid:sha256sum             "4bc6c273505e81967afba783b2136a8499df012558240c347111d69a72210c26" ;
+        dataid:signature             "Aj1nO5+RtdJa8Iljn4LLv61xy8bel9gHDOd4F7M0bm9gOcgyuIRPEFCFU2u3p3wZ+9IUcdjBGENjxCALC4UYMxJd++dK2k+RRZYD3tqnoblTdMDTOMHZL8yRpXITPng6h9sKw6Jsfc/upH+yIYxyZeeG0RgTk4U0go4rLCMXpPO2zxjZf7Br9q+67EOR3ddatyXAErabHC5GGS23Y9OhYdEecmIpUf4UBVQOsMQrkMXQAKICjcMGB/1jPCRojmQB9BYGeFuloJ8zz1bxPwdXAv/4thseMwlpJul/C5hm0FiliC39erOFSHdqGJG9AKxRypCT80H/5RgK8CvfpfHrcw==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "720699"^^xsd:decimal ;
+        dataid-cv:domain             "wwwbbccouk" ;
+        dataid-cv:lang               "en" ;
+        dataid-cv:tag                "things" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "119963"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=wwwbbccouk_things_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset>
+        a                       dataid:Dataset ;
+        rdfs:comment            "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label              "Links transition artifact"@en ;
+        dataid:account          databus:dbpedia ;
+        dataid:artifact         <https://databus.dbpedia.org/dbpedia/transition/links> ;
+        dataid:associatedAgent  <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:group            <https://databus.dbpedia.org/dbpedia/transition> ;
+        dataid:maintainer       <http://kurzum.net/webid.ttl#this> ;
+        dataid:version          <https://databus.dbpedia.org/dbpedia/transition/links/2017.06.01> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:description         "## Description\nhttps://github.com/dbpedia/links was a preform of the databus, but there were structural weaknesses:\n* it was not possible to know, who actually submitted which links, metadata was very bad\n* people asked to submit much more, but it was only limited to links\n\nIn this artifact, we consolidate all work done here up to Feb 2019 and turn this off as users can now use the databus to upload anything inlcuding the links\nThere will be no new releases in this transition package\n\n## How to contribute\nDBpedia is a community project. we created this transition group, because the databus is still new.\nData in this group was contributed by community members in the past. We republish it now once or twice.\nAs soon as the contributors publish their data on the bus, we will create an external collection and the files in here will be outdated.\n\n## Group Changelog\n### 2019.02.10\nintial release, as this is a transitional group, we are just using this until the contributors move to their own releases." ;
+        dct:hasVersion          "2017.06.01" ;
+        dct:issued              "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:publisher           <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title               "Links transition artifact"@en ;
+        dcat:distribution       <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=geonamesjp_lang=ja.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=organisation_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=vocabularywolterskluwerde_arbeitsrecht_lang=de.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwww3org_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=datalinkedmdborg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=eurostatlinkedstatisticsorg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=nytimes_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=worldbank270ainfo_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=dbtuneorg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=geospecies_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=amsterdammuseum_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=viaforg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=19014254237_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=learningproviderdataacuk_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=italianpublicschools_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=gadmgeovocaborg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=revyu_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=daticamerait_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=openeiorg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwwbbccouk_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=tcm_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwwbbccouk_things_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=lobidorg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=daticamerait_lang=it.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=datalogainmie_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=cordis_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=eurostatwbsg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=euniseeaeuropaeu_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=sider_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=lobidorg_lang=de.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=www4wiwissfuberlinde_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=vocabularywolterskluwerde_courts_lang=de.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=uscensus_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=dblp_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=factbook_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=bricklink_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=linkedwebapis_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=transparency270ainfo_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=rdfdataeioneteuropaeu_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=datiisprambienteit_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=linkedgeodataorg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwwgeonamesorg_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=gho_lang=en.nt.bz2> , <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=testrcernatoolsetnet_lang=nl.nt.bz2> .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=vocabularywolterskluwerde_arbeitsrecht_lang=de.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "de" , "vocabularywolterskluwerde" , "arbeitsrecht" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "777"^^xsd:decimal ;
+        dataid:preview               "<http://de.dbpedia.org/resource/Abfallbeauftragter> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10003> .\n<http://de.dbpedia.org/resource/Abfindung> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10004> .\n<http://de.dbpedia.org/resource/Abfindung> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10006> .\n<http://de.dbpedia.org/resource/Abfindung> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10010> .\n<http://de.dbpedia.org/resource/Abmahnung> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10015> .\n<http://de.dbpedia.org/resource/Abrechnung> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10016> .\n<http://de.dbpedia.org/resource/Abrufarbeit> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10017> .\n<http://de.dbpedia.org/resource/Zession> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10027> .\n<http://de.dbpedia.org/resource/Forderungs\\u00FCbergang> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10027> .\n<http://de.dbpedia.org/resource/Abtretung_(Deutschland)> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://vocabulary.wolterskluwer.de/arbeitsrecht/10027> ." ;
+        dataid:sha256sum             "402cbd25a6696b58d2cfcbae8f4cd888f1d6cb44b1add813afecac9162fed521" ;
+        dataid:signature             "t9k3G8rKhfwVmVM190DeGPzjENLwt2dvWfnydwmrak7Tj+7S9+nJfQP4ZU+IXjDA/uOeHx8bYWMRSmTDew7uTwB1PwDKyqKsrD6jhmAJp5BGY630PqW7bvnCoGizLr/fnUplROkaLTcbOzcVp4zdY2FbpehMW6oLmuvwNOh+tXLFeNr5U09XUeoflS8V5WO3fNo1N+1HR5cOPA/NfkArLy1Nabw/LUsHuhoCl3XnGU5sInEo6EH3QN/Zx1c+s8dDOA7Ez77gdHbIrXIz6XdleDu9K69O6Y3O7Fhf0r9V697ks+LzzQe6hg2/KzsMWySHH9NC7fcPCp8w041f5JkoKA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "123173"^^xsd:decimal ;
+        dataid-cv:domain             "vocabularywolterskluwerde" ;
+        dataid-cv:lang               "de" ;
+        dataid-cv:tag                "arbeitsrecht" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "6597"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=vocabularywolterskluwerde_arbeitsrecht_lang=de.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+dataid-mt:ApplicationNTriples
+        a                dataid-mt:MediaType ;
+        dataid:mimetype  "application/n-triples" .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=wwwbbccouk_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "wwwbbccouk" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "444"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Aardvark> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/Aardvark#species> .\n<http://dbpedia.org/resource/Adelie_Penguin> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/Adelie_Penguin#species> .\n<http://dbpedia.org/resource/Adonis_Blue> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/Adonis_Blue#species> .\n<http://dbpedia.org/resource/African_Buffalo> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/African_Buffalo#species> .\n<http://dbpedia.org/resource/African_Bush_Elephant> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/African_Bush_Elephant#species> .\n<http://dbpedia.org/resource/African_elephant> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/Asian_Elephant#species> .\n<http://dbpedia.org/resource/African_Fish_Eagle> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/African_Fish_Eagle#species> .\n<http://dbpedia.org/resource/African_Wild_Ass> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/Onager#species> .\n<http://dbpedia.org/resource/African_Wild_Dog> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/African_Wild_Dog#species> .\n<http://dbpedia.org/resource/Agile_Gibbon> <http://www.w3.org/2002/07/owl#sameAs> <http://www.bbc.co.uk/nature/species/Agile_Gibbon#species> ." ;
+        dataid:sha256sum             "052a0a91fb0c98bb7060ce85e0d17a6c34531962d8911db0c2fdfb5cc7d1b2c6" ;
+        dataid:signature             "m3XjWvQrj4cz5RFukRztGdtzYMbxr1bMHSxsJj8fBvZRmIkrKykUqVl+EgWx5zLPyJYTqnuDbGwsFf2c2VKCbhuf+z0SVWIZmJcAHXaZgfslcPOFjBDLs12EVRBk8AhvC9pPXiAWFtisUBgzVtEXNNA+YcdoSoUa6lWbU3RUZS8QIsYt1i7iX+n2nPcjvu4MJMq8QDiZWjp8jgfEoes/FgNkWj7fKnVCqN2h6SajTpkqs3MBJIP+auhVKzDLEbwH9UGHcCIFdmxdbkUIERcMLfXc99Q5u0oNRsPf3pYtQ2V1TIV4Ngg9mketIpjFI827KM5TmGajwp6bXI9JnsIQvw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "65374"^^xsd:decimal ;
+        dataid-cv:domain             "wwwbbccouk" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "4942"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=wwwbbccouk_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=daticamerait_lang=it.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "it" , "daticamerait" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "4798"^^xsd:decimal ;
+        dataid:preview               "<http://it.dbpedia.org/resource/Abdon_Alinovi>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/p14420> .\n<http://it.dbpedia.org/resource/Abele_Damiani>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr2053> .\n<http://it.dbpedia.org/resource/Achille_Afan_de_Rivera>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr22> .\n<http://it.dbpedia.org/resource/Achille_Argentino>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr127> .\n<http://it.dbpedia.org/resource/Achille_Corona>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/p18430> .\n<http://it.dbpedia.org/resource/Achille_De_Giovanni>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr9475> .\n<http://it.dbpedia.org/resource/Achille_Del_Giudice>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr4586> .\n<http://it.dbpedia.org/resource/Achille_Fazzari>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr2286> .\n<http://it.dbpedia.org/resource/Achille_Gaggia>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr9675> .\n<http://it.dbpedia.org/resource/Achille_Grandi>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/p27990> ." ;
+        dataid:sha256sum             "a4dd3a02cb1574624083e4fe6776d4b748b75e755ab16374b80addd8b03556ea" ;
+        dataid:signature             "aKF1wGMsTv9wgq85ES6Hz2ebIebQvsdowITssITp8SJ2Qq+n9gcbcdRonws17UHZlH1y9Bm+VO6AHQm1Czt5QL08RddAtWEdMUg0dNPfhvndVvJZXHO+gxm81w+eh0+2dv/Vn1jkEoiL0CVoUrhBXfn2RGJkxLfMmQxu8zpz7MYgdMiiDGpklWfuIPyFusl37Qa8BPBq+nL1E1KHgE5SwpjCvdv++q3Sfu8BITt4mURd7t6dImJpmRlu8915fsk3lrKa5/D1Kytpc/cx52VBmGMUGahLlXnO003vxR3Zg9FxwLDDYF35J/63RJbso3Jvm+htptbQuuF1ypobA0je1A==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "664340"^^xsd:decimal ;
+        dataid-cv:domain             "daticamerait" ;
+        dataid-cv:lang               "it" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "36841"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=daticamerait_lang=it.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=daticamerait_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "daticamerait" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "1533"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Abbiategrasso>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/luogo.rdf/abbiategrasso_milano_lombardia> .\n<http://dbpedia.org/resource/Accumoli>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/luogo.rdf/accumoli_rieti_lazio> .\n<http://dbpedia.org/resource/Acerra>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/luogo.rdf/acerra_napoli_campania> .\n<http://dbpedia.org/resource/Achille_Grandi>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/p27990> .\n<http://dbpedia.org/resource/Achille_Lauro>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/p3320> .\n<http://dbpedia.org/resource/Achille_Occhetto>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/p16310> .\n<http://dbpedia.org/resource/Achille_Serra_(politician)>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/p50040> .\n<http://dbpedia.org/resource/Achille_Starace>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/persona.rdf/pr11089> .\n<http://dbpedia.org/resource/Acireale>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/luogo.rdf/acireale_catania_sicilia> .\n<http://dbpedia.org/resource/Acqualagna>\t<http://www.w3.org/2002/07/owl#sameAs>\t<http://dati.camera.it/ocd/luogo.rdf/acqualagna_pesaro_marche> ." ;
+        dataid:sha256sum             "f15e8e011e236c3e25cbb41f310b7601f5db0c41df38869bfecb083adb7c2ab5" ;
+        dataid:signature             "EoIXxbpzZys6je8E0L8gIxD/4AnU1PKLBMhC9mE5TOeIjMtF8mPzKvCJy4nFxPdEsTFPOV4ByvArBVcPDdalXnN341zmPr3VGaKGabPp64/qYDobMeFmi8ErWt77w+r1U9a2l8GKvFhHSqK+RUT1FBTNc/+BjAq23C4jUqizkyAwm38yQhw5ynAQ/aVn9ScvRb5enDRdAYqBZkgWifd/KoWRlWZQwaRJfIYK3ZT40X8jFfYOZCqHiNcxYueyjKS/sv6kTJEp9WMEnNorFEqK1XslrUNycyY/aQlu6cjK1NU4m2cBZu4/TC2NT3LyCtMF1avpACFbddBW7csyjCHodA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "218368"^^xsd:decimal ;
+        dataid-cv:domain             "daticamerait" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "16970"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=daticamerait_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=lobidorg_lang=de.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "lobidorg" , "de" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "17254"^^xsd:decimal ;
+        dataid:preview               "<http://de.dbpedia.org/resource/19-Lachter-Stollen> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/DE-MUS-431018> .\n<http://de.dbpedia.org/resource/19-Lachter-Stollen> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .\n<http://de.dbpedia.org/resource/1._Deutsches_Bratwurstmuseum> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/DE-MUS-797417> .\n<http://de.dbpedia.org/resource/1._Deutsches_Bratwurstmuseum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .\n<http://de.dbpedia.org/resource/1._Deutsches_Polizeioldtimer-Museum> <http://umbel.org/umbel#isLike> <http://lobid.org/organisation/DE-MUS-777819> .\n<http://de.dbpedia.org/resource/1._Deutsches_Polizeioldtimer-Museum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .\n<http://de.dbpedia.org/resource/20.000_Meilen_unter_dem_Meer> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT006625132> .\n<http://de.dbpedia.org/resource/20.000_Meilen_unter_dem_Meer> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT014229474> .\n<http://de.dbpedia.org/resource/20.000_Meilen_unter_dem_Meer> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT014451605> .\n<http://de.dbpedia.org/resource/20.000_Meilen_unter_dem_Meer> <http://rdvocab.info/RDARelationshipsWEMI/manifestationOfWork> <http://lobid.org/resource/HT014903960> ." ;
+        dataid:sha256sum             "b86f4545f098f0515da594fbb721ce986273ed9f347a81b925e360a05f4f8b9f" ;
+        dataid:signature             "JmdhDMm3RoCJkcneeuLTlSdEqJjWPpYvg2yvIpEqAAqBHfrcn33z7zKfIHiqfDwiqHaAB9aFtQ966N5oDI3bbT9TBrfDAMh2/3x6tBcFaTOXqURSiusWwqIYG8GbucMEM1JNYGnAkJ/ChTrdymrReLNA0Iq4eJBUXB7BS48KJq/NmgbTMf0VMcEQOUxuPVIVbQRAFg1REMy3C0gDUyVEQvSZFh66Mfu61sSRUdibygkKPppsTcqXptr1BSiqI0VnYEmq3nbfsPeL+hOcrCq06u/JMMxq45YHIMSOUuoc7Aq/4SJVjp3SoEtFvLfS1OsWAbsHKUvJeDZRzAP1CiFQpg==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "2590099"^^xsd:decimal ;
+        dataid-cv:domain             "lobidorg" ;
+        dataid-cv:lang               "de" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "114396"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=lobidorg_lang=de.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=gho_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "gho" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "196"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Afghanistan> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c6> .\n<http://dbpedia.org/resource/Albania> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c7> .\n<http://dbpedia.org/resource/Algeria> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c8> .\n<http://dbpedia.org/resource/Andorra> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c9> .\n<http://dbpedia.org/resource/Angola> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c10> .\n<http://dbpedia.org/resource/Antigua_and_Barbuda> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c11> .\n<http://dbpedia.org/resource/Argentina> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c12> .\n<http://dbpedia.org/resource/Armenia> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c13> .\n<http://dbpedia.org/resource/Australia> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c14> .\n<http://dbpedia.org/resource/Austria> <http://www.w3.org/2002/07/owl#sameAs> <http://ghodata/r6-c15> ." ;
+        dataid:sha256sum             "da54ea9ab90ef3978502c2eccb25344823bcad304f826296b46d1a742bb785e1" ;
+        dataid:signature             "lB9LyciqxHTiOYsDh/+gRhedKf6qvYsrRcXYibx5ZA8NQwpkVKiwDafcCxEf9EQEgGul1M/mcuIUuT1QsKLU8Ss+fc79JLNLb/KqgiZ1kXppiWDxujP5i2kBqjHtpbhesEIWH+ShMCcKwK5dk2b7Kp2VddPbmhglIV+Pnb6bd1ct6AiD6aNOkPWa9C2HeX/vv28kuw1SSdBQDKA6JBWbsteyUb9QNu2IA8vZdkSGXCa8Fi0QASgh72sndkIHBKuOyfcEulBR9GN6B5eZOKhFhvVvkOvnCfD8nrfgo8tX4h/UCIFDlPMGI6kcDwFy3Zs5RlVuquNDU5ah92X1X99y9w==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "20866"^^xsd:decimal ;
+        dataid-cv:domain             "gho" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "1746"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=gho_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=linkedwebapis_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "linkedwebapis" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "722"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/1st_Reconnaissance_Battalion> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/washinton,_dc_city> .\n<http://dbpedia.org/resource/A1> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/a1_format> .\n<http://dbpedia.org/resource/Action_Message_Format> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/amf3_format> .\n<http://dbpedia.org/resource/ActionScript> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/actionscript_3.0_protocol> .\n<http://dbpedia.org/resource/ActionScript> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/actionscript_protocol> .\n<http://dbpedia.org/resource/Acute_promyelocytic_leukemia> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/apml_format> .\n<http://dbpedia.org/resource/Adelaide> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/adelaide_city> .\n<http://dbpedia.org/resource/Ajax_(programming)> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/ajax_protocol> .\n<http://dbpedia.org/resource/AK> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/ak_city> .\n<http://dbpedia.org/resource/Albany,_New_York> <http://www.w3.org/2002/07/owl#sameAs> <http://linked-web-apis.fit.cvut.cz/resource/albany,_ny_city> ." ;
+        dataid:sha256sum             "20a265518c4d7338695a25850909eb7a25ce9868635df068bb57cae4ab4d53bc" ;
+        dataid:signature             "BTY2gHiKF7khaTYyH5AEMW6CzL2cXM/DSscaNfz9Q75KOZX3WGT7rSZEDSgNfc2RYQst3lhYoRWBJauYLb6Qcu7I2r2LyMktbzXddlxaOfD+d1L0EjxThUb7+yUhejNaVz5xfogZZwZKa6Lz28sNItPoVMP4kWcb6ll5D97G8WeGD47y/fI25jNFhrOukQgGmwfkfLVc1N5VdaQgRVeDeCymmM5WEC7Kwlp6rA2ih9p2byOml5LCLOVod8v3XieMITzN3HHieQqDtmbYeYwxIDyyvTu18+HYRXXFLr3AGAg4vq6k3KcFasEWT654L3v6lhMV9vtapbu06vQ49vACiA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "104902"^^xsd:decimal ;
+        dataid-cv:domain             "linkedwebapis" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "8130"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=linkedwebapis_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=euniseeaeuropaeu_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "euniseeaeuropaeu" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "11235"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Aartsenia_candida> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/60895> .\n<http://dbpedia.org/resource/Abacarus_hystrix> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/98409> .\n<http://dbpedia.org/resource/Abax_carinatus> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/110171> .\n<http://dbpedia.org/resource/Abax_parallelepipedus> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/110130> .\n<http://dbpedia.org/resource/Abida_secale> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/286648> .\n<http://dbpedia.org/resource/Abies_alba> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/150697> .\n<http://dbpedia.org/resource/Abies_balsamea> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/150699> .\n<http://dbpedia.org/resource/Abies_borisii-regis> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/150632> .\n<http://dbpedia.org/resource/Abies_cephalonica> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/150633> .\n<http://dbpedia.org/resource/Abies_grandis> <http://www.w3.org/2002/07/owl#sameAs> <http://eunis.eea.europa.eu/species/150634> ." ;
+        dataid:sha256sum             "81fdcb19e9dd181592b23a98c7a7aa67809200edd06718a8e6118295e8e088ee" ;
+        dataid:signature             "q/brFOPZwEJDh1xtogYQtNZLu1Fm+ri7C/6rZE5HdGPEX8PeJIwz3hzJ/qmTf8NCFLh2OaR2M4uTfKsHfwpRc77sRaWAarbqhmjCEOvytmhn95tiCscsLymqW8yIynvl4rXkpx9QSSEw//JVmqH7KXynhoie0NsXGsGSCbgHMmIpF6Nss+mts0WEHE6WuiUNaWvKcthVsA419Yg8smuqAGOit0ILKyDBJh9NmWH8FNfzWS0eFbPl/BOTJ+HgqoubQWtKqdAMW4Pu4O8FMHdPdowI2s5J2nJ5G0BjrRM7EJ/R8/8CqhirktH150mLb6UilCvkDGhk/d1l569jPwB4Eg==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "1493930"^^xsd:decimal ;
+        dataid-cv:domain             "euniseeaeuropaeu" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "101388"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=euniseeaeuropaeu_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=geonamesjp_lang=ja.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "ja" , "geonamesjp" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "2332"^^xsd:decimal ;
+        dataid:preview               "<http://ja.dbpedia.org/resource/流山市> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/千葉県流山市> .\n<http://ja.dbpedia.org/resource/伊方町> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/愛媛県西宇和郡伊方町> .\n<http://ja.dbpedia.org/resource/篠栗町> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/福岡県糟屋郡篠栗町> .\n<http://ja.dbpedia.org/resource/七飯町> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/北海道亀田郡七飯町> .\n<http://ja.dbpedia.org/resource/三田市> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/兵庫県三田市> .\n<http://ja.dbpedia.org/resource/戸沢村> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/山形県最上郡戸沢村> .\n<http://ja.dbpedia.org/resource/双葉町> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/福島県双葉郡双葉町> .\n<http://ja.dbpedia.org/resource/清瀬市> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/東京都清瀬市> .\n<http://ja.dbpedia.org/resource/港区_(大阪市)> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/大阪府大阪市港区> .\n<http://ja.dbpedia.org/resource/鳩山町> <http://www.w3.org/2002/07/owl#sameAs> <http://geonames.jp/resource/埼玉県比企郡鳩山町> ." ;
+        dataid:sha256sum             "8220ecc812250a8e0a8dbd40240c869f4d3b0d8faf4b674074c89c808e136aa3" ;
+        dataid:signature             "MC1hezIgNp1IOqvkZremNnQWkwMTVu4B/Av0ybNhkcijHxg1A09O+6v0G17JvPMIiEtrPaHLXFzASj7hu6h+IpuJqOjr2Ix3y+DlbmUnxMTIkZHl+rYlrB2sFgXJQ8Fn6LWQT2gD57ZVkgLXquop/t1Mr/nZbCjsnUtzNzhsNtDvm6OUUOt5UBDZjKcZ6nbWD2R27pufO8UUrvL71HVQeQcJlKt19GbgQ4O21A9Ekz3jNL3H7jqdl19kVEGh5/evifv0QqqQRpIb5XVB7pDp9HcLjjmr/hs7ypsZ5aJ5M3CMqoRhLnXuXAdxIQAEt/l+FMywwSgUIPtrw/LeGEE5oQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "273666"^^xsd:decimal ;
+        dataid-cv:domain             "geonamesjp" ;
+        dataid-cv:lang               "ja" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "19062"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=geonamesjp_lang=ja.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+dataid:contentVariant
+        a       <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=uscensus_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "uscensus" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "12592"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Aaronsburg> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/pa/counties/centre_county/haines_township/aaronsburg> .\n<http://dbpedia.org/resource/Abbeville,_Alabama> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/al/counties/henry_county/abbeville> .\n<http://dbpedia.org/resource/Abbeville,_Mississippi> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/ms/counties/lafayette_county/district_3/abbeville> .\n<http://dbpedia.org/resource/Abbotsford,_Wisconsin> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/wi/counties/clark_county/abbotsford> .\n<http://dbpedia.org/resource/Abbott,_Texas> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/tx/counties/hill_county/hillsboro/abbott> .\n<http://dbpedia.org/resource/Abbyville,_Kansas> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/ks/counties/reno_county/westminster_township/abbyville> .\n<http://dbpedia.org/resource/Abercrombie,_North_Dakota> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/nd/counties/richland_county/abercrombie> .\n<http://dbpedia.org/resource/Aberdeen_Gardens,_Washington> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/wa/counties/grays_harbor_county/wishkah/aberdeen_gardens> .\n<http://dbpedia.org/resource/Aberdeen,_North_Carolina> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/nc/counties/moore_county/township_8__sandhill/aberdeen> .\n<http://dbpedia.org/resource/Aberdeen,_South_Dakota> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rdfabout.com/rdf/usgov/geo/us/sd/counties/brown_county/aberdeen> ." ;
+        dataid:sha256sum             "e8b44eb96d9417ecede9dc8f040f210345e746906ef517d17e8632ae5b93aa2d" ;
+        dataid:signature             "k6KaivwOP0kan6zP/Y3nObFgRFiWuxgWg0AIrSwt/uxtsyG4aWyYiXF+NemzFRJySlvGb3QGvnmaO3QLqpByNIhh7fDef+EJdkEcYYCPUl3yj91o/YjfM27n9ASDauYORI+X37qo4Zvdj3knlDugNzNceTAMfn2qXttnmkp44hroexBsStswT1xoFAUKJ4MhKUcAZKAvoh+P82JMrcEcwGVyf5qDBroeuRL55iS5AhzKQ3RZX/rYoSrK5LTT6wOUcC4WnG5xxebXyxUXbfK8WpB/W+VukVpjL9qDzglGMU9feW4yCw5OgpnH36bjHFtuNNrswBoGwWqw8+5WpK8kAw==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "2295349"^^xsd:decimal ;
+        dataid-cv:domain             "uscensus" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "158040"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=uscensus_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=viaforg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "viaforg" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "173942"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/10th_Dalai_Lama> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/284747514> .\n<http://dbpedia.org/resource/14th_Dalai_Lama> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/38242123> .\n<http://dbpedia.org/resource/2nd_Dalai_Lama> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/22947342> .\n<http://dbpedia.org/resource/2_Pistols> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/90586798> .\n<http://dbpedia.org/resource/3rd_Dalai_Lama> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/77191966> .\n<http://dbpedia.org/resource/4th_Dalai_Lama> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/77191978> .\n<http://dbpedia.org/resource/50_Cent> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/62764191> .\n<http://dbpedia.org/resource/6th_Dalai_Lama> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/17250680> .\n<http://dbpedia.org/resource/8th_Arjia_Rinpoche> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/96731676> .\n<http://dbpedia.org/resource/Aafia_Siddiqui> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/86284338> ." ;
+        dataid:sha256sum             "367eb4242ff59831a9d69ca72789e6a47bf9ea3af010a022cb170067167f64d0" ;
+        dataid:signature             "G0OndnQ356WyMS4Vi1My1k/y4dZZUr4fFxYxaIjeg2regNJ0Pl0rxWokQjS6ZFEgoSr9reXcQtw0+eJEOyCIkO7w5q6nDwz4aQgMyCY/lZ9ADU4Mh5KvJBmKA5gS8vA1CVPneF0UoC4itIMUXFuw8XTf1ASHUBeRWIegpwQ/ZfqVqfzormKfBW/H9EvGfbQjycdmXTaABH23CZsh09b+f4PUrQtzJvUkYK2pxEYi/rOePOnQ3DOu15Gz+f3vGP8/cX6rmDQT2Utg7gF0ztf31h8KuYD0ZXGDP4tW06mm+XOl272NeYG/+2fxHO6bAktPpS5qeHwxoz9swj0a5Kq98g==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "21091730"^^xsd:decimal ;
+        dataid-cv:domain             "viaforg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "1768771"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=viaforg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=19014254237_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "19014254237" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "57"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Category:Environment_of_Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelMaiz/Fauna/descripcion.rdf> .\n<http://dbpedia.org/resource/Category:Flora_of_Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelJardinBotanico/Flora/descripcion.rdf> .\n<http://dbpedia.org/resource/Ecotourism> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelAnilloAgricola/descripcion.rdf> .\n<http://dbpedia.org/resource/Estadio_Doce_de_Octubre> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelMaiz/descripcion.rdf> .\n<http://dbpedia.org/resource/Category:Environment_of_Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelMaiz/Flora/descripcion.rdf> .\n<http://dbpedia.org/resource/Category:Biota_of_Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaVueltaAOriente/Flora/descripcion.rdf> .\n<http://dbpedia.org/resource/Category:Environment_of_Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/Riofrio/Flora/descripcion.rdf> .\n<http://dbpedia.org/resource/Tourism_in_Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelAnilloAgricola/descripcion.rdf> .\n<http://dbpedia.org/resource/Category:Biota_of_Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelAnilloAgricola/Fauna/descripcion.rdf> .\n<http://dbpedia.org/resource/Colombia> <http://www.w3.org/2002/07/owl#sameAs> <http://190.14.254.237/dataseteco/RutaDelAnilloAgricola/descripcion.rdf> ." ;
+        dataid:sha256sum             "34cc07dfc88ccd061c7982bd254fef2c3c586e389ea055b7472eba09476bcfa5" ;
+        dataid:signature             "E+NzbutcMjNV7iQH+uH3osfEekF1j6EluPewfl1CB80UbtGGlWPLbuV+VWdgOFzf82+HwQUonlkTZIWBVIgzPZa2+iIpsgsq77Wh3/GBGZ6xmuv7IpHXlCZ2MOjdJMMr/Rt0ClFrdMbug5EEm/uRjjYMpfMv2Ln2IW5VaZdYZeLjxabFrY97rXVbAGkQnK582kOlrxE8Jd21DUF/GjgIL067kaW2VKa3bIcAGhsN/HQVai8tdubamul/lGgpNUGQBOPAjiQDA5ygEcO3v0F39O5eioDOOiG2tfihyLDdpgpLpnL+Wou61v5sFNjzF2vvauYY8fa8b9BDNnx/qp5yIg==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "9167"^^xsd:decimal ;
+        dataid-cv:domain             "19014254237" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:02Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "697"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=19014254237_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=tcm_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "tcm" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "904"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/5-HT1A_receptor> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/HTR1A> .\n<http://dbpedia.org/resource/5-HT1B_receptor> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/HTR1B> .\n<http://dbpedia.org/resource/5-HT2A_receptor> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/HTR2A> .\n<http://dbpedia.org/resource/5-HT6_receptor> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/HTR6> .\n<http://dbpedia.org/resource/5-HT7_receptor> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/HTR7> .\n<http://dbpedia.org/resource/AADAC> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/AADAC> .\n<http://dbpedia.org/resource/ABCB6> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/ABCB6> .\n<http://dbpedia.org/resource/ABCB7> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/ABCB7> .\n<http://dbpedia.org/resource/ABCC1> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/ABCC1> .\n<http://dbpedia.org/resource/ABCD1> <http://www.w3.org/2002/07/owl#sameAs> <http://purl.org/net/tcm/tcm.lifescience.ntu.edu.tw/id/gene/ABCD1> ." ;
+        dataid:sha256sum             "ba69ada9b2c13e1a51712e0e941e1f7bcfefee859453a99aede1df1a04dbc851" ;
+        dataid:signature             "s4wIK3OVGxt4HiuNWF0CuofiGyXdKoteHsibFPI4Bdb3LR4XOWrqJYt8k0mLE1m4jiM+pcfLdBpGtjraJJhBG1RQBkkn56XPhlgQbkRUc8vmbPJ3c42S2KFA1ge4P0HfCfFYR6aMOFVsTxvBP5LjzuTsmzuRE+RPf/faQrYiMxqG0Br1260zUtahlsFD6gAdJmuoW/wkW9zfJboFGt6z50H2pRDt5Y01oSm/sWfdWIEYm5IGNepd/+xlOxGIRKZa/EsRPkZ70pXD1ujJ0cvNijqyyP/3eZeG5NzFKIpysepQJEGJyomKyqBYE4Jhq90dYpwv0J7xhMu3sUSThiQDXA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "139491"^^xsd:decimal ;
+        dataid-cv:domain             "tcm" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "8704"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=tcm_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=openeiorg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "openeiorg" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "678"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/2degrees> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/2degrees> .\n<http://dbpedia.org/resource/3e> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/3E> .\n<http://dbpedia.org/resource/Abound_Solar> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/Abound_Solar> .\n<http://dbpedia.org/resource/ActewAGL> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/ActewAGL> .\n<http://dbpedia.org/resource/Adona,_Arkansas> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/Adona,_Arkansas> .\n<http://dbpedia.org/resource/Advanced_Energy> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/Advanced_Energy> .\n<http://dbpedia.org/resource/Advent_International> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/Advent_International> .\n<http://dbpedia.org/resource/AES_Corporation> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/AES_Corporation> .\n<http://dbpedia.org/resource/AFC_Energy> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/AFC_Energy_Plc> .\n<http://dbpedia.org/resource/Afghanistan> <http://www.w3.org/2002/07/owl#sameAs> <http://openei.org/resources/Afghanistan> ." ;
+        dataid:sha256sum             "3847370ed842259e4abdc395c57b9d2641241e55101fe737367f74bff0257e93" ;
+        dataid:signature             "uhZSkxE9wCni5fHNMxhWNF1oA9WF7XLBTvk3t1miyLMOcC987sGFnsGjM9Nb8E95DJzi+Vit6zTLvle239uCHlC4ieF6I6kcL399p9sR9IDOQHqsD8Ps2Gc3hhwNtkV7QtDC4+155MEz+iYaa6cV+vlRPg2ALdmiblESSQy+APHvfnJJ9j1huEOBYtx93h5U9IYLx/P22xLu8uxep5yNTRZORGEzMebsJjj1YsKYryey2+KD96fSC0umj24Wc5ETmXwBAWmXE4lotLIydRscTUwiDocBlMbYZWD10IOnf17W+wq4W+WVydQS/1rSyJxDLdyHzLWqEgYu+Va8eEf8qQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "90300"^^xsd:decimal ;
+        dataid-cv:domain             "openeiorg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "7615"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=openeiorg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=testrcernatoolsetnet_lang=nl.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "nl" , "testrcernatoolsetnet" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "1111"^^xsd:decimal ;
+        dataid:preview               "<http://nl.dbpedia.org/resource/Nooit_Gedacht_(Eindewege)> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/00a7e117-a27b-4378-b8fc-7d10a615e47a> .\n<http://nl.dbpedia.org/resource/Den_Olden_Florus> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/00b0fe6c-c13f-42da-938e-ffe60173d7a6> .\n<http://nl.dbpedia.org/resource/Haensmolen> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/00bea6f2-0a07-4dd8-913c-056fedaae5dd> .\n<http://nl.dbpedia.org/resource/Geeuwpoldermolen> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/01b9a40c-c6b6-4568-b5cc-7eec4ec7d1c0> .\n<http://nl.dbpedia.org/resource/Bonkmolen> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/01f486cf-1fc7-4816-a26b-3b3d0cc53c7a> .\n<http://nl.dbpedia.org/resource/Heechhiem_(Goëngahuizen)> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/01f6d06a-4249-450c-a6ce-ba7c8c49f5ad> .\n<http://nl.dbpedia.org/resource/De_Hoop_(Maurik)> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/02218253-6ce8-4d23-8535-51bd59f9a36e> .\n<http://nl.dbpedia.org/resource/Stadsmolen_(Leiden)> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/022c6576-d63c-4d07-939f-da2913ac49cf> .\n<http://nl.dbpedia.org/resource/'t_Nupke> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/0231f2f6-43c3-432e-b94d-67d9a54d6888> .\n<http://nl.dbpedia.org/resource/Luctor_et_Emergo_(molen)> <http://www.w3.org/2002/07/owl#sameAs> <http://www.rnaproject.org/data/0288c970-3cb8-41f4-a100-44d0b8d16857> ." ;
+        dataid:sha256sum             "84e2b83ba670e7a3020defc08d65d8d18bdf33662f6c86dd0ce46c8782a025ae" ;
+        dataid:signature             "U4Ttx2sTN0FuQH0UDGgvXnoKx5gH3VmG53JDN59WMmLCOPZjdJlyQbHSDAzu7rzB2So8udiowmi7ouIX2ob6o2e5QzUcVyF35zXp7WmZ+Nr+QMqvP/2VFsBz/6MN9z5q/jX0DIUtkKGB4aGto1aYYcWmqq2eNW6cS41BUhYI8EcdjBTfqm3P+fjbRw7RBzSjULHyL0EzPcS5KgguYIHWUQEx0oQva8bZcI0b0A+InvkJSEXBC4X5QDqeOG6j9nqMOYADQPPgujzCexn3835lyTcxFnMrZ7bug0SlrGTCObTLFSdgnqa5TzA/wBUEYKHJsu6kCLdtY+fCxN+9rTUKAQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "180175"^^xsd:decimal ;
+        dataid-cv:domain             "testrcernatoolsetnet" ;
+        dataid-cv:lang               "nl" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "29337"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=testrcernatoolsetnet_lang=nl.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+dataid-cv:domain  rdfs:subPropertyOf  dataid:contentVariant .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=italianpublicschools_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "en" , "italianpublicschools" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "5822"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Abano_Terme> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ABANO_TERME> .\n<http://dbpedia.org/resource/Abbadia_Lariana> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ABBADIA_LARIANA> .\n<http://dbpedia.org/resource/Abbadia_San_Salvatore> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ABBADIA_SAN_SALVATORE> .\n<http://dbpedia.org/resource/Abbasanta> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ABBASANTA> .\n<http://dbpedia.org/resource/Abbiategrasso> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ABBIATEGRASSO> .\n<http://dbpedia.org/resource/Abetone> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ABETONE> .\n<http://dbpedia.org/resource/Abriola> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ABRIOLA> .\n<http://dbpedia.org/resource/Acate> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ACATE> .\n<http://dbpedia.org/resource/Accadia> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ACCADIA> .\n<http://dbpedia.org/resource/Accettura> <http://www.w3.org/2002/07/owl#sameAs> <http://data.linkedopendata.it/scuole/resource/ACCETTURA> ." ;
+        dataid:sha256sum             "ae7ee892ca17b97a81e5f5b5d3c09e71d6884af975e6988496da70ce6d118f41" ;
+        dataid:signature             "BeFydLZ2G7hC9A00j8MDW/z5x1a5I8lKO4vpHGFREt3wHrIXTJeYBOvGAiYzrZXpOSiMFpd95abkyR1T2klqvG7Nt9wkSr1UseuRiiXPXquGeYfgkpWpWKfJJasafe0JmaDHNpSmJ7EZOzGCwCKsgFowvmLMRhvKm/mRomWVxTgfsWX5/SmHSJ35JKzpZnC1BfQmNF0OktVA7gHJ2Qiqt3cp3PVCaTk+88PC0FLdvF0ws5etvd66XPWVKpHoo48aXWd/a58nFQ1c6/LGIsH9g1AR3s0cOOPtiJ/VBH19LGERT8rE3VKA9/htVvHunyC0zdcZdzFKnOus39//wOhQ1g==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "822652"^^xsd:decimal ;
+        dataid-cv:domain             "italianpublicschools" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "49007"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=italianpublicschools_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#links_domain=dbtuneorg_lang=en.nt.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "Republication of https://github.com/dbpedia/links"@en ;
+        rdfs:label                   "Links transition artifact"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:contentVariant        "dbtuneorg" , "en" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <http://kurzum.net/webid.ttl#this> ;
+        dataid:nonEmptyLines         "838"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/12_%C3%A9xitos_para_2_guitarras_flamencas> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/0045c0ff-bb06-45fc-96e2-6f0c4bcc2c22> .\n<http://dbpedia.org/resource/1930_(album)> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/00076d71-a880-4db1-81c8-16a38cd07f96> .\n<http://dbpedia.org/resource/1990s_(band)> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/artist/007dbf51-6ee0-4038-8e90-94a954e25ca3> .\n<http://dbpedia.org/resource/20_All-Time_Greatest_Hits_(Bobby_Vinton_album)> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/002e2ec6-2410-4b17-92b0-2b4c8e69e96d> .\n<http://dbpedia.org/resource/20_All-Time_Greatest_Hits!> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/002e2ec6-2410-4b17-92b0-2b4c8e69e96d> .\n<http://dbpedia.org/resource/21st_Anniversary:_Not_That_Innocent> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/001a0565-85c7-4222-b4f7-3e2c63f714ed> .\n<http://dbpedia.org/resource/24_Carat_Purple> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/0037efb4-69b9-4309-9a49-2f9ca253e34c> .\n<http://dbpedia.org/resource/2Pacalypse_Now> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/0018a0ad-30a4-4ca3-b427-c9150d0b1686> .\n<http://dbpedia.org/resource/2wo> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/artist/0082fd67-6af3-45c6-a074-db7a2482fad9> .\n<http://dbpedia.org/resource/4_(Dungen_album)> <http://www.w3.org/2002/07/owl#sameAs> <http://dbtune.org/musicbrainz/resource/record/0040b647-c1d1-4537-89dc-a5c7f888af1c> ." ;
+        dataid:sha256sum             "36001d00ede2a3a7c234942e063b01e696e51aa8316a68f0311fb980b3381e39" ;
+        dataid:signature             "XTuAxvOld8kM6UyBzFzgSvIjxcnh13NRFApFOGB49Q3DnL+7fHo8+YlwSdU0o+jHRkeX1Kl2mCC31FDS+34x4ze+vhTkZy/JT1e4KgNiCqd+nwLlCNi39LjtOZ42E8uYmJUGbnzXcGfmkqcvwrf+lThCkiB0knLcQUqZqPAah69n+5M3/oc7YQIrFjLzZp2Cx8Zi+xkiHqopcrNplsiEL28VDWzAwWmhUQVBT9rf2VcEmWSrPj5r6ycCEqgWJmnJ4TghYJ9OmhtmD5aBGgqVMIzHdv8rOaHPttSkr2vJtyPiVULJniDZKAXYGoqiZ8RGJOrSHpQTQXcs5BBULq7ZbA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "150769"^^xsd:decimal ;
+        dataid-cv:domain             "dbtuneorg" ;
+        dataid-cv:lang               "en" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2017.06.01" ;
+        dct:issued                   "2017-06-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-02-22T01:22:03Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "Links transition artifact"@en ;
+        dcat:byteSize                "16877"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/transition/links/2017.06.01/links_domain=dbtuneorg_lang=en.nt.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<https://databus.dbpedia.org/dbpedia/transition/links/2017.06.01>
+        a       dataid:Version .
