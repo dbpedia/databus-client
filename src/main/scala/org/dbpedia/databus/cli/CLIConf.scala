@@ -14,11 +14,11 @@ For usage see below:
     """)
 
   val query = opt[String]("query", default= Some("./src/query/query"), descr = "any ?file query; You can pass the query directly or save it in a textfile and pass the filepath")
-  val targetrepo = opt[String]("targetrepo", default= Some("./files/"), descr = "set the destination directory for converted files")
-  val src_dir = opt[String]("src", default= Some("./tempdir_downloaded_files/"), descr = "set the source directory for files you want to convert")
-  val outputFormat = opt[String]("format", default= Some("same"), descr = "set the fileformat of the outputfile")
-  val outputCompression = opt[String]("compression", default= Some("same"), descr = "set the compressionformat of the outputfile")
-  val help = opt[Boolean]("help", noshort = true, descr = "Show this message")
+  val destination_dir = opt[String]("dest", default= Some("./files/"), descr = "set the destination directory for converted files")
+  val source_dir = opt[String]("source", default= Some("./temp_downloaded_files/"), descr = "set the source directory for files you want to convert")
+  val output_format = opt[String]("format", default= Some("same"), descr = "set the file format of the output file")
+  val output_compression = opt[String]("compression", descr = "set the compression format of the output file")
+  val help = opt[Boolean]("help", noshort = true, descr = "show this message")
 
   verify()
 

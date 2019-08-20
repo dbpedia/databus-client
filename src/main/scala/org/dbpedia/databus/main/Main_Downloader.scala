@@ -9,10 +9,10 @@ object Main_Downloader {
 
   def main(args: Array[String]) {
 
-    println("Welcome to DBPedia - Downloadtool\n")
+    println("Welcome to DBPedia - Downloadtool")
+    println("\n--------------------------------------------------------\n")
 
     val conf = new CLIConf(args)
-    val target_dir = conf.targetrepo()
 
     //Test if query is a File or a Query
     var queryString:String = ""
@@ -30,10 +30,10 @@ object Main_Downloader {
     println(s"DownloadQuery: \n\n$queryString")
     println("--------------------------------------------------------\n")
     println("Files to download:")
-    QueryHandler.executeDownloadQuery(queryString, target_dir)
+    QueryHandler.executeDownloadQuery(queryString, conf.destination_dir())
 
     println("\n--------------------------------------------------------\n")
-    println(s"Files have been downloaded to ${target_dir}")
+    println(s"Files have been downloaded to ${conf.destination_dir()}")
   }
 
 }

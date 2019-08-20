@@ -21,11 +21,11 @@ List of possible command line options.
 
 | Option  | Description  | Default |
 |---|---|---|
-| -c, --compression  <arg> | set the compressionformat of the outputfile  | `same`  |
-| -f, --format  <arg> | set the fileformat of the outputfile  | `same` |  
-| -q, --query  <arg> | any ?file query; You can pass the query directly or save it in a textfile and pass the filepath  | `/src/query/query` | 
-| -t, --targetrepo  <arg>| set the destination directory for converted files | `./converted_files/` |
-| -s, --src  <arg>| set the source directory for files you want to convert| `./tempdir_downloaded_files/` |
+| -c, --compression  <arg> | set the compression format of the output file | `no compression`
+| -d, --dest  <arg>| set the destination directory for converted files | `./converted_files/` |
+| -f, --format  <arg> | set the file format of the output file  | `same` |  
+| -q, --query  <arg> | any ?file query; You can pass the query directly or save it in a text file and pass the file path  | `/src/query/query` | 
+| -s, --source  <arg>| set the source directory for files you want to convert| `./temp_dir_downloaded_files/` |
 | --help| Show this message ||
 
 You can load any ?file query. 
@@ -78,4 +78,4 @@ docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz dbpedia-client
 
 To stop the image *client* in the container *dbpedia-client* use `docker stop client`
 
-> **Important:** If you use docker to execute, you can't change the "_TARGETREPO_" yet._
+> **Important:** If you use docker to execute, you can't change the "_TARGETREPO_" yet.

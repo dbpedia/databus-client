@@ -9,8 +9,12 @@ object Main_DownloadAndConvert {
 
   def main(args: Array[String]) {
 
+    println("Welcome to DBPedia - Download and Convert Tool")
+    println("\n--------------------------------------------------------\n")
+
     val conf = new CLIConf(args)
-    val tempdir_download = "./tempdir_downloaded_files/"
+    val temp_dir_download = "./tempdir_downloaded_files/"
+    val dataId_string = "dataid.ttl"
 
     //Test if query is a File or a Query
     var queryString:String = ""
@@ -24,32 +28,33 @@ object Main_DownloadAndConvert {
         queryString = conf.query()
       }
     }
-    println(s"DownloadQuery: \n\n$queryString")
-    println("--------------------------------------------------------\n")
-    println("Files to download:")
-    QueryHandler.executeDownloadQuery(queryString, tempdir_download)
+
+    //    println(s"download query: \n\n$queryString")
+    //    println("--------------------------------------------------------\n")
+
+    println("Downloader:\n")
+    println("files to download:")
+    QueryHandler.executeDownloadQuery(queryString, temp_dir_download)
 
     println("\n--------------------------------------------------------\n")
 
-    //  if "no" compression wanted change the value to an empty string
-    var outputCompression = conf.outputCompression()
-    if (conf.outputCompression()=="no") {
-      outputCompression=""
+    //  if no compression wanted (output_compression not set) change the value to an empty string
+    val outputCompression = conf.output_compression.isEmpty match {
+      case true => ""
+      case false => conf.output_compression()
     }
 
-    println("Conversion:\n")
-    val dir = File(tempdir_download)
+    println("Converter:\n")
+    val dir = File(temp_dir_download)
     val files = dir.listRecursively.toSeq
     for (file <- files) {
         if (! file.isDirectory){
-          if (!file.name.equals("dataid.ttl")){
-            println(s"InputFile: ${file.pathAsString}")
-            FileHandler.convertFile(file, tempdir_download, conf.targetrepo(), conf.outputFormat(), outputCompression )
+          if (!file.name.equals(dataId_string)){
+            println(s"input file:\t\t${file.pathAsString}")
+            FileHandler.convertFile(file, temp_dir_download, conf.destination_dir(), conf.output_format(), outputCompression )
           }
         }
     }
-//    var file = File("/home/eisenbahnplatte/git/dbpediaclient/downloaded_files/test/test2.ttl")
-//    FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
   }
 
 }

@@ -10,21 +10,16 @@ object RDF_Reader {
 
   def readRDF(spark: SparkSession, inputFile:File): RDD[Triple] = {
 
+    println("hallo")
     val sc = spark.sparkContext
     val statements = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements()
     var data = sc.emptyRDD[Triple]
 
-//    val schemes = Array("http","https")
-//    val urlValidator = new UrlValidator(schemes)
-
     while (statements.hasNext()){
-//      println(s"Statement: ${statements.nextStatement()}")
       val triple =statements.nextStatement().asTriple()
       val dataTriple = sc.parallelize(Seq(triple))
       data = sc.union(data, dataTriple)
     }
-
-//    data.foreach(line => tripleRDD = sc.union(readRDFTriples(spark, line)))
 
     return data
   }

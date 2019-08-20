@@ -40,9 +40,17 @@ object Converter {
     sparkContext.setLogLevel("WARN")
 
     val data = inputFormat match {
-      case "nt" | "ttl" => NTriple_Reader.readNTriples(spark,inputFile)
+      case "nt" => NTriple_Reader.readNTriples(spark,inputFile)
       case "rdf" => RDF_Reader.readRDF(spark, inputFile)
-      case "jsonl" => try {
+      case "ttl" => RDF_Reader.readRDF(spark, inputFile)
+      case "jsonld" => RDF_Reader.readRDF(spark, inputFile) //Ein Objekt pro Datei
+//      } catch {
+//        case noSuchMethodError: NoSuchMethodError => {
+//          println("Json Object ueber mehrere Zeilen")
+//          JSONL_Reader.readJSONL(spark, inputFile)
+//        }
+//      }
+      case "jsonl" => try {   //Mehrere Objekte pro Datei
         JSONL_Reader.readJSONL(spark, inputFile)
       } catch {
         case onlyOneJsonObject: SparkException => {
@@ -50,13 +58,6 @@ object Converter {
           RDF_Reader.readRDF(spark, inputFile)
         }
       }
-      case "jsonld" => RDF_Reader.readRDF(spark, inputFile)
-//      } catch {
-//        case noSuchMethodError: NoSuchMethodError => {
-//          println("Json Object ueber mehrere Zeilen")
-//          JSONL_Reader.readJSONL(spark, inputFile)
-//        }
-//      }
     }
 
     val tempDir = s"${inputFile.parent.pathAsString}/temp"

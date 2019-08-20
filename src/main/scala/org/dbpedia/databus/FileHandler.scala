@@ -113,7 +113,7 @@ object FileHandler {
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
-    println(s"Converted File: ${outputFile.pathAsString}\n")
+    println(s"converted file:\t${outputFile.pathAsString}\n")
 
     return outputFile
   }

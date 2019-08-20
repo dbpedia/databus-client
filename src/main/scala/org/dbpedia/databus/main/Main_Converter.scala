@@ -9,31 +9,31 @@ object Main_Converter {
   def main(args: Array[String]) {
 
     val conf = new CLIConf(args)
+    val dataId_string = "dataid.ttl"
 
     println("Welcome to DBPedia - Convertertool")
     println("\n--------------------------------------------------------\n")
 
-    println(s"""Convert all Files from\n"${conf.src_dir()}"\t to\n"${conf.targetrepo()}"""")
+    println(s"""convert all files from\n\nPATH: ${conf.source_dir()}\n\nto\n\nPATH: ${conf.destination_dir()}""")
     println("\n--------------------------------------------------------\n")
-    //  if "no" compression wanted change the value to an empty string
-    var outputCompression = conf.outputCompression()
-    if (conf.outputCompression()=="no") {
-      outputCompression=""
+
+    //  if no compression wanted (output_compression not set) change the value to an empty string
+    val outputCompression = conf.output_compression.isEmpty match {
+      case true => ""
+      case false => conf.output_compression()
     }
 
     println("Conversion:\n")
-    val dir = File(conf.src_dir())
+    val dir = File(conf.source_dir())
     val files = dir.listRecursively.toSeq
     for (file <- files) {
         if (! file.isDirectory){
-          if (!file.name.equals("dataid.ttl")){
-            println(s"InputFile: ${file.pathAsString}")
-            FileHandler.convertFile(file, conf.src_dir(), conf.targetrepo(), conf.outputFormat(), outputCompression )
+          if (!file.name.equals(dataId_string)){
+            println(s"input file:\t\t${file.pathAsString}")
+            FileHandler.convertFile(file, conf.source_dir(), conf.destination_dir(), conf.output_format(), outputCompression )
           }
         }
     }
-//    var file = File("/home/eisenbahnplatte/git/dbpediaclient/downloaded_files/test/test2.ttl")
-//    FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
   }
 
 }
