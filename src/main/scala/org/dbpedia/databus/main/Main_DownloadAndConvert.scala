@@ -1,13 +1,16 @@
-package org.dbpedia.databus
+package org.dbpedia.databus.main
 
 import better.files.File
+import org.dbpedia.databus.FileHandler
+import org.dbpedia.databus.cli.CLIConf
+import org.dbpedia.databus.sparql.QueryHandler
 
-object Main {
+object Main_DownloadAndConvert {
 
   def main(args: Array[String]) {
 
     val conf = new CLIConf(args)
-    val dir_download = "./downloaded_files/"
+    val tempdir_download = "./tempdir_downloaded_files/"
 
     //Test if query is a File or a Query
     var queryString:String = ""
@@ -24,7 +27,7 @@ object Main {
     println(s"DownloadQuery: \n\n$queryString")
     println("--------------------------------------------------------\n")
     println("Files to download:")
-    QueryHandler.executeDownloadQuery(queryString)
+    QueryHandler.executeDownloadQuery(queryString, tempdir_download)
 
     println("\n--------------------------------------------------------\n")
 
@@ -35,16 +38,18 @@ object Main {
     }
 
     println("Conversion:\n")
-    var dir = File(dir_download)
-    var files = dir.listRecursively.toSeq
+    val dir = File(tempdir_download)
+    val files = dir.listRecursively.toSeq
     for (file <- files) {
         if (! file.isDirectory){
           if (!file.name.equals("dataid.ttl")){
-            println(s"InputFile: ${file.pathAsString}") //${conf.outputFormat()}.${outputCompression}
-            FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
+            println(s"InputFile: ${file.pathAsString}")
+            FileHandler.convertFile(file, tempdir_download, conf.targetrepo(), conf.outputFormat(), outputCompression )
           }
         }
     }
+//    var file = File("/home/eisenbahnplatte/git/dbpediaclient/downloaded_files/test/test2.ttl")
+//    FileHandler.convertFile(file, conf.localrepo(), conf.outputFormat(), outputCompression )
   }
 
 }

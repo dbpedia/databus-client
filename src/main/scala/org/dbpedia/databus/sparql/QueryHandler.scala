@@ -1,4 +1,4 @@
-package org.dbpedia.databus
+package org.dbpedia.databus.sparql
 
 import java.net.URL
 
@@ -7,44 +7,44 @@ import org.apache.commons.io.FileUtils
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
-import org.dbpedia.databus.sparql.DataIdQueries
+import org.dbpedia.databus.FileHandler
 
 object QueryHandler {
 
-  def executeDownloadQuery(queryString:String) = {
-    var query: Query = QueryFactory.create(queryString)
-    var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+  def executeDownloadQuery(queryString:String, targetdir:String) = {
+    val query: Query = QueryFactory.create(queryString)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
 
     try {
-      var results: ResultSet = qexec.execSelect
-      var fileHandler = FileHandler
+      val results: ResultSet = qexec.execSelect
+      val fileHandler = FileHandler
 
       while (results.hasNext()) {
-        var resource = results.next().getResource("?file")
-        fileHandler.downloadFile(resource.toString())
+        val resource = results.next().getResource("?file")
+        fileHandler.downloadFile(resource.toString(), targetdir)
       }
     } finally qexec.close()
   }
 
   def getDataIdFile(url:String, dataIdFile: File) ={
-    var queryString=s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+    val queryString=s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
                     PREFIX dcat: <http://www.w3.org/ns/dcat#>
                     SELECT DISTINCT ?dataset WHERE {
                     ?dataset dataid:version ?version .
                     ?dataset dcat:distribution ?distribution .
                     ?distribution dcat:downloadURL <$url> }"""
 
-    var query: Query = QueryFactory.create(queryString)
-    var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+    val query: Query = QueryFactory.create(queryString)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
     try {
-      var results: ResultSet = qexec.execSelect
-      var fileHandler = FileHandler
+      val results: ResultSet = qexec.execSelect
+      val fileHandler = FileHandler
 
       if (results.hasNext()) {
-        var dataidURL = results.next().getResource("?dataset").toString()
-        println(dataidURL)
+        val dataidURL = results.next().getResource("?dataset").toString()
+//        println(dataidURL)
         FileUtils.copyURLToFile(new URL(dataidURL),dataIdFile.toJava)
       }
     } finally qexec.close()
@@ -65,7 +65,7 @@ object QueryHandler {
       val results = qexec.execSelect
       if (results.hasNext()) {
         //split the URI at the slashes and take the last cell
-        var publisher = results.next().getResource("?o").toString().split("/").map(_.trim).last
+        val publisher = results.next().getResource("?o").toString().split("/").map(_.trim).last
         dir_structure = dir_structure :+ publisher
       }
     } finally qexec.close()
@@ -76,7 +76,7 @@ object QueryHandler {
     try {
       val results = qexec.execSelect
       if (results.hasNext()) {
-        var group = results.next().getResource("?o").toString().split("/").map(_.trim).last
+        val group = results.next().getResource("?o").toString().split("/").map(_.trim).last
         dir_structure = dir_structure :+ group
       }
     } finally qexec.close()
@@ -87,7 +87,7 @@ object QueryHandler {
     try {
       val results = qexec.execSelect
       if (results.hasNext()) {
-        var artifact = results.next().getResource("?o").toString().split("/").map(_.trim).last
+        val artifact = results.next().getResource("?o").toString().split("/").map(_.trim).last
         dir_structure = dir_structure :+ artifact
       }
     } finally qexec.close()
@@ -98,7 +98,7 @@ object QueryHandler {
     try {
       val results = qexec.execSelect
       if (results.hasNext()) {
-        var version = results.next().getResource("?o").toString().split("/").map(_.trim).last
+        val version = results.next().getResource("?o").toString().split("/").map(_.trim).last
         dir_structure = dir_structure :+ version
       }
     } finally qexec.close()
@@ -106,41 +106,13 @@ object QueryHandler {
     return dir_structure
   }
 
-  def getMediatypesOfQuery (list: List[String]) ={
-    val files = list.mkString("> , <")
-    println(files)
-    var queryString=s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
-                    SELECT DISTINCT ?type WHERE {
-                    ?distribution dcat:mediaType ?type .
-                    ?distribution dcat:downloadURL ?du .
-                    FILTER (?du in (<$files>))
-                    }
-                    GROUP BY ?type"""
-
-    var query: Query = QueryFactory.create(queryString)
-    var qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
-
-
-    try {
-      var results: ResultSet = qexec.execSelect
-      var fileHandler = FileHandler
-
-      while (results.hasNext()) {
-        val mediaType = results.next().getResource("?type").toString()
-        println(mediaType)
-      }
-    } finally qexec.close()
-
-  }
-
   def getTypeOfFile (fileURL:String, dataIdFile:File): String ={
     var fileType = ""
 
     val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString,RDFLanguages.NTRIPLES)
 
-    var query: Query = QueryFactory.create(DataIdQueries.queryGetType(fileURL))
-    var qexec = QueryExecutionFactory.create(query,dataidModel)
+    val query: Query = QueryFactory.create(DataIdQueries.queryGetType(fileURL))
+    val qexec = QueryExecutionFactory.create(query,dataidModel)
 
     try {
       val results = qexec.execSelect
@@ -150,5 +122,33 @@ object QueryHandler {
     } finally qexec.close()
 
     return fileType
+  }
+
+  def getMediatypesOfQuery (list: List[String]) ={
+    val files = list.mkString("> , <")
+    println(files)
+    val queryString=s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                    SELECT DISTINCT ?type WHERE {
+                    ?distribution dcat:mediaType ?type .
+                    ?distribution dcat:downloadURL ?du .
+                    FILTER (?du in (<$files>))
+                    }
+                    GROUP BY ?type"""
+
+    val query: Query = QueryFactory.create(queryString)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+
+
+    try {
+      val results: ResultSet = qexec.execSelect
+      val fileHandler = FileHandler
+
+      while (results.hasNext()) {
+        val mediaType = results.next().getResource("?type").toString()
+        println(mediaType)
+      }
+    } finally qexec.close()
+
   }
 }

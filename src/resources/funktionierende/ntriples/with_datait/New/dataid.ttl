@@ -1,0 +1,95 @@
+
+
+######
+#     #   ##   #####   ##   #####  #    #  ####
+#     #  #  #    #    #  #  #    # #    # #
+#     # #    #   #   #    # #####  #    #  ####
+#     # ######   #   ###### #    # #    #      #
+#     # #    #   #   #    # #    # #    # #    #
+######  #    #   #   #    # #####   ####   ####
+
+# Plugin version 1.3-SNAPSHOT - https://github.com/dbpedia/databus-maven-plugin
+
+
+@prefix databus: <https://databus.dbpedia.org/> .
+@prefix dataid-mt: <http://dataid.dbpedia.org/ns/mt#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dataid-cv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid-pl: <http://dataid.dbpedia.org/ns/pl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+<https://downloads.dbpedia.org/repo/lts/wikidata/sameas-external/2019.07.01/dataid.ttl>
+        a                       dataid:DataId ;
+        rdfs:comment            "Metadata created by the DBpedia Databus Maven Plugin: https://github.com/dbpedia/databus-maven-plugin (Version 1.3-SNAPSHOT)\nThe DataID ontology is a metadata omnibus, which can be extended to be interoperable with all metadata formats\nNote that the metadata (the dataid.ttl file) is always CC-0, the files are licensed individually\nMetadata created by https://webid.dbpedia.org/webid.ttl#this" ;
+        rdfs:label              "DataID metadata for wikidata/sameas-external"@en ;
+        dataid:associatedAgent  <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion          "1.3-SNAPSHOT" ;
+        dct:issued              "2019-08-05T13:15:45Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-zero1.0> ;
+        dct:publisher           <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title               "DataID metadata for wikidata/sameas-external"@en .
+
+<https://databus.dbpedia.org/dbpedia/wikidata/sameas-external>
+        a       dataid:Artifact .
+
+<https://databus.dbpedia.org/dbpedia/wikidata/sameas-external/2019.07.01>
+        a       dataid:Version .
+
+<https://downloads.dbpedia.org/repo/lts/wikidata/sameas-external/2019.07.01/dataid.ttl#Dataset>
+        a                       dataid:Dataset ;
+        rdfs:comment            "External sameas"@en ;
+        rdfs:label              "SameAs External"@en ;
+        dataid:account          databus:dbpedia ;
+        dataid:artifact         <https://databus.dbpedia.org/dbpedia/wikidata/sameas-external> ;
+        dataid:associatedAgent  <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:group            <https://databus.dbpedia.org/dbpedia/wikidata> ;
+        dataid:maintainer       <https://alismayilov.github.io/webid-ali.ttl#this> ;
+        dataid:version          <https://databus.dbpedia.org/dbpedia/wikidata/sameas-external/2019.07.01> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:description         "Contains links to external data, uses R2R mapping:\nhttps://github.com/dbpedia/extraction-framework/blob/master/core/src/main/resources/wikidatar2r.json#L92\n\n# Group Documentation\n## Origin\nThis dataset was extracted using the XML wikidata-dumps available on https://www.wikidata.org/wiki/Wikidata:Database_download\nThe extraction is performed using the DBpedia Extraction-Framework available at https://github.com/dbpedia/extraction-framework\nYou may find more details on the Wikidata extractions at \"Wikidata through the eyes of DBpedia\" by Ali Ismayilov, Dimitris Kontokostas, Sören Auer, Jens Lehmann and Sebastian Hellmann.\nYou may download the article from http://www.semantic-web-journal.net/content/wikidata-through-eyes-dbpedia-1\n\n## How to contribute\nDBpedia is a community project, help us with this dataset:\n* Extend and/or improve the Wikidata class & ontology mappings at the DBpedia mappings wiki (http://mappings.dbpedia.org)\n* Extend and/or improve the Wikidata json mappings at https://github.com/dbpedia/extraction-framework/blob/master/core/src/main/resources/wikidatar2r.json\n* Improve this documentation in the pom.xml at https://github.com/dbpedia/databus-maven-plugin/tree/master/dbpedia/wikidata/pom.xml\n* Improve the software at: https://github.com/dbpedia/extraction-framework\n\n## Known Issues\n* RDF parsing and sorting failed for artifacts rediects, references, raw and sameas*\n* we are attempting to switch from rapper to Sansa-Stack: http://sansa-stack.net/sansa-parser-performance-improved/\n\n## Group Changelog\n### 2018.07.20 to 2018.11.30\n* were created as new modular releases, some issues remain\n* removed wikidata-sameas\n* removed raw for now\n* mappingbased objects are not cleaned\n* we used rapper 2.0.14 to parse and `LC_ALL=C sort` to sort and ascii2uni -a U to unescape unicdoe\ncharacters\n* link to Wikimedia dump version is missing\n## 2018.10.01\n* deleted due to bzip2 non-recoverable bad blocks" ;
+        dct:hasVersion          "2019.07.01" ;
+        dct:issued              "2019-07-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:publisher           <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title               "SameAs External"@en ;
+        dcat:distribution       <https://downloads.dbpedia.org/repo/lts/wikidata/sameas-external/2019.07.01/dataid.ttl#sameas-external.ttl.bz2> .
+
+<https://databus.dbpedia.org/dbpedia/wikidata>
+        a       dataid:Group .
+
+<https://downloads.dbpedia.org/repo/lts/wikidata/sameas-external/2019.07.01/dataid.ttl#sameas-external.ttl.bz2>
+        a                            dataid:SingleFile ;
+        rdfs:comment                 "External sameas"@en ;
+        rdfs:label                   "SameAs External"@en ;
+        dataid:associatedAgent       <https://webid.dbpedia.org/webid.ttl#this> ;
+        dataid:compression           "bzip2" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:formatExtension       "ttl" ;
+        dataid:isDistributionOf      <https://downloads.dbpedia.org/repo/lts/wikidata/sameas-external/2019.07.01/dataid.ttl#Dataset> ;
+        dataid:maintainer            <https://alismayilov.github.io/webid-ali.ttl#this> ;
+        dataid:nonEmptyLines         "9437198"^^xsd:decimal ;
+        dataid:preview               "<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://id.ndl.go.jp/auth/ndla/00560082> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/6255146/> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://d-nb.info/gnd/4000695-5/about/rdf> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://freebase.com//m/0dg3n1> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://id.loc.gov/authorities/names/sh85001531> .\n<http://wikidata.dbpedia.org/resource/Q15> <http://www.w3.org/2002/07/owl#sameAs> <http://viaf.org/viaf/123310773> .\n<http://wikidata.dbpedia.org/resource/Q18> <http://www.w3.org/2002/07/owl#sameAs> <http://sws.geonames.org/6255150/> .\n<http://wikidata.dbpedia.org/resource/Q18> <http://www.w3.org/2002/07/owl#sameAs> <http://id.ndl.go.jp/auth/ndla/00567659> .\n<http://wikidata.dbpedia.org/resource/Q18> <http://www.w3.org/2002/07/owl#sameAs> <http://d-nb.info/gnd/4078014-4/about/rdf> .\n<http://wikidata.dbpedia.org/resource/Q18> <http://www.w3.org/2002/07/owl#sameAs> <http://freebase.com//m/06n3y> ." ;
+        dataid:sha256sum             "0b31d17a85b4b8f73db519c27b5edf8a486b90e0c4ddd42b617ee8a2e9b4cdd9" ;
+        dataid:signature             "CMj5VWH7CMHb+55B5AxZSCHEmKKDoCJsQ1VvGMbeKQZhB9o2FAMIdZ/aE+nGMu4qZ7cOgmMCNiuECJY5I4ljTEKqA58HeO5LOx36WmMdQKFr1AEQStQIfYTZAuWMJCtmEmzr9NiHNFURvVTlSVGq0pWMkvED8gzssZkMIm6LaNw4rAKi1fKmQS7aAA9lMfcj8BfiBCfo3sJBWxFZMrtUBvTildY66iAduamYan1/1RjOf1/g+QZEMeO89hz2lROYYOUtA3DBaMqGZaiudcqeKZzL3nwBnhGx1/zKDeA8zkmghrzbeOjW0fr667Ykc1e4uCy5eOUc+RsE3CE5Tzm5zA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1206852508"^^xsd:decimal ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.07.01" ;
+        dct:issued                   "2019-07-01T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-08-05T13:01:53Z"^^xsd:dateTime ;
+        dct:publisher                <https://webid.dbpedia.org/webid.ttl#this> ;
+        dct:title                    "SameAs External"@en ;
+        dcat:byteSize                "68845959"^^xsd:decimal ;
+        dcat:downloadURL             <https://downloads.dbpedia.org/repo/lts/wikidata/sameas-external/2019.07.01/sameas-external.ttl.bz2> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+dataid-mt:ApplicationNTriples
+        a                dataid-mt:MediaType ;
+        dataid:mimetype  "application/n-triples" .

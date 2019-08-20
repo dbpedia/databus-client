@@ -1,130 +1,112 @@
 package org.dbpedia.databus
 
+
 import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream}
-import scala.sys.process._
+import java.nio.file.NoSuchFileException
+
 import scala.language.postfixOps
-import scala.util.control.Breaks._
-import scala.io.Source
 import better.files.File
+import net.sansa_stack.rdf.spark.io.RDFWriter
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
-import org.apache.commons.io.FileUtils
-import org.apache.jena.riot.Lang
+import org.apache.spark.SparkException
 import org.apache.spark.sql.SparkSession
-import net.sansa_stack.rdf.spark.io._
+import org.dbpedia.databus.rdf_writer.{JSONLD_Writer, TSV_Writer, TTL_Writer}
+import org.dbpedia.databus.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader}
 
 
 object Converter {
-
-  def getCompressionType(fileInputStream: BufferedInputStream): String ={
-
-    try{
-      var ctype = CompressorStreamFactory.detect(fileInputStream)
-      if (ctype == "bzip2"){
-        ctype="bz2"
-      }
-      return ctype
-    }
-    catch{
-      case noCompression: CompressorException => ""
-    }
-  }
-
-  def getFormatType(inputFile: File): String ={
-
-    // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
-    val lines = Source.fromFile((inputFile.parent / "dataid.ttl").pathAsString).getLines().filter(_ contains s"${inputFile.name}")
-
-    val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
-    var fileURL = ""
-
-    for(line<-lines){
-      breakable {
-        for(x<-regex.findAllMatchIn(line)) {
-          fileURL = x.toString().replace(">","").replace("<","")
-          break
-        }
-      }
-    }
-
-
-    val fileType = QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
-    return fileType
-  }
 
   def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
     try {
       val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)
       return compressorIn
     }
-    catch{
-      case noCompression: CompressorException => bufferedInputStream
+    catch {
+      case noCompression: CompressorException => return bufferedInputStream
+      case inInitializerError: ExceptionInInitializerError => return bufferedInputStream
+      case noClassDefFoundError: NoClassDefFoundError => return bufferedInputStream
     }
   }
 
-//  def handleNoCompressorException(fileInputStream: FileInputStream): BufferedInputStream ={
-//    new BufferedInputStream(fileInputStream)
-//  }
+  def convertFormat(inputFile: File, inputFormat:String, outputFormat: String): File = {
 
+    val spark = SparkSession.builder()
+      .appName(s"Triple reader  ${inputFile.name}")
+      .master("local[*]")
+      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      .getOrCreate()
 
-  def convertFormat(inputFile: File, outputFormat:String): File= {
+    val sparkContext = spark.sparkContext
+    sparkContext.setLogLevel("WARN")
 
-    val outputFormat = "nt"
+    val data = inputFormat match {
+      case "nt" | "ttl" => NTriple_Reader.readNTriples(spark,inputFile)
+      case "rdf" => RDF_Reader.readRDF(spark, inputFile)
+      case "jsonl" => try {
+        JSONL_Reader.readJSONL(spark, inputFile)
+      } catch {
+        case onlyOneJsonObject: SparkException => {
+          println("Json Object ueber mehrere Zeilen")
+          RDF_Reader.readRDF(spark, inputFile)
+        }
+      }
+      case "jsonld" => RDF_Reader.readRDF(spark, inputFile)
+//      } catch {
+//        case noSuchMethodError: NoSuchMethodError => {
+//          println("Json Object ueber mehrere Zeilen")
+//          JSONL_Reader.readJSONL(spark, inputFile)
+//        }
+//      }
+    }
 
-    val spark = SparkSession.builder().master("local").getOrCreate()
-    val data = NTripleReader.load(spark, inputFile.pathAsString)
     val tempDir = s"${inputFile.parent.pathAsString}/temp"
-    val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
+    val headerTempDir = s"${inputFile.parent.pathAsString}/tempheader"
+
+    val targetFile: File = File(tempDir) / inputFile.nameWithoutExtension.concat(s".$outputFormat")
+
+    //delete temp directory if exists
+    try {
+      File(tempDir).delete()
+    } catch {
+      case noFile: NoSuchFileException => ""
+    }
+
+    outputFormat match {
+      case "nt" => data.saveAsNTriplesFile(tempDir)
+      case "tsv" => {
+        val solution = TSV_Writer.convertToTSV(data, spark)
+        solution(1).write.option("delimiter", "\t").csv(tempDir)
+        solution(0).write.option("delimiter", "\t").csv(headerTempDir)
+      }
+      case "ttl" => TTL_Writer.convertToJSONLD(data).saveAsTextFile(tempDir)
+      case "jsonld" => JSONLD_Writer.convertToJSONLD(data).saveAsTextFile(tempDir)
+    }
 
     try {
-      data.saveAsNTriplesFile(tempDir)
-
-      val findTripleFiles = s"find $tempDir/ -name part*" !!
-      val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
-
-      if( concatFiles == 0 ) FileUtils.deleteDirectory(File(tempDir).toJava)
-      else System.err.println(s"[WARN] failed to merge $tempDir/*")
+      outputFormat match {
+        case "tsv" => FileHandler.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
+        case "jsonld" | "jsonl" | "nt" | "ttl" => FileHandler.unionFiles(tempDir, targetFile)
+      }
     }
     catch {
-      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile: File, outputFormat: String, targetFile: File)
+      case fileAlreadyExists: RuntimeException => deleteAndRestart(inputFile ,inputFormat, outputFormat, targetFile: File)
     }
+
+
     return targetFile
   }
 
-  def deleteAndRestart(inputFile:File , outputFormat:String, file: File): Unit ={
+
+  def deleteAndRestart(inputFile: File, inputFormat:String, outputFormat: String, file: File): Unit = {
     file.delete()
-    convertFormat(inputFile, outputFormat)
+    convertFormat(inputFile, inputFormat, outputFormat)
   }
 
-//  def convertFormat(inputFile: File, outputFormat:String): File= {
-//
-//    val spark = SparkSession.builder
-//      .appName(s"Triple reader  ${inputFile.name}")
-//      .master("local[*]")
-//      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-//      .getOrCreate()
-//
-//    val lang = Lang.NTRIPLES
-//    val triples = spark.rdf(lang)(inputFile.pathAsString)
-//
-//    val tempDir = s"${inputFile.parent.pathAsString}/temp"
-//
-//    val targetFile:File = inputFile.parent / inputFile.nameWithoutExtension.concat(s".$outputFormat")
-//    println(targetFile.pathAsString)
-//
-//
-//    //    val triples = spark.rdf(lang)(filePath)
-//    //
-//    //    triples.take(5).foreach(println(_))
-//
-//    return targetFile
-//  }
-
-
-  def compress(outputCompression:String, output:File): OutputStream = {
+  def compress(outputCompression: String, output: File): OutputStream = {
     try {
       // file is created here
       val myOutputStream = new FileOutputStream(output.toJava)
-      val out: OutputStream = outputCompression match{
+      val out: OutputStream = outputCompression match {
         case "bz2" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BZIP2, myOutputStream)
         case "gz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.GZIP, myOutputStream)
         case "br" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.BROTLI, myOutputStream)
