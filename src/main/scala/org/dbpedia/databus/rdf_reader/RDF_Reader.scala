@@ -10,7 +10,6 @@ object RDF_Reader {
 
   def readRDF(spark: SparkSession, inputFile:File): RDD[Triple] = {
 
-    println("hallo")
     val sc = spark.sparkContext
     val statements = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements()
     var data = sc.emptyRDD[Triple]

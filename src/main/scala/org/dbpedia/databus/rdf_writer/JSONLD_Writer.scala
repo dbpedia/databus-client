@@ -13,6 +13,7 @@ object JSONLD_Writer {
 
   def convertToJSONLD(data: RDD[Triple]): RDD[String] = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+
     val triplesJSONLD = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToJSONLD(allTriplesOfSubject))
 
     return triplesJSONLD
@@ -29,7 +30,7 @@ object JSONLD_Writer {
       rdf_subject.addProperty(rdf_predicate, rdf_object)
     })
 
-    RDFDataMgr.write(os, model, RDFFormat.JSONLD_COMPACT_PRETTY)
+    RDFDataMgr.write(os, model, RDFFormat.JSONLD_PRETTY)
 
     val it = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines()
     var jsonString = ""

@@ -11,7 +11,7 @@ import org.dbpedia.databus.FileHandler
 
 object QueryHandler {
 
-  def executeDownloadQuery(queryString:String, targetdir:String) = {
+  def executeDownloadQuery(queryString:String, targetdir:File) = {
     val query: Query = QueryFactory.create(queryString)
     val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 

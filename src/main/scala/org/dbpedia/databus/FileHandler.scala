@@ -17,7 +17,7 @@ object FileHandler {
 
 //  val src_dir  = "./downloaded_files/"
 
-  def convertFile(inputFile:File, temp_dir:String, dest_dir:String, outputFormat:String, outputCompression:String): Unit = {
+  def convertFile(inputFile:File, src_dir:File, dest_dir:File, outputFormat:String, outputCompression:String): Unit = {
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
     val compressionInputFile = getCompressionType(bufferedInputStream)
 
@@ -34,12 +34,12 @@ object FileHandler {
     }
 
     if (outputCompression=="same" && outputFormat=="same"){
-      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, temp_dir, dest_dir).toJava)
+      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, src_dir, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
     else if (outputCompression!="same" && outputFormat=="same"){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
-      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, temp_dir, dest_dir)
+      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, src_dir, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
       //file is written here
       copyStream(decompressedInStream, compressedOutStream)
@@ -47,7 +47,7 @@ object FileHandler {
     //  With FILEFORMAT CONVERSION
 //      MUSS NOCHMAL UEBERARBEITET WERDEN
     else if (outputCompression=="same" && outputFormat!="same"){
-      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, temp_dir, dest_dir)
+      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, src_dir, dest_dir)
       val typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)
       val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
       //file is written here
@@ -55,7 +55,7 @@ object FileHandler {
       typeConvertedFile.delete()
     }
     else{
-      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, temp_dir, dest_dir)
+      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, src_dir, dest_dir)
       var typeConvertedFile = File("")
 
       if(!(compressionInputFile=="")){
@@ -83,7 +83,7 @@ object FileHandler {
     }
   }
 
-  def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String,src_dir: String, dest_dir: String): File ={
+  def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String,src_dir: File, dest_dir: File): File ={
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
     val name = inputFile.name
@@ -92,13 +92,13 @@ object FileHandler {
 
     if(dataIdFile.exists) {
       val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
-      filepath_new = dest_dir.concat("/")
+      filepath_new = dest_dir.pathAsString.concat("/")
       dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
       filepath_new = filepath_new.concat(nameWithoutExtension)
     }
     else{
       // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
-      filepath_new = inputFile.pathAsString.replaceAll(File(src_dir).pathAsString,File(dest_dir).pathAsString.concat("/NoDataID"))
+      filepath_new = inputFile.pathAsString.replaceAll(src_dir.pathAsString,dest_dir.pathAsString.concat("/NoDataID"))
       filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
     }
 
@@ -135,9 +135,9 @@ object FileHandler {
     return queryString
   }
 
-  def downloadFile(url: String, targetdir:String): Unit = {
+  def downloadFile(url: String, targetdir:File): Unit = {
     println(url)
-    val filepath = targetdir.concat(url.split("http://|https://").map(_.trim).last) //filepath from url without http://
+    val filepath = targetdir.pathAsString.concat(url.split("http://|https://").map(_.trim).last) //filepath from url without http://
     val file = File(filepath)
     file.parent.createDirectoryIfNotExists(createParents = true)
     FileUtils.copyURLToFile(new URL(url),file.toJava)
@@ -196,26 +196,27 @@ object FileHandler {
     return fileType
   }
 
-  def unionFiles(tempDir:String, targetFile:File)={
+  def unionFiles(tempDir:File, targetFile:File)={
     //union all part files of Sansa
 
-    val findTripleFiles = s"find $tempDir/ -name part*" !!
+    //HOW TO ESCAPE WHITESPACES?
+    val findTripleFiles = s"find ${tempDir.pathAsString}/ -name part*" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
-    if (! (concatFiles == 0) ) System.err.println(s"[WARN] failed to merge $tempDir/*")
+    if (! (concatFiles == 0) ) System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
 
   }
 
-  def unionFilesWithHeaderFile(headerTempDir:String, tempDir:String, targetFile:File)={
+  def unionFilesWithHeaderFile(headerTempDir:File, tempDir:File, targetFile:File)={
     //union all part files of Sansa
 
-    val findTripleFiles = s"find $headerTempDir/ -name part*" #&& s"find $tempDir/ -name part*" !!
+    val findTripleFiles = s"find ${headerTempDir.pathAsString}/ -name part*" #&& s"find ${tempDir.pathAsString}/ -name part*" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
     if( concatFiles == 0 ){
-      FileUtils.deleteDirectory(File(headerTempDir).toJava)
+      FileUtils.deleteDirectory(headerTempDir.toJava)
     }
-    else System.err.println(s"[WARN] failed to merge $tempDir/*")
+    else System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
 
   }
 }

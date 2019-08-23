@@ -60,27 +60,27 @@ object Converter {
       }
     }
 
-    val tempDir = s"${inputFile.parent.pathAsString}/temp"
-    val headerTempDir = s"${inputFile.parent.pathAsString}/tempheader"
+    val tempDir = inputFile.parent / "temp"
+    val headerTempDir = inputFile.parent / "tempheader"
 
-    val targetFile: File = File(tempDir) / inputFile.nameWithoutExtension.concat(s".$outputFormat")
+    val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
     //delete temp directory if exists
     try {
-      File(tempDir).delete()
+      tempDir.delete()
     } catch {
       case noFile: NoSuchFileException => ""
     }
 
     outputFormat match {
-      case "nt" => data.saveAsNTriplesFile(tempDir)
+      case "nt" => data.saveAsNTriplesFile(tempDir.pathAsString)
       case "tsv" => {
         val solution = TSV_Writer.convertToTSV(data, spark)
-        solution(1).write.option("delimiter", "\t").csv(tempDir)
-        solution(0).write.option("delimiter", "\t").csv(headerTempDir)
+        solution(1).write.option("delimiter", "\t").csv(tempDir.pathAsString)
+        solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
       }
-      case "ttl" => TTL_Writer.convertToJSONLD(data).saveAsTextFile(tempDir)
-      case "jsonld" => JSONLD_Writer.convertToJSONLD(data).saveAsTextFile(tempDir)
+      case "ttl" => TTL_Writer.convertToJSONLD(data).saveAsTextFile(tempDir.pathAsString)
+      case "jsonld" => JSONLD_Writer.convertToJSONLD(data).saveAsTextFile(tempDir.pathAsString)
     }
 
     try {

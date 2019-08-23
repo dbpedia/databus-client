@@ -30,7 +30,7 @@ object Main_Downloader {
     println(s"DownloadQuery: \n\n$queryString")
     println("--------------------------------------------------------\n")
     println("Files to download:")
-    QueryHandler.executeDownloadQuery(queryString, conf.destination_dir())
+    QueryHandler.executeDownloadQuery(queryString, File(conf.destination_dir()))
 
     println("\n--------------------------------------------------------\n")
     println(s"Files have been downloaded to ${conf.destination_dir()}")

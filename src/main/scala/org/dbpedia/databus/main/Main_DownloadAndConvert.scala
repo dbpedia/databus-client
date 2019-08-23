@@ -13,7 +13,7 @@ object Main_DownloadAndConvert {
     println("\n--------------------------------------------------------\n")
 
     val conf = new CLIConf(args)
-    val temp_dir_download = "./tempdir_downloaded_files/"
+    val download_temp = File("./tempdir_downloaded_files/")
     val dataId_string = "dataid.ttl"
 
     //Test if query is a File or a Query
@@ -34,7 +34,7 @@ object Main_DownloadAndConvert {
 
     println("Downloader:\n")
     println("files to download:")
-    QueryHandler.executeDownloadQuery(queryString, temp_dir_download)
+    QueryHandler.executeDownloadQuery(queryString, download_temp)
 
     println("\n--------------------------------------------------------\n")
 
@@ -45,13 +45,12 @@ object Main_DownloadAndConvert {
     }
 
     println("Converter:\n")
-    val dir = File(temp_dir_download)
-    val files = dir.listRecursively.toSeq
+    val files = download_temp.listRecursively.toSeq
     for (file <- files) {
         if (! file.isDirectory){
           if (!file.name.equals(dataId_string)){
             println(s"input file:\t\t${file.pathAsString}")
-            FileHandler.convertFile(file, temp_dir_download, conf.destination_dir(), conf.output_format(), outputCompression )
+            FileHandler.convertFile(file, download_temp, File(conf.destination_dir()), conf.output_format(), outputCompression )
           }
         }
     }

@@ -39,7 +39,7 @@ object TSV_Writer {
 
     allPredicates.foreach(predicate => {
       var alreadyIncluded = false
-      var tripleObject = ""
+      var tripleObject = s"\t"
 
       triples.foreach(z => {
         val triplePredicate = z.getPredicate.toString()
@@ -53,7 +53,7 @@ object TSV_Writer {
         TSVseq = TSVseq :+ tripleObject
       }
       else {
-        TSVseq = TSVseq :+ ""
+        TSVseq = TSVseq :+ s"\t"
       }
     })
 
