@@ -50,6 +50,18 @@
             <artifactId>commons-compress</artifactId>
             <version>1.18</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.tukaani/xz  notwendig fuer lzma compression-->
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.luben/zstd-jni -->
+        <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+            <version>1.4.3-1</version>
+        </dependency>
         <dependency>
             <groupId>net.sansa-stack</groupId>
             <artifactId>sansa-rdf-spark_2.11</artifactId>
