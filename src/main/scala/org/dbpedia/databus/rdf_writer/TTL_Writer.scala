@@ -6,19 +6,22 @@ import org.apache.jena.graph.Triple
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SparkSession
 
 import scala.io.{Codec, Source}
 
+
+
 object TTL_Writer {
 
-  def convertToJSONLD(data: RDD[Triple]): RDD[String] = {
+  def convertToTTL(data: RDD[Triple], spark: SparkSession): RDD[String] = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
-    val triplesJSONLD = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToJSONLD(allTriplesOfSubject))
+    val triplesTTL = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToTTL(allTriplesOfSubject))
 
-    return triplesJSONLD
+    return triplesTTL
   }
 
-  def convertIteratorToJSONLD(triples: Iterable[Triple]):String ={
+  def convertIteratorToTTL(triples: Iterable[Triple]):String ={
     val model: Model = ModelFactory.createDefaultModel()
     val os = new ByteArrayOutputStream()
 
@@ -29,12 +32,11 @@ object TTL_Writer {
       rdf_subject.addProperty(rdf_predicate, rdf_object)
     })
 
-    RDFDataMgr.write(os, model, RDFFormat.TURTLE_PRETTY)
+    RDFDataMgr.write(os, model, RDFFormat.TURTLE)
 
-    val it = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines()
-    var jsonString = ""
-    it.foreach(part => jsonString = jsonString.concat(part))
-
-    return jsonString
+    Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
   }
+
 }
+
+

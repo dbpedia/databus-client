@@ -29,19 +29,6 @@ object JSONL_Reader {
 
     return tripleRDD
   }
-    //    var bracesOpen = 0
-  //    var jsonString = ""
-  //
-  //    for(line <- Source.fromFile(inputFile.toJava).getLines()) {
-  //      if (line.contains("{")) bracesOpen += 1
-  //      if (line.contains("}")) bracesOpen -= 1
-  //      jsonString = jsonString.concat(line)
-  //      if (bracesOpen == 0) {
-  //        println(jsonString)
-  //        tripleRDD = sc.union(readJSONLDObject(spark, jsonString))
-  //        jsonString = ""
-  //      }
-  //    }
 
   def readJSONLObject(spark: SparkSession, line: String):RDD[Triple] ={
     println(line)

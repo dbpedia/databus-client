@@ -18,6 +18,7 @@ object RDF_Reader {
       val triple =statements.nextStatement().asTriple()
       val dataTriple = sc.parallelize(Seq(triple))
       data = sc.union(data, dataTriple)
+      sc.parallelize(statements)
     }
 
     return data

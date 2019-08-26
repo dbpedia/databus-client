@@ -37,7 +37,7 @@ object Converter {
       .getOrCreate()
 
     val sparkContext = spark.sparkContext
-    sparkContext.setLogLevel("WARN")
+//    sparkContext.setLogLevel("WARN")
 
     val data = inputFormat match {
       case "nt" => NTriple_Reader.readNTriples(spark,inputFile)
@@ -79,7 +79,7 @@ object Converter {
         solution(1).write.option("delimiter", "\t").csv(tempDir.pathAsString)
         solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
       }
-      case "ttl" => TTL_Writer.convertToJSONLD(data).saveAsTextFile(tempDir.pathAsString)
+      case "ttl" => TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
       case "jsonld" => JSONLD_Writer.convertToJSONLD(data).saveAsTextFile(tempDir.pathAsString)
     }
 
