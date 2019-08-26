@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ns0="http://dbpedia.org/ontology/">
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/%22Weird_Al%22_Yankovic">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1740833</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/%3F%3F%3F">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1734038</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/''L'EnquÃªte''_(film,_2015)">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1619969</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/''La_Tempesta''_(Giorgione)">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1804306</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/''Ãmile_Dezaunay'''">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1573797</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/''à±º_ira''">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1799150</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/'Nduja">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1740834</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/'O_sole_mio">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1740835</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/'O_surdato_'nnammurato">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1787276</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/'nduja">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1719973</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/'s-Hertogenbosch">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1740837</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/'t_Nopeind">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1740838</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(1)_Ceres">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1664674</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(11284)_Belenus">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1659534</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(116)_Sirona">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1660693</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(136199)_Eris">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1657789</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(145445)_Le_Floch">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1656704</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(152)_Atala">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1667904</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(15810)_Arawn">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1735192</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(16912)_Rhiannon">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1660691</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(178)_Belisana">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1660692</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(18100)_Lebreton">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1659352</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(18458)_Caesar">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1674354</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(189011)_Ogmios">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1661173</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://br.dbpedia.org/resource/(19132)_Le_ClÃ©zio">
+    <ns0:wikiPageRevisionID rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1665300</ns0:wikiPageRevisionID>
+  </rdf:Description>
+
+</rdf:RDF>
