@@ -10,7 +10,7 @@ import net.sansa_stack.rdf.spark.io.RDFWriter
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
 import org.apache.spark.SparkException
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.rdf_writer.{JSONLD_Writer, TSV_Writer, TTL_Writer}
+import org.dbpedia.databus.rdf_writer.{JSONLD_Writer, RDFXML_Writer, TSV_Writer, TTL_Writer}
 import org.dbpedia.databus.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader}
 
 
@@ -81,12 +81,13 @@ object Converter {
       }
       case "ttl" => TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
       case "jsonld" => JSONLD_Writer.convertToJSONLD(data).saveAsTextFile(tempDir.pathAsString)
+      case "rdfxml" => RDFXML_Writer.convertToRDFXML(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     }
 
     try {
       outputFormat match {
         case "tsv" => FileHandler.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
-        case "jsonld" | "jsonl" | "nt" | "ttl" => FileHandler.unionFiles(tempDir, targetFile)
+        case "jsonld" | "jsonl" | "nt" | "ttl" | "rdfxml" => FileHandler.unionFiles(tempDir, targetFile)
       }
     }
     catch {

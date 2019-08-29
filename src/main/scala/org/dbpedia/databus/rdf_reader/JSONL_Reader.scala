@@ -36,7 +36,6 @@ object JSONL_Reader {
     var triples = sc.emptyRDD[Triple]
 
     val statements = ModelFactory.createDefaultModel().read(new ByteArrayInputStream(line.getBytes), "UTF-8", "JSONLD").listStatements()
-//    val statements = RDFDataMgr.loadModel(line).listStatements()
 
     while (statements.hasNext()){
       val triple =statements.nextStatement().asTriple()
