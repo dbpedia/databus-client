@@ -137,8 +137,8 @@ object FileHandler {
 
   def downloadFile(url: String, targetdir:File): Unit = {
     println(url)
-    val filepath = targetdir.pathAsString.concat(url.split("http://|https://").map(_.trim).last) //filepath from url without http://
-    val file = File(filepath)
+    val file = targetdir / url.split("http://|https://").map(_.trim).last //filepath from url without http://
+
     file.parent.createDirectoryIfNotExists(createParents = true)
     FileUtils.copyURLToFile(new URL(url),file.toJava)
 

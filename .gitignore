@@ -1,3 +1,4 @@
 .idea/
 *.iml
 target/
+#/home/eisenbahnplatte/git/databus-client/src/resources/databus-client_testbed/*/*/*

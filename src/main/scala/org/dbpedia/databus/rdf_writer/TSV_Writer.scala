@@ -24,11 +24,9 @@ object TSV_Writer {
 
     val triplesDS = sql.createDataset(triplesTSV)
     val triplesDF = triplesDS.select((0 until tsvheader.size).map(r => triplesDS.col("value").getItem(r)): _*)
-
     val headerDS = sql.createDataset(Vector((tsvheader)))
-
     val headerDF = headerDS.select((0 until tsvheader.size).map(r => headerDS.col("value").getItem(r)): _*)
-    headerDF.show(false)
+//    headerDF.show(false)
     triplesDF.show(false)
     val TSV_Solution = Vector(headerDF, triplesDF)
 
@@ -40,7 +38,7 @@ object TSV_Writer {
 
     allPredicates.foreach(predicate => {
       var alreadyIncluded = false
-      var tripleObject = s"\t"
+      var tripleObject = ""
 
       triples.foreach(triple => {
         val triplePredicate = triple.getPredicate.getURI
@@ -57,10 +55,11 @@ object TSV_Writer {
         TSVseq = TSVseq :+ tripleObject
       }
       else {
-        TSVseq = TSVseq :+ s"\t"
+        TSVseq = TSVseq :+ ""
       }
     })
 
+    println(TSVseq)
     return TSVseq
   }
 

@@ -76,7 +76,7 @@ object Converter {
       case "nt" => data.saveAsNTriplesFile(tempDir.pathAsString)
       case "tsv" => {
         val solution = TSV_Writer.convertToTSV(data, spark)
-        solution(1).write.option("delimiter", "\t").csv(tempDir.pathAsString)
+        solution(1).write.option("delimiter", "\t").option("nullValue","?").option("treatEmptyValuesAsNulls", "true").csv(tempDir.pathAsString)
         solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
       }
       case "ttl" => TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
