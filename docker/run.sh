@@ -28,7 +28,8 @@ fi
     
 echo $ENV_VARIABLES  
 cd ..
-mvn scala:run -Dlauncher=execute -DaddArgs=$ENV_VARIABLES
+
+mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES
 
 mkdir /data/toLoad
 cd /root/databus-client/converted_files/
