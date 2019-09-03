@@ -6,18 +6,18 @@ RUN apt-get -y install git openjdk-8-jdk  maven
 
 WORKDIR /root/
 
-RUN git clone https://git.informatik.uni-leipzig.de/fg60hyfy/dbpediaclient.git
+RUN git clone https://github.com/dbpedia/databus-client.git
 #COPY . ./dbpediaclient
 #CMD git pull
 
 RUN echo 2 | update-alternatives --config java
 
-RUN cd dbpediaclient && mvn install
+RUN cd databus-client && mvn install
 
-WORKDIR /root/dbpediaclient
+WORKDIR /root/databus-client
 
 RUN ls
 
 
-ENTRYPOINT ["/bin/bash","/root/dbpediaclient/run.sh"] 
+ENTRYPOINT ["/bin/bash","/root/databus-client/docker/run.sh"] 
 

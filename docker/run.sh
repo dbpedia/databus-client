@@ -26,11 +26,12 @@ then
     ENV_VARIABLES="$ENV_VARIABLES$NEW"
 fi
     
-echo $ENV_VARIABLES   
+echo $ENV_VARIABLES  
+cd ..
 mvn scala:run -Dlauncher=execute -DaddArgs=$ENV_VARIABLES
 
 mkdir /data/toLoad
-cd /root/dbpediaclient/converted_files/
+cd /root/databus-client/converted_files/
 find . -mindepth 2 -type f -print -exec mv --backup=numbered {} /data/toLoad \;
 
 bash /virtuoso.sh

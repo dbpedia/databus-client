@@ -99,7 +99,11 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.avengerpenguin</groupId>
+            <artifactId>r2r_2.11.1</artifactId>
+            <version>0.0.0</version>
+        </dependency>
     </dependencies>
 
 
