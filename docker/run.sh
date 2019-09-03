@@ -27,9 +27,8 @@ then
 fi
     
 echo $ENV_VARIABLES  
-cd ..
 ls -A
-echo mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES
+echo "mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES"
 mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES
 
 mkdir /data/toLoad
