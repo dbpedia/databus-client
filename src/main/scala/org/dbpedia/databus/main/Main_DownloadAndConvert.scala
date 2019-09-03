@@ -45,15 +45,32 @@ object Main_DownloadAndConvert {
     }
 
     println("Converter:\n")
+//    val files = download_temp.listRecursively.toSeq
+//    for (file <- files) {
+//        if (! file.isDirectory){
+//          if (!file.name.equals(dataId_string)){
+//            println(s"input file:\t\t${file.pathAsString}")
+//            FileHandler.convertFile(file, download_temp, File(conf.destination_dir()), conf.output_format(), outputCompression )
+//          }
+//        }
+//    }
+
+    val destination_dir = File(conf.destination_dir())
+
     val files = download_temp.listRecursively.toSeq
     for (file <- files) {
-        if (! file.isDirectory){
-          if (!file.name.equals(dataId_string)){
-            println(s"input file:\t\t${file.pathAsString}")
-            FileHandler.convertFile(file, download_temp, File(conf.destination_dir()), conf.output_format(), outputCompression )
-          }
+      if (! file.isDirectory){
+        if (!file.name.equals(dataId_string)){
+          println(s"input file:\t\t${file.pathAsString}")
+          FileHandler.convertFile(file, download_temp, destination_dir, conf.output_format(), outputCompression )
         }
+      }
+      else if (file.name == "temp") { //Delete temp dir of previous failed run
+        file.delete()
+      }
     }
+
+
   }
 
 }
