@@ -128,15 +128,15 @@
                     <launchers>
                         <launcher>
                             <id>downloadconverter</id>
-                            <mainClass>org.dbpedia.databus.Main_DownloadAndConvert</mainClass>
+                            <mainClass>org.dbpedia.databus.main.Main_DownloadAndConvert</mainClass>
                         </launcher>
                         <launcher>
                             <id>downloader</id>
-                            <mainClass>org.dbpedia.databus.Main_Downloader</mainClass>
+                            <mainClass>org.dbpedia.databus.main.Main_Downloader</mainClass>
                         </launcher>
                         <launcher>
                             <id>converter</id>
-                            <mainClass>org.dbpedia.databus.Main_Converter</mainClass>
+                            <mainClass>org.dbpedia.databus.main.Main_Converter</mainClass>
                         </launcher>
                     </launchers>
                 </configuration>
