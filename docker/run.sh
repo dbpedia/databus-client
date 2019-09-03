@@ -20,11 +20,17 @@ then
     ENV_VARIABLES="$ENV_VARIABLES$NEW"
 fi
 
-TARGET="files/"
-if { [ -z "$TARGETREPO" ] && [ ! -z "$T" ]; } || { [ ! -z "$TARGETREPO" ] && [ -z "$T" ]; };
+if { [ -z "$SOURCE" ] && [ ! -z "$S" ]; } || { [ ! -z "$SOURCE" ] && [ -z "$S" ]; };
 then
-    TARGET="--targetrepo|$TARGETREPO$T|"
-    ENV_VARIABLES="$ENV_VARIABLES$TARGET"
+    NEW="--source|$SOURCE$S|"
+    ENV_VARIABLES="$ENV_VARIABLES$NEW"
+fi
+
+DEST="files/"
+if { [ -z "$DESTINATION" ] && [ ! -z "$D" ]; } || { [ ! -z "$DESTINATION" ] && [ -z "$D" ]; };
+then
+    DEST="--destination|$DESTINATION$D|"
+    ENV_VARIABLES="$ENV_VARIABLES$DEST"
 fi
     
 echo $ENV_VARIABLES  
@@ -33,7 +39,7 @@ echo "mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES"
 mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES
 
 mkdir /data/toLoad
-cd /root/databus-client/$TARGET
+cd /root/databus-client/$DEST
 find . -mindepth 2 -type f -print -exec mv --backup=numbered {} /data/toLoad \;
 
 bash /virtuoso.sh

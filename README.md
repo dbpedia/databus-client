@@ -1,14 +1,24 @@
-
 # DBpedia Databus Client
 
 Collection of useful tools to download and convert data from the [databus](https://databus.dbpedia.org)
+
+## Concept
+
+The databus-client is designed to convert data in several layers:
+
+| Level | Supported formats
+|---|---|
+| 1.  Download as it is | All files on the [databus](https://databus.dbpedia.org)
+| 2.  Convert compression | bz2, gz, br, lzma, xz, zstd, snappy-framed, deflate (, no compression)
+| 3.  Convert format | nt, ttl, rdfxml, json-ld, tsv(write-only)
+| 4.  Mapping | coming soon
 
 ## Usage   
 
 Installation
 ```
-git clone https://github.com/dbpedia/dbpedia-client.git
-cd dbpedia-client
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client
 mvn clean install
 ```
 
@@ -31,12 +41,12 @@ List of possible command line options.
 You can load any ?file query. 
 * You have the choice either to pass the query directly as a program variable (`-e QUERY="..."`), or save a query in a file and pass the filepath as variable.
 
-You can choose between different compression formats:
+<!---You can choose between different compression formats:
     
-* `bz2, gz, br, snappy-framed, snappy-raw, deflate, deflate64, lz4-block, lz4-framed, lzma, pack200, xz, z, zstd`
+ * `bz2, gz, br, snappy-framed, deflate, lzma, xz, zstd` 
 
 > **Important:** At the moment only conversion to NTriples(_"nt"_), TSV(_"tsv"_), Json-LD(_"jsonld"_) or _"same"_ possible
-
+-->
 
 ### Single Modules
 
@@ -59,21 +69,25 @@ mvn scala:run -Dlauncher=converter --src ./downloaded_files/ -t ./converted_file
 Build the docker image.
 
 ```
-docker build -t dbpedia-client ./ 
+docker build -t databus-client ./ 
 ```
 
 Run a docker container.
 
 ```
-docker run -p 8890:8890 --name client -e QUERY=/root/dbpediaclient/src/query/query dbpedia-client
+docker run -p 8890:8890 --name client -e LAUNCHER=downloadconverter -e QUERY=/root/dbpediaclient/src/query/query dbpedia-client
 ```
 
-You can pass all the variables that are shown in the list above as Environment Variables (**-e**).  
+You have to specify the launcher you want the container to execute. Therefore you need to pass the name of the launcher as environment variable (`LAUNCHER` or `L`)
+```
+-e LAUNCHER=downloader
+```
 
+Additionally you can pass all the variables that are shown in the list above as Environment Variables (**-e**).  
 You have to write the Environment Variables in Capital Letters, if you use docker to execute.  
 
 ```
-docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz dbpedia-client
+docker run -p 8890:8890 --name client -e L=downloadconverter -e Q=<path> -e F=nt -e C=gz dbpedia-client
 ```
 
 To stop the image *client* in the container *dbpedia-client* use `docker stop client`
