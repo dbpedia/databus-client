@@ -6,8 +6,8 @@ RUN apt-get -y install git openjdk-8-jdk  maven
 
 WORKDIR /root/
 
-RUN git clone https://github.com/dbpedia/databus-client.git
-#COPY .. ./databus-client
+#RUN git clone https://github.com/dbpedia/databus-client.git
+COPY . ./databus-client
 #CMD git pull
 
 RUN echo 2 | update-alternatives --config java
