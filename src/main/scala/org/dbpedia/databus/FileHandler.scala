@@ -21,6 +21,7 @@ object FileHandler {
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
     val compressionInputFile = getCompressionType(bufferedInputStream)
 
+    println(s"INPUTFILE: ${inputFile.pathAsString}")
     val formatInputFile = {
       try {
         if(!(getFormatType(inputFile) == "")){
@@ -167,8 +168,11 @@ object FileHandler {
   def getFormatType(inputFile: File): String = {
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
     val lines = Source.fromFile((inputFile.parent / "dataid.ttl").pathAsString).getLines().filter(_ contains s"${inputFile.name}")
+    println(lines.length)
     val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
     var fileURL = ""
+
+
 
     for (line <- lines) {
       breakable {
