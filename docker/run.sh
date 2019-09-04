@@ -43,6 +43,6 @@ mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES
 
 mkdir /data/toLoad
 cd /root/databus-client/$DEST
-find . -mindepth 2 -type f -print -exec mv --backup=numbered {} /data/toLoad \;
+#find . -mindepth 2 -type f -print -exec mv --backup=numbered {} /data/toLoad \;
 
 bash /virtuoso.sh
