@@ -18,13 +18,21 @@ object Converter {
 
   def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
     try {
-      val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)
-      return compressorIn
-    }
-    catch {
-      case noCompression: CompressorException => return bufferedInputStream
-      case inInitializerError: ExceptionInInitializerError => return bufferedInputStream
-      case noClassDefFoundError: NoClassDefFoundError => return bufferedInputStream
+
+      new CompressorStreamFactory().createCompressorInputStream(
+        CompressorStreamFactory.detect(bufferedInputStream),
+        bufferedInputStream,
+        true
+      )
+
+    } catch {
+
+      case ce: CompressorException =>
+        System.err.println(s"[WARN] No compression found for input stream - raw input")
+        bufferedInputStream
+
+      case unknown: Throwable => println("[ERROR] Unknown exception: " + unknown)
+        bufferedInputStream
     }
   }
 

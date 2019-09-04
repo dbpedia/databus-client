@@ -19,26 +19,15 @@ object FileHandler {
 
   def convertFile(inputFile:File, src_dir:File, dest_dir:File, outputFormat:String, outputCompression:String): Unit = {
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
+
     val compressionInputFile = getCompressionType(bufferedInputStream)
+    val formatInputFile = getFormatType(inputFile,compressionInputFile)
 
-    println(s"INPUTFILE: ${inputFile.pathAsString}")
-    val formatInputFile = {
-      try {
-        if(!(getFormatType(inputFile) == "")){
-          getFormatType(inputFile)
-        } else {
-          getFormatTypeWithoutDataID(inputFile, compressionInputFile)
-        }
-      } catch {
-        case fileNotFoundException: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
-      }
-    }
-
-    if (outputCompression=="same" && outputFormat=="same"){
+    if (outputCompression==compressionInputFile && outputFormat==formatInputFile){
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, src_dir, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
-    else if (outputCompression!="same" && outputFormat=="same"){
+    else if (outputCompression!=compressionInputFile && outputFormat==formatInputFile){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
       val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, src_dir, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
@@ -47,7 +36,7 @@ object FileHandler {
     }
     //  With FILEFORMAT CONVERSION
 //      MUSS NOCHMAL UEBERARBEITET WERDEN
-    else if (outputCompression=="same" && outputFormat!="same"){
+    else if (outputCompression==compressionInputFile && outputFormat!=formatInputFile){
       val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, src_dir, dest_dir)
       val typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)
       val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
@@ -165,16 +154,49 @@ object FileHandler {
     }
   }
 
-  def getFormatType(inputFile: File): String = {
-    // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
-    println("hallo")
-    val lines = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "ISO-8859-1").getLines().filter(_ contains s"${inputFile.name}")
+  def copyUnchangedFile(inputFile:File , src_dir:File, dest_dir:File)={
+    val name = inputFile.name
+    var filepath_new = ""
+    val dataIdFile = inputFile.parent / "dataid.ttl"
 
-    println(lines.length)
+    if(dataIdFile.exists) {
+      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
+      filepath_new = dest_dir.pathAsString.concat("/")
+      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
+      filepath_new = filepath_new.concat(name)
+    }
+    else{
+      filepath_new = inputFile.pathAsString.replaceAll(src_dir.pathAsString,dest_dir.pathAsString.concat("/NoDataID"))
+    }
+
+    val outputFile = File(filepath_new)
+
+    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+
+    val outputStream = new FileOutputStream(outputFile.toJava)
+    copyStream(new FileInputStream(inputFile.toJava), outputStream)
+  }
+
+  def getFormatType(inputFile:File, compressionInputFile:String)={
+    {
+      try {
+        if(!(getFormatTypeWithDataID(inputFile) == "")){
+          getFormatTypeWithDataID(inputFile)
+        } else {
+          getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+        }
+      } catch {
+        case fileNotFoundException: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+      }
+    }
+  }
+
+  def getFormatTypeWithDataID(inputFile: File): String = {
+    // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
+    val lines = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8").getLines().filter(_ contains s"${inputFile.name}")
+
     val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
     var fileURL = ""
-
-
 
     for (line <- lines) {
       breakable {
@@ -224,5 +246,20 @@ object FileHandler {
     }
     else System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
 
+  }
+
+  def deleteDataIdFiles(dir:File, dataIdString:String) ={
+    val files = dir.listRecursively.toSeq
+    for (file <- files) {
+      if (! file.isDirectory){
+        if (file.name.equals(dataIdString)){
+          println(s"dataid file:\t\t${file.pathAsString}")
+          file.delete()
+        }
+      }
+      else if (file.name == "temp") { //Delete temp dir of previous failed run
+        file.delete()
+      }
+    }
   }
 }

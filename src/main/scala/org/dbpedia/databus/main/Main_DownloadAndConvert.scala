@@ -45,15 +45,6 @@ object Main_DownloadAndConvert {
     }
 
     println("Converter:\n")
-//    val files = download_temp.listRecursively.toSeq
-//    for (file <- files) {
-//        if (! file.isDirectory){
-//          if (!file.name.equals(dataId_string)){
-//            println(s"input file:\t\t${file.pathAsString}")
-//            FileHandler.convertFile(file, download_temp, File(conf.destination_dir()), conf.output_format(), outputCompression )
-//          }
-//        }
-//    }
 
     val destination_dir = File(conf.destination_dir())
 
