@@ -26,7 +26,7 @@ then
     ENV_VARIABLES="$ENV_VARIABLES$NEW"
 fi
 
-DEST="files/"
+DEST="./files"
 if { [ -z "$DESTINATION" ] && [ ! -z "$D" ]; } || { [ ! -z "$DESTINATION" ] && [ -z "$D" ]; };
 then
     DEST="$DESTINATION$D"

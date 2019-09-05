@@ -59,10 +59,11 @@ object Converter {
     val data = inputFormat match {
       case "nt" => NTriple_Reader.readNTriples(spark,inputFile)
       case "rdf" => RDF_Reader.readRDF(spark, inputFile)
-      case "ttl" => {
-        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) RDF_Reader.readRDF(spark, inputFile)
-        else NTriple_Reader.readNTriples(spark, inputFile)
-      }
+      case "ttl" => RDF_Reader.readTTL(spark, inputFile)
+//      {
+//        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) RDF_Reader.readRDF(spark, inputFile)
+//        else NTriple_Reader.readNTriples(spark, inputFile)
+//      }
       case "jsonld" => RDF_Reader.readRDF(spark, inputFile) //Ein Objekt pro Datei
 //      } catch {
 //        case noSuchMethodError: NoSuchMethodError => {
@@ -81,6 +82,7 @@ object Converter {
       case "tsv" => sparkContext.emptyRDD[Triple]
     }
 
+    data.foreach(println(_))
     val tempDir = inputFile.parent / "temp"
     val headerTempDir = inputFile.parent / "tempheader"
 
