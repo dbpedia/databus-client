@@ -65,7 +65,17 @@
         <dependency>
             <groupId>net.sansa-stack</groupId>
             <artifactId>sansa-rdf-spark_2.11</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.postgis</groupId>
+                    <artifactId>postgis-jdbc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ibm.sparktc.sparkbench</groupId>
+                    <artifactId>sparkbench</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>

@@ -31,7 +31,11 @@ object RDFXML_Writer {
         ResourceFactory.createResource(triple.getSubject.getURI),
         ResourceFactory.createProperty(triple.getPredicate.getURI),
         {
-          if(triple.getObject.isLiteral) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralDatatype)
+          println("hi")
+          if(triple.getObject.isLiteral) {
+            if(triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralDatatype)
+            else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralLanguage)
+          }
           else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)
           else model.asRDFNode(NodeFactory.createBlankNode())
         })

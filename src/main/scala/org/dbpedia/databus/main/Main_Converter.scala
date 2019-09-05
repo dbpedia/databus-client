@@ -17,11 +17,12 @@ object Main_Converter {
     println(s"""convert all files from\n\nPATH: ${conf.source_dir()}\n\nto\n\nPATH: ${conf.destination_dir()}""")
     println("\n--------------------------------------------------------\n")
 
-    //  if no compression wanted (output_compression not set) change the value to an empty string
-    val outputCompression = conf.output_compression.isEmpty match {
-      case true => ""
-      case false => conf.output_compression()
-    }
+//    //  if no compression wanted (output_compression not set) change the value to an empty string
+//    val outputCompression = conf.output_compression.isEmpty match {
+//      case true => ""
+//      case false => conf.output_compression()
+//    }
+
 
     println("Conversion:\n")
     val source_dir = File(conf.source_dir())
@@ -33,7 +34,7 @@ object Main_Converter {
         if (! file.isDirectory){
           if (!file.name.equals(dataId_string)){
             println(s"input file:\t\t${file.pathAsString}")
-            FileHandler.convertFile(file, source_dir, destination_dir, conf.output_format(), outputCompression )
+            FileHandler.convertFile(file, source_dir, destination_dir, conf.output_format(), conf.output_compression() )
           }
         }
         else if (file.name == "temp") { //Delete temp dir of previous failed run
@@ -43,7 +44,7 @@ object Main_Converter {
     }
     else{
       println(s"input file:\t\t${source_dir.pathAsString}")
-      FileHandler.convertFile(source_dir, source_dir.parent, destination_dir, conf.output_format(), outputCompression )
+      FileHandler.convertFile(source_dir, source_dir.parent, destination_dir, conf.output_format(), conf.output_compression() )
     }
 
   }

@@ -15,19 +15,17 @@ import scala.util.control.Breaks.{break, breakable}
 
 object FileHandler {
 
-//  val src_dir  = "./downloaded_files/"
-
   def convertFile(inputFile:File, src_dir:File, dest_dir:File, outputFormat:String, outputCompression:String): Unit = {
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
 
     val compressionInputFile = getCompressionType(bufferedInputStream)
     val formatInputFile = getFormatType(inputFile,compressionInputFile)
 
-    if (outputCompression==compressionInputFile && outputFormat==formatInputFile){
+    if (outputCompression==compressionInputFile && (outputFormat==formatInputFile || outputFormat=="same")){
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, src_dir, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
-    else if (outputCompression!=compressionInputFile && outputFormat==formatInputFile){
+    else if (outputCompression!=compressionInputFile && (outputFormat==formatInputFile || outputFormat=="same")){
       val decompressedInStream = Converter.decompress(bufferedInputStream)
       val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, src_dir, dest_dir)
       val compressedOutStream = Converter.compress(outputCompression, compressedFile)
@@ -52,7 +50,6 @@ object FileHandler {
         val decompressedInStream = Converter.decompress(bufferedInputStream)
         val decompressedFile = inputFile.parent / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
         copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
-//        println(decompressedFile.pathAsString)
         typeConvertedFile = Converter.convertFormat(decompressedFile, formatInputFile, outputFormat)
         decompressedFile.delete()
       }
@@ -228,7 +225,7 @@ object FileHandler {
     //union all part files of Sansa
 
     //HOW TO ESCAPE WHITESPACES?
-    val findTripleFiles = s"find ${tempDir.pathAsString}/ -name part*" !!
+    val findTripleFiles = s"find ${tempDir.pathAsString}/ -name part* -not -empty" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
     if (! (concatFiles == 0) ) System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
@@ -248,18 +245,18 @@ object FileHandler {
 
   }
 
-  def deleteDataIdFiles(dir:File, dataIdString:String) ={
-    val files = dir.listRecursively.toSeq
-    for (file <- files) {
-      if (! file.isDirectory){
-        if (file.name.equals(dataIdString)){
-          println(s"dataid file:\t\t${file.pathAsString}")
-          file.delete()
-        }
-      }
-      else if (file.name == "temp") { //Delete temp dir of previous failed run
-        file.delete()
-      }
-    }
-  }
+//  def deleteDataIdFiles(dir:File, dataIdString:String) ={
+//    val files = dir.listRecursively.toSeq
+//    for (file <- files) {
+//      if (! file.isDirectory){
+//        if (file.name.equals(dataIdString)){
+//          println(s"dataid file:\t\t${file.pathAsString}")
+//          file.delete()
+//        }
+//      }
+//      else if (file.name == "temp") { //Delete temp dir of previous failed run
+//        file.delete()
+//      }
+//    }
+//  }
 }

@@ -12,11 +12,20 @@ import org.apache.spark.SparkException
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.rdf_writer.{JSONLD_Writer, RDFXML_Writer, TSV_Writer, TTL_Writer}
 import org.dbpedia.databus.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader}
-
+import org.apache.jena.graph.Triple
 
 object Converter {
 
   def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
+//    try {
+//      val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)
+//      return compressorIn
+//    }
+//    catch {
+//      case noCompression: CompressorException => return bufferedInputStream
+//      case inInitializerError: ExceptionInInitializerError => return bufferedInputStream
+//      case noClassDefFoundError: NoClassDefFoundError => return bufferedInputStream
+//    }
     try {
 
       new CompressorStreamFactory().createCompressorInputStream(
@@ -50,7 +59,10 @@ object Converter {
     val data = inputFormat match {
       case "nt" => NTriple_Reader.readNTriples(spark,inputFile)
       case "rdf" => RDF_Reader.readRDF(spark, inputFile)
-      case "ttl" => RDF_Reader.readRDF(spark, inputFile)
+      case "ttl" => {
+        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) RDF_Reader.readRDF(spark, inputFile)
+        else NTriple_Reader.readNTriples(spark, inputFile)
+      }
       case "jsonld" => RDF_Reader.readRDF(spark, inputFile) //Ein Objekt pro Datei
 //      } catch {
 //        case noSuchMethodError: NoSuchMethodError => {
@@ -66,6 +78,7 @@ object Converter {
           RDF_Reader.readRDF(spark, inputFile)
         }
       }
+      case "tsv" => sparkContext.emptyRDD[Triple]
     }
 
     val tempDir = inputFile.parent / "temp"
@@ -80,6 +93,7 @@ object Converter {
       case noFile: NoSuchFileException => ""
     }
 
+//    data.foreach(x=>println(s"triple: ${x.toString()}"))
     outputFormat match {
       case "nt" => data.saveAsNTriplesFile(tempDir.pathAsString)
       case "tsv" => {
