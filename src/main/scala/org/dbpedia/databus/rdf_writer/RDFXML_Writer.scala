@@ -26,7 +26,6 @@ object RDFXML_Writer {
     val os = new ByteArrayOutputStream()
 
     triples.foreach(triple => {
-
       val stmt = ResourceFactory.createStatement(
         ResourceFactory.createResource(triple.getSubject.getURI),
         ResourceFactory.createProperty(triple.getPredicate.getURI),

@@ -32,7 +32,6 @@ object JSONLD_Writer {
           else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)
           else model.asRDFNode(NodeFactory.createBlankNode())
         })
-
       model.add(stmt)
     })
 

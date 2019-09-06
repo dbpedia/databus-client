@@ -11,7 +11,7 @@ import org.apache.commons.compress.compressors.{CompressorException, CompressorI
 import org.apache.spark.SparkException
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.rdf_writer.{JSONLD_Writer, RDFXML_Writer, TSV_Writer, TTL_Writer}
-import org.dbpedia.databus.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader}
+import org.dbpedia.databus.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader, TTL_Reader}
 import org.apache.jena.graph.Triple
 
 object Converter {
@@ -59,11 +59,10 @@ object Converter {
     val data = inputFormat match {
       case "nt" => NTriple_Reader.readNTriples(spark,inputFile)
       case "rdf" => RDF_Reader.readRDF(spark, inputFile)
-      case "ttl" => RDF_Reader.readTTL(spark, inputFile)
-//      {
-//        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) RDF_Reader.readRDF(spark, inputFile)
-//        else NTriple_Reader.readNTriples(spark, inputFile)
-//      }
+      case "ttl" => {
+        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) TTL_Reader.readTTL(spark, inputFile)
+        else NTriple_Reader.readNTriples(spark, inputFile)
+      }
       case "jsonld" => RDF_Reader.readRDF(spark, inputFile) //Ein Objekt pro Datei
 //      } catch {
 //        case noSuchMethodError: NoSuchMethodError => {
@@ -79,7 +78,7 @@ object Converter {
           RDF_Reader.readRDF(spark, inputFile)
         }
       }
-      case "tsv" => sparkContext.emptyRDD[Triple]
+      case "tsv" => spark.sparkContext.emptyRDD[Triple] //mappings.TSV_Reader.tsv_nt_map(spark)
     }
 
     data.foreach(println(_))
