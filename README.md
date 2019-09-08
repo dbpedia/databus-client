@@ -3,6 +3,8 @@
 
 Collection of useful tools to download and convert data from the [databus](https://databus.dbpedia.org)
 
+**working alpha**: code sshould compile and often produce correct results. Please expect a tremendous amount of code refactoring and fluctuation. There will be an open-source licence. presumably GPL or Apache. 
+
 ## Usage   
 
 Installation
