@@ -20,17 +20,26 @@ then
     ENV_VARIABLES="$ENV_VARIABLES$NEW"
 fi
 
-if { [ -z "$TARGETREPO" ] && [ ! -z "$T" ]; } || { [ ! -z "$TARGETREPO" ] && [ -z "$T" ]; };
+if { [ -z "$SOURCE" ] && [ ! -z "$S" ]; } || { [ ! -z "$SOURCE" ] && [ -z "$S" ]; };
 then
-    NEW="--targetrepo|$TARGETREPO$T|"
+    NEW="--source|$SOURCE$S|"
     ENV_VARIABLES="$ENV_VARIABLES$NEW"
 fi
-    
-echo $ENV_VARIABLES   
-mvn scala:run -Dlauncher=execute -DaddArgs=$ENV_VARIABLES
+
+DEST="./files"
+if { [ -z "$DESTINATION" ] && [ ! -z "$D" ]; } || { [ ! -z "$DESTINATION" ] && [ -z "$D" ]; };
+then
+    DEST="$DESTINATION$D"
+    NEW="--destination|$DESTINATION$D|"
+    ENV_VARIABLES="$ENV_VARIABLES$NEW"
+fi
+
+
+mvn scala:run -Dlauncher=$LAUNCHER$L -DaddArgs=$ENV_VARIABLES
+
 
 mkdir /data/toLoad
-cd /root/dbpediaclient/converted_files/
+cd /root/databus-client/$DEST
 find . -mindepth 2 -type f -print -exec mv --backup=numbered {} /data/toLoad \;
 
 bash /virtuoso.sh

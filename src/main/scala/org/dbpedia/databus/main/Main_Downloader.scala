@@ -13,6 +13,8 @@ object Main_Downloader {
     println("\n--------------------------------------------------------\n")
 
     val conf = new CLIConf(args)
+    val download_temp = File("./tempdir_downloaded_files/")
+    val dataId_string = "dataid.ttl"
 
     //Test if query is a File or a Query
     var queryString:String = ""
@@ -30,7 +32,19 @@ object Main_Downloader {
     println(s"DownloadQuery: \n\n$queryString")
     println("--------------------------------------------------------\n")
     println("Files to download:")
-    QueryHandler.executeDownloadQuery(queryString, File(conf.destination_dir()))
+    QueryHandler.executeDownloadQuery(queryString, download_temp)
+
+    val files = download_temp.listRecursively.toSeq
+    for (file <- files) {
+      if (! file.isDirectory){
+        if (!file.name.equals(dataId_string)){
+          FileHandler.copyUnchangedFile(file, download_temp, File(conf.destination_dir()))
+        }
+      }
+      else if (file.name == "temp") { //Delete temp dir of previous failed run
+        file.delete()
+      }
+    }
 
     println("\n--------------------------------------------------------\n")
     println(s"Files have been downloaded to ${conf.destination_dir()}")

@@ -8,15 +8,6 @@
     <artifactId>databus-client</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <encoding>UTF-8</encoding>
-        <scala.version>2.11.12</scala.version>
-        <scala.compat.version>2.11</scala.compat.version>
-        <spark.version>2.4.0</spark.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -45,6 +36,7 @@
             <version>3.12.0</version>
             <type>pom</type>
         </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
@@ -56,26 +48,32 @@
             <artifactId>xz</artifactId>
             <version>1.8</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.luben/zstd-jni -->
+        <!-- https://mvnrepository.com/artifact/com.github.luben/zstd-jni notwendig fuer zstd compression-->
         <dependency>
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
             <version>1.4.3-1</version>
         </dependency>
+
         <dependency>
             <groupId>net.sansa-stack</groupId>
             <artifactId>sansa-rdf-spark_2.11</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.postgis</groupId>
+                    <artifactId>postgis-jdbc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ibm.sparktc.sparkbench</groupId>
+                    <artifactId>sparkbench</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.11</artifactId>
             <version>2.4.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.w3</groupId>
-            <artifactId>banana-rdf_2.11</artifactId>
-            <version>0.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
@@ -99,8 +97,31 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.taxonic.carml</groupId>
+            <artifactId>carml-engine</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taxonic.carml</groupId>
+            <artifactId>carml-logical-source-resolver-csv</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-model</artifactId>
+            <version>3.0.0</version>
+        </dependency>
     </dependencies>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <encoding>UTF-8</encoding>
+        <scala.version>2.11.12</scala.version>
+        <scala.compat.version>2.11</scala.compat.version>
+        <spark.version>2.4.0</spark.version>
+    </properties>
 
 
     <build>
@@ -124,15 +145,15 @@
                     <launchers>
                         <launcher>
                             <id>downloadconverter</id>
-                            <mainClass>org.dbpedia.databus.Main_DownloadAndConvert</mainClass>
+                            <mainClass>org.dbpedia.databus.main.Main_DownloadAndConvert</mainClass>
                         </launcher>
                         <launcher>
                             <id>downloader</id>
-                            <mainClass>org.dbpedia.databus.Main_Downloader</mainClass>
+                            <mainClass>org.dbpedia.databus.main.Main_Downloader</mainClass>
                         </launcher>
                         <launcher>
                             <id>converter</id>
-                            <mainClass>org.dbpedia.databus.Main_Converter</mainClass>
+                            <mainClass>org.dbpedia.databus.main.Main_Converter</mainClass>
                         </launcher>
                     </launchers>
                 </configuration>

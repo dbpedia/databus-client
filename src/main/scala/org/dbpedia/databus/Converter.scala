@@ -10,21 +10,38 @@ import net.sansa_stack.rdf.spark.io.RDFWriter
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
 import org.apache.spark.SparkException
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.rdf_writer.{JSONLD_Writer, TSV_Writer, TTL_Writer}
-import org.dbpedia.databus.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader}
-
+import org.dbpedia.databus.rdf_writer.{JSONLD_Writer, RDFXML_Writer, TSV_Writer, TTL_Writer}
+import org.dbpedia.databus.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader, TTL_Reader}
+import org.apache.jena.graph.Triple
 
 object Converter {
 
   def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
+//    try {
+//      val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)
+//      return compressorIn
+//    }
+//    catch {
+//      case noCompression: CompressorException => return bufferedInputStream
+//      case inInitializerError: ExceptionInInitializerError => return bufferedInputStream
+//      case noClassDefFoundError: NoClassDefFoundError => return bufferedInputStream
+//    }
     try {
-      val compressorIn: CompressorInputStream = new CompressorStreamFactory().createCompressorInputStream(bufferedInputStream)
-      return compressorIn
-    }
-    catch {
-      case noCompression: CompressorException => return bufferedInputStream
-      case inInitializerError: ExceptionInInitializerError => return bufferedInputStream
-      case noClassDefFoundError: NoClassDefFoundError => return bufferedInputStream
+
+      new CompressorStreamFactory().createCompressorInputStream(
+        CompressorStreamFactory.detect(bufferedInputStream),
+        bufferedInputStream,
+        true
+      )
+
+    } catch {
+
+      case ce: CompressorException =>
+        System.err.println(s"[WARN] No compression found for input stream - raw input")
+        bufferedInputStream
+
+      case unknown: Throwable => println("[ERROR] Unknown exception: " + unknown)
+        bufferedInputStream
     }
   }
 
@@ -42,7 +59,10 @@ object Converter {
     val data = inputFormat match {
       case "nt" => NTriple_Reader.readNTriples(spark,inputFile)
       case "rdf" => RDF_Reader.readRDF(spark, inputFile)
-      case "ttl" => RDF_Reader.readRDF(spark, inputFile)
+      case "ttl" => {
+        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) TTL_Reader.readTTL(spark, inputFile)
+        else NTriple_Reader.readNTriples(spark, inputFile)
+      }
       case "jsonld" => RDF_Reader.readRDF(spark, inputFile) //Ein Objekt pro Datei
 //      } catch {
 //        case noSuchMethodError: NoSuchMethodError => {
@@ -58,8 +78,10 @@ object Converter {
           RDF_Reader.readRDF(spark, inputFile)
         }
       }
+      case "tsv" => spark.sparkContext.emptyRDD[Triple] //mappings.TSV_Reader.tsv_nt_map(spark)
     }
 
+    data.foreach(println(_))
     val tempDir = inputFile.parent / "temp"
     val headerTempDir = inputFile.parent / "tempheader"
 
@@ -72,21 +94,23 @@ object Converter {
       case noFile: NoSuchFileException => ""
     }
 
+//    data.foreach(x=>println(s"triple: ${x.toString()}"))
     outputFormat match {
       case "nt" => data.saveAsNTriplesFile(tempDir.pathAsString)
       case "tsv" => {
         val solution = TSV_Writer.convertToTSV(data, spark)
-        solution(1).write.option("delimiter", "\t").csv(tempDir.pathAsString)
+        solution(1).write.option("delimiter", "\t").option("nullValue","?").option("treatEmptyValuesAsNulls", "true").csv(tempDir.pathAsString)
         solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
       }
       case "ttl" => TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
       case "jsonld" => JSONLD_Writer.convertToJSONLD(data).saveAsTextFile(tempDir.pathAsString)
+      case "rdfxml" => RDFXML_Writer.convertToRDFXML(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     }
 
     try {
       outputFormat match {
         case "tsv" => FileHandler.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
-        case "jsonld" | "jsonl" | "nt" | "ttl" => FileHandler.unionFiles(tempDir, targetFile)
+        case "jsonld" | "jsonl" | "nt" | "ttl" | "rdfxml" => FileHandler.unionFiles(tempDir, targetFile)
       }
     }
     catch {

@@ -2,8 +2,8 @@ package org.dbpedia.databus.rdf_writer
 
 import java.io.ByteArrayOutputStream
 
-import org.apache.jena.graph.Triple
-import org.apache.jena.rdf.model.{Model, ModelFactory}
+import org.apache.jena.graph.{NodeFactory, Node_Variable, Triple}
+import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
 import org.apache.spark.rdd.RDD
 
@@ -24,19 +24,26 @@ object JSONLD_Writer {
     val os = new ByteArrayOutputStream()
 
     triples.foreach(triple => {
-      val rdf_subject = model.createResource(triple.getSubject.toString())
-      val rdf_object = model.createResource(triple.getObject.toString())
-      val rdf_predicate = model.createProperty(triple.getPredicate.toString())
-      rdf_subject.addProperty(rdf_predicate, rdf_object)
+      val stmt = ResourceFactory.createStatement(
+        ResourceFactory.createResource(triple.getSubject.getURI),
+        ResourceFactory.createProperty(triple.getPredicate.getURI),
+        {
+          if(triple.getObject.isLiteral) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralDatatype)
+          else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)
+          else model.asRDFNode(NodeFactory.createBlankNode())
+        })
+      model.add(stmt)
     })
 
     RDFDataMgr.write(os, model, RDFFormat.JSONLD_PRETTY)
 
-    val it = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines()
-    var jsonString = ""
-    it.foreach(part => jsonString = jsonString.concat(part))
 
-    return jsonString
+    if (Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().length <= 1) Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
+    else s"""<script type="application/ld+json">\n""".concat(Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")).concat("</script>")
+//    var jsonString = ""
+//    it.foreach(part => jsonString = jsonString.concat(part))
+//
+//    return jsonString
   }
 
 }
