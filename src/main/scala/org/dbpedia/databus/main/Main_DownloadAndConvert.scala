@@ -35,6 +35,8 @@ object Main_DownloadAndConvert {
       }
     }
 
+    println(queryString)
+
     println("Downloader:\n")
     println("files to download:")
     QueryHandler.executeDownloadQuery(queryString, download_temp)
