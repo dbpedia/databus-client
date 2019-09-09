@@ -8,20 +8,21 @@ import org.apache.jena.query._
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
 import org.dbpedia.databus.FileHandler
+import org.apache.jena.query.Syntax
 
 object QueryHandler {
 
   def executeDownloadQuery(queryString:String, targetdir:File) = {
     val query: Query = QueryFactory.create(queryString)
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+    println(s"QUERY:\n$query")
     try {
       val results: ResultSet = qexec.execSelect
       val fileHandler = FileHandler
 
       while (results.hasNext()) {
         val resource = results.next().getResource("?file")
-        println(resource)
         fileHandler.downloadFile(resource.toString(), targetdir)
       }
     } finally qexec.close()

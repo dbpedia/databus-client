@@ -29,7 +29,6 @@ object Main_Downloader {
       }
     }
 
-    println(s"DownloadQuery: \n\n$queryString")
     println("--------------------------------------------------------\n")
     println("Files to download:")
     QueryHandler.executeDownloadQuery(queryString, download_temp)
