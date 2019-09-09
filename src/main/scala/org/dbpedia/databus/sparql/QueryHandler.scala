@@ -16,12 +16,14 @@ object QueryHandler {
     val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
 
+    println(query)
     try {
       val results: ResultSet = qexec.execSelect
       val fileHandler = FileHandler
 
       while (results.hasNext()) {
         val resource = results.next().getResource("?file")
+        println(resource)
         fileHandler.downloadFile(resource.toString(), targetdir)
       }
     } finally qexec.close()

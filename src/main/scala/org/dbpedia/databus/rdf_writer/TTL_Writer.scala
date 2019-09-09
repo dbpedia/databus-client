@@ -30,7 +30,6 @@ object TTL_Writer {
         ResourceFactory.createResource(triple.getSubject.getURI),
         ResourceFactory.createProperty(triple.getPredicate.getURI),
         {
-          println("hi")
           if(triple.getObject.isLiteral) {
             if(triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralDatatype)
             else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralLanguage)

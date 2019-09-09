@@ -5,7 +5,6 @@ import java.nio.file.Paths
 
 import better.files
 import better.files.File
-import com.hp.hpl.jena.rdf.model.ResourceFactory
 import com.taxonic.carml.engine.RmlMapper
 import com.taxonic.carml.logical_source_resolver.CsvResolver
 import com.taxonic.carml.model.TriplesMap
@@ -78,11 +77,11 @@ object TSV_Reader {
       val pre: IRI = stmt.getPredicate
       val obj: Value = stmt.getObject
 
-      Triple.create(NodeFactory.createURI(stmt.getSubject.toString),NodeFactory.createURI(stmt.getPredicate.toString),NodeFactory.createLiteral(stmt.getObject.toString))
-      data = sc.union(data, sc.parallelize(Seq(iter.next)))
+      val triple =Triple.create(NodeFactory.createURI(stmt.getSubject.toString),NodeFactory.createURI(stmt.getPredicate.toString),NodeFactory.createLiteral(stmt.getObject.toString))
+      data = sc.union(data, sc.parallelize(Seq(triple)))
     }
 
-    return data
+    return sc.emptyRDD[Triple]//data
   }
 
 }

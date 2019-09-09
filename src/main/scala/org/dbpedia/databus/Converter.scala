@@ -81,7 +81,7 @@ object Converter {
       case "tsv" => spark.sparkContext.emptyRDD[Triple] //mappings.TSV_Reader.tsv_nt_map(spark)
     }
 
-    data.foreach(println(_))
+//    data.foreach(println(_))
     val tempDir = inputFile.parent / "temp"
     val headerTempDir = inputFile.parent / "tempheader"
 
@@ -103,7 +103,7 @@ object Converter {
         solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
       }
       case "ttl" => TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
-      case "jsonld" => JSONLD_Writer.convertToJSONLD(data).saveAsTextFile(tempDir.pathAsString)
+      case "jsonld" => JSONLD_Writer.convertToJSONLD(data, spark).saveAsTextFile(tempDir.pathAsString)
       case "rdfxml" => RDFXML_Writer.convertToRDFXML(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     }
 
@@ -139,7 +139,7 @@ object Converter {
 //        case "lz4-framed" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZ4_FRAMED, myOutputStream)
         case "lzma" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.LZMA, myOutputStream)
 //        case "pack200" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.PACK200, myOutputStream)
-        case "snappy-framed" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_FRAMED, myOutputStream)
+        case "sz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_FRAMED, myOutputStream)
 //        case "snappy-raw" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_RAW, myOutputStream)
         case "xz" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.XZ, myOutputStream)
         case "zstd" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.ZSTANDARD, myOutputStream)

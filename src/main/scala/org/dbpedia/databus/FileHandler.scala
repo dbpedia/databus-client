@@ -21,28 +21,28 @@ object FileHandler {
     val compressionInputFile = getCompressionType(bufferedInputStream)
     val formatInputFile = getFormatType(inputFile,compressionInputFile)
 
-    if (outputCompression==compressionInputFile && (outputFormat==formatInputFile || outputFormat=="same")){
-      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, src_dir, dest_dir).toJava)
-      copyStream(new FileInputStream(inputFile.toJava), outputStream)
-    }
-    else if (outputCompression!=compressionInputFile && (outputFormat==formatInputFile || outputFormat=="same")){
-      val decompressedInStream = Converter.decompress(bufferedInputStream)
-      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, src_dir, dest_dir)
-      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
-      //file is written here
-      copyStream(decompressedInStream, compressedOutStream)
-    }
-    //  With FILEFORMAT CONVERSION
-//      MUSS NOCHMAL UEBERARBEITET WERDEN
-    else if (outputCompression==compressionInputFile && outputFormat!=formatInputFile){
-      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, src_dir, dest_dir)
-      val typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)
-      val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
-      //file is written here
-      copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
-      typeConvertedFile.delete()
-    }
-    else{
+//    if (outputCompression==compressionInputFile && (outputFormat==formatInputFile || outputFormat=="same")){
+//      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, src_dir, dest_dir).toJava)
+//      copyStream(new FileInputStream(inputFile.toJava), outputStream)
+//    }
+//    else if (outputCompression!=compressionInputFile && (outputFormat==formatInputFile || outputFormat=="same")){
+//      val decompressedInStream = Converter.decompress(bufferedInputStream)
+//      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, src_dir, dest_dir)
+//      val compressedOutStream = Converter.compress(outputCompression, compressedFile)
+//      //file is written here
+//      copyStream(decompressedInStream, compressedOutStream)
+//    }
+//    //  With FILEFORMAT CONVERSION
+////      MUSS NOCHMAL UEBERARBEITET WERDEN
+//    else if (outputCompression==compressionInputFile && outputFormat!=formatInputFile){
+//      val targetFile = getOutputFile(inputFile, outputFormat, compressionInputFile, src_dir, dest_dir)
+//      val typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)
+//      val compressedOutStream = Converter.compress(compressionInputFile, targetFile)
+//      //file is written here
+//      copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
+//      typeConvertedFile.delete()
+//    }
+//    else{
       val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, src_dir, dest_dir)
       var typeConvertedFile = File("")
 
@@ -68,7 +68,7 @@ object FileHandler {
         case noSuchFileException: NoSuchFileException => ""
       }
     }
-  }
+//  }
 
   def getOutputFile(inputFile: File, outputFormat:String, outputCompression:String,src_dir: File, dest_dir: File): File ={
 
@@ -76,6 +76,10 @@ object FileHandler {
     val name = inputFile.name
     var filepath_new = ""
     val dataIdFile = inputFile.parent / "dataid.ttl"
+    val newOutputFormat={
+      if (outputFormat=="rdfxml") "rdf"
+      else outputFormat
+    }
 
     if(dataIdFile.exists) {
       val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
@@ -90,10 +94,10 @@ object FileHandler {
     }
 
     if (outputCompression.isEmpty){
-      filepath_new = filepath_new.concat(".").concat(outputFormat)
+      filepath_new = filepath_new.concat(".").concat(newOutputFormat)
     }
     else{
-      filepath_new = filepath_new.concat(".").concat(outputFormat).concat(".").concat(outputCompression)
+      filepath_new = filepath_new.concat(".").concat(newOutputFormat).concat(".").concat(outputCompression)
     }
 
     val outputFile = File(filepath_new)
@@ -228,8 +232,9 @@ object FileHandler {
     val findTripleFiles = s"find ${tempDir.pathAsString}/ -name part* -not -empty" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
-    if (! (concatFiles == 0) ) System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
-
+    if (! (concatFiles == 0) ) {
+      System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
+    }
   }
 
   def unionFilesWithHeaderFile(headerTempDir:File, tempDir:File, targetFile:File)={

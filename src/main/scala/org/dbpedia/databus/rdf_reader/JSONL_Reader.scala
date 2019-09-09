@@ -17,7 +17,7 @@ object JSONL_Reader {
     val data = sc.textFile(inputFile.pathAsString)
     var tripleRDD = sc.emptyRDD[Triple]
 
-    data.foreach(println(_))
+//    data.foreach(println(_))
 
     data.foreach(line => {
       println(s"LINE: ${line}")
@@ -31,7 +31,7 @@ object JSONL_Reader {
   }
 
   def readJSONLObject(spark: SparkSession, line: String):RDD[Triple] ={
-    println(line)
+//    println(line)
     val sc = spark.sparkContext
     var triples = sc.emptyRDD[Triple]
 
