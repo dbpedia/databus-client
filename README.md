@@ -72,7 +72,7 @@ You can also use the converter and downloader separately.
 **Databus based downloader**
 
 ```
-bin/Downloader -q ./src/query/downloadquery -d ./downloaded_files/
+bin/Downloader -q ./src/query/query1 -d ./downloaded_files/
 ```
 
 **File compression and format converter**
@@ -108,6 +108,6 @@ docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz databus-client
 git clone https://github.com/dbpedia/databus-client.git
 cd databus-client/docker
 docker build -t databus-client -f databus-client/Dockerfile databus-client
-docker run -p 8890:8890 --name client -e QUERY=./src/query/downloadquery -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
+docker run -p 8890:8890 --name client -e QUERY=./src/query/query1 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
 ```
 Notice: to stop the image *client* in the container *dbpedia-client* use `docker stop client` .
