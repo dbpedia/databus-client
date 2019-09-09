@@ -48,6 +48,7 @@ object Main_Downloader {
 
     println("\n--------------------------------------------------------\n")
     println(s"Files have been downloaded to ${conf.destination_dir()}")
+    download_temp.delete()
   }
 
 }

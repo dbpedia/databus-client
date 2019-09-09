@@ -25,6 +25,15 @@ object Main_Converter {
 
 
     println("Conversion:\n")
+
+    conf.output_format() match {
+      case "rdfxml" | "ttl" | "nt" | "jsonld" | "tsv" =>
+      case _ => {
+        println("Output file format not supported.")
+        return Unit
+      }
+    }
+
     val source_dir = File(conf.source_dir())
     val destination_dir = File(conf.destination_dir())
 
