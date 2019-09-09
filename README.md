@@ -86,11 +86,11 @@ bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/201
 Clone the github-repository:
 ```
 git clone https://github.com/dbpedia/databus-client.git
-cd databus-client/docker
 ```
 Build the docker image.
 
 ```
+cd databus-client/docker
 docker build -t databus-client -f databus-client/Dockerfile databus-client
 ```
 
