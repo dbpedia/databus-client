@@ -81,33 +81,29 @@ bin/Downloader -q ./src/query/query1 -d ./downloaded_files/
 bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
 ```
 
-## Docker
+## Dockerized Databus-Client
 
+Clone the repo:
+```
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client/docker
+```
 Build the docker image.
 
 ```
-docker build -t databus-client ./ 
+docker build -t databus-client -f databus-client/Dockerfile databus-client
 ```
 
 Run a docker container.
 
 ```
-docker run -p 8890:8890 --name client -e QUERY=./src/query/query2 -e FORMAT=nt -e COMPRESSION=bz2 databus-client
+docker run -p 8890:8890 --name client -e QUERY=./src/query/query1 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
 ```
 
-You can pass all the variables as Environment Variables (**-e**), that are shown in the list above.  
+You can pass all the variables as Environment Variables (**-e**), that are shown in the list above, except `destination` and `source`.  
 You have to write the Environment Variables in Capital Letters, if you use docker to execute.  
-
 ```
 docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz databus-client
 ```
 
-
-## Example Dockerized Databus-Client
-```
-git clone https://github.com/dbpedia/databus-client.git
-cd databus-client/docker
-docker build -t databus-client -f databus-client/Dockerfile databus-client
-docker run -p 8890:8890 --name client -e QUERY=./src/query/query1 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
-```
 Notice: to stop the image *client* in the container *dbpedia-client* use `docker stop client` .
