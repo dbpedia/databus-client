@@ -33,7 +33,7 @@ Start docker-compose including dockerized virtuoso and databus-client
 ```
 git clone https://github.com/dbpedia/databus-client.git
 cd docker
-docker-compose -f databus-client/Dockerfile ./ 
+docker-compose -f virtuoso-compose/docker-compose.yml up 
 ```
 
 Change `docker/virtuoso-compose/docker-compose.yml` configuration if needed.
