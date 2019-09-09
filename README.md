@@ -78,7 +78,7 @@ bin/Downloader -q ./src/query/downloadquery -d ./downloaded_files/
 **File compression and format converter**
 
 ```
-bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f jsonld -c gz
+bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
 ```
 
 ## Docker
@@ -92,7 +92,7 @@ docker build -t databus-client ./
 Run a docker container.
 
 ```
-docker run -p 8890:8890 --name client -e QUERY=/root/databusclient/src/query/query2 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
+docker run -p 8890:8890 --name client -e QUERY=./src/query/query2 -e FORMAT=nt -e COMPRESSION=bz2 databus-client
 ```
 
 You can pass all the variables as Environment Variables (**-e**), that are shown in the list above.  
@@ -102,4 +102,12 @@ You have to write the Environment Variables in Capital Letters, if you use docke
 docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz databus-client
 ```
 
-To stop the image *client* in the container *dbpedia-client* use `docker stop client`
+
+## Example Dockerized Databus-Client
+```
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client/docker
+docker build -t databus-client -f databus-client/Dockerfile databus-client
+docker run -p 8890:8890 --name client -e QUERY=./src/query/downloadquery -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
+```
+Notice: to stop the image *client* in the container *dbpedia-client* use `docker stop client` .
