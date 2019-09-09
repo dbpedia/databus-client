@@ -1,7 +1,7 @@
 # DBpedia Databus Client
 
 Download and make data fit for applications using SPARQL on the [databus](https://databus.dbpedia.org).
-
+ 
 ## Vision
 Any data on the bus can be made interoperable with application requirements. If the application can only read `.gz`, but not `.bz2` and only RDF-NTriples, but not RDF-XML, the client provides  `Download-As` functionality and transforms the data client-side. Files published on the Databus do not need to be offered in several formats. 
 
