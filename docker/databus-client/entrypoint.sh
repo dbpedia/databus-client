@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-args=""
+DEST="/data/dumps"
+
+args="--destination|$DEST"
 
 if { [ -z "$QUERY" ] && [ ! -z "$Q" ]; } || { [ ! -z "$QUERY" ] && [ -z "$Q" ]; }; then
     args="$args|--query|$QUERY$Q"
@@ -18,8 +20,4 @@ if { [ -z "$SOURCE" ] && [ ! -z "$S" ]; } || { [ ! -z "$SOURCE" ] && [ -z "$S" ]
     args="$args|--source|$SOURCE$S"
 fi
 
-if { [ -z "$DEST" ] && [ ! -z "$D" ]; } || { [ ! -z "$DEST" ] && [ -z "$D" ]; }; then
-    args="$args|--destination|$DEST$D"
-fi
-
-mvn scala:run -Dlauncher="downloadconverter" -DaddArgs="${args#?}"
+mvn scala:run -Dlauncher="downloadconverter" -DaddArgs="$args"

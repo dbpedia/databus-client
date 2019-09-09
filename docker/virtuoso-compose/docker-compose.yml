@@ -12,12 +12,15 @@ services:
       bash -c 'while [ ! -f /data/toLoad/complete ]; do sleep 1; done
       && bash /virtuoso.sh'
 
+# To change the file query: Mount an external query
+# file under volumes between host and container
+# and apply internal path as environment variable.
+
   databus_client:
     build: ../databus-client
     environment:
       - QUERY="/opt/databus-client/example.query"
       - COMPRESSION="gz"
-      - DEST="/var/repo"
     volumes:
       - ../databus-client/example.query:/opt/databus-client/example.query
       - toLoad:/var/toLoad

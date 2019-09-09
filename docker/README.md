@@ -13,48 +13,68 @@ docker build -t databus-client -f databus-client/Dockerfile ./
 run 
 
 ```
-docker run --name databus-client -v /home/marvin/workspace/dbpedia/databus-client/docker/clienttest:/var/repo -e QUERY="/opt/databus-client/src/query/query" databus-client
+docker run --name databus-client \
+    -v /path/to/query:/opt/databus-client/query \
+    -v /path/to/repo/:/var/repo \
+    -e QUERY="/opt/databus-client/query" \
+    databus-client
 ```
 
 ## Preloaded Virtuoso
 
-### with docker-compose
+Setup of a dockerized virtuoso and databus-client to preload the DB by a query.
 
-### as plain Dockerfile
+### Docker-Compose (recommended)
 
+> How to install [docker-compose](https://docs.docker.com/compose/install/) 
 
-
-
-
-Run a docker container.
+Start docker-compose including dockerized virtuoso and databus-client
 
 ```
-docker run -p 8890:8890 --name client -e LAUNCHER=downloadconverter -e QUERY=/root/dbpediaclient/src/query/query dbpedia-client
+git clone https://github.com/dbpedia/databus-client.git
+cd docker
+docker-compose -f databus-client/Dockerfile ./ 
 ```
 
-You have to specify the launcher you want the container to execute. Therefore you need to pass the name of the launcher as environment variable (`LAUNCHER` or `L`)
-```
--e LAUNCHER=downloader
-```
-
-Additionally you can pass all the variables that are shown in the list above as Environment Variables (**-e**).  
-You have to write the Environment Variables in Capital Letters, if you use docker to execute.  
+Change `docker/virtuoso-compose/docker-compose.yml` configuration if needed.
 
 ```
-docker run -p 8890:8890 --name client -e L=downloadconverter -e Q=<path> -e F=nt -e C=gz dbpedia-client
+version: '3.5'
+
+services:
+
+  db:
+    image: tenforce/virtuoso
+    ports:
+      - 8895:8890
+    volumes:
+      - toLoad:/data/toLoad
+    entrypoint: >
+      bash -c 'while [ ! -f /data/toLoad/complete ]; do sleep 1; done
+      && bash /virtuoso.sh'
+
+  databus_client:
+    build: ../databus-client
+    environment:
+      - QUERY="/opt/databus-client/example.query"
+      - COMPRESSION="gz"
+      - DEST="/var/repo"
+    volumes:
+      - ../databus-client/example.query:/opt/databus-client/example.query
+      - toLoad:/var/toLoad
+    entrypoint: >
+      bash -c 'bash /opt/databus-client/entrypoint.sh
+      && mv -t /var/toLoad $$(find /var/repo -name "*.gz")
+      && touch /var/toLoad/complete'
+
+volumes:
+  toLoad:
 ```
 
-To stop the image *client* in the container *dbpedia-client* use `docker stop client`
-
-> **Important:** If you use docker to execute, you can't change the "_TARGETREPO_" yet.
-
-
-## EXAMPLES
+### Dockerfile
 
 ```
-docker build -t databus-client -f docker/databus-client.dockerfile ./
-```
-
-```
-docker run --name dbtcl -v /home/marvin/workspace/dbpedia/databus-client/testrepo:/var/repo -e QUERY="/opt/databus-client/src/query/query" databus-client
+git clone https://github.com/dbpedia/databus-client.git
+cd docker
+docker-compose -f databus-client/Dockerfile ./ 
 ```
