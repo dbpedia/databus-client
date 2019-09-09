@@ -83,7 +83,7 @@ bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/201
 
 ## Dockerized Databus-Client
 
-Clone the repo:
+Clone the github-repository:
 ```
 git clone https://github.com/dbpedia/databus-client.git
 cd databus-client/docker
@@ -100,10 +100,11 @@ Run a docker container.
 docker run -p 8890:8890 --name client -e QUERY=./src/query/query1 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
 ```
 
-You can pass all the variables as Environment Variables (**-e**), that are shown in the list above, except `destination` and `source`.  
-You have to write the Environment Variables in Capital Letters, if you use docker to execute.  
-```
-docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz databus-client
-```
+
+&nbsp;
+
+
+You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `destination` and `source`), but you have to write the Environment Variables in Capital Letters.
 
 Notice: to stop the image *client* in the container *dbpedia-client* use `docker stop client` .
+
