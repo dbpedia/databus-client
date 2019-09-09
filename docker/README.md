@@ -6,8 +6,8 @@ build
 
 ```
 git clone https://github.com/dbpedia/databus-client.git
-cd docker
-docker build -t databus-client -f databus-client/Dockerfile ./ 
+cd databus-client/docker
+docker build -t databus-client -f databus-client/Dockerfile  databus-client/
 ```
 
 run 
