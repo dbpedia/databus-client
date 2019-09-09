@@ -22,7 +22,6 @@ object Main_DownloadAndConvert {
 //      case false => conf.output_compression()
 //    }
 
-    println(conf.query())
     //Test if query is a File or a Query
     var queryString:String = ""
     File(conf.query()).exists() match {
@@ -36,6 +35,7 @@ object Main_DownloadAndConvert {
       }
     }
 
+    println(File(conf.query()).exists())
     println(queryString)
     println("Downloader:\n")
     println("files to download:")

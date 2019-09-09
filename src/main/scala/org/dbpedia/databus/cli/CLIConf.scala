@@ -13,7 +13,7 @@ Example Convert only: mvn scala:run -Dlauncher=converter --src ./downloaded_file
 For usage see below:
     """)
 
-  val query = opt[String]("query", default= Some("./src/query/query"), descr = "any ?file query; You can pass the query directly or save it in a textfile and pass the filepath")
+  val query = opt[String]("query", default= Some("./src/query/downloadquery"), descr = "any ?file query; You can pass the query directly or save it in a textfile and pass the filepath")
   val destination_dir = opt[String]("destination", default= Some("./files/"), descr = "set the destination directory for converted files")
   val source_dir = opt[String]("source", default= Some("./temp_downloaded_files/"), descr = "set the source directory for files you want to convert")
   val output_format = opt[String]("format", default= Some("same"), descr = "set the file format of the output file")

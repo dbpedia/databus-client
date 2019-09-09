@@ -15,8 +15,6 @@ object QueryHandler {
     val query: Query = QueryFactory.create(queryString)
     val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
-
-    println(query)
     try {
       val results: ResultSet = qexec.execSelect
       val fileHandler = FileHandler
