@@ -1,17 +1,34 @@
-# DBpedia Databus Client
+# DBpedia Databus Client [![Build Status](https://travis-ci.org/dbpedia/databus-client.svg?branch=master)](https://travis-ci.org/dbpedia/databus-client)
 
-Collection of useful tools to download and convert data from the [databus](https://databus.dbpedia.org)
+Download and make data fit for applications using SPARQL on the [databus](https://databus.dbpedia.org).
+ 
+## Vision
+Any data on the bus can be made interoperable with application requirements. If the application can only read `.gz`, but not `.bz2` and only RDF-NTriples, but not RDF-XML, the client provides  `Download-As` functionality and transforms the data client-side. Files published on the Databus do not need to be offered in several formats. 
+
+Example Application Deployment: Download the files of 5 datasets as given in the SPARQL query, transform all to `.bz2`, convert all RDF to RDF-NTriples and a) map the `.tsv` file from the second dataset to RDF with this <databus-uri> RML-Mapping, and b) use this <databus-uri> XSLT-Mapping for the `.xml` file in the fifth dataset. When finished, load and deploy a Virtuoso SPRARQL Endpoint via Docker. 
+
+## Current State
+
+**working alpha**: 
+code should compile and often produce correct results for compression and RDF conversion. Please expect a tremendous amount of code refactoring and fluctuation. There will be an open-source licence, presumably GPL. 
+
 
 ## Concept
 
-The databus-client is designed to convert data in several layers:
+The databus-client is designed to unify and convert data on the client-side in several layers:
 
-| Level | Supported formats
-|---|---|
-| 1.  Download as it is | All files on the [databus](https://databus.dbpedia.org)
-| 2.  Convert compression | bz2, gz, br, lzma, xz, zstd, snappy-framed, deflate (, no compression)
-| 3.  Convert format | nt, ttl, rdfxml, json-ld, tsv(write-only)
-| 4.  Mapping | coming soon
+| Level | Client Action | Implemented formats
+|---|---|---|
+| 1 |  Download As-Is | All files on the [databus](https://databus.dbpedia.org)
+| 2 |  Unify compression | bz2, gz, br, lzma, xz, zstd, snappy-framed, deflate (, no compression)
+| 3 |  Unify isomporphic formats | `Download as` implemented for {nt, ttl, rdfxml, json-ld} 
+| 4 |  Transform with mappings | coming soon
+
+### Roadmap for levels
+* Level 1: all features finished, testing required
+* Level 2: using Apache Compress library covers most of the compression formats, more testing required
+* Level 3: Scalable RDF libraries from [SANSA-Stack](http://sansa-stack.net/) and [Databus Derive](https://github.com/dbpedia/databus-derive). Step by step, extension for all (quasi-)isomorphic [IANA mediatypes](https://www.iana.org/assignments/media-types/media-types.xhtml).
+* Level 4:  In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [RML](http://rml.io), R2RML, (R2R)[http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/] (for owl:equivalence translation) and XSLT. 
 
 ## Usage   
 
