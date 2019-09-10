@@ -13,4 +13,8 @@ WORKDIR /opt/databus-client
 RUN git checkout a3772ef1e3bd835ac503f38807b94b7fa005028a  \
     && mvn install
 
-ENTRYPOINT ["/bin/bash","/opt/databus-client/docker/preload-virtuoso/entrypoint.sh"]
+#RUN mvn install
+
+COPY ./entrypoint.sh /opt/databus-client/entrypoint.sh
+
+ENTRYPOINT ["/bin/bash","/opt/databus-client/entrypoint.sh"]

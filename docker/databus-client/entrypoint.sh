@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DEST="/data/dumps"
+DEST="/var/repo"
 
 args="--destination|$DEST"
 

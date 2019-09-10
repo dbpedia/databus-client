@@ -9,8 +9,8 @@ Example Application Deployment: Download the files of 5 datasets as given in the
 
 ## Current State
 
-**working alpha**: 
-code should compile and often produce correct results for compression and RDF conversion. Please expect a tremendous amount of code refactoring and fluctuation. There will be an open-source licence, presumably GPL. 
+**alpha**: 
+code should compile and - if you are lucky - produce results for compression and RDF conversion. Please expect a tremendous amount of code refactoring and fluctuation. There will be an open-source licence, presumably GPL. 
 
 
 ## Concept
@@ -30,6 +30,79 @@ The databus-client is designed to unify and convert data on the client-side in s
 * Level 3: Scalable RDF libraries from [SANSA-Stack](http://sansa-stack.net/) and [Databus Derive](https://github.com/dbpedia/databus-derive). Step by step, extension for all (quasi-)isomorphic [IANA mediatypes](https://www.iana.org/assignments/media-types/media-types.xhtml).
 * Level 4:  In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [RML](http://rml.io), R2RML, (R2R)[http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/] (for owl:equivalence translation) and XSLT. 
 
+
+## CLI Example: Download the DBpedia ontology as RDF-XML
+Ontology snapshots are uploaded to the Databus under [Denis Account](https://databus.dbpedia.org/denis/ontology/dbo-snapshots) (moved to DBpedia soon)
+
+
+```
+echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dataid-mt: <http://dataid.dbpedia.org/ns/mt#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+# Get latest ontology NTriples file 
+SELECT DISTINCT ?file WHERE {
+ 	?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> .
+	?dataset dcat:distribution ?distribution .
+        ?distribution dcat:mediaType dataid-mt:ApplicationNTriples . 
+	?distribution dct:hasVersion ?latestVersion .  
+	?distribution dcat:downloadURL ?file .
+
+	{
+	SELECT (?version as ?latestVersion) WHERE { 
+		?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> . 
+		?dataset dct:hasVersion ?version . 
+	} ORDER BY DESC (?version) LIMIT 1 
+	} 
+	
+} " > latest_ontology.query
+
+# Here is the script to download the latest ontology snapshot as RDF-XML
+
+# TODO FABIAN
+
+# test with
+rapper -c -i rdfxml $file
+
+```
+
+## Docker example: Deploy a small dataset to docker SPARQL endpoint 
+Loading geocoordinates extracted from DE Wikipedia into Virtuoso and host it locally 
+
+```
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client/docker
+
+docker build -t vosdc -f virtuoso-image/Dockerfile virtuoso-image/
+
+echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+SELECT DISTINCT ?file  WHERE {
+    ?dataset dataid:version <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased/2019.09.01> .
+    ?dataset dcat:distribution ?distribution .
+    ?distribution dcat:downloadURL ?file .
+    ?distribution dataid:contentVariant ?cv .
+     FILTER ( str(?cv) = 'de' )
+}" > query
+
+# start docker as deamon
+docker run -d --name vosdc \
+    -v $(pwd)/query:/opt/databus-client/query \
+    -v $(pwd)/data:/data \
+    -e QUERY="/opt/databus-client/query" \
+    -p 8890:8890 \
+    vosdc
+    
+# container needs startup time, endpoint is not immediately reachable
+curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe> ?p ?o }" "http://localhost:8890/sparql"
+```
+
+
+
 ## Usage   
 
 Installation
@@ -41,7 +114,7 @@ mvn clean install
 
 Execution example
 ```
-bin/DownloadConverter --query ./src/query/downloadquery --destination converted_files/ -f jsonld -c gz 
+bin/DownloadConverter --query ./src/query/query1 --destination converted_files/ -f jsonld -c gz 
 ```
 
 List of possible command line options.
@@ -78,32 +151,40 @@ bin/Downloader -q ./src/query/query1 -d ./downloaded_files/
 **File compression and format converter**
 
 ```
-bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
+bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f rdfxml -c gz
 ```
 
 ## Dockerized Databus-Client
 
-Clone the repo:
+
 ```
+# Clone the github-repository:
 git clone https://github.com/dbpedia/databus-client.git
+
+# Build the docker image
 cd databus-client/docker
-```
-Build the docker image.
+docker build -t dbc-virtuoso -f databus-client/Dockerfile databus-client
 
-```
-docker build -t databus-client -f databus-client/Dockerfile databus-client
-```
-
-Run a docker container.
-
-```
-docker run -p 8890:8890 --name client -e QUERY=./src/query/query1 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
+# Run a docker container.
+docker run -p 8890:8890 --name dbc-autodeploy -e QUERY="./src/query/query1" -e FORMAT=jsonld -e COMPRESSION=bz2 dbc-virtuoso
 ```
 
-You can pass all the variables as Environment Variables (**-e**), that are shown in the list above, except `destination` and `source`.  
-You have to write the Environment Variables in Capital Letters, if you use docker to execute.  
+Stopping and reseting the docker with name `dbc-autodeploy`, e.g. to change the query
 ```
-docker run -p 8890:8890 --name client -e Q=<path> -e F=nt -e C=gz databus-client
+# stop 
+docker stop dbc-autodeploy
+# remove
+docker rm dbc-autodeploy
 ```
 
-Notice: to stop the image *client* in the container *dbpedia-client* use `docker stop client` .
+delete image and container
+```
+docker rm -f dbc-autodeploy && docker rmi -f dbc-virtuoso
+```
+
+&nbsp;
+
+
+You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `destination` and `source`), but you have to write the Environment Variables in Capital Letters.
+
+

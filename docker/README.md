@@ -2,20 +2,13 @@
 
 ## Dockerized Databus-Client
 
-build
-
 ```
 git clone https://github.com/dbpedia/databus-client.git
 cd databus-client/docker
 docker build -t databus-client -f databus-client/Dockerfile  databus-client/
-```
-
-run 
-
-```
 docker run --name databus-client \
-    -v /path/to/query:/opt/databus-client/query \
-    -v /path/to/repo/:/var/repo \
+    -v $(pwd)/databus-client/example.query:/opt/databus-client/query \
+    -v $(pwd):/var/repo \
     -e QUERY="/opt/databus-client/query" \
     databus-client
 ```
@@ -24,7 +17,23 @@ docker run --name databus-client \
 
 Setup of a dockerized virtuoso and databus-client to preload the DB by a query.
 
-### Docker-Compose (recommended)
+### Single Dockerfile (recommended)
+
+```
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client/docker
+
+docker build -t vosdc -f virtuoso-image/Dockerfile virtuoso-image/
+
+docker run --name vosdc \
+    -v $(pwd)/databus-client/example.query:/opt/databus-client/query \
+    -v $(pwd)/data:/data \
+    -e QUERY="/opt/databus-client/query" \
+    -p 8890:8890 \
+    vosdc
+```
+
+### Docker-Compose 
 
 > How to install [docker-compose](https://docs.docker.com/compose/install/) 
 
@@ -71,10 +80,4 @@ volumes:
   toLoad:
 ```
 
-### Dockerfile
 
-```
-git clone https://github.com/dbpedia/databus-client.git
-cd docker
-docker-compose -f databus-client/Dockerfile ./ 
-```
