@@ -23,7 +23,6 @@ SELECT DISTINCT ?file  WHERE {
 docker run --name databus-client \
     -v $(pwd)/query:/opt/databus-client/query \
     -v $(pwd)/repo:/var/repo \
-    -e QUERY="/opt/databus-client/query" \
     -e FORMAT="ttl" \
     -e COMPRESSION="bz2" \
     databus-client

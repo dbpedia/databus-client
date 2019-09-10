@@ -157,30 +157,44 @@ bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/201
 
 ## Dockerized Databus-Client
 
+Creates a repo folder in the current directory, executes the query and loads resulting files into it.
 
 ```
-# Clone the github-repository:
-git clone https://github.com/dbpedia/databus-client.git
+mkdir repo
+cd repo
 
-# Build the docker image
-cd databus-client/docker
-docker build -t dbc-virtuoso -f databus-client/Dockerfile databus-client
+echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 
-# Run a docker container.
-docker run -p 8890:8890 --name dbc-autodeploy -e QUERY="./src/query/query1" -e FORMAT=jsonld -e COMPRESSION=bz2 dbc-virtuoso
+SELECT DISTINCT ?file  WHERE {
+    ?dataset dataid:version <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased/2019.09.01> .
+    ?dataset dcat:distribution ?distribution .
+    ?distribution dcat:downloadURL ?file .
+    ?distribution dataid:contentVariant ?cv .
+     FILTER ( str(?cv) = 'de' )
+}" > query
+
+docker run --name databus-client \
+    -v $(pwd)/query:/opt/databus-client/query \
+    -v $(pwd):/var/repo \
+    -e FORMAT="ttl" \
+    -e COMPRESSION="bz2" \
+    dbpedia/databus-client
+
+docker rm databus-client
 ```
 
-Stopping and reseting the docker with name `dbc-autodeploy`, e.g. to change the query
+Stopping and reseting the docker with name `databus-client`, e.g. to change the query
+
 ```
-# stop 
-docker stop dbc-autodeploy
-# remove
-docker rm dbc-autodeploy
+docker rm -f databus-client
 ```
 
-delete image and container
+Delete pulled image
+ 
 ```
-docker rm -f dbc-autodeploy && docker rmi -f dbc-virtuoso
+docker rmi -f dbpedia/databus-client
 ```
 
 &nbsp;
