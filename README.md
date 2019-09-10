@@ -59,12 +59,9 @@ SELECT DISTINCT ?file WHERE {
 	
 } " > latest_ontology.query
 
-# Here is the script to download the latest ontology snapshot as RDF-XML
+# Here is the script to download the latest ontology snapshot as jsonld
 
-# TODO FABIAN
-
-# test with
-rapper -c -i rdfxml $file
+bin/DownloadConverter --query ./latest_ontology.query --destination converted_files/ -f jsonld
 
 ```
 
