@@ -29,7 +29,6 @@ object Main_Downloader {
       }
     }
 
-    println(s"DownloadQuery: \n\n$queryString")
     println("--------------------------------------------------------\n")
     println("Files to download:")
     QueryHandler.executeDownloadQuery(queryString, download_temp)
@@ -48,6 +47,7 @@ object Main_Downloader {
 
     println("\n--------------------------------------------------------\n")
     println(s"Files have been downloaded to ${conf.destination_dir()}")
+    download_temp.delete()
   }
 
 }

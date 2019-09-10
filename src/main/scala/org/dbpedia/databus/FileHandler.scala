@@ -34,6 +34,15 @@ object FileHandler {
     }
     //  With FILEFORMAT CONVERSION
     else{
+
+      formatInputFile match {
+          case "rdf" | "ttl" | "nt" | "jsonld" =>
+          case _ => {
+            println("Output file format not supported.")
+            return Unit
+          }
+      }
+
       val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, src_dir, dest_dir)
       var typeConvertedFile = File("")
 

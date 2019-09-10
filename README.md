@@ -41,7 +41,7 @@ mvn clean install
 
 Execution example
 ```
-mvn scala:run -Dlauncher=downloadconverter --query ./src/query/downloadquery --targetrepo converted_files/ -c gz -f jsonld```
+bin/DownloadConverter --query ./src/query/downloadquery --destination converted_files/ -f jsonld -c gz 
 ```
 
 List of possible command line options.
@@ -49,7 +49,7 @@ List of possible command line options.
 | Option  | Description  | Default |
 |---|---|---|
 | -c, --compression  <arg> | set the compression format of the output file | `no compression`
-| -d, --dest  <arg>| set the destination directory for converted files | `./converted_files/` |
+| -d, --destination  <arg>| set the destination directory for converted files | `./converted_files/` |
 | -f, --format  <arg> | set the file format of the output file  | `same` |  
 | -q, --query  <arg> | any ?file query; You can pass the query directly or save it in a text file and pass the file path  | `/src/query/query` | 
 | -s, --source  <arg>| set the source directory for files you want to convert| `./temp_dir_downloaded_files/` |
@@ -72,41 +72,47 @@ You can also use the converter and downloader separately.
 **Databus based downloader**
 
 ```
-mvn scala:run -Dlauncher=downloader -q ./src/query/downloadquery -t ./downloaded_files/```
+bin/Downloader -q ./src/query/query1 -d ./downloaded_files/
 ```
 
 **File compression and format converter**
 
 ```
-mvn scala:run -Dlauncher=converter --src ./downloaded_files/ -t ./converted_files/ -c gz -f jsonld
+bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
 ```
 
-## Docker
+## Dockerized Databus-Client
 
-Build the docker image.
-
-```
-docker build -t databus-client ./ 
-```
-
-Run a docker container.
 
 ```
-docker run -p 8890:8890 --name client -e LAUNCHER=downloadconverter -e QUERY=/root/dbpediaclient/src/query/query dbpedia-client
+# Clone the github-repository:
+git clone https://github.com/dbpedia/databus-client.git
+
+# Build the docker image
+cd databus-client/docker
+
+# delete old docker
+docker rmi databus-client && docker rm virtuoso-autodeploy
+
+docker build -t databus-client -f databus-client/Dockerfile databus-client
+
+
+# Run a docker container.
+docker run -p 8890:8890 --name virtuoso-autodeploy -e QUERY=downloadquery -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
 ```
 
-You have to specify the launcher you want the container to execute. Therefore you need to pass the name of the launcher as environment variable (`LAUNCHER` or `L`)
-```
--e LAUNCHER=downloader
-```
-
-Additionally you can pass all the variables that are shown in the list above as Environment Variables (**-e**).  
-You have to write the Environment Variables in Capital Letters, if you use docker to execute.  
+Stopping and reseting the docker with name `virtuoso-autodeploy`, e.g. to change the query
 
 ```
-docker run -p 8890:8890 --name client -e L=downloadconverter -e Q=<path> -e F=nt -e C=gz dbpedia-client
+# stop 
+docker stop virtuoso-autodeploy
+# remove
+docker rm virtuoso-autodeploy
 ```
 
-To stop the image *client* in the container *dbpedia-client* use `docker stop client`
+&nbsp;
 
-> **Important:** If you use docker to execute, you can't change the "_TARGETREPO_" yet.
+
+You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `destination` and `source`), but you have to write the Environment Variables in Capital Letters.
+
+

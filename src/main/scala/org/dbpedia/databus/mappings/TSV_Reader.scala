@@ -71,7 +71,6 @@ object TSV_Reader {
 
     if (iter.hasNext) {
       val stmt: Statement= iter.next()
-      println(stmt)
 
       val subject: Resource = stmt.getSubject
       val pre: IRI = stmt.getPredicate

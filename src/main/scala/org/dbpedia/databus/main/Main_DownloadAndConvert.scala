@@ -35,14 +35,20 @@ object Main_DownloadAndConvert {
       }
     }
 
-    println(File(conf.query()).exists())
-    println(queryString)
     println("Downloader:\n")
     println("files to download:")
     QueryHandler.executeDownloadQuery(queryString, download_temp)
 
     println("\n--------------------------------------------------------\n")
     println("Converter:\n")
+
+    conf.output_format() match {
+      case "rdfxml" | "ttl" | "nt" | "jsonld" | "tsv" =>
+      case _ => {
+        println("Output file format not supported.")
+        return Unit
+      }
+    }
 
     val files = download_temp.listRecursively.toSeq
     for (file <- files) {
@@ -57,6 +63,6 @@ object Main_DownloadAndConvert {
       }
     }
 
-
+    download_temp.delete()
   }
 }
