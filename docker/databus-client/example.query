@@ -1,9 +1,12 @@
+
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
-SELECT DISTINCT ?file WHERE {
-    ?dataset dataid:artifact <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased> .
+
+SELECT DISTINCT ?file  WHERE {
+    ?dataset dataid:version <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased/2019.09.01> .
     ?dataset dcat:distribution ?distribution .
     ?distribution dcat:downloadURL ?file .
+    ?distribution dataid:contentVariant "de"^^<http://www.w3.org/2001/XMLSchema#string> .
 }
-Limit 2 Offset 2
+
