@@ -87,18 +87,40 @@ bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/201
 ```
 # Clone the github-repository:
 git clone https://github.com/dbpedia/databus-client.git
+
 # Build the docker image
 cd databus-client/docker
 docker build -t databus-client -f databus-client/Dockerfile databus-client
+
+# prepare the sparql query
+echo "
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+SELECT DISTINCT ?file WHERE {
+    ?dataset dataid:artifact <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased> .
+    ?dataset dcat:distribution ?distribution .
+    ?distribution dcat:downloadURL ?file .
+}
+Limit 2 Offset 2
+" > query.sparql
+
 # Run a docker container.
-docker run -p 8890:8890 --name client -e QUERY=./src/query/query1 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
+docker run -p 8890:8890 --name virtuoso-autodeploy -e QUERY=query.sparql -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
 ```
 
+Stopping and reseting the docker with name `virtuoso-autodeploy`, e.g. to change the query
+
+```
+# stop 
+docker stop virtuoso-autodeploy
+# remove
+docker rm virtuoso-autodeploy
+```
 
 &nbsp;
 
 
 You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `destination` and `source`), but you have to write the Environment Variables in Capital Letters.
 
-Notice: to stop the image *client* in the container *dbpedia-client* use `docker stop client` .
 
