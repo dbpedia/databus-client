@@ -59,9 +59,9 @@ SELECT DISTINCT ?file WHERE {
 	
 } " > latest_ontology.query
 
-# Here is the script to download the latest ontology snapshot as jsonld
+# Here is the script to download the latest ontology snapshot as ttl
 
-bin/DownloadConverter --query ./latest_ontology.query --destination converted_files/ -f jsonld
+bin/DownloadConverter --query ./latest_ontology.query --destination converted_files/ -f ttl
 
 ```
 
