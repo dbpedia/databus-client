@@ -30,6 +30,71 @@ The databus-client is designed to unify and convert data on the client-side in s
 * Level 3: Scalable RDF libraries from [SANSA-Stack](http://sansa-stack.net/) and [Databus Derive](https://github.com/dbpedia/databus-derive). Step by step, extension for all (quasi-)isomorphic [IANA mediatypes](https://www.iana.org/assignments/media-types/media-types.xhtml).
 * Level 4:  In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [RML](http://rml.io), R2RML, (R2R)[http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/] (for owl:equivalence translation) and XSLT. 
 
+
+## CLI Example: Download the DBpedia ontology as RDF-XML
+Ontology snapshots are uploaded to the Databus under [Denis Account](https://databus.dbpedia.org/denis/ontology/dbo-snapshots) (moved to DBpedia soon)
+
+
+```
+echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dataid-mt: <http://dataid.dbpedia.org/ns/mt#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+# Get latest ontology NTriples file 
+SELECT DISTINCT ?file WHERE {
+ 	?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> .
+	?dataset dcat:distribution ?distribution .
+        ?distribution dcat:mediaType dataid-mt:ApplicationNTriples . 
+	?distribution dct:hasVersion ?latestVersion .  
+	?distribution dcat:downloadURL ?file .
+
+	{
+	SELECT (?version as ?latestVersion) WHERE { 
+		?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> . 
+		?dataset dct:hasVersion ?version . 
+	} ORDER BY DESC (?version) LIMIT 1 
+	} 
+	
+} " > latest_ontology.query
+
+# Here is the script to download the latest ontology snapshot as RDF-XML
+
+# TODO FABIAN
+
+# test with
+rapper -c -i rdfxml $file
+
+```
+
+## Docker example: Deploy a small dataset to docker SPARQL endpoint 
+Loading geocoordinates extracted from DE Wikipedia into Virtuoso and host it locally 
+
+```
+echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+SELECT DISTINCT ?file  WHERE {
+    ?dataset dataid:version <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased/2019.09.01> .
+    ?dataset dcat:distribution ?distribution .
+    ?distribution dcat:downloadURL ?file .
+    ?distribution dataid:contentVariant \"de\"^^<http://www.w3.org/2001/XMLSchema#string> .
+}" > mapped_de_geocoords.query
+
+
+# TODO MARVIN
+
+
+# test with
+PORT=8899
+curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe> ?p ?o }" "http://localhost:$PORT/sparql"
+
+```
+
+
+
 ## Usage   
 
 Installation
@@ -92,7 +157,7 @@ git clone https://github.com/dbpedia/databus-client.git
 cd databus-client/docker
 
 # delete old docker
-docker rmi databus-client && docker rm virtuoso-autodeploy
+docker rmi -f databus-client && docker rm -f virtuoso-autodeploy
 
 docker build -t databus-client -f databus-client/Dockerfile databus-client
 
