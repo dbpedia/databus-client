@@ -36,6 +36,10 @@ Ontology snapshots are uploaded to the Databus under [Denis Account](https://dat
 
 
 ```
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client
+mvn clean install
+
 echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dataid-mt: <http://dataid.dbpedia.org/ns/mt#>
