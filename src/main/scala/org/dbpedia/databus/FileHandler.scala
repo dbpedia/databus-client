@@ -138,7 +138,12 @@ object FileHandler {
     val dataIdFile = file.parent / "dataid.ttl"
     if (!dataIdFile.exists()){  //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
 //      println("Download Dataid.ttl")
-      QueryHandler.getDataIdFile(url ,dataIdFile)
+      try{
+        QueryHandler.getDataIdFile(url ,dataIdFile)
+      }
+      catch{
+        case fileNotFoundException: FileNotFoundException => println("couldn't query dataidfile")
+      }
     }
   }
 
