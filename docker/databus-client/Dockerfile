@@ -1,5 +1,7 @@
 FROM maven:3.6.1-jdk-8
 
+ENV QUERY /opt/opt/databus-client/query
+
 RUN cd /opt \
     && git clone https://github.com/dbpedia/databus-client.git
 
