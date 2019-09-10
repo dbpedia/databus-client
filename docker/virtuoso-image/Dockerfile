@@ -10,8 +10,10 @@ RUN cd /opt \
 
 WORKDIR /opt/databus-client
 
-RUN git checkout a3772ef1e3bd835ac503f38807b94b7fa005028a  \
-    && mvn install
+#RUN git checkout a3772ef1e3bd835ac503f38807b94b7fa005028a  \
+#    && mvn install
+
+RUN mvn install
 
 COPY ./entrypoint.sh /opt/databus-client/entrypoint.sh
 
