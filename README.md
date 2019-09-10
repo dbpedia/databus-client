@@ -72,6 +72,11 @@ rapper -c -i rdfxml $file
 Loading geocoordinates extracted from DE Wikipedia into Virtuoso and host it locally 
 
 ```
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client/docker
+
+docker build -t vosdc -f virtuoso-image/Dockerfile virtuoso-image/
+
 echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -80,17 +85,20 @@ SELECT DISTINCT ?file  WHERE {
     ?dataset dataid:version <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased/2019.09.01> .
     ?dataset dcat:distribution ?distribution .
     ?distribution dcat:downloadURL ?file .
-    ?distribution dataid:contentVariant \"de\"^^<http://www.w3.org/2001/XMLSchema#string> .
-}" > mapped_de_geocoords.query
+    ?distribution dataid:contentVariant ?cv .
+     FILTER ( str(?cv) = 'de' )
+}" > query
 
-
-# TODO MARVIN
-
-
-# test with
-PORT=8899
-curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe> ?p ?o }" "http://localhost:$PORT/sparql"
-
+# start docker as deamon
+docker run -d --name vosdc \
+    -v $(pwd)/query:/opt/databus-client/query \
+    -v $(pwd)/data:/data \
+    -e QUERY="/opt/databus-client/query" \
+    -p 8890:8890 \
+    vosdc
+    
+# container needs startup time, endpoint is not immediately reachable
+curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe> ?p ?o }" "http://localhost:8890/sparql"
 ```
 
 
@@ -106,7 +114,7 @@ mvn clean install
 
 Execution example
 ```
-bin/DownloadConverter --query ./src/query/downloadquery --destination converted_files/ -f jsonld -c gz 
+bin/DownloadConverter --query ./src/query/query1 --destination converted_files/ -f jsonld -c gz 
 ```
 
 List of possible command line options.
@@ -143,7 +151,7 @@ bin/Downloader -q ./src/query/query1 -d ./downloaded_files/
 **File compression and format converter**
 
 ```
-bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
+bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f rdfxml -c gz
 ```
 
 ## Dockerized Databus-Client
@@ -155,24 +163,23 @@ git clone https://github.com/dbpedia/databus-client.git
 
 # Build the docker image
 cd databus-client/docker
-
-# delete old docker
-docker rmi -f databus-client && docker rm -f virtuoso-autodeploy
-
-docker build -t databus-client -f databus-client/Dockerfile databus-client
-
+docker build -t dbc-virtuoso -f databus-client/Dockerfile databus-client
 
 # Run a docker container.
-docker run -p 8890:8890 --name virtuoso-autodeploy -e QUERY=downloadquery -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
+docker run -p 8890:8890 --name dbc-autodeploy -e QUERY="./src/query/query1" -e FORMAT=jsonld -e COMPRESSION=bz2 dbc-virtuoso
 ```
 
-Stopping and reseting the docker with name `virtuoso-autodeploy`, e.g. to change the query
-
+Stopping and reseting the docker with name `dbc-autodeploy`, e.g. to change the query
 ```
 # stop 
-docker stop virtuoso-autodeploy
+docker stop dbc-autodeploy
 # remove
-docker rm virtuoso-autodeploy
+docker rm dbc-autodeploy
+```
+
+delete image and container
+```
+docker rm -f dbc-autodeploy && docker rmi -f dbc-virtuoso
 ```
 
 &nbsp;
