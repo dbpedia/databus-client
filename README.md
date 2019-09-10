@@ -83,20 +83,14 @@ bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/201
 
 ## Dockerized Databus-Client
 
-Clone the github-repository:
-```
-git clone https://github.com/dbpedia/databus-client.git
-```
-Build the docker image.
 
 ```
+# Clone the github-repository:
+git clone https://github.com/dbpedia/databus-client.git
+# Build the docker image
 cd databus-client/docker
 docker build -t databus-client -f databus-client/Dockerfile databus-client
-```
-
-Run a docker container.
-
-```
+# Run a docker container.
 docker run -p 8890:8890 --name client -e QUERY=./src/query/query1 -e FORMAT=rdfxml -e COMPRESSION=bz2 databus-client
 ```
 
