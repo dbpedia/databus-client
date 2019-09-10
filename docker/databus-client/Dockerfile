@@ -7,8 +7,9 @@ COPY ./entrypoint.sh /opt/databus-client/
 
 WORKDIR /opt/databus-client
 
-RUN git checkout a3772ef1e3bd835ac503f38807b94b7fa005028a  \
-    && mvn install
+#RUN git checkout a3772ef1e3bd835ac503f38807b94b7fa005028a  \
+# && mvn install
+RUN mvn install
 
 RUN mkdir -p /var/repo && mkdir -p /var/toLoad
 
