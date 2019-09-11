@@ -97,8 +97,11 @@ docker run --name vosdc \
     -e QUERY="/opt/databus-client/query" \
     -p 8890:8890 \
     vosdc
-    
-# container needs startup time, endpoint is not immediately reachable
+```    
+
+Container needs some startup time and endpoint is not immediately reachable, if it is done you can query it with e.g.
+
+```
 curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe> ?p ?o }" "http://localhost:8890/sparql"
 ```
 
