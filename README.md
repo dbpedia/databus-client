@@ -155,7 +155,7 @@ bin/Downloader -q ./src/query/query1 -d ./downloaded_files/
 **File compression and format converter**
 
 ```
-bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f rdfxml -c gz
+bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
 ```
 
 ## Dockerized Databus-Client
