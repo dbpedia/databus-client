@@ -90,8 +90,8 @@ SELECT DISTINCT ?file  WHERE {
      FILTER ( str(?cv) = 'de' )
 }" > query
 
-# start docker as deamon
-docker run -d --name vosdc \
+# start docker as deamon by adding -d
+docker run --name vosdc \
     -v $(pwd)/query:/opt/databus-client/query \
     -v $(pwd)/data:/data \
     -e QUERY="/opt/databus-client/query" \
