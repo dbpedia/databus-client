@@ -28,7 +28,7 @@ The databus-client is designed to unify and convert data on the client-side in s
 * Level 1: all features finished, testing required
 * Level 2: using Apache Compress library covers most of the compression formats, more testing required
 * Level 3: Scalable RDF libraries from [SANSA-Stack](http://sansa-stack.net/) and [Databus Derive](https://github.com/dbpedia/databus-derive). Step by step, extension for all (quasi-)isomorphic [IANA mediatypes](https://www.iana.org/assignments/media-types/media-types.xhtml).
-* Level 4:  In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [RML](http://rml.io), R2RML, (R2R)[http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/] (for owl:equivalence translation) and XSLT. 
+* Level 4:  In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT. 
 
 
 ## CLI Example: Download the DBpedia ontology as RDF-XML
