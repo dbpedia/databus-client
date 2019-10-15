@@ -90,6 +90,9 @@ SELECT DISTINCT ?file  WHERE {
      FILTER ( str(?cv) = 'de' )
 }" > query
 
+# delete docker from previous runs
+# docker rm vosdc
+
 # start docker as deamon by adding -d
 docker run --name vosdc \
     -v $(pwd)/query:/opt/databus-client/query \
