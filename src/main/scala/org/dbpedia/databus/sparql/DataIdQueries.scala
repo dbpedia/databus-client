@@ -38,7 +38,7 @@ object DataIdQueries {
        |}
     """.stripMargin
 
-  def queryGetType(fileURL:String): String =
+  def queryGetType(fileURL: String): String =
     s"""
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
        |SELECT ?type {

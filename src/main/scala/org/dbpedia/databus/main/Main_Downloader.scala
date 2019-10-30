@@ -1,53 +1,47 @@
 package org.dbpedia.databus.main
 
 import better.files.File
-import org.dbpedia.databus.FileHandler
-import org.dbpedia.databus.cli.CLIConf
-import org.dbpedia.databus.sparql.QueryHandler
+import org.dbpedia.databus.filehandling.FileUtil
+import org.dbpedia.databus.filehandling.downloader.Downloader
+import org.dbpedia.databus.main.cli.CLIConf
 
 object Main_Downloader {
 
   def main(args: Array[String]) {
 
-    println("Welcome to DBPedia - Downloadtool")
-    println("\n--------------------------------------------------------\n")
+    println("Welcome to DBPedia - Download tool")
 
     val conf = new CLIConf(args)
-    val download_temp = File("./tempdir_downloaded_files/")
+    val cache_dir = File("./cache_dir/").createDirectoryIfNotExists()
     val dataId_string = "dataid.ttl"
 
     //Test if query is a File or a Query
-    var queryString:String = ""
-    File(conf.query()).exists() match {
-      case true => {
-        // "./src/query/query"
-        val file = File(conf.query())
-        queryString = FileHandler.readQueryFile(file)
-      }
-      case false => {
-        queryString = conf.query()
-      }
+    val queryString: String = File(conf.query()).exists() match {
+      case true => Downloader.readQueryFile(File(conf.query()))
+      case _ => conf.query()
     }
 
-    println("--------------------------------------------------------\n")
-    println("Files to download:")
-    QueryHandler.executeDownloadQuery(queryString, download_temp)
+    val allSHAs = Downloader.downloadWithQuery(queryString, cache_dir)
 
-    val files = download_temp.listRecursively.toSeq
-    for (file <- files) {
-      if (! file.isDirectory){
-        if (!file.name.equals(dataId_string)){
-          FileHandler.copyUnchangedFile(file, download_temp, File(conf.destination_dir()))
-        }
-      }
-      else if (file.name == "temp") { //Delete temp dir of previous failed run
-        file.delete()
-      }
-    }
+    allSHAs.foreach(
+      sha => FileUtil.copyUnchangedFile(FileUtil.getFileWithSHA256(sha, cache_dir), cache_dir, File(conf.destination()))
+    )
+    //    if(checkIfFileInCache(targetdir, fileSHA))
+    //    val files = cache_dir.listRecursively.toSeq
+    //    for (file <- files) {
+    //      if (!file.isDirectory) {
+    //        if (!file.name.equals(dataId_string)) {
+    //          FileUtil.copyUnchangedFile(file, cache_dir, File(conf.destination()))
+    //        }
+    //      }
+    //      else if (file.name == "temp") { //Delete temp dir of previous failed run
+    //        file.delete()
+    //      }
+    //    }
 
     println("\n--------------------------------------------------------\n")
-    println(s"Files have been downloaded to ${conf.destination_dir()}")
-    download_temp.delete()
+    println(s"Files have been downloaded to ${conf.destination()}")
+    //    download_temp.delete()
   }
 
 }

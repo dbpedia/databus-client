@@ -6,6 +6,6 @@ class Tests {
   @Test
   def fileTest(): Unit = {
 
-    File(File("/home/"),"eisenbahnplatte")
+    File(File("/home/"), "eisenbahnplatte")
   }
 }

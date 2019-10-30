@@ -1,4 +1,4 @@
-package org.dbpedia.databus.rdf_writer
+package org.dbpedia.databus.filehandling.converter.rdf_writer
 
 import java.io.ByteArrayOutputStream
 
@@ -11,17 +11,16 @@ import org.apache.spark.sql.SparkSession
 import scala.io.{Codec, Source}
 
 
-
 object TTL_Writer {
 
   def convertToTTL(data: RDD[Triple], spark: SparkSession): RDD[String] = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val triplesTTL = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToTTL(allTriplesOfSubject))
 
-    return triplesTTL
+    triplesTTL
   }
 
-  def convertIteratorToTTL(triples: Iterable[Triple]):String ={
+  def convertIteratorToTTL(triples: Iterable[Triple]): String = {
     val model: Model = ModelFactory.createDefaultModel()
     val os = new ByteArrayOutputStream()
 
@@ -30,9 +29,9 @@ object TTL_Writer {
         ResourceFactory.createResource(triple.getSubject.getURI),
         ResourceFactory.createProperty(triple.getPredicate.getURI),
         {
-          if(triple.getObject.isLiteral) {
-            if(triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralDatatype)
-            else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralLanguage)
+          if (triple.getObject.isLiteral) {
+            if (triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralDatatype)
+            else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralLanguage)
           }
           else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)
           else model.asRDFNode(NodeFactory.createBlankNode())

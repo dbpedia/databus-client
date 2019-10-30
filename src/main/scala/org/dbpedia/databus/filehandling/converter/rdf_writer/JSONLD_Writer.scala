@@ -1,16 +1,14 @@
-package org.dbpedia.databus.rdf_writer
+package org.dbpedia.databus.filehandling.converter.rdf_writer
 
 import java.io.ByteArrayOutputStream
 
-import net.sansa_stack.rdf.spark.io.NonSerializableObjectWrapper
-import org.apache.jena.graph.{NodeFactory, Node_Variable, Triple}
-import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
+import org.apache.jena.graph.{NodeFactory, Triple}
+import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
 import scala.io.{Codec, Source}
-import scala.reflect.ClassTag
 
 //object JsonModelWrapper extends Serializable {
 //  def createModel()= ModelFactory.createDefaultModel()
@@ -43,7 +41,7 @@ object JSONLD_Writer {
     return triplesJSONLD
   }
 
-  def convertIteratorToJSONLD(triples: Iterable[Triple]):String ={
+  def convertIteratorToJSONLD(triples: Iterable[Triple]): String = {
 
     val os = new ByteArrayOutputStream()
     val model = ModelFactory.createDefaultModel()
@@ -53,9 +51,9 @@ object JSONLD_Writer {
         ResourceFactory.createResource(triple.getSubject.getURI),
         ResourceFactory.createProperty(triple.getPredicate.getURI),
         {
-          if(triple.getObject.isLiteral) {
-            if(triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralDatatype)
-            else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm,triple.getObject.getLiteralLanguage)
+          if (triple.getObject.isLiteral) {
+            if (triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralDatatype)
+            else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralLanguage)
           }
           else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)
           else model.asRDFNode(NodeFactory.createBlankNode())
@@ -65,9 +63,9 @@ object JSONLD_Writer {
     RDFDataMgr.write(os, model, RDFFormat.JSONLD_PRETTY)
 
     Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
-//        if (Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().length <= 1) Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
-//        else s"""<script type="application/ld+json">\n""".concat(Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")).concat("</script>")
-//    val jsonld_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
+    //        if (Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().length <= 1) Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
+    //        else s"""<script type="application/ld+json">\n""".concat(Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")).concat("</script>")
+    //    val jsonld_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
   }
 
 }

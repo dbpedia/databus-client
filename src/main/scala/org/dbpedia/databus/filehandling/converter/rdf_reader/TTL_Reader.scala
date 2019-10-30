@@ -1,4 +1,4 @@
-package org.dbpedia.databus.rdf_reader
+package org.dbpedia.databus.filehandling.converter.rdf_reader
 
 import java.util.concurrent.{ExecutorService, Executors}
 
@@ -11,21 +11,21 @@ import org.apache.spark.sql.SparkSession
 
 object TTL_Reader {
 
-  def readTTL(spark:SparkSession, inputFile:File): RDD[Triple] ={
+  def readTTL(spark: SparkSession, inputFile: File): RDD[Triple] = {
     // Create a PipedRDFStream to accept input and a PipedRDFIterator to consume it
     // You can optionally supply a buffer size here for the
     // PipedRDFIterator, see the documentation for details about recommended buffer sizes
     val iter: PipedRDFIterator[Triple] = new PipedRDFIterator[Triple]()
-    val inputStream: PipedRDFStream[Triple]  = new PipedTriplesStream(iter)
+    val inputStream: PipedRDFStream[Triple] = new PipedTriplesStream(iter)
 
     // PipedRDFStream and PipedRDFIterator need to be on different threads
     val executor: ExecutorService = Executors.newSingleThreadExecutor()
 
     // Create a runnable for our parser thread
-    val  parser: Runnable = new Runnable() {
+    val parser: Runnable = new Runnable() {
 
       @Override
-      def run(): Unit={
+      def run(): Unit = {
         // Call the parsing process.
         RDFDataMgr.parse(inputStream, inputFile.pathAsString)
       }

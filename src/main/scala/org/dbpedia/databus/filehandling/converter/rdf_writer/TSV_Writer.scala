@@ -1,7 +1,6 @@
-package org.dbpedia.databus.rdf_writer
+package org.dbpedia.databus.filehandling.converter.rdf_writer
 
-import org.apache.jena.graph.{NodeFactory, Triple}
-import org.apache.jena.rdf.model.ResourceFactory
+import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -26,7 +25,7 @@ object TSV_Writer {
     val triplesDF = triplesDS.select((0 until tsvheader.size).map(r => triplesDS.col("value").getItem(r)): _*)
     val headerDS = sql.createDataset(Vector((tsvheader)))
     val headerDF = headerDS.select((0 until tsvheader.size).map(r => headerDS.col("value").getItem(r)): _*)
-//    headerDF.show(false)
+    //    headerDF.show(false)
     triplesDF.show(false)
     val TSV_Solution = Vector(headerDF, triplesDF)
 
@@ -45,9 +44,10 @@ object TSV_Writer {
         if (predicate == triplePredicate) {
           alreadyIncluded = true
           tripleObject = {
-            if(triple.getObject.isLiteral) triple.getObject.getLiteralLexicalForm// triple.getObject.getLiteralDatatype)
+            if (triple.getObject.isLiteral) triple.getObject.getLiteralLexicalForm // triple.getObject.getLiteralDatatype)
             else if (triple.getObject.isURI) triple.getObject.getURI
-            else triple.getObject.getBlankNodeLabel}
+            else triple.getObject.getBlankNodeLabel
+          }
         }
       })
 
@@ -59,7 +59,7 @@ object TSV_Writer {
       }
     })
 
-//    println(TSVseq)
+    //    println(TSVseq)
     return TSVseq
   }
 
