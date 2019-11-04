@@ -14,7 +14,7 @@ import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.filehandling.converter.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader, TTL_Reader}
-import org.dbpedia.databus.filehandling.converter.rdf_writer.{JSONLD_Writer, RDFXML_Writer, TSV_Writer, TTL_Writer}
+import org.dbpedia.databus.filehandling.converter.rdf_writer.{JSONLD_Writer, NT_Writer, RDFXML_Writer, TSV_Writer, TTL_Writer}
 import org.dbpedia.databus.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
@@ -60,27 +60,28 @@ object Converter {
         val decompressedFile = inputFile.parent / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
         copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
         typeConvertedFile = convertFormat(decompressedFile, formatInputFile, outputFormat)
+
         decompressedFile.delete()
       }
       else {
         typeConvertedFile = convertFormat(inputFile, formatInputFile, outputFormat)
+        println("converted")
+        println(typeConvertedFile.pathAsString)
+        println(typeConvertedFile.exists)
       }
 
       val compressedOutStream = compress(outputCompression, targetFile)
       //file is written here
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
 
-      try {
-        typeConvertedFile.parent.delete()
-      }
-      catch {
-        case noSuchFileException: NoSuchFileException => LoggerFactory.getLogger("ConverterLogger").error(s"Parent of Converted File ${typeConvertedFile.pathAsString} didn't exist")
-      }
+      //DELETE TEMPDIR
+      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
+
     }
 
   }
 
-  def convertFormat(inputFile: File, inputFormat: String, outputFormat: String): File = {
+  private def convertFormat(inputFile: File, inputFormat: String, outputFormat: String): File = {
 
     val spark = SparkSession.builder()
       .appName(s"Triple reader  ${inputFile.name}")
@@ -95,7 +96,7 @@ object Converter {
 
     val convertedFile = writeTriples(inputFile, data, outputFormat, spark)
     //    spark.close()
-
+    println(s"EXISTS? ${convertedFile.exists}")
     convertedFile
   }
 
@@ -103,7 +104,7 @@ object Converter {
 
 
     inputFormat match {
-      case "nt" => NTriple_Reader.readNTriples(spark, inputFile)
+      case "nt" => NTriple_Reader.readNTriplesWithoutSansa(spark, inputFile)
       case "rdf" => RDF_Reader.readRDF(spark, inputFile)
       case "ttl" => {
         if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) TTL_Reader.readTTL(spark, inputFile)
@@ -122,21 +123,17 @@ object Converter {
     }
   }
 
-  def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
+  private[this] def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
 
     val tempDir = inputFile.parent / "temp"
     val headerTempDir = inputFile.parent / "tempheader"
     val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
-    //    //delete temp directory if exists
-    //    try {
-    //      tempDir.delete()
-    //    } catch {
-    //      case noFile: NoSuchFileException => ""
-    //    }
-
     outputFormat match {
-      case "nt" => data.saveAsNTriplesFile(tempDir.pathAsString)
+      case "nt" => {
+        println("NTRIPLE")
+        NT_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
+      }
       case "tsv" => {
         val solution = TSV_Writer.convertToTSV(data, spark)
         solution(1).write.option("delimiter", "\t").option("nullValue", "?").option("treatEmptyValuesAsNulls", "true").csv(tempDir.pathAsString)
@@ -160,7 +157,7 @@ object Converter {
     return targetFile
   }
 
-  def getCompressionType(fileInputStream: BufferedInputStream): String = {
+  private[this] def getCompressionType(fileInputStream: BufferedInputStream): String = {
     try {
       var ctype = CompressorStreamFactory.detect(fileInputStream)
       if (ctype == "bzip2") {
@@ -175,7 +172,7 @@ object Converter {
     }
   }
 
-  def getFormatType(inputFile: File, compressionInputFile: String) = {
+  private[this] def getFormatType(inputFile: File, compressionInputFile: String) = {
     {
       try {
         if (!(getFormatTypeWithDataID(inputFile) == "")) {
@@ -189,7 +186,7 @@ object Converter {
     }
   }
 
-  def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, src_dir: File, dest_dir: File): File = {
+  private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, src_dir: File, dest_dir: File): File = {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
     val name = inputFile.name
@@ -208,9 +205,13 @@ object Converter {
       filepath_new = filepath_new.concat(nameWithoutExtension)
     }
     else {
+      println(File(".").pathAsString)
       // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
-      filepath_new = inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID"))
+//      filepath_new = inputFile.pathAsString.replace(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID"))
+      filepath_new = dest_dir.pathAsString.concat("/NoDataID/").concat(inputFile.pathAsString.replace(File(".").pathAsString, ""))//.concat(nameWithoutExtension)
+
       filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
+      println(s"Filepath: $filepath_new")
     }
 
     if (outputCompression.isEmpty) {
@@ -229,7 +230,7 @@ object Converter {
     return outputFile
   }
 
-  def getFormatTypeWithDataID(inputFile: File): String = {
+  private[this] def getFormatTypeWithDataID(inputFile: File): String = {
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
     val lines = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8").getLines().filter(_ contains s"${inputFile.name}")
 
@@ -249,7 +250,7 @@ object Converter {
     return fileType
   }
 
-  def getFormatTypeWithoutDataID(inputFile: File, compression: String): String = {
+  private[this] def getFormatTypeWithoutDataID(inputFile: File, compression: String): String = {
     var split = inputFile.name.split("\\.")
     var fileType = ""
 
@@ -262,12 +263,12 @@ object Converter {
     return fileType
   }
 
-  def deleteAndRestart(inputFile: File, inputFormat: String, outputFormat: String, file: File): Unit = {
+  private[this] def deleteAndRestart(inputFile: File, inputFormat: String, outputFormat: String, file: File): Unit = {
     file.delete()
     convertFormat(inputFile, inputFormat, outputFormat)
   }
 
-  def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
+  private[this] def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
     //Welche Funktion hat actualDecompressConcatenated?
     try {
 
@@ -288,7 +289,7 @@ object Converter {
     }
   }
 
-  def compress(outputCompression: String, output: File): OutputStream = {
+  private[this] def compress(outputCompression: String, output: File): OutputStream = {
     try {
       // file is created here
       val myOutputStream = new FileOutputStream(output.toJava)
