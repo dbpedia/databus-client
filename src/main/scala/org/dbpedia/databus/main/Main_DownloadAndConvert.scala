@@ -25,15 +25,12 @@ object Main_DownloadAndConvert {
 
     //Test if query is a File or a Query
     var queryString: String = ""
-    File(conf.query()).exists() match {
-      case true => {
-        // "./src/query/query"
-        val file = File(conf.query())
-        queryString = Downloader.readQueryFile(file)
-      }
-      case false => {
+    if (File(conf.query()).exists()) {
+      val file = File(conf.query())
+      queryString = Downloader.readQueryFile(file)
+    }
+    else {
         queryString = conf.query()
-      }
     }
 
     println("\n========================================================\n")

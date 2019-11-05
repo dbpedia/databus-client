@@ -24,16 +24,16 @@ object QueryHandler {
 
     try {
       val results: ResultSet = qexec.execSelect
-      while (results.hasNext()) {
+      while (results.hasNext) {
         val resource = results.next().getResource("?file")
         filesSeq = filesSeq :+ resource.toString
       }
     } finally qexec.close()
 
-    return filesSeq
+    filesSeq
   }
 
-  def getDataIdFile(url: String, dataIdFile: File) = {
+  def downloadDataIdFile(url: String, dataIdFile: File):Unit = {
     val queryString =
       s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
                     PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -49,8 +49,8 @@ object QueryHandler {
       val results: ResultSet = qexec.execSelect
       val fileHandler = FileUtil
 
-      if (results.hasNext()) {
-        val dataidURL = results.next().getResource("?dataset").toString()
+      if (results.hasNext) {
+        val dataidURL = results.next().getResource("?dataset").toString
         //        println(dataidURL)
         FileUtils.copyURLToFile(new URL(dataidURL), dataIdFile.toJava)
       }
@@ -75,7 +75,7 @@ object QueryHandler {
       val results: ResultSet = qexec.execSelect
       val fileHandler = FileUtil
 
-      if (results.hasNext()) {
+      if (results.hasNext) {
         sha256 = results.next().getLiteral("?sha256sum").toString
       }
     } finally qexec.close()
@@ -95,9 +95,9 @@ object QueryHandler {
 
     try {
       val results = qexec.execSelect
-      if (results.hasNext()) {
+      if (results.hasNext) {
         //split the URI at the slashes and take the last cell
-        val publisher = results.next().getResource("?o").toString().split("/").map(_.trim).last
+        val publisher = results.next().getResource("?o").toString.split("/").map(_.trim).last
         dir_structure = dir_structure :+ publisher
       }
     } finally qexec.close()
@@ -107,8 +107,8 @@ object QueryHandler {
 
     try {
       val results = qexec.execSelect
-      if (results.hasNext()) {
-        val group = results.next().getResource("?o").toString().split("/").map(_.trim).last
+      if (results.hasNext) {
+        val group = results.next().getResource("?o").toString.split("/").map(_.trim).last
         dir_structure = dir_structure :+ group
       }
     } finally qexec.close()

@@ -48,6 +48,6 @@ object TTL_Reader {
     inputStream.finish()
     executor.shutdown()
 
-    return data
+    data
   }
 }

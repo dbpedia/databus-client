@@ -43,7 +43,6 @@ object Main_Converter {
       }
     }
     else {
-      println(s"input file:\t\t${source_dir.pathAsString}")
       Converter.convertFile(source_dir, source_dir.parent, destination_dir, conf.format(), conf.compression())
     }
 

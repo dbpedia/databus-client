@@ -38,7 +38,7 @@ class LoggingInputStream(in: InputStream, length: Long, step: Long) extends Inpu
   }
 
   override def close(): Unit = {
-    count(0L, true)
+    count(0L, close = true)
     in.close()
   }
 

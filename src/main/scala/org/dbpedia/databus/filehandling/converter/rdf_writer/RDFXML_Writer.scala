@@ -11,9 +11,9 @@ import org.apache.spark.sql.SparkSession
 import scala.io.{Codec, Source}
 
 object ModelWrapper extends Serializable {
-  var model:Model = ModelFactory.createDefaultModel()
+  var model: Model = ModelFactory.createDefaultModel()
 
-  def resetModel():Unit = {
+  def resetModel(): Unit = {
     model = ModelFactory.createDefaultModel()
   }
 }

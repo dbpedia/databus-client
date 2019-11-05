@@ -30,14 +30,47 @@
             <artifactId>better-files_2.11</artifactId>
             <version>3.7.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena</artifactId>
-            <version>3.12.0</version>
-            <type>pom</type>
-        </dependency>
 
-        <!-- Compression -->
+        <!--        <dependency>-->
+        <!--            <groupId>net.sansa-stack</groupId>-->
+        <!--            <artifactId>sansa-rdf-spark_2.11</artifactId>-->
+        <!--            <version>0.6.0</version>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>net.postgis</groupId>-->
+        <!--                    <artifactId>postgis-jdbc</artifactId>-->
+        <!--                </exclusion>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>com.ibm.sparktc.sparkbench</groupId>-->
+        <!--                    <artifactId>sparkbench</artifactId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
+
+        <!-- MAPPING -->
+        <dependency>
+            <groupId>com.github.tarql</groupId>
+            <artifactId>tarql</artifactId>
+            <version>v1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taxonic.carml</groupId>
+            <artifactId>carml-engine</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taxonic.carml</groupId>
+            <artifactId>carml-logical-source-resolver-csv</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-model</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <!-- MAPPING -->
+
+        <!-- COMPRESSION -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
@@ -55,80 +88,67 @@
             <artifactId>zstd-jni</artifactId>
             <version>1.4.3-1</version>
         </dependency>
+        <!-- COMPRESSION -->
 
-
-        <!-- FormatConversion -->
+        <!-- SPARK -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.11</artifactId>
-            <version>2.4.3</version>
+            <version>2.4.0</version>
         </dependency>
         <dependency>
-            <groupId>net.sansa-stack</groupId>
-            <artifactId>sansa-rdf-spark_2.11</artifactId>
-            <version>0.6.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.postgis</groupId>
-                    <artifactId>postgis-jdbc</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.ibm.sparktc.sparkbench</groupId>
-                    <artifactId>sparkbench</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.4.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>16.0</version>
+        </dependency>
+        <!-- SPARK -->
 
         <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-engine</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-logical-source-resolver-csv</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rdf4j</groupId>
-            <artifactId>rdf4j-model</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-arq</artifactId>
+            <version>3.13.1</version>
         </dependency>
 
+        <!-- LOGGER -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.25</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <!-- LOGGER -->
 
-
-
+        <!-- TEST -->
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.11</artifactId>
             <version>3.1.0-RC1</version>
             <scope>test</scope>
         </dependency>
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <version>4.12</version>
-                    <scope>test</scope>
-                </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- TEST -->
+
     </dependencies>
+
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -139,12 +159,14 @@
         <spark.version>2.4.0</spark.version>
     </properties>
 
+
     <distributionManagement>
         <!--repository>
             <id>internal.repo</id>
             <name>Temporary Staging Repository</name>
             <url>file://${project.build.directory}/mvn-repo</url>
         </repository-->
+
         <repository>
             <id>archiva.internal</id>
             <name>Internal Release Repository</name>
@@ -156,6 +178,14 @@
             <url>http://databus.dbpedia.org:8081/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
 
     <build>

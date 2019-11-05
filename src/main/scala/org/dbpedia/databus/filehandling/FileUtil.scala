@@ -21,7 +21,7 @@ object FileUtil {
     }
   }
 
-  def unionFiles(tempDir: File, targetFile: File):Unit = {
+  def unionFiles(tempDir: File, targetFile: File): Unit = {
     //union all part files of Sansa
 
     //HOW TO ESCAPE WHITESPACES?
@@ -33,7 +33,7 @@ object FileUtil {
     }
   }
 
-  def unionFilesWithHeaderFile(headerTempDir: File, tempDir: File, targetFile: File):Unit = {
+  def unionFilesWithHeaderFile(headerTempDir: File, tempDir: File, targetFile: File): Unit = {
     //union all part files of Sansa
 
     val findTripleFiles = s"find ${headerTempDir.pathAsString}/ -name part*" #&& s"find ${tempDir.pathAsString}/ -name part*" !!
@@ -46,7 +46,7 @@ object FileUtil {
 
   }
 
-  def copyUnchangedFile(inputFile: File, src_dir: File, dest_dir: File):Unit = {
+  def copyUnchangedFile(inputFile: File, src_dir: File, dest_dir: File): Unit = {
     val name = inputFile.name
 
     val dataIdFile = inputFile.parent / "dataid.ttl"

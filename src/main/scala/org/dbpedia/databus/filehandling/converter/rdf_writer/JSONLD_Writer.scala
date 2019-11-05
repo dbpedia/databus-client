@@ -36,9 +36,7 @@ object JSONLD_Writer {
   def convertToJSONLD(data: RDD[Triple], spark: SparkSession): RDD[String] = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
 
-    val triplesJSONLD = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToJSONLD(allTriplesOfSubject))
-
-    return triplesJSONLD
+    triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToJSONLD(allTriplesOfSubject))
   }
 
   def convertIteratorToJSONLD(triples: Iterable[Triple]): String = {

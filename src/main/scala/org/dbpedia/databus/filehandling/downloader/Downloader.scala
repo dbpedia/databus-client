@@ -31,12 +31,12 @@ object Downloader {
   def downloadFile(url: String, targetdir: File): Unit = {
     val file = targetdir / url.split("http://|https://").map(_.trim).last //filepath from url without http://
 
-    downloadUrlToFile(new URL(url), file, true)
+    downloadUrlToFile(new URL(url), file, createParentDirectory = true)
 
     val dataIdFile = file.parent / "dataid.ttl"
     if (!dataIdFile.exists()) { //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
       try {
-        QueryHandler.getDataIdFile(url, dataIdFile)
+        QueryHandler.downloadDataIdFile(url, dataIdFile)
       }
       catch {
         case fileNotFoundException: FileNotFoundException => println("couldn't query dataidfile")
@@ -77,6 +77,6 @@ object Downloader {
     for (line <- file.lineIterator) {
       queryString = queryString.concat(line).concat("\n")
     }
-    return queryString
+    queryString
   }
 }
