@@ -15,6 +15,7 @@ object Main_DownloadAndConvert {
 
     val conf = new CLIConf(args)
     val cache_dir = File("./cache_dir/")
+    cache_dir.createDirectoryIfNotExists()
     val dataId_string = "dataid.ttl"
 
     //    //  if no compression wanted (output_compression not set) change the value to an empty string
@@ -30,7 +31,7 @@ object Main_DownloadAndConvert {
       queryString = Downloader.readQueryFile(file)
     }
     else {
-        queryString = conf.query()
+      queryString = conf.query()
     }
 
     println("\n========================================================\n")

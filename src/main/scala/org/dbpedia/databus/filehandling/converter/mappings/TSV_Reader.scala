@@ -44,6 +44,7 @@ object TSV_Reader {
   //    out.close()
   //  }
 
+
   def tsv_nt_map(spark: SparkSession): RDD[Triple] = {
 
     val stream = new FileInputStream(File("/home/eisenbahnplatte/git/databus-client/test/bob3.tsv").toJava)

@@ -33,7 +33,7 @@ object QueryHandler {
     filesSeq
   }
 
-  def downloadDataIdFile(url: String, dataIdFile: File):Unit = {
+  def downloadDataIdFile(url: String, dataIdFile: File): Unit = {
     val queryString =
       s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
                     PREFIX dcat: <http://www.w3.org/ns/dcat#>
