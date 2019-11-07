@@ -6,11 +6,13 @@ import better.files.File
 import org.apache.commons.compress.archivers.dump.InvalidFormatException
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.apache.jena.graph.Triple
+import org.apache.jena.riot.RDFFormat
 import org.apache.spark.SparkException
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.filehandling.FileUtil.copyStream
+import org.dbpedia.databus.filehandling.converter.mappings.TSV_Writer
 import org.dbpedia.databus.filehandling.converter.rdf_reader.{JSONL_Reader, NTriple_Reader, RDF_Reader, TTL_Reader}
 import org.dbpedia.databus.filehandling.converter.rdf_writer._
 import org.dbpedia.databus.sparql.QueryHandler
@@ -330,7 +332,7 @@ object Converter {
         JSONLD_Writer.convertToJSONLD(data, spark).saveAsTextFile(tempDir.pathAsString)
 
       case "rdfxml" =>
-        RDFXML_Writer.convertToRDFXML(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+        RDF_Writer.convertToRDF(data, spark, RDFFormat.RDFXML).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     }
 
     try {

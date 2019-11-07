@@ -1,4 +1,4 @@
-package org.dbpedia.databus.filehandling.converter.rdf_writer
+package org.dbpedia.databus.filehandling.converter.mappings
 
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD

@@ -10,27 +10,6 @@ import org.apache.spark.sql.SparkSession
 
 import scala.io.{Codec, Source}
 
-//object JsonModelWrapper extends Serializable {
-//  def createModel()= ModelFactory.createDefaultModel()
-//  //  val model = ModelFactory.createDefaultModel()
-//}
-//
-//class JsonModelWrapper(val model:Model) extends {
-//
-//}
-//class JsonLDModelWrapper[T: ClassTag](constructor: => T) extends AnyRef with Serializable {
-//  def apply[T: ClassTag](constructor: => T): JsonLDModelWrapper[T] = new JsonLDModelWrapper[T](constructor)
-//}
-//
-//object JsonLDModelWrapper {
-//  def apply[T: ClassTag](constructor: => T): JsonLDModelWrapper[T] = new JsonLDModelWrapper[T](constructor)
-//}
-//private class NonSerializableObjectWrapper[T: ClassTag](constructor: => T) extends AnyRef with Serializable {
-//  @transient private lazy val instance: T = constructor
-//
-//  def get: T = instance
-//}
-
 object JSONLD_Writer {
 
   def convertToJSONLD(data: RDD[Triple], spark: SparkSession): RDD[String] = {
