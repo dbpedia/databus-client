@@ -146,6 +146,7 @@ class tsvmapperTests extends FlatSpec {
     val rs = TarqlQueryExecutionFactory.create(tarqlquery, inputFilePath, CSVOptions.withTSVDefaults()).execTriples()
     while (rs.hasNext) data = sc.union(data, sc.parallelize(Seq(rs.next())))
 
+
     RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
 //    NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
 //    TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
@@ -158,5 +159,34 @@ class tsvmapperTests extends FlatSpec {
 //    assert(triple.getClass.getSimpleName == "Triple")
 //    println(rdd.count())
 //    assert(rdd.count() == 9)
+  }
+
+  "databus-client" should "convert created tsv and mapping file back to ttl" in {
+
+    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/testBob.tsv"
+    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/testBob_mapping.sparql"
+    val outputFile = File("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/testSUCCESFUL.ttl")
+    val tempDir = File("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/tempDir")
+    if (tempDir.exists) tempDir.delete()
+
+    val spark = SparkSession.builder()
+      .appName(s"Triple reader")
+      .master("local[*]")
+      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      .getOrCreate()
+
+    val sc = spark.sparkContext
+
+
+    var data = sc.emptyRDD[Triple]
+
+    val tarqlquery = new TarqlParser(mappingFilePath).getResult
+    val rs = TarqlQueryExecutionFactory.create(tarqlquery, inputFilePath, CSVOptions.withTSVDefaults()).execTriples()
+    while (rs.hasNext) data = sc.union(data, sc.parallelize(Seq(rs.next())))
+    data.foreach(println(_))
+    RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+    //    NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
+    //    TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+    FileUtil.unionFiles(tempDir, outputFile)
   }
 }
