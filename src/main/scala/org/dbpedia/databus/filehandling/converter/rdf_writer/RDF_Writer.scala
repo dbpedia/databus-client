@@ -27,7 +27,7 @@ object RDF_Writer {
     triplesGroupedBySubject.foreach(allTriplesOfSubject => convertIteratorToRDF(allTriplesOfSubject, ModelWrapper.model))
 
     RDFDataMgr.write(os, ModelWrapper.model, lang)
-    val rdfxml_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
+    val rdfxml_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
     ModelWrapper.resetModel()
 
     spark.sparkContext.parallelize(Seq(rdfxml_string))
@@ -40,16 +40,12 @@ object RDF_Writer {
         ResourceFactory.createResource(triple.getSubject.getURI),
         ResourceFactory.createProperty(triple.getPredicate.getURI),
         {
-
           if (triple.getObject.isLiteral) {
             if (triple.getObject.getLiteralLanguage.isEmpty) {
-              println(triple.getObject.getLiteralLexicalForm)
-              println(triple.getObject.getLiteralDatatype)
+//              println(triple.getObject.getLiteralLexicalForm)
+//              println(triple.getObject.getLiteralDatatype)
               ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralDatatype)
-
             }
-
-
             else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralLanguage)
           }
           else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)

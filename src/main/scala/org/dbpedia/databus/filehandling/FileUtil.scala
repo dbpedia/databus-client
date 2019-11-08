@@ -21,29 +21,33 @@ object FileUtil {
     }
   }
 
-  def unionFiles(tempDir: File, targetFile: File): Unit = {
-    //union all part files of Sansa
-
-    //HOW TO ESCAPE WHITESPACES?
+  def unionFiles(tempDir: File, targetFile: File, deleteTemp:Boolean = true): Unit = {
+    //union all part files of Apache Spark
     val findTripleFiles = s"find ${tempDir.pathAsString}/ -name part* -not -empty" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
-    if (!(concatFiles == 0)) {
+    if (concatFiles == 0) {
+      if(deleteTemp) tempDir.delete()
+    }
+    else {
       System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
     }
   }
 
-  def unionFilesWithHeaderFile(headerTempDir: File, tempDir: File, targetFile: File): Unit = {
-    //union all part files of Sansa
+
+  def unionFilesWithHeaderFile(headerTempDir: File, tempDir: File, targetFile: File, deleteTemp:Boolean = true): Unit = {
+    //union all part files of Apache Spark
 
     val findTripleFiles = s"find ${headerTempDir.pathAsString}/ -name part*" #&& s"find ${tempDir.pathAsString}/ -name part*" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
     if (concatFiles == 0) {
-      FileUtils.deleteDirectory(headerTempDir.toJava)
+      if (deleteTemp) {
+        headerTempDir.delete()
+        tempDir.delete()
+      }
     }
     else System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
-
   }
 
   def copyUnchangedFile(inputFile: File, src_dir: File, dest_dir: File): Unit = {

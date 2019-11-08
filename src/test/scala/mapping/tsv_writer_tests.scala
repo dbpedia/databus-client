@@ -14,67 +14,127 @@ import org.dbpedia.databus.filehandling.converter.rdf_reader.{RDF_Reader, TTL_Re
 import org.scalatest.FlatSpec
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 import scala.collection.immutable.Vector
 
 class tsv_writer_tests extends FlatSpec {
 
+  val testDir = "./src/resources/test/MappingTests/write/"
+
+  val spark = SparkSession.builder()
+    .appName(s"Triple reader")
+    .master("local[*]")
+    .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    .getOrCreate()
+
+  "spark" should "not quote empty values when writing csv file" in {
+
+    val df = spark.createDataFrame(Seq(
+      (0, "a"),
+      (1, "b"),
+      (2, "c"),
+      (3, ""),
+      (4, null)
+    ))
+
+    val tempDir = testDir.concat("emptyValues")
+
+    df.coalesce(1).write
+      .option("format" , "csv")
+      .option("delimiter","\t")
+      .option("emptyValue","")
+      .csv(tempDir)
+
+    FileUtil.unionFiles(File(tempDir), File(tempDir.concat(".tsv")))
+  }
+
+  "spark" should "save csv file with header" in {
+
+    val targetFile = File(testDir) / "csvWithHeader.csv"
+    val tempDir = targetFile.parent / "temp"
+    val header = Vector[String]("resource", "type", "lat", "long", "seeAlso", "label", "birthPlace", "homepage")
+
+    var rdd = spark.sparkContext
+      .parallelize(
+        Seq[Seq[String]](
+          Seq[String](
+          "http://dbpedia.org/resource/Jamaica",
+          "http://schema.org/Country",
+          "17.9833",
+          "-76.8",
+          "",
+          "Giamaica",
+          "",
+          "http://jis.gov.jm/"
+        ),
+            Seq[String](
+            "http://dbpedia.org/resource/Bob_Marley",
+            "http://xmlns.com/foaf/0.1/Person",
+            "",
+            "",
+            "http://dbpedia.org/resource/Rastafari",
+            "Bob Marley",
+            "http://dbpedia.org/resource/Jamaica",
+            ""
+          )
+        )
+      )
+
+    val sql = spark.sqlContext
+    import sql.implicits._
+
+    val ds = sql.createDataset(rdd)
+    ds.
+
+    rdd.foreach(println(_))
+    ds.show(false)
+
+    ds.coalesce(1).write
+      .option("delimiter", "\t")
+      .option("emptyValue","")
+      .option("treatEmptyValuesAsNulls", "false")
+      .csv(tempDir.pathAsString)
+
+    FileUtil.unionFiles(tempDir, targetFile)
+  }
 
   "rdd[Triple]" should "be saved to tsv and belonging Sparql Query to read it back to RDD[Triple] should be written as well" in {
-    //"/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/testBob.ttl"
-    val inputFile = File("./src/resources/test/MappingTests/writeTSV/testBob.ttl")
-    val tempDir = inputFile.parent / "temp"
-    if (tempDir.exists) tempDir.delete()
-    val headerTempDir = inputFile.parent / "tempheader"
-    if(headerTempDir.exists) headerTempDir.delete()
+
+    val inputFile = File(s"${testDir}testBob.ttl")
+
     val targetFile: File = inputFile.parent / inputFile.nameWithoutExtension.concat(".tsv")
-
-    val spark = SparkSession.builder()
-      .appName(s"Triple reader")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
-    val sc = spark.sparkContext
-
-    //    val triplesRDD = TTL_Reader.readTTL(spark, inputFile)
+    val tempDir = inputFile.parent / "temp"
+    val headerTempDir = inputFile.parent / "tempheader"
+    if (tempDir.exists) tempDir.delete()
+    if(headerTempDir.exists) headerTempDir.delete()
 
     val triplesRDD= RDF_Reader.readRDF(spark,inputFile)
-    val solution = TTLWriter.convertToTSV(triplesRDD, spark)
-    solution(1).write.option("delimiter", "\t").option("nullValue", "?").option("treatEmptyValuesAsNulls", "true").csv(tempDir.pathAsString)
-    solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
 
-
-    TTLWriter.createTarqlMapFile(targetFile)
-    FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
+    TTLWriter2.convertToTSV(triplesRDD, spark, targetFile)
   }
 
 }
 
-object TTLWriter {
+object TTLWriter2 {
 
-  var tarqlBindings = Seq.empty[String]
-  var tarqlConstruct = Seq.empty[String]
-  var tarqlPrefixes = Seq[String]("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>")
-
-  def getSplitPredicate(pre:String): (String, String)={
-    val lastHashkeyIndex = pre.lastIndexOf("#")
-    val lastSlashIndex = pre.lastIndexOf("/")
-    var split = ("","")
-
-    if (lastHashkeyIndex >= lastSlashIndex) split =pre.splitAt(pre.lastIndexOf("#")+1)
-    else split =pre.splitAt(pre.lastIndexOf("/")+1)
-
-    split
-  }
+  def convertToTSV(data: RDD[Triple], spark: SparkSession, targetFile:File): File = {
 
 
-  def convertToTSV(data: RDD[Triple], spark: SparkSession): Vector[DataFrame] = {
+    var tarqlBindings = Seq.empty[String]
+    var tarqlConstruct = Seq.empty[String]
+
+    val tempDir = targetFile.parent / "temp"
+    val headerTempDir = targetFile.parent / "tempheader"
+    if (tempDir.exists) tempDir.delete()
+    if(headerTempDir.exists) headerTempDir.delete()
+
     val prefixPre = "xxx"
-    val sql = spark.sqlContext
 
+    val sql = spark.sqlContext
     import sql.implicits._
-    //Gruppiere nach Subjekt, dann kommen TripleIteratoren raus
+
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = data.groupBy(triple => triple.getPredicate.getURI).map(_._1) //WARUM GING ES NIE OHNE COLLECT MIT FOREACHPARTITION?
 
@@ -89,79 +149,62 @@ object TTLWriter {
       headerVector = headerVector :+ split._2
     })
 
-    //      println("MAPPINGVECTOR")
-    //      mappingPredicates.foreach(x => x.foreach(println(_)))
-
-
+    var tarqlPrefixes = Seq[String]("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>")
     mappingPredicates.foreach(pre => {
       if (pre.length == 3) tarqlPrefixes= tarqlPrefixes :+ (s"PREFIX ${pre(2)}: <${pre(1)}>")
     })
     println(tarqlPrefixes)
 
 
-    //      var tarqlConstruct = Seq.empty[String]
-
-
-
-    val triplesTSV = triplesGroupedBySubject.map(allTriplesOfSubject => {
+    val triplesTSV = triplesGroupedBySubject.collect().map(allTriplesOfSubject => {
       val result = convertAllTriplesOfSubjectToTSV(allTriplesOfSubject,headerVector, mappingPredicates, tarqlPrefixes)
       tarqlBindings = tarqlBindings ++ result._2
       tarqlConstruct = tarqlConstruct ++ result._3
       result._1
     })
 
+    println("HEADER")
+    println(headerVector)
+    println(triplesTSV)
+    triplesTSV.foreach(println(_))
     val triplesDS = sql.createDataset(triplesTSV)
     val triplesDF = triplesDS.select((0 until mappingPredicates.size).map(r => triplesDS.col("value").getItem(r)): _*)
+
     val headerDS = sql.createDataset(Vector((headerVector)))
     val headerDF = headerDS.select((0 until mappingPredicates.size).map(r => headerDS.col("value").getItem(r)): _*)
 
     headerDF.show(false)
     triplesDF.show(false)
 
+    println("FINAL BINDINGS")
+    tarqlBindings.distinct.foreach(println(_))
+    println("FINAL CONSTRUCTSTRING")
+    tarqlConstruct.distinct.foreach(println(_))
 
-//    println("FINAL BINDINGS")
-//    println(tarqlBindings.distinct)
-//    tarqlBindings.distinct.foreach(println(_))
-//    println("FINAL CONSTRUCTSTRING")
-//    println(tarqlConstruct.distinct)
-//    tarqlConstruct.distinct.foreach(println(_))
+    triplesDF.coalesce(1).write
+      .option("delimiter", "\t")
+      .option("emptyValue","")
+      .option("treatEmptyValuesAsNulls", "false")
+      .csv(tempDir.pathAsString)
 
-    import spark.implicits._
+    headerDF.coalesce(1).write
+      .option("delimiter", "\t")
+      .csv(headerTempDir.pathAsString)
 
-    Vector(headerDF, triplesDF)
+    FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
+
+    TTLWriter2.createTarqlMapFile(tarqlPrefixes, tarqlConstruct, tarqlBindings, targetFile)
   }
 
-  def createTarqlMapFile(tsvFile:File) ={
-//    tarqlPrefixes: Seq[String], tarqlConstruct: Seq[String], tarqlBindings: Seq[String],
-    val prefixStr = tarqlPrefixes.filter(str => !(str.contains("type") && str.contains("http://www.w3.org/1999/02/22-rdf-syntax-ns#"))).mkString("", "\n", "\n")
+  def getSplitPredicate(pre:String): (String, String)={
+    val lastHashkeyIndex = pre.lastIndexOf("#")
+    val lastSlashIndex = pre.lastIndexOf("/")
+    var split = ("","")
 
-    val typeConstruct = tarqlConstruct.distinct.find(str => str.contains("type:type")).get.split(" ")
-    val updatedTypeConstruct = typeConstruct.updated(1, "a").mkString(" ")
-//    val constructStr = tarqlConstruct.distinct.updated(tarqlConstruct.indexOf(tarqlConstruct.find(str => str.contains("type:type")).get),updatedTypeConstruct).mkString("", "\n", "\n")
+    if (lastHashkeyIndex >= lastSlashIndex) split =pre.splitAt(pre.lastIndexOf("#")+1)
+    else split =pre.splitAt(pre.lastIndexOf("/")+1)
 
-    val constructStrPart = tarqlConstruct.distinct.map(x => x.split(" ").updated(0,"\t").mkString(" ")).filter(str => !str.contains("type:type")).mkString("", "\n", "\n")
-
-    println(tarqlConstruct.distinct.map(x => x.split(" ").drop(1).mkString(" ")).filter(str => !str.contains("type:type")).mkString("", "\n", "\n"))
-    val constructStr = updatedTypeConstruct.concat(s"\n$constructStrPart")
-
-
-    val bindingStr = tarqlBindings.distinct.mkString("\t", "\n\t", "\n")
-
-    val tarqlMappingString =
-      s"""$prefixStr
-         |
-         |CONSTRUCT {
-         |$constructStr
-         |}
-         |FROM <$tsvFile>
-         |WHERE {
-         |$bindingStr
-         |}
-       """.stripMargin
-
-    val tarqlFile = tsvFile.parent / tsvFile.nameWithoutExtension(true).concat("_mapping").concat(".sparql")
-
-    new PrintWriter(tarqlFile.pathAsString) { write(tarqlMappingString); close }
+    split
   }
 
   def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], allPredicates: Vector[String], mappingPredicates: Vector[Vector[String]], tarqlPrefixes: Seq[String]): (Seq[String],Seq[String],Seq[String]) = {
@@ -227,10 +270,43 @@ object TTLWriter {
     (TSVseq, tarqlBindPart, tarqlConstructPart)
   }
 
+  def createTarqlMapFile(tarqlPrefixes: Seq[String], tarqlConstruct: Seq[String], tarqlBindings: Seq[String], tsvFile:File):File ={
+    //    ,
+    val prefixStr = tarqlPrefixes.filter(str => !(str.contains("type") && str.contains("http://www.w3.org/1999/02/22-rdf-syntax-ns#"))).mkString("", "\n", "")
+
+    val typeConstruct = tarqlConstruct.distinct.find(str => str.contains("type:type")).get.split(" ")
+    val updatedTypeConstruct = typeConstruct.updated(1, "a").mkString(" ")
+    //    val constructStr = tarqlConstruct.distinct.updated(tarqlConstruct.indexOf(tarqlConstruct.find(str => str.contains("type:type")).get),updatedTypeConstruct).mkString("", "\n", "\n")
+
+    val constructStrPart = tarqlConstruct.distinct.map(x => x.split(" ").updated(0,"\t").mkString(" ")).filter(str => !str.contains("type:type")).mkString("", "\n", "")
+
+    println(tarqlConstruct.distinct.map(x => x.split(" ").drop(1).mkString(" ")).filter(str => !str.contains("type:type")).mkString("", "\n", ""))
+    val constructStr = updatedTypeConstruct.concat(s"\n$constructStrPart")
+
+
+    val bindingStr = tarqlBindings.distinct.mkString("\t", "\n\t", "")
+
+    val tarqlMappingString =
+      s"""$prefixStr
+         |
+         |CONSTRUCT {
+         |$constructStr
+         |}
+         |FROM <$tsvFile>
+         |WHERE {
+         |$bindingStr
+         |}
+       """.stripMargin
+
+    val tarqlFile = tsvFile.parent / tsvFile.nameWithoutExtension(true).concat("_mapping").concat(".sparql")
+
+    new PrintWriter(tarqlFile.pathAsString) { write(tarqlMappingString); close }
+
+    tarqlFile
+  }
+
   def buildTarqlConstructStr(mappedPredicates:Vector[Vector[String]],predicate:String, bindedSubject:String, bindedPre:String): String ={
     val predicateVec =mappedPredicates.find(vector => vector.contains(predicate)).get
-//    println("added ConstructLine")
-//    println(s"?$bindedSubject ${predicateVec(2)}:${predicate} ?$predicate$bindedPre")
     s"?$bindedSubject ${predicateVec(2)}:${predicate} ?$predicate$bindedPre;"
   }
 

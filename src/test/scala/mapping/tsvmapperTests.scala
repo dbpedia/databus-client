@@ -14,179 +14,136 @@ import org.scalatest.FlatSpec
 
 class tsvmapperTests extends FlatSpec {
 
-  "tarql" should "read out all data from tsv file" in {
+  val testDir:String = "./src/resources/test/MappingTests/read/"
 
-    def tsv_read() = {
-      val prefixes = new PrefixMappingImpl()
-      val tarqlquery = new TarqlParser("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/select.sparql").getResult
-      val csvFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/test.csv"
-      val resultSet = TarqlQueryExecutionFactory.create(tarqlquery, csvFilePath, null).execSelect()
+  val spark:SparkSession = SparkSession.builder()
+    .appName(s"Triple reader")
+    .master("local[*]")
+    .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    .getOrCreate()
 
+  def csv_map(mapFile:String, csvFilePath:String = "", isTsvFile:Boolean=false, map:Boolean=true): Unit = {
 
-      while (resultSet.hasNext) println(resultSet.next)
-
+    val prefixes = new PrefixMappingImpl()
+    val tarqlquery = new TarqlParser(mapFile).getResult
+    val csvOptions = {
+      if (isTsvFile) CSVOptions.withTSVDefaults()
+      else CSVOptions.withCSVDefaults()
     }
 
-    tsv_read()
-
-    def selectSparql() = {
-      val tarqlQuery = new TarqlParser("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/select.sparql").getResult
-      val resultSet = TarqlQueryExecutionFactory.create(tarqlQuery).execSelect()
-
-      while (resultSet.hasNext) println(resultSet.next())
+    val resultSet = if(map) {
+      csvFilePath match {
+        case "" => TarqlQueryExecutionFactory.create(tarqlquery).execTriples()
+        case _ => TarqlQueryExecutionFactory.create(tarqlquery, csvFilePath, csvOptions).execTriples()
+      }
+    }
+    else
+    { csvFilePath match {
+        case "" => TarqlQueryExecutionFactory.create(tarqlquery).execSelect()
+        case _ => TarqlQueryExecutionFactory.create(tarqlquery, csvFilePath, csvOptions).execSelect()
+      }
     }
 
-    println("select")
-    selectSparql()
+    while (resultSet.hasNext) println(resultSet.next)
+  }
 
-    def tsvmap() = {
-      val tarqlQuery = new TarqlParser("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/mapping.sparql").getResult
+  def csv_map_to_rdd(mapFile:String, csvFilePath:String = "", delimiter:String="," , sc: SparkContext): RDD[Triple] = {
 
-      println(tarqlQuery.isConstructType)
-      val rs = TarqlQueryExecutionFactory.create(tarqlQuery).execTriples()
+    val prefixes = new PrefixMappingImpl()
+    val tarqlquery = new TarqlParser(mapFile).getResult
 
-      while (rs.hasNext) println(rs.next())
+    val csvOptions = {
+      if (delimiter==",") CSVOptions.withCSVDefaults()
+      else if (delimiter=="\t") CSVOptions.withTSVDefaults()
+      else null
     }
-
-    println("tsvmap")
-    tsvmap()
-  }
-
-  "tarql" should "read all data of testWithoutSlashes.csv" in {
-    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testWithoutSlashes.csv"
-    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testWithoutSlashes.sparql"
-    tarqlMapCSV(inputFilePath, mappingFilePath)
-  }
-
-  "tarql" should "read all data of test2.csv" in {
-    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/test2.csv"
-    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/test2.sparql"
-    tarqlMapCSV(inputFilePath, mappingFilePath)
-  }
-
-  def tarqlMapCSV(inputFile: String, mappingFile: String): Unit = {
-    val tarqlquery = new TarqlParser(mappingFile).getResult
-    val rs = TarqlQueryExecutionFactory.create(tarqlquery, inputFile).execTriples()
-    while (rs.hasNext) println(rs.next())
-  }
-
-
-  "tarql" should "read all data of testBob.csv" in {
-    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.csv"
-    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.sparql"
-    tarqlMapCSV(inputFilePath, mappingFilePath)
-  }
-
-  "tarql" should "read all data of testBob.TSV" in {
-    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.tsv"
-    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.sparql"
-    tarqlMapTSV(inputFilePath, mappingFilePath)
-  }
-
-  def tarqlMapTSV(inputFile: String, mappingFile: String): Unit = {
-    val tarqlquery = new TarqlParser(mappingFile).getResult
-    val rs = TarqlQueryExecutionFactory.create(tarqlquery, inputFile, CSVOptions.withTSVDefaults()).execTriples()
-    while (rs.hasNext) println(rs.next())
-  }
-
-
-  "tarql" should "read all data of testBob.TSV and load them into RDD[Triple]" in {
-    val spark = SparkSession.builder()
-      .appName(s"Triple reader")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
-
-    val sc = spark.sparkContext
-
-    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.tsv"
-    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.sparql"
-    val rdd = tarqlMapTSVtoRDD(inputFilePath, mappingFilePath, sc)
-    rdd.foreach(println(_))
-
-    var triple = Triple.create(NodeFactory.createBlankNode(), NodeFactory.createBlankNode(), NodeFactory.createBlankNode())
-    rdd.take(1).foreach(x => triple = x)
-    assert(triple.getClass.getSimpleName == "Triple")
-    println(rdd.count())
-    assert(rdd.count() == 9)
-
-  }
-
-  def tarqlMapTSVtoRDD(inputFile: String, mappingFile: String, sc: SparkContext): RDD[Triple] = {
 
     var rdd = sc.emptyRDD[Triple]
 
-    val tarqlquery = new TarqlParser(mappingFile).getResult
-    val rs = TarqlQueryExecutionFactory.create(tarqlquery, inputFile, CSVOptions.withTSVDefaults()).execTriples()
-    while (rs.hasNext) rdd = sc.union(rdd, sc.parallelize(Seq(rs.next())))
+    if (csvOptions != null) {
+      val resultSet =  csvFilePath match {
+        case "" => TarqlQueryExecutionFactory.create(tarqlquery).execTriples()
+        case _ => TarqlQueryExecutionFactory.create(tarqlquery, csvFilePath, csvOptions).execTriples()
+      }
+
+      while (resultSet.hasNext) rdd = sc.union(rdd, sc.parallelize(Seq(resultSet.next())))
+    } else {
+      println(s"DELIMITER WIRD NICHT UNTERSTUEZT: $delimiter")
+    }
+
     rdd
   }
 
+  "tarql" should "read out all data from csv file" in {
+
+    println("SELECT WITH CSV FILE PATH")
+    csv_map(s"${testDir}test1_select.sparql",s"${testDir}test1.csv",map=false)
+
+    println("SELECT WITH CSV FILE PATH IMPLEMENTED IN MAPFILE")
+    csv_map(s"${testDir}test1_select2.sparql",map=false)
+
+  }
+
+  "tarql" should "map all data to triples" in{
+
+    println("TARQLMAPPING")
+    csv_map(s"${testDir}test1_mapping.sparql")
+
+  }
+
+  "tarql" should "read all data of test2.csv as Triples" in {
+    val inputFilePath = s"${testDir}test2.csv"
+    val mappingFilePath = s"${testDir}test2.sparql"
+    csv_map(mappingFilePath,inputFilePath)
+  }
+
+  "tarql" should "read all data of testBob.TSV" in {
+    val inputFilePath = s"${testDir}testBob.tsv"
+    val mappingFilePath = s"${testDir}testBob.sparql"
+    csv_map(mappingFilePath, inputFilePath,  isTsvFile = true)
+  }
+
+  "tarql" should "read all data of testBob.TSV and load them into RDD[Triple]" in {
+
+    val inputFilePath = s"${testDir}testBob.tsv"
+    val mappingFilePath = s"${testDir}testBob.sparql"
+
+    val rdd = csv_map_to_rdd(mappingFilePath, inputFilePath, delimiter = "\t", sc = spark.sparkContext)
+
+    rdd.foreach(println(_))
+    println(s"RDD LENGTH: ${rdd.count()}")
+    assert(rdd.count() == 9)
+
+    rdd.take(1)
+      .foreach(triple =>
+        assert(triple.getClass.getSimpleName == "Triple")
+      )
+  }
 
   "databus-client" should "convert tsv to ttl" in {
 
-    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.tsv"
-    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.sparql"
-    val outputFile= File("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/testBob.ttl")
-    val tempDir = File("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/tempDir")
-    if (tempDir.exists) tempDir.delete()
-
-    val spark = SparkSession.builder()
-      .appName(s"Triple reader")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
-
     val sc = spark.sparkContext
 
-
-    var data = sc.emptyRDD[Triple]
-
-    val tarqlquery = new TarqlParser(mappingFilePath).getResult
-    val rs = TarqlQueryExecutionFactory.create(tarqlquery, inputFilePath, CSVOptions.withTSVDefaults()).execTriples()
-    while (rs.hasNext) data = sc.union(data, sc.parallelize(Seq(rs.next())))
-
-
-    RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
-//    NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
-//    TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
-    FileUtil.unionFiles(tempDir, outputFile)
-
-//    rdd.foreach(println(_))
-//
-//    var triple = Triple.create(NodeFactory.createBlankNode(), NodeFactory.createBlankNode(), NodeFactory.createBlankNode())
-//    rdd.take(1).foreach(x => triple = x)
-//    assert(triple.getClass.getSimpleName == "Triple")
-//    println(rdd.count())
-//    assert(rdd.count() == 9)
-  }
-
-  "databus-client" should "convert created tsv and mapping file back to ttl" in {
-
-    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/testBob.tsv"
-    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/testBob_mapping.sparql"
-    val outputFile = File("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/testSUCCESFUL.ttl")
-    val tempDir = File("/home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/writeTSV/tempDir")
+    val inputFilePath = s"${testDir}testBob.tsv"
+    val mappingFilePath = s"${testDir}testBob.sparql"
+    val outputFile= File(s"${testDir}testBob.ttl")
+    val tempDir = File(s"${testDir}tempDir")
     if (tempDir.exists) tempDir.delete()
 
-    val spark = SparkSession.builder()
-      .appName(s"Triple reader")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
+    val data = csv_map_to_rdd(mappingFilePath, inputFilePath, "\t", sc)
 
-    val sc = spark.sparkContext
-
-
-    var data = sc.emptyRDD[Triple]
-
-    val tarqlquery = new TarqlParser(mappingFilePath).getResult
-    val rs = TarqlQueryExecutionFactory.create(tarqlquery, inputFilePath, CSVOptions.withTSVDefaults()).execTriples()
-    while (rs.hasNext) data = sc.union(data, sc.parallelize(Seq(rs.next())))
-    data.foreach(println(_))
     RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
-    //    NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
-    //    TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     FileUtil.unionFiles(tempDir, outputFile)
+
+    println(s"number triples: ${data.count}")
+    println(s"number lines outFile: ${outputFile.lineCount}")
+
+    var subjects = Seq.empty[String]
+    data.collect.foreach(triple=> subjects = subjects :+ triple.getSubject.toString)
+    val countSubjects = subjects.distinct.length
+
+    println(s"number triples outFile: ${(outputFile.lineCount - (countSubjects - 1))/2} ")
+    assert(data.count() == (outputFile.lineCount - (countSubjects - 1))/2)
   }
+
 }
