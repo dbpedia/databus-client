@@ -10,8 +10,11 @@ import com.taxonic.carml.model.TriplesMap
 import com.taxonic.carml.util.RmlMappingLoader
 import com.taxonic.carml.vocab.Rdf
 import org.apache.jena.graph.{NodeFactory, Triple}
+import org.apache.jena.shared.impl.PrefixMappingImpl
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.eclipse.rdf4j.model._
 import org.eclipse.rdf4j.rio.RDFFormat
 
@@ -44,6 +47,33 @@ object TSV_Reader {
   //    out.close()
   //  }
 
+
+  def csv_to_rdd(mapFile:String, csvFilePath:String = "", delimiter:String="," , sc: SparkContext): RDD[Triple] = {
+
+    val prefixes = new PrefixMappingImpl()
+    val tarqlquery = new TarqlParser(mapFile).getResult
+
+    val csvOptions = {
+      if (delimiter==",") CSVOptions.withCSVDefaults()
+      else if (delimiter=="\t") CSVOptions.withTSVDefaults()
+      else null
+    }
+
+    var rdd = sc.emptyRDD[Triple]
+
+    if (csvOptions != null) {
+      val resultSet =  csvFilePath match {
+        case "" => TarqlQueryExecutionFactory.create(tarqlquery).execTriples()
+        case _ => TarqlQueryExecutionFactory.create(tarqlquery, csvFilePath, csvOptions).execTriples()
+      }
+
+      while (resultSet.hasNext) rdd = sc.union(rdd, sc.parallelize(Seq(resultSet.next())))
+    } else {
+      println(s"DELIMITER WIRD NICHT UNTERSTUEZT: $delimiter")
+    }
+
+    rdd
+  }
 
   def tsv_nt_map(spark: SparkSession): RDD[Triple] = {
 

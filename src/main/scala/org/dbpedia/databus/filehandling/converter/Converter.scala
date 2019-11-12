@@ -45,7 +45,7 @@ object Converter {
     else {
 
       formatInputFile match {
-        case "rdf" | "ttl" | "nt" | "jsonld" =>
+        case "rdf" | "ttl" | "nt" | "jsonld" | "tsv" =>
         case _ =>
           LoggerFactory.getLogger("File Format Logger").error(s"Input file format $formatInputFile not supported.")
           println(s"Input file format $formatInputFile not supported.")
@@ -72,7 +72,7 @@ object Converter {
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
 
       //DELETE TEMPDIR
-      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
+//      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
 
     }
 
@@ -305,7 +305,10 @@ object Converter {
             RDF_Reader.readRDF(spark, inputFile)
         }
 
-      case "tsv" => spark.sparkContext.emptyRDD[Triple] //mappings.TSV_Reader.tsv_nt_map(spark)
+      case "tsv" => {
+
+        mappings.TSV_Reader.csv_to_rdd(scala.io.StdIn.readLine("Please type Path to Mapping File"), inputFile.pathAsString, "\t", spark.sparkContext)
+      }
     }
   }
 
@@ -316,14 +319,27 @@ object Converter {
     if (tempDir.exists) tempDir.delete()
     val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
+    println("WRITETRIPLES")
+    println(s"TEMPDIR: $tempDir")
     outputFormat match {
       case "nt" =>
         NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
 
       case "tsv" =>
-        val solution = TSV_Writer.convertToTSV(data, spark)
-        solution(1).write.option("delimiter", "\t").option("nullValue", "?").option("treatEmptyValuesAsNulls", "true").csv(tempDir.pathAsString)
-        solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
+        val tsvData = TSV_Writer.convertToTSV(data,spark, true)
+          tsvData._1.coalesce(1).write
+            .option("delimiter", "\t")
+            .option("emptyValue","")
+            .option("header","true")
+            .option("treatEmptyValuesAsNulls", "false")
+            .csv(tempDir.pathAsString)
+
+        println("CREATE TARQLFILE")
+        tsvData._2.show()
+        TSV_Writer.createTarqlMapFile(tsvData._2, inputFile)
+//          TSV_Writer.convertToTSV(data, spark)
+//        solution(1).write.option("delimiter", "\t").option("nullValue", "?").option("treatEmptyValuesAsNulls", "true").csv(tempDir.pathAsString)
+//        solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
 
       case "ttl" =>
         TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
@@ -337,8 +353,8 @@ object Converter {
 
     try {
       outputFormat match {
-        case "tsv" => FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
-        case "jsonld" | "jsonl" | "nt" | "ttl" | "rdfxml" => FileUtil.unionFiles(tempDir, targetFile)
+//        case "tsv" => FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
+        case "jsonld" | "jsonl" | "nt" | "ttl" | "rdfxml" | "tsv" => FileUtil.unionFiles(tempDir, targetFile)
       }
     }
     catch {

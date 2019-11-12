@@ -21,15 +21,12 @@ object FileUtil {
     }
   }
 
-  def unionFiles(tempDir: File, targetFile: File, deleteTemp:Boolean = true): Unit = {
+  def unionFiles(tempDir: File, targetFile: File): Unit = {
     //union all part files of Apache Spark
     val findTripleFiles = s"find ${tempDir.pathAsString}/ -name part* -not -empty" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
-    if (concatFiles == 0) {
-      if(deleteTemp) tempDir.delete()
-    }
-    else {
+    if (!(concatFiles == 0)) {
       System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
     }
   }
