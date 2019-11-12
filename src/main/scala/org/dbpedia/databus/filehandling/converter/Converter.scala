@@ -306,8 +306,8 @@ object Converter {
         }
 
       case "tsv" => {
-
-        mappings.TSV_Reader.csv_to_rdd(scala.io.StdIn.readLine("Please type Path to Mapping File"), inputFile.pathAsString, "\t", spark.sparkContext)
+        val mappingFile = scala.io.StdIn.readLine("Please type Path to Mapping File:\n")
+        mappings.TSV_Reader.csv_to_rdd(mappingFile, inputFile.pathAsString, "\t", spark.sparkContext)
       }
     }
   }
@@ -319,14 +319,16 @@ object Converter {
     if (tempDir.exists) tempDir.delete()
     val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
-    println("WRITETRIPLES")
-    println(s"TEMPDIR: $tempDir")
     outputFormat match {
       case "nt" =>
         NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
 
       case "tsv" =>
-        val tsvData = TSV_Writer.convertToTSV(data,spark, true)
+        val createMappingFile = scala.io.StdIn.readLine("Do you want to create MappingFile?:\n")
+
+        if (createMappingFile == "yes") {
+          val mappingFile = scala.io.StdIn.readLine("Type Path to create mapping file:\n")
+          val tsvData = TSV_Writer.convertToTSV(data,spark, true)
           tsvData._1.coalesce(1).write
             .option("delimiter", "\t")
             .option("emptyValue","")
@@ -334,12 +336,19 @@ object Converter {
             .option("treatEmptyValuesAsNulls", "false")
             .csv(tempDir.pathAsString)
 
-        println("CREATE TARQLFILE")
-        tsvData._2.show()
-        TSV_Writer.createTarqlMapFile(tsvData._2, inputFile)
-//          TSV_Writer.convertToTSV(data, spark)
-//        solution(1).write.option("delimiter", "\t").option("nullValue", "?").option("treatEmptyValuesAsNulls", "true").csv(tempDir.pathAsString)
-//        solution(0).write.option("delimiter", "\t").csv(headerTempDir.pathAsString)
+          TSV_Writer.createTarqlMapFile(tsvData._2, File(mappingFile))
+        }
+
+        else {
+          val tsvData = TSV_Writer.convertToTSV(data,spark)
+          tsvData.coalesce(1).write
+            .option("delimiter", "\t")
+            .option("emptyValue","")
+            .option("header","true")
+            .option("treatEmptyValuesAsNulls", "false")
+            .csv(tempDir.pathAsString)
+        }
+
 
       case "ttl" =>
         TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
