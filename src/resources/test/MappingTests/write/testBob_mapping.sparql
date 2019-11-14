@@ -1,0 +1,29 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX xxxbirthPlace: <http://dbpedia.org/ontology/>
+PREFIX xxxhomepage: <http://xmlns.com/foaf/0.1/>
+PREFIX xxxlabel: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xxxlat: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xxxlong: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xxxseeAlso: <http://www.w3.org/2000/01/rdf-schema#>
+
+CONSTRUCT {
+?resourcebinded a ?typebinded;
+	 xxxhomepage:homepage ?homepagebinded;
+	 xxxlong:long ?longbinded;
+	 xxxlat:lat ?latbinded;
+	 xxxlabel:label ?labelbinded;
+	 xxxbirthPlace:birthPlace ?birthPlacebinded;
+	 xxxseeAlso:seeAlso ?seeAlsobinded;
+}
+FROM </home/eisenbahnplatte/git/databus-client/src/resources/test/MappingTests/write/testBob.tsv>
+WHERE {
+	BIND(URI(?resource) AS ?resourcebinded)
+	BIND(URI(?homepage) AS ?homepagebinded)
+	BIND(xsd:decimal(?long) AS ?longbinded)
+	BIND(xsd:decimal(?lat) AS ?latbinded)
+	BIND(xsd:string(?label) AS ?labelbinded)
+	BIND(URI(?type) AS ?typebinded)
+	BIND(URI(?birthPlace) AS ?birthPlacebinded)
+	BIND(URI(?seeAlso) AS ?seeAlsobinded)
+}
+       

@@ -1,0 +1,25 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+ 
+CONSTRUCT {
+    ?URIresource a ?URItype;
+        dbo:birthPlace ?URIbirthPlace;
+        rdfs:seeAlso ?URIseeAlso;
+        geo:lat ?latINT;
+        geo:long ?longINT;
+        rdfs:label ?label;
+        foaf:homepage ?URIhomepage;
+}
+WHERE {
+    BIND(URI(?resource) AS ?URIresource)
+    BIND(URI(?type) AS ?URItype)
+    BIND(URI(?birthPlace) AS ?URIbirthPlace)
+    BIND(URI(?seeAlso) AS ?URIseeAlso)
+    BIND(xsd:decimal(?lat) AS ?latINT)
+    BIND(xsd:decimal(?long) AS ?longINT)
+    BIND(URI(?homepage) AS ?URIhomepage)
+}

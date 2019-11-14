@@ -6,6 +6,7 @@ import java.util
 import better.files.File
 import mapping.TTLWriter2.{convertAllTriplesOfSubjectToTSV, getSplitPredicate}
 import org.antlr.v4.runtime.atn.SemanticContext.Predicate
+import org.apache.commons.io.FileUtils
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row, SparkSession, types}
@@ -34,7 +35,12 @@ class tsv_writer_tests extends FlatSpec {
 
   "spark" should "not quote empty values when writing csv file" in {
 
-    val df = spark.createDataFrame(Seq(
+    val spark2 = SparkSession.builder()
+      .appName(s"Triple reader")
+      .master("local[*]")
+      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      .getOrCreate()
+    val df = spark2.createDataFrame(Seq(
       (0, "a"),
       (1, "b"),
       (2, "c"),
@@ -44,7 +50,7 @@ class tsv_writer_tests extends FlatSpec {
 
 
     val tempDir = testDir.concat("emptyValues")
-
+    FileUtils.deleteDirectory(File(tempDir).toJava)
     df.coalesce(1).write
       .option("format" , "csv")
       .option("delimiter","\t")

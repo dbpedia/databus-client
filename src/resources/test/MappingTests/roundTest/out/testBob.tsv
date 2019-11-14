@@ -1,0 +1,3 @@
+resource	type	lat	long	seeAlso	label	birthPlace	homepage
+http://dbpedia.org/resource/Jamaica	http://schema.org/Country	17.9833	-76.8		Giamaica		http://jis.gov.jm/
+http://dbpedia.org/resource/Bob_Marley	http://xmlns.com/foaf/0.1/Person			http://dbpedia.org/resource/Rastafari	Bob Marley	http://dbpedia.org/resource/Jamaica	
