@@ -31,39 +31,45 @@ object FileUtil {
     }
   }
 
-
-  def unionFilesWithHeaderFile(headerTempDir: File, tempDir: File, targetFile: File, deleteTemp:Boolean = true): Unit = {
-    //union all part files of Apache Spark
-
-    val findTripleFiles = s"find ${headerTempDir.pathAsString}/ -name part*" #&& s"find ${tempDir.pathAsString}/ -name part*" !!
-    val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
-
-    if (concatFiles == 0) {
-      if (deleteTemp) {
-        headerTempDir.delete()
-        tempDir.delete()
-      }
-    }
-    else System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
-  }
+//  def unionFilesWithHeaderFile(headerTempDir: File, tempDir: File, targetFile: File, deleteTemp:Boolean = true): Unit = {
+//    //union all part files of Apache Spark
+//
+//    val findTripleFiles = s"find ${headerTempDir.pathAsString}/ -name part*" #&& s"find ${tempDir.pathAsString}/ -name part*" !!
+//    val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
+//
+//    if (concatFiles == 0) {
+//      if (deleteTemp) {
+//        headerTempDir.delete()
+//        tempDir.delete()
+//      }
+//    }
+//    else System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
+//  }
 
   def copyUnchangedFile(inputFile: File, src_dir: File, dest_dir: File): Unit = {
     val name = inputFile.name
 
+    println("MOINSEN")
     val dataIdFile = inputFile.parent / "dataid.ttl"
 
-    var filepath_new = ""
-    if (dataIdFile.exists) {
-      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
-      filepath_new = dest_dir.pathAsString.concat("/")
-      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
-      filepath_new = filepath_new.concat(name)
-    }
-    else {
-      filepath_new = inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID/"))
+//    var filepath_new = ""
+//    if (dataIdFile.exists) {
+//      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
+//      filepath_new = dest_dir.pathAsString.concat("/")
+//      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
+//      filepath_new = filepath_new.concat(name)
+//    }
+//    else {
+//      filepath_new = inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID/"))
+//    }
+
+    val outputFile = {
+      if (dataIdFile.exists)  QueryHandler.getTargetDir(dataIdFile, dest_dir) / name
+      else  File(inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID/")))
     }
 
-    val outputFile = File(filepath_new)
+    println(outputFile.pathAsString)
+    //    val outputFile = File(filepath_new)
 
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 

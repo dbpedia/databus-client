@@ -23,7 +23,7 @@ import scala.util.control.Breaks.{break, breakable}
 
 object Converter {
 
-  def convertFile(inputFile: File, src_dir: File, dest_dir: File, outputFormat: String, outputCompression: String): Unit = {
+  def convertFile(inputFile: File, dest_dir: File, outputFormat: String, outputCompression: String): Unit = {
     println(s"input file:\t\t${inputFile.pathAsString}")
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
 
@@ -31,12 +31,12 @@ object Converter {
     val formatInputFile = getFormatType(inputFile, compressionInputFile)
 
     if (outputCompression == compressionInputFile && (outputFormat == formatInputFile || outputFormat == "same")) {
-      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, src_dir, dest_dir).toJava)
+      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
     else if (outputCompression != compressionInputFile && (outputFormat == formatInputFile || outputFormat == "same")) {
       val decompressedInStream = decompress(bufferedInputStream)
-      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, src_dir, dest_dir)
+      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, dest_dir)
       val compressedOutStream = compress(outputCompression, compressedFile)
       copyStream(decompressedInStream, compressedOutStream)
     }
@@ -52,7 +52,7 @@ object Converter {
         //SHOULD INTERRUPT HERE
       }
 
-      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, src_dir, dest_dir)
+      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
       var typeConvertedFile = File("")
 
       if (!(compressionInputFile == "")) {
@@ -87,9 +87,9 @@ object Converter {
       ctype
     }
     catch {
-      case noCompression: CompressorException => ""
-      case inInitializerError: ExceptionInInitializerError => ""
-      case noClassDefFoundError: NoClassDefFoundError => ""
+      case _: CompressorException => ""
+      case _: ExceptionInInitializerError => ""
+      case _: NoClassDefFoundError => ""
     }
   }
 
@@ -102,7 +102,7 @@ object Converter {
           getFormatTypeWithoutDataID(inputFile, compressionInputFile)
         }
       } catch {
-        case fileNotFoundException: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+        case _: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
       }
     }
   }
@@ -145,11 +145,52 @@ object Converter {
     //    return fileType
   }
 
-  private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, src_dir: File, dest_dir: File): File = {
+//  private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, src_dir: File, dest_dir: File): File = {
+//
+//    val nameWithoutExtension = inputFile.nameWithoutExtension
+//    val name = inputFile.name
+//    var filepath_new = ""
+//    val dataIdFile = inputFile.parent / "dataid.ttl"
+//
+//    val newOutputFormat = {
+//      if (outputFormat == "rdfxml") "rdf"
+//      else outputFormat
+//    }
+//
+//    if (dataIdFile.exists) {
+//      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
+//      filepath_new = dest_dir.pathAsString.concat("/")
+//      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
+//      filepath_new = filepath_new.concat(nameWithoutExtension)
+//    }
+//    else {
+//      // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
+//      //      filepath_new = inputFile.pathAsString.replace(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID"))
+//      filepath_new = dest_dir.pathAsString.concat("/NoDataID").concat(inputFile.pathAsString.replace(File(".").pathAsString, "")) //.concat(nameWithoutExtension)
+//
+//      filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
+//    }
+//
+//    if (outputCompression.isEmpty) {
+//      filepath_new = filepath_new.concat(".").concat(newOutputFormat)
+//    }
+//    else {
+//      filepath_new = filepath_new.concat(".").concat(newOutputFormat).concat(".").concat(outputCompression)
+//    }
+//
+//    val outputFile = File(filepath_new)
+//    //create necessary parent directories to write the outputfile there, later
+//    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+//
+//    println(s"converted file:\t${outputFile.pathAsString}\n")
+//
+//    outputFile
+//  }
+
+  private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, dest_dir: File): File = {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
-    val name = inputFile.name
-    var filepath_new = ""
+
     val dataIdFile = inputFile.parent / "dataid.ttl"
 
     val newOutputFormat = {
@@ -157,28 +198,23 @@ object Converter {
       else outputFormat
     }
 
-    if (dataIdFile.exists) {
-      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
-      filepath_new = dest_dir.pathAsString.concat("/")
-      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
-      filepath_new = filepath_new.concat(nameWithoutExtension)
-    }
-    else {
-      // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
-      //      filepath_new = inputFile.pathAsString.replace(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID"))
-      filepath_new = dest_dir.pathAsString.concat("/NoDataID").concat(inputFile.pathAsString.replace(File(".").pathAsString, "")) //.concat(nameWithoutExtension)
-
-      filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
+    val outputDir = {
+      if (dataIdFile.exists) QueryHandler.getTargetDir(dataIdFile, dest_dir)
+      else
+        File(dest_dir.pathAsString.concat("/NoDataID")
+          .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1
+            .replace(File(".").pathAsString, "")
+          )
+        )
     }
 
-    if (outputCompression.isEmpty) {
-      filepath_new = filepath_new.concat(".").concat(newOutputFormat)
-    }
-    else {
-      filepath_new = filepath_new.concat(".").concat(newOutputFormat).concat(".").concat(outputCompression)
+    val newName = {
+      if (outputCompression.isEmpty)  s"$nameWithoutExtension.$newOutputFormat"
+      else  s"$nameWithoutExtension.$newOutputFormat.$outputCompression"
     }
 
-    val outputFile = File(filepath_new)
+    val outputFile = outputDir / newName
+
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
@@ -199,7 +235,7 @@ object Converter {
 
     } catch {
 
-      case ce: CompressorException =>
+      case _: CompressorException =>
         System.err.println(s"[WARN] No compression found for input stream - raw input")
         bufferedInputStream
 
@@ -243,7 +279,7 @@ object Converter {
         //        case "snappy-raw" => new CompressorStreamFactory().createCompressorOutputStream(CompressorStreamFactory.SNAPPY_RAW, myOutputStream)
       }
     } catch {
-      case invalidFormat: InvalidFormatException =>
+      case _: InvalidFormatException =>
         LoggerFactory.getLogger("CompressorLogger").error(s"InvalidFormat $outputCompression")
         new FileOutputStream(output.toJava)
     }
@@ -272,10 +308,10 @@ object Converter {
 
     inputFormat match {
       case "nt" =>
-        NTriple_Reader.readNTriplesWithoutSansa(spark, inputFile)
+        NTriple_Reader.read(spark, inputFile)
 
       case "rdf" =>
-        RDF_Reader.readRDF(spark, inputFile)
+        RDF_Reader.read(spark, inputFile)
 
       //      case "ttl" => {
       //        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) TTL_Reader.readTTL(spark, inputFile)
@@ -285,24 +321,24 @@ object Converter {
       case "ttl" =>
         //wie geht das besser?
         try {
-          val data = NTriple_Reader.readNTriplesWithoutSansa(spark, inputFile)
+          val data = NTriple_Reader.read(spark, inputFile)
           data.isEmpty()
           data
         }
         catch {
-          case ttl: org.apache.spark.SparkException => TTL_Reader.readTTL(spark, inputFile)
+          case _: org.apache.spark.SparkException => TTL_Reader.read(spark, inputFile)
         }
 
       case "jsonld" =>
-        RDF_Reader.readRDF(spark, inputFile) //Ein Objekt pro Datei
+        RDF_Reader.read(spark, inputFile) //Ein Objekt pro Datei
 
       case "jsonl" =>
         try { //Mehrere Objekte pro Datei
           JSONL_Reader.readJSONL(spark, inputFile)
         } catch {
-          case onlyOneJsonObject: SparkException =>
+          case _: SparkException =>
             println("Json Object ueber mehrere Zeilen")
-            RDF_Reader.readRDF(spark, inputFile)
+            RDF_Reader.read(spark, inputFile)
         }
 
       case "tsv" => {
@@ -315,7 +351,6 @@ object Converter {
   private[this] def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
 
     val tempDir = inputFile.parent / "temp"
-    val headerTempDir = inputFile.parent / "tempheader"
     if (tempDir.exists) tempDir.delete()
     val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
@@ -367,15 +402,10 @@ object Converter {
       }
     }
     catch {
-      case fileAlreadyExists: RuntimeException => LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
+      case _: RuntimeException => LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
     }
 
     targetFile
-  }
-
-  private[this] def deleteAndRestart(inputFile: File, inputFormat: String, outputFormat: String, file: File): Unit = {
-    file.delete()
-    convertFormat(inputFile, inputFormat, outputFormat)
   }
 
 }

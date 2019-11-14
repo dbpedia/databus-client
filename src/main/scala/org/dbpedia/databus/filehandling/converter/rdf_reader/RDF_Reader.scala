@@ -8,7 +8,7 @@ import org.apache.spark.sql.SparkSession
 
 object RDF_Reader {
 
-  def readRDF(spark: SparkSession, inputFile: File): RDD[Triple] = {
+  def read(spark: SparkSession, inputFile: File): RDD[Triple] = {
 
     val sc = spark.sparkContext
     val statements = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements() //.toList

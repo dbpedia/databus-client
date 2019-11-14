@@ -19,11 +19,10 @@ object NTriple_Reader {
   //    NTripleReader.load(spark, inputFile.pathAsString, ErrorParseMode.SKIP, WarningParseMode.IGNORE, checkRDFTerms = false, LoggerFactory.getLogger("ErrorlogReadTriples"))
   //  }
 
-  def readNTriplesWithoutSansa(spark: SparkSession, inputFile: File): RDD[Triple] = {
+  def read(spark: SparkSession, inputFile: File): RDD[Triple] = {
 
     val sc = spark.sparkContext
     val rdd = sc.textFile(inputFile.pathAsString, 20)
-    var triplesRDD = sc.emptyRDD[Triple]
 
     rdd.mapPartitions(
       part => {
@@ -33,9 +32,6 @@ object NTriple_Reader {
         })
 
         val it = RiotParsers.createIteratorNTriples(input, null)
-        //        println(it.hasNext)
-        //        println(it.next())
-        //        println(it.hasNext)
         new IteratorResourceClosing[Triple](it, input).asScala
       }
     )

@@ -14,7 +14,6 @@ object Main_Downloader {
     val conf = new CLIConf(args)
     val cache_dir = File("./cache_dir/")
     cache_dir.createDirectoryIfNotExists()
-    val dataId_string = "dataid.ttl"
 
     //Test if query is a File or a Query
     val queryString: String = File(conf.query()).exists() match {

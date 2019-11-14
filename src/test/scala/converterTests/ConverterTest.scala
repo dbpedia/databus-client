@@ -1,3 +1,5 @@
+package converterTests
+
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, SequenceInputStream}
 
 import better.files.File
@@ -45,13 +47,13 @@ class ConverterTest extends FlatSpec {
     val sparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
-    TTL_Reader.readTTL(spark, file)
+    TTL_Reader.read(spark, file)
   }
 
   def readTriplesWithRDFReader(file: File): RDD[Triple] = {
 
 
-    RDF_Reader.readRDF(spark, file)
+    RDF_Reader.read(spark, file)
   }
 
 
@@ -92,7 +94,6 @@ class ConverterTest extends FlatSpec {
 
 
   def writeNtripleFileWithSansa(triples: RDD[Triple], outFile: File): Unit = {
-    val tempDir = outFile.parent / "temp"
     //
     //    triples.saveAsNTriplesFile(tempDir.pathAsString)
     //    FileUtil.unionFiles(tempDir, outFile)
@@ -109,7 +110,7 @@ class ConverterTest extends FlatSpec {
 
   def time[R](block: => R): Long = {
     val t0 = System.nanoTime()
-    val result = block // call-by-name
+    // call-by-name
     val t1 = System.nanoTime()
     println("Elapsed time: " + (t1 - t0) + " ns")
     t1 - t0
@@ -158,7 +159,6 @@ class ConverterTest extends FlatSpec {
 
       val sc = spark.sparkContext
       val rdd = sc.textFile(filePath, 20)
-      var triplesRDD = sc.emptyRDD[Triple]
 
 
       rdd.mapPartitions(
@@ -174,8 +174,7 @@ class ConverterTest extends FlatSpec {
       )
     }
 
-    val filePath1 = "./src/resources/test/ConverterTest/sameas-external.ttl"
-    val filePath2 = "./src/resources/test/ConverterTest/file2.nt"
+    val filePath2 = "./src/resources/test/converterTests.ConverterTest/file2.nt"
 
     //    println("sansaread File1")
     //    val timeSansa= time {sansaRead(filePath1)}

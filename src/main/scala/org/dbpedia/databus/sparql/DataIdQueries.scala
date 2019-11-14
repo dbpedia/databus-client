@@ -2,6 +2,19 @@ package org.dbpedia.databus.sparql
 
 object DataIdQueries {
 
+  def queryGetDirStructure(): String = {
+    s"""
+       |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+       |
+       |SELECT ?publisher ?group ?artifact ?version {
+       |  ?dataset a dataid:Dataset ;
+       |           dataid:account ?publisher ;
+       |           dataid:group ?group ;
+       |           dataid:artifact ?artifact ;
+       |           dataid:version ?version .
+       |}
+    """.stripMargin
+  }
   def queryGetPublisher(): String =
     s"""
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>

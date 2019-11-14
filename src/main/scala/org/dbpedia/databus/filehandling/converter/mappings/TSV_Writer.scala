@@ -14,8 +14,8 @@ import scala.collection.immutable.Vector
 object TSV_Writer {
 
   def convertToTSV(data: RDD[Triple], spark: SparkSession): DataFrame = {
-    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
 
+    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = data.groupBy(triple => triple.getPredicate.getURI).map(_._1)
 
     val splitPredicates =
@@ -33,18 +33,17 @@ object TSV_Writer {
 
   def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], predicates:Seq[String]): Row = {
 
-    //TSV DATA
-    var TSVseq: Seq[String] = Seq.fill(predicates.size){new String}
-    TSVseq = TSVseq.updated(0,triples.last.getSubject.getURI)
+    var tsv_line: Seq[String] = Seq.fill(predicates.size){new String}
+    tsv_line = tsv_line.updated(0,triples.last.getSubject.getURI)
 
     triples.foreach(triple => {
-      var nonEmpty = false
+      var predicate_exists = false
       var tripleObject = ""
 
       val triplePredicate = getSplitPredicate(triple.getPredicate.getURI)._2
 
       if (predicates.exists(seq => seq.contains(triplePredicate))) {
-        nonEmpty = true
+        predicate_exists = true
 
         if (triple.getObject.isLiteral) tripleObject = triple.getObject.getLiteralLexicalForm
         else if (triple.getObject.isURI) tripleObject = triple.getObject.getURI
@@ -54,47 +53,16 @@ object TSV_Writer {
 
       val index = predicates.indexOf(predicates.find(seq => seq.contains(triplePredicate)).get)
 
-      if (nonEmpty == true) {
-        TSVseq = TSVseq.updated(index, tripleObject)
+      if (predicate_exists) {
+        tsv_line = tsv_line.updated(index, tripleObject)
       }
       else {
-        TSVseq = TSVseq.updated(index, "")
+        tsv_line = tsv_line.updated(index, "")
       }
     })
 
-    Row.fromSeq(TSVseq)
+    Row.fromSeq(tsv_line)
   }
-
-//  def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], predicates: Seq[String]): Row = {
-//    var TSVseq: Seq[String] = Seq(triples.last.getSubject.getURI)
-//
-//    predicates.foreach(predicate => {
-//      var alreadyIncluded = false
-//      var tripleObject = ""
-//
-//      triples.foreach(triple => {
-//        val triplePredicate = triple.getPredicate.getURI
-//        if (predicate == triplePredicate) {
-//          alreadyIncluded = true
-//          tripleObject = {
-//            if (triple.getObject.isLiteral) triple.getObject.getLiteralLexicalForm // triple.getObject.getLiteralDatatype)
-//            else if (triple.getObject.isURI) triple.getObject.getURI
-//            else triple.getObject.getBlankNodeLabel
-//          }
-//        }
-//      })
-//
-//      if (alreadyIncluded == true) {
-//        TSVseq = TSVseq :+ tripleObject
-//      }
-//      else {
-//        TSVseq = TSVseq :+ ""
-//      }
-//    })
-//
-//    //    println(TSVseq)
-//    return TSVseq
-//  }
 
 //  ======================================================
 
@@ -163,13 +131,13 @@ object TSV_Writer {
     var tarqlSeq:Seq[Seq[String]] =  Seq(Seq("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>", "", s"BIND(URI(?${predicates.head.head}) AS ?$bindedSubject)"))
 
     triples.foreach(triple => {
-      var nonEmpty = false
+      var predicate_exists = false
       var tripleObject = ""
 
       val triplePredicate = getSplitPredicate(triple.getPredicate.getURI)._2
 
       if (predicates.exists(seq => seq.contains(triplePredicate))) {
-        nonEmpty = true
+        predicate_exists = true
 
         var tarqlPart:Seq[String]  = Seq(predicates.filter(pre => pre(0) == triplePredicate).map(pre => s"PREFIX ${pre(1)}: <${pre(2)}>").last)
 
@@ -196,7 +164,7 @@ object TSV_Writer {
 
       val index = predicates.indexOf(predicates.find(seq => seq.contains(triplePredicate)).get)
 
-      if (nonEmpty == true) {
+      if (predicate_exists) {
         TSVseq = TSVseq.updated(index, tripleObject)
       }
       else {

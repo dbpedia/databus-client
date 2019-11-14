@@ -22,7 +22,7 @@ class LoggerTest extends FlatSpec {
       File("hallo").delete()
     }
     catch {
-      case noSuchFileException: NoSuchFileException => LoggerFactory.getLogger("test").error("File does not exist") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
+      case _: NoSuchFileException => LoggerFactory.getLogger("test").error("File does not exist") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
     }
   }
 }

@@ -11,7 +11,7 @@ import org.apache.spark.sql.SparkSession
 
 object TTL_Reader {
 
-  def readTTL(spark: SparkSession, inputFile: File): RDD[Triple] = {
+  def read(spark: SparkSession, inputFile: File): RDD[Triple] = {
     // Create a PipedRDFStream to accept input and a PipedRDFIterator to consume it
     // You can optionally supply a buffer size here for the
     // PipedRDFIterator, see the documentation for details about recommended buffer sizes

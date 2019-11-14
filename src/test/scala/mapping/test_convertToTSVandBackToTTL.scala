@@ -27,7 +27,6 @@ class test_convertToTSVandBackToTTL extends FlatSpec{
 
   def csv_map_to_rdd(mapFile:String, csvFilePath:String = "", delimiter:String="," , sc: SparkContext): RDD[Triple] = {
 
-    val prefixes = new PrefixMappingImpl()
     val tarqlquery = new TarqlParser(mapFile).getResult
 
     val csvOptions = {
@@ -53,54 +52,54 @@ class test_convertToTSVandBackToTTL extends FlatSpec{
   }
 
 
-  "databus-client" should "convert created tsv and mapping file back to ttl" in {
-
-//    CONVERT TO TSV
-    println("CONVERT TO TSV")
-    val sc = spark.sparkContext
-
-    val inputFile = File(s"./src/resources/test/MappingTests/roundTest/testBob.ttl")
-
-    val outDir = inputFile.parent / "out"
-
-    val tempDir = outDir / "temp"
-    val headerTempDir = outDir / "tempheader"
-    val tsvFile: File = outDir / inputFile.nameWithoutExtension.concat(".tsv")
-
-    if (tempDir.exists) tempDir.delete()
-    if(headerTempDir.exists) headerTempDir.delete()
-
-    val triplesRDD= RDF_Reader.readRDF(spark,inputFile)
-
-    val solution = TTLWriterasd.convertToTSV(triplesRDD, spark)
-
-    solution(1).show(false)
-
-    solution(1).coalesce(1).write
-      .option("delimiter", "\t")
-      .option("emptyValue","")
-      .option("treatEmptyValuesAsNulls", "false")
-      .csv(tempDir.pathAsString)
-
-    solution(0).coalesce(1).write
-      .option("delimiter", "\t")
-      .csv(headerTempDir.pathAsString)
-
-    FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, tsvFile)
-
-    TTLWriterasd.createTarqlMapFile(tsvFile)
-
-//    CONVERT BACK TO TTL
-    println("CONVERT BACK TO TTL")
-    val mappingFile = TTLWriterasd.createTarqlMapFile(tsvFile)
-    val outputFile = outDir / "convertedBack.ttl"
-
-    val data = csv_map_to_rdd(mappingFile.pathAsString, tsvFile.pathAsString, "\t", sc)
-    data.foreach(println(_))
-
-    RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
-    FileUtil.unionFiles(tempDir, outputFile)
-  }
+//  "databus-client" should "convert created tsv and mapping file back to ttl" in {
+//
+////    CONVERT TO TSV
+//    println("CONVERT TO TSV")
+//    val sc = spark.sparkContext
+//
+//    val inputFile = File(s"./src/resources/test/MappingTests/roundTest/testBob.ttl")
+//
+//    val outDir = inputFile.parent / "out"
+//
+//    val tempDir = outDir / "temp"
+//    val headerTempDir = outDir / "tempheader"
+//    val tsvFile: File = outDir / inputFile.nameWithoutExtension.concat(".tsv")
+//
+//    if (tempDir.exists) tempDir.delete()
+//    if(headerTempDir.exists) headerTempDir.delete()
+//
+//    val triplesRDD= RDF_Reader.read(spark,inputFile)
+//
+//    val solution = TTLWriterasd.convertToTSV(triplesRDD, spark)
+//
+//    solution(1).show(false)
+//
+//    solution(1).coalesce(1).write
+//      .option("delimiter", "\t")
+//      .option("emptyValue","")
+//      .option("treatEmptyValuesAsNulls", "false")
+//      .csv(tempDir.pathAsString)
+//
+//    solution(0).coalesce(1).write
+//      .option("delimiter", "\t")
+//      .csv(headerTempDir.pathAsString)
+//
+//    FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, tsvFile)
+//
+//    TTLWriterasd.createTarqlMapFile(tsvFile)
+//
+////    CONVERT BACK TO TTL
+//    println("CONVERT BACK TO TTL")
+//    val mappingFile = TTLWriterasd.createTarqlMapFile(tsvFile)
+//    val outputFile = outDir / "convertedBack.ttl"
+//
+//    val data = csv_map_to_rdd(mappingFile.pathAsString, tsvFile.pathAsString, "\t", sc)
+//    data.foreach(println(_))
+//
+//    RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+//    FileUtil.unionFiles(tempDir, outputFile)
+//  }
 }
 
 object TTLWriterasd {
@@ -220,7 +219,7 @@ object TTLWriterasd {
       //          println(index)
       //          val index = allPredicates.indexOf(triplePredicate)
 
-      if (alreadyIncluded == true) {
+      if (alreadyIncluded) {
         TSVseq = TSVseq.updated(index, tripleObject)
       }
       else {

@@ -16,22 +16,11 @@ object Main_DownloadAndConvert {
     val conf = new CLIConf(args)
     val cache_dir = File("./cache_dir/")
     cache_dir.createDirectoryIfNotExists()
-    val dataId_string = "dataid.ttl"
-
-    //    //  if no compression wanted (output_compression not set) change the value to an empty string
-    //    val outputCompression = conf.output_compression.isEmpty match {
-    //      case true => ""
-    //      case false => conf.output_compression()
-    //    }
 
     //Test if query is a File or a Query
-    var queryString: String = ""
-    if (File(conf.query()).exists()) {
-      val file = File(conf.query())
-      queryString = Downloader.readQueryFile(file)
-    }
-    else {
-      queryString = conf.query()
+    val queryString: String = {
+      if (File(conf.query()).exists()) Downloader.readQueryFile(File(conf.query()))
+      else conf.query()
     }
 
     println("\n========================================================\n")
@@ -51,7 +40,7 @@ object Main_DownloadAndConvert {
     }
 
     allSHAs.foreach(
-      sha => Converter.convertFile(FileUtil.getFileWithSHA256(sha, cache_dir), cache_dir, File(conf.destination()), conf.format(), conf.compression())
+      sha => Converter.convertFile(FileUtil.getFileWithSHA256(sha, cache_dir), File(conf.destination()), conf.format(), conf.compression())
     )
 
     //    val files = cache_dir.listRecursively.toSeq

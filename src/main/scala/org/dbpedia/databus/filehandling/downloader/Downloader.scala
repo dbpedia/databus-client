@@ -7,13 +7,13 @@ import better.files.File
 import org.apache.commons.io.IOUtils
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.sparql.QueryHandler
+import org.slf4j.{Logger, LoggerFactory}
 
 object Downloader {
 
   def downloadWithQuery(queryString: String, targetdir: File): Seq[String] = {
     val results = QueryHandler.executeDownloadQuery(queryString)
-    var allSHAs = Seq[String]()
-
+    var allSHAs = Seq.empty[String]
 
     println("--------------------------------------------------------\n")
     println("Files to download:")
@@ -34,12 +34,16 @@ object Downloader {
     downloadUrlToFile(new URL(url), file, createParentDirectory = true)
 
     val dataIdFile = file.parent / "dataid.ttl"
+
     if (!dataIdFile.exists()) { //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
       try {
         QueryHandler.downloadDataIdFile(url, dataIdFile)
       }
       catch {
-        case fileNotFoundException: FileNotFoundException => println("couldn't query dataidfile")
+        case _: FileNotFoundException => {
+          println("couldn't query dataidfile")
+          LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
+        }
       }
     }
   }

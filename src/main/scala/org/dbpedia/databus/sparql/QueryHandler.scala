@@ -47,7 +47,6 @@ object QueryHandler {
 
     try {
       val results: ResultSet = qexec.execSelect
-      val fileHandler = FileUtil
 
       if (results.hasNext) {
         val dataidURL = results.next().getResource("?dataset").toString
@@ -73,7 +72,6 @@ object QueryHandler {
 
     try {
       val results: ResultSet = qexec.execSelect
-      val fileHandler = FileUtil
 
       if (results.hasNext) {
         sha256 = results.next().getLiteral("?sha256sum").toString
@@ -83,9 +81,32 @@ object QueryHandler {
     sha256
   }
 
+  def getTargetDir(dataIdFile:File, dest_dir:File): File = {
+    val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
+    val query: Query = QueryFactory.create(DataIdQueries.queryGetDirStructure())
+    val qexec = QueryExecutionFactory.create(query, dataIdModel)
+
+    var targetDir = File("")
+
+    try {
+      val results = qexec.execSelect
+      if (results.hasNext) {
+        val result =results.next()
+        //split the URI at the slashes and take the last cell
+        val publisher = result.getResource("?publisher").toString.split("/").last.trim
+        val group = result.getResource("?group").toString.split("/").last.trim
+        val artifact = result.getResource("?artifact").toString.split("/").last.trim
+        val version = result.getResource("?version").toString.split("/").last.trim
+        targetDir = dest_dir / publisher / group / artifact / version
+      }
+    } finally qexec.close()
+
+    targetDir
+  }
+
   def executeDataIdQuery(dataIdFile: File): List[String] = {
 
-    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.NTRIPLES)
+    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString)
 
     //dir_structure : publisher/group/artifact/version
     var dir_structure = List[String]()
@@ -175,7 +196,6 @@ object QueryHandler {
 
     try {
       val results: ResultSet = qexec.execSelect
-      val fileHandler = FileUtil
 
       while (results.hasNext()) {
         val mediaType = results.next().getResource("?type").toString()

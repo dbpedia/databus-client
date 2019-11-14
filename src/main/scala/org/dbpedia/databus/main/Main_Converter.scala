@@ -26,15 +26,15 @@ object Main_Converter {
         println(s"Output file format ${conf.format()} not supported.")
     }
 
-    val source_dir = File(conf.source())
+    val source = File(conf.source())
     val destination_dir = File(conf.destination())
 
-    if (source_dir.isDirectory) {
-      val files = source_dir.listRecursively.toSeq
+    if (source.isDirectory) {
+      val files = source.listRecursively.toSeq
       for (file <- files) {
         if (!file.isDirectory) {
           if (!file.name.equals(dataId_string)) {
-            Converter.convertFile(file, source_dir, destination_dir, conf.format(), conf.compression())
+            Converter.convertFile(file, destination_dir, conf.format(), conf.compression())
           }
         }
         else if (file.name == "temp") { //Delete temp dir of previous failed run
@@ -43,7 +43,7 @@ object Main_Converter {
       }
     }
     else {
-      Converter.convertFile(source_dir, source_dir.parent, destination_dir, conf.format(), conf.compression())
+      Converter.convertFile(source, destination_dir, conf.format(), conf.compression())
     }
 
   }

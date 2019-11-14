@@ -35,12 +35,7 @@ class tsv_writer_tests extends FlatSpec {
 
   "spark" should "not quote empty values when writing csv file" in {
 
-    val spark2 = SparkSession.builder()
-      .appName(s"Triple reader")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
-    val df = spark2.createDataFrame(Seq(
+    val df = spark.createDataFrame(Seq(
       (0, "a"),
       (1, "b"),
       (2, "c"),
@@ -48,9 +43,9 @@ class tsv_writer_tests extends FlatSpec {
       (4, null)
     ))
 
-
     val tempDir = testDir.concat("emptyValues")
     FileUtils.deleteDirectory(File(tempDir).toJava)
+
     df.coalesce(1).write
       .option("format" , "csv")
       .option("delimiter","\t")
@@ -60,45 +55,10 @@ class tsv_writer_tests extends FlatSpec {
     FileUtil.unionFiles(File(tempDir), File(tempDir.concat(".tsv")))
   }
 
-  "spark" should "create a dataframe" in {
-
-    val spark = SparkSession.builder()
-      .appName(s"Triple reader")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
-
-
-//
-//    case class StructType(fields: Array[StructField]) extends org.apache.spark.sql.types.StructType
-//
-//    case class StructField(
-//                            name: String,
-//                            dataType: DataType)
-//
-//    val simpleData = Seq(Row("James ","","Smith","36636","M"))
-//
-//    val simpleSchema:types.StructType = StructType(Array(
-//      StructField("firstname",StringType),
-//      StructField("middlename",StringType),
-//      StructField("lastname",StringType),
-//      StructField("id", StringType),
-//      StructField("gender", StringType)
-//    ))
-//    val sql = spark.sqlContext
-//    import sql.implicits._
-//
-//    val df = sql.createDataFrame(
-//      spark.sparkContext.parallelize(simpleData),simpleSchema)
-//    df.printSchema()
-//    df.show()
-  }
-
   "spark" should "save csv file with header" in {
 
     val targetFile = File(testDir) / "csvWithHeader.csv"
     val tempDir = targetFile.parent / "temp"
-    val header = Vector[String]("resource", "type", "lat", "long", "seeAlso", "label", "birthPlace", "homepage")
 
     var rdd = spark.sparkContext
       .parallelize(
@@ -181,8 +141,6 @@ class tsv_writer_tests extends FlatSpec {
 
 
   "right dataframe" should "be created from List of Construct Prefix and BindingsSeq" in {
-    val seq1 = Seq[String]("PREFIX xxxtype: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>","?resourcebinded xxxtype:type ?typebinded;","BIND(URI(?type) AS ?typebinded")
-    val seq2 = Seq[String]("PREFIX xxxlong: <http://www.w3.org/2003/01/geo/wgs84_pos#>","?resourcebinded xxxlong:long ?longbinded;","BIND(xsd:float(?long) AS ?longbinded)")
 
     val rdd = spark.sparkContext
       .parallelize(
@@ -193,7 +151,6 @@ class tsv_writer_tests extends FlatSpec {
       )
 
     rdd.foreach(println(_))
-    val tarqlRDD = spark.sparkContext.parallelize(returnCusomDataType()._2)
 
 
     val schemaTSV = StructType(
@@ -235,7 +192,7 @@ class tsv_writer_tests extends FlatSpec {
     if (tempDir.exists) tempDir.delete()
     if(headerTempDir.exists) headerTempDir.delete()
 
-    val triplesRDD= RDF_Reader.readRDF(spark,inputFile)
+    val triplesRDD= RDF_Reader.read(spark,inputFile)
 
     TTLWriter2.convertToTSV(triplesRDD, spark, targetFile)
   }
@@ -249,7 +206,7 @@ class tsv_writer_tests extends FlatSpec {
     if (tempDir.exists) tempDir.delete()
     if(headerTempDir.exists) headerTempDir.delete()
 
-    val triplesRDD= RDF_Reader.readRDF(spark,inputFile)
+    val triplesRDD= RDF_Reader.read(spark,inputFile)
 
     TTLWriterTest.convertToTSV(triplesRDD, spark, targetFile, true)
   }
@@ -344,7 +301,7 @@ object TTLWriterTest {
 
       val index = predicates.indexOf(predicates.find(vector => vector.contains(triplePredicate)).get)
 
-      if (alreadyIncluded == true) {
+      if (alreadyIncluded) {
         TSVseq = TSVseq.updated(index, tripleObject)
       }
       else {
@@ -483,7 +440,7 @@ object TTLWriter2 {
       .option("delimiter", "\t")
       .csv(headerTempDir.pathAsString)
 
-    FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
+//    FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
 
     TTLWriter2.createTarqlMapFile(tarqlPrefixes, tarqlConstruct, tarqlBindings, targetFile)
   }
@@ -544,7 +501,7 @@ object TTLWriter2 {
       //          println(index)
       //          val index = allPredicates.indexOf(triplePredicate)
 
-      if (alreadyIncluded == true) {
+      if (alreadyIncluded) {
         TSVseq = TSVseq.updated(index, tripleObject)
       }
       else {

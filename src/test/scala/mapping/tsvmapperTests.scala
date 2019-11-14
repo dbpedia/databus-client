@@ -24,7 +24,6 @@ class tsvmapperTests extends FlatSpec {
 
   def csv_map(mapFile:String, csvFilePath:String = "", isTsvFile:Boolean=false, map:Boolean=true): Unit = {
 
-    val prefixes = new PrefixMappingImpl()
     val tarqlquery = new TarqlParser(mapFile).getResult
     val csvOptions = {
       if (isTsvFile) CSVOptions.withTSVDefaults()
@@ -49,7 +48,6 @@ class tsvmapperTests extends FlatSpec {
 
   def csv_map_to_rdd(mapFile:String, csvFilePath:String = "", delimiter:String="," , sc: SparkContext): RDD[Triple] = {
 
-    val prefixes = new PrefixMappingImpl()
     val tarqlquery = new TarqlParser(mapFile).getResult
 
     val csvOptions = {
