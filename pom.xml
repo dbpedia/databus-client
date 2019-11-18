@@ -114,18 +114,18 @@
         </dependency>
         <!-- SPARK -->
 
+        <!-- JENA -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
             <version>3.9.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-core -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
             <version>3.9.0</version>
         </dependency>
-
+        <!-- JENA -->
 
 
         <!-- LOGGER -->
@@ -223,7 +223,7 @@
                     <launchers>
                         <launcher>
                             <id>downloadconverter</id>
-                            <mainClass>org.dbpedia.databus.main.Main_DownloadAndConvert</mainClass>
+                            <mainClass>org.dbpedia.databus.main.Main</mainClass>
                         </launcher>
                         <launcher>
                             <id>downloader</id>

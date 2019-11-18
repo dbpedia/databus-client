@@ -44,15 +44,12 @@ object Converter {
     //  With FILEFORMAT CONVERSION
     else {
 
-      formatInputFile match {
-        case "rdf" | "ttl" | "nt" | "jsonld" | "tsv" =>
-        case _ =>
-          LoggerFactory.getLogger("File Format Logger").error(s"Input file format $formatInputFile not supported.")
-          println(s"Input file format $formatInputFile not supported.")
-        //SHOULD INTERRUPT HERE
-      }
+      if(!isSupportedInFormat(formatInputFile)) return
 
-      val targetFile = getOutputFile(inputFile, outputFormat, outputCompression, dest_dir)
+      var newOutCompression = outputCompression
+      if(outputCompression == "same") newOutCompression = compressionInputFile
+
+      val targetFile = getOutputFile(inputFile, outputFormat, newOutCompression, dest_dir)
       var typeConvertedFile = File("")
 
       if (!(compressionInputFile == "")) {
@@ -67,7 +64,8 @@ object Converter {
         typeConvertedFile = convertFormat(inputFile, formatInputFile, outputFormat)
       }
 
-      val compressedOutStream = compress(outputCompression, targetFile)
+      val compressedOutStream = compress(newOutCompression, targetFile)
+
       //file is written here
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
 
@@ -76,6 +74,15 @@ object Converter {
 
     }
 
+  }
+
+  private[this] def isSupportedInFormat(format:String): Boolean ={
+    if(format.matches("rdf|ttl|nt|jsonld|tsv")) true
+    else {
+      LoggerFactory.getLogger("File Format Logger").error(s"Input file format $format is not supported.")
+      println(s"Input file format $format is not supported.")
+      false
+    }
   }
 
   private[this] def getCompressionType(fileInputStream: BufferedInputStream): String = {
@@ -93,7 +100,7 @@ object Converter {
     }
   }
 
-  private[this] def getFormatType(inputFile: File, compressionInputFile: String) = {
+  private[this] def getFormatType(inputFile: File, compressionInputFile: String):String = {
     {
       try {
         if (!(getFormatTypeWithDataID(inputFile) == "")) {
@@ -109,7 +116,8 @@ object Converter {
 
   private[this] def getFormatTypeWithDataID(inputFile: File): String = {
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
-    val lines = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8").getLines().filter(_ contains s"${inputFile.name}")
+    val source = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8")
+    val lines = source.getLines().filter(_ contains s"${inputFile.name}")
 
     val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
     var fileURL = ""
@@ -123,26 +131,16 @@ object Converter {
       }
     }
 
-
+    source.close()
     QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
   }
 
   //SIZE DURCH LENGTH ERSETZEN
   private[this] def getFormatTypeWithoutDataID(inputFile: File, compression: String): String = {
-    var split = inputFile.name.split("\\.")
-    //    var fileType = ""
+    val split = inputFile.name.split("\\.")
 
-    compression match {
-      case "" => split(split.size - 1)
-      case _ => split(split.size - 2)
-    }
-    //    if (compression == "") {
-    //      fileType = split(split.size - 1)
-    //    } else {
-    //      fileType = split(split.size - 2)
-    //    }
-    //
-    //    return fileType
+    if (compression == "") split(split.size - 1)
+    else split(split.size - 2)
   }
 
 //  private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, src_dir: File, dest_dir: File): File = {
@@ -244,7 +242,7 @@ object Converter {
     }
   }
 
-  private[this] def compress(outputCompression: String, output: File): OutputStream = {
+   def compress(outputCompression: String, output: File): OutputStream = {
     try {
       // file is created here
       val myOutputStream = new FileOutputStream(output.toJava)
@@ -298,9 +296,8 @@ object Converter {
 
     val data = readTriples(inputFile, inputFormat, spark: SparkSession)
 
-    val convertedFile = writeTriples(inputFile, data, outputFormat, spark)
-
-    convertedFile
+    data.foreach(println(_))
+    writeTriples(inputFile, data, outputFormat, spark)
   }
 
   def readTriples(inputFile: File, inputFormat: String, spark: SparkSession): RDD[Triple] = {
@@ -312,11 +309,6 @@ object Converter {
 
       case "rdf" =>
         RDF_Reader.read(spark, inputFile)
-
-      //      case "ttl" => {
-      //        if (NTriple_Reader.readNTriples(spark, inputFile).isEmpty()) TTL_Reader.readTTL(spark, inputFile)
-      //        else NTriple_Reader.readNTriples(spark, inputFile)
-      //      }
 
       case "ttl" =>
         //wie geht das besser?
@@ -341,16 +333,16 @@ object Converter {
             RDF_Reader.read(spark, inputFile)
         }
 
-      case "tsv" => {
+      case "tsv" =>
         val mappingFile = scala.io.StdIn.readLine("Please type Path to Mapping File:\n")
         mappings.TSV_Reader.csv_to_rdd(mappingFile, inputFile.pathAsString, "\t", spark.sparkContext)
-      }
+
     }
   }
 
-  private[this] def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
+  def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
 
-    val tempDir = inputFile.parent / "temp"
+    val tempDir = File("./target/databus.tmp/temp")
     if (tempDir.exists) tempDir.delete()
     val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
@@ -363,7 +355,7 @@ object Converter {
 
         if (createMappingFile == "yes") {
           val mappingFile = scala.io.StdIn.readLine("Type Path to create mapping file:\n")
-          val tsvData = TSV_Writer.convertToTSV(data,spark, true)
+          val tsvData = TSV_Writer.convertToTSV(data,spark, createMappingFile = true)
           tsvData._1.coalesce(1).write
             .option("delimiter", "\t")
             .option("emptyValue","")
@@ -396,10 +388,7 @@ object Converter {
     }
 
     try {
-      outputFormat match {
-//        case "tsv" => FileUtil.unionFilesWithHeaderFile(headerTempDir, tempDir, targetFile)
-        case "jsonld" | "jsonl" | "nt" | "ttl" | "rdfxml" | "tsv" => FileUtil.unionFiles(tempDir, targetFile)
-      }
+      FileUtil.unionFiles(tempDir, targetFile)
     }
     catch {
       case _: RuntimeException => LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)

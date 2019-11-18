@@ -19,15 +19,21 @@ object FileUtil {
     finally if (out != null) {
       out.close()
     }
+//    val bytes = new Array[Byte](1024) //1024 bytes - Buffer size
+//    Iterator
+//      .continually (in.read(bytes))
+//      .takeWhile (-1 !=)
+//      .foreach (read=>out.write(bytes,0,read))
+//    out.close()
   }
 
-  def unionFiles(tempDir: File, targetFile: File): Unit = {
+  def unionFiles(dir: File, targetFile: File): Unit = {
     //union all part files of Apache Spark
-    val findTripleFiles = s"find ${tempDir.pathAsString}/ -name part* -not -empty" !!
+    val findTripleFiles = s"find ${dir.pathAsString}/ -name part* -not -empty" !!
     val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
     if (!(concatFiles == 0)) {
-      System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
+      System.err.println(s"[WARN] failed to merge ${dir.pathAsString}/*")
     }
   }
 
@@ -49,28 +55,14 @@ object FileUtil {
   def copyUnchangedFile(inputFile: File, src_dir: File, dest_dir: File): Unit = {
     val name = inputFile.name
 
-    println("MOINSEN")
     val dataIdFile = inputFile.parent / "dataid.ttl"
-
-//    var filepath_new = ""
-//    if (dataIdFile.exists) {
-//      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
-//      filepath_new = dest_dir.pathAsString.concat("/")
-//      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
-//      filepath_new = filepath_new.concat(name)
-//    }
-//    else {
-//      filepath_new = inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID/"))
-//    }
 
     val outputFile = {
       if (dataIdFile.exists)  QueryHandler.getTargetDir(dataIdFile, dest_dir) / name
       else  File(inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID/")))
     }
 
-    println(outputFile.pathAsString)
-    //    val outputFile = File(filepath_new)
-
+//    println(s"Copy unchanged File to: ${outputFile.pathAsString}")
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
     val outputStream = new FileOutputStream(outputFile.toJava)

@@ -104,81 +104,82 @@ object QueryHandler {
     targetDir
   }
 
-  def executeDataIdQuery(dataIdFile: File): List[String] = {
-
-    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString)
-
-    //dir_structure : publisher/group/artifact/version
-    var dir_structure = List[String]()
-
-    var query: Query = QueryFactory.create(DataIdQueries.queryGetPublisher())
-    var qexec = QueryExecutionFactory.create(query, dataidModel)
-
-    try {
-      val results = qexec.execSelect
-      if (results.hasNext) {
-        //split the URI at the slashes and take the last cell
-        val publisher = results.next().getResource("?o").toString.split("/").map(_.trim).last
-        dir_structure = dir_structure :+ publisher
-      }
-    } finally qexec.close()
-
-    query = QueryFactory.create(DataIdQueries.queryGetGroup())
-    qexec = QueryExecutionFactory.create(query, dataidModel)
-
-    try {
-      val results = qexec.execSelect
-      if (results.hasNext) {
-        val group = results.next().getResource("?o").toString.split("/").map(_.trim).last
-        dir_structure = dir_structure :+ group
-      }
-    } finally qexec.close()
-
-    query = QueryFactory.create(DataIdQueries.queryGetArtifact())
-    qexec = QueryExecutionFactory.create(query, dataidModel)
-
-    try {
-      val results = qexec.execSelect
-      if (results.hasNext()) {
-        val artifact = results.next().getResource("?o").toString().split("/").map(_.trim).last
-        dir_structure = dir_structure :+ artifact
-      }
-    } finally qexec.close()
-
-    query = QueryFactory.create(DataIdQueries.queryGetVersion())
-    qexec = QueryExecutionFactory.create(query, dataidModel)
-
-    try {
-      val results = qexec.execSelect
-      if (results.hasNext()) {
-        val version = results.next().getResource("?o").toString().split("/").map(_.trim).last
-        dir_structure = dir_structure :+ version
-      }
-    } finally qexec.close()
-
-    return dir_structure
-  }
+//  def executeDataIdQuery(dataIdFile: File): List[String] = {
+//
+//    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString)
+//
+//    //dir_structure : publisher/group/artifact/version
+//    var dir_structure = List[String]()
+//
+//    var query: Query = QueryFactory.create(DataIdQueries.queryGetPublisher())
+//    var qexec = QueryExecutionFactory.create(query, dataidModel)
+//
+//    try {
+//      val results = qexec.execSelect
+//      if (results.hasNext) {
+//        //split the URI at the slashes and take the last cell
+//        val publisher = results.next().getResource("?o").toString.split("/").map(_.trim).last
+//        dir_structure = dir_structure :+ publisher
+//      }
+//    } finally qexec.close()
+//
+//    query = QueryFactory.create(DataIdQueries.queryGetGroup())
+//    qexec = QueryExecutionFactory.create(query, dataidModel)
+//
+//    try {
+//      val results = qexec.execSelect
+//      if (results.hasNext) {
+//        val group = results.next().getResource("?o").toString.split("/").map(_.trim).last
+//        dir_structure = dir_structure :+ group
+//      }
+//    } finally qexec.close()
+//
+//    query = QueryFactory.create(DataIdQueries.queryGetArtifact())
+//    qexec = QueryExecutionFactory.create(query, dataidModel)
+//
+//    try {
+//      val results = qexec.execSelect
+//      if (results.hasNext()) {
+//        val artifact = results.next().getResource("?o").toString().split("/").map(_.trim).last
+//        dir_structure = dir_structure :+ artifact
+//      }
+//    } finally qexec.close()
+//
+//    query = QueryFactory.create(DataIdQueries.queryGetVersion())
+//    qexec = QueryExecutionFactory.create(query, dataidModel)
+//
+//    try {
+//      val results = qexec.execSelect
+//      if (results.hasNext()) {
+//        val version = results.next().getResource("?o").toString().split("/").map(_.trim).last
+//        dir_structure = dir_structure :+ version
+//      }
+//    } finally qexec.close()
+//
+//    return dir_structure
+//  }
 
   def getTypeOfFile(fileURL: String, dataIdFile: File): String = {
     var fileType = ""
 
-    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.NTRIPLES)
+    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
 
     val query: Query = QueryFactory.create(DataIdQueries.queryGetType(fileURL))
     val qexec = QueryExecutionFactory.create(query, dataidModel)
 
     try {
       val results = qexec.execSelect
-      if (results.hasNext()) {
+      if (results.hasNext) {
         fileType = results.next().getLiteral("?type").toString
       }
     } finally qexec.close()
 
-    return fileType
+    fileType
   }
 
-  def getMediatypesOfQuery(list: List[String]) = {
+  def getMediatypesOfQuery(list: List[String]):Array[String] = {
     val files = list.mkString("> , <")
+    var mediaTypes = Array.empty[String]
     println(files)
     val queryString =
       s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
@@ -197,11 +198,13 @@ object QueryHandler {
     try {
       val results: ResultSet = qexec.execSelect
 
-      while (results.hasNext()) {
-        val mediaType = results.next().getResource("?type").toString()
-        println(mediaType)
+      while (results.hasNext) {
+        val mediaType = results.next().getResource("?type").toString
+        mediaTypes = mediaTypes :+ mediaType
       }
     } finally qexec.close()
 
+    mediaTypes.foreach(x => println(s"MediaType: $x"))
+    mediaTypes
   }
 }

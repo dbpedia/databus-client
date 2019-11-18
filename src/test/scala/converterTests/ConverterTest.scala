@@ -1,6 +1,6 @@
 package converterTests
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, SequenceInputStream}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, FileInputStream, InputStream, SequenceInputStream}
 
 import better.files.File
 import org.apache.jena.atlas.iterator.IteratorResourceClosing
@@ -10,7 +10,12 @@ import org.apache.jena.riot.lang.RiotParsers
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.api.Databus
+import org.dbpedia.databus.api.Databus.{Compression, Format}
 import org.dbpedia.databus.filehandling.FileUtil
+import org.dbpedia.databus.filehandling.FileUtil.copyStream
+import org.dbpedia.databus.filehandling.converter.Converter
+import org.dbpedia.databus.filehandling.converter.Converter.compress
 import org.dbpedia.databus.filehandling.converter.rdf_reader.{RDF_Reader, TTL_Reader}
 import org.scalatest.FlatSpec
 
@@ -116,6 +121,30 @@ class ConverterTest extends FlatSpec {
     t1 - t0
   }
 
+  "Conversion" should "not be too slow" in {
+
+    time(Converter.readTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
+
+    val triples =Converter.readTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
+
+    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
+
+    time(Databus.source("./src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2").compression(Compression.bz2).format(Format.nt).execute())
+//    Databus.source("./src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2").compression(Compression.bz2).format(Format.nt).execute()
+
+
+  }
+
+  "Copy" should "not be too slow" in {
+    val compressedOutStream = Converter.compress("gz", File("src/resources/test/SpeedTest/test"))
+    //file is written here
+    println("test")
+    copyStream(new FileInputStream(File("./src/resources/test/SpeedTest/temp/specific-mappingbased-properties_lang=ca.nt").toJava), compressedOutStream)
+
+
+    val compressedOutStream2 = Converter.compress("", File("src/resources/test/SpeedTest/test2"))
+    copyStream(new FileInputStream(File("./src/resources/test/SpeedTest/temp/specific-mappingbased-properties_lang=ca.nt").toJava), compressedOutStream2)
+  }
 
   "Spark Ntriple Read" should "be as fast as Sansa NTripleReader" in {
 

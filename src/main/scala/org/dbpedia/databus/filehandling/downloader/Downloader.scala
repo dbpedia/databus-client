@@ -7,11 +7,11 @@ import better.files.File
 import org.apache.commons.io.IOUtils
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.sparql.QueryHandler
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
 object Downloader {
 
-  def downloadWithQuery(queryString: String, targetdir: File): Seq[String] = {
+  def downloadWithQuery(queryString: String, targetdir: File, overwrite:Boolean=false): Seq[String] = {
     val results = QueryHandler.executeDownloadQuery(queryString)
     var allSHAs = Seq.empty[String]
 
@@ -20,8 +20,11 @@ object Downloader {
 
     results.foreach(fileIRI => {
       val fileSHA = QueryHandler.getSHA256Sum(fileIRI)
-      if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) downloadFile(fileIRI, targetdir)
-      else println(s"$fileIRI already exists in Cache")
+      if (overwrite) downloadFile(fileIRI, targetdir)
+      else {
+        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) downloadFile(fileIRI, targetdir)
+        else println(s"$fileIRI --> already exists in Cache")
+      }
       allSHAs = allSHAs :+ fileSHA
     })
 
@@ -29,7 +32,7 @@ object Downloader {
   }
 
   def downloadFile(url: String, targetdir: File): Unit = {
-    val file = targetdir / url.split("http://|https://").map(_.trim).last //filepath from url without http://
+    val file = targetdir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
 
     downloadUrlToFile(new URL(url), file, createParentDirectory = true)
 
@@ -40,10 +43,10 @@ object Downloader {
         QueryHandler.downloadDataIdFile(url, dataIdFile)
       }
       catch {
-        case _: FileNotFoundException => {
+        case _: FileNotFoundException =>
           println("couldn't query dataidfile")
           LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
-        }
+
       }
     }
   }
@@ -69,7 +72,6 @@ object Downloader {
 
   def downloadUrlToDirectory(url: URL, directory: File,
                              createDirectory: Boolean = false, skipIfExists: Boolean = false): Unit = {
-
 
     val file = directory / url.getFile.split("/").last
     if (!(skipIfExists && file.exists)) downloadUrlToFile(url, file, createDirectory)
