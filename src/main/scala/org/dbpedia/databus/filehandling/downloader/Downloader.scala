@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory
 
 object Downloader {
 
-  def downloadWithQuery(queryString: String, targetdir: File, overwrite:Boolean=false): Seq[String] = {
+  def downloadWithQuery(queryString: String, targetdir: File, overwrite: Boolean = false): Seq[String] = {
     val results = QueryHandler.executeDownloadQuery(queryString)
     var allSHAs = Seq.empty[String]
 
-    println("--------------------------------------------------------\n")
+    println("--------------------------------------------------------")
     println("Files to download:")
 
     results.foreach(fileIRI => {
@@ -51,6 +51,12 @@ object Downloader {
     }
   }
 
+  def downloadUrlToDirectory(url: URL, directory: File,
+                             createDirectory: Boolean = false, skipIfExists: Boolean = false): Unit = {
+
+    val file = directory / url.getFile.split("/").last
+    if (!(skipIfExists && file.exists)) downloadUrlToFile(url, file, createDirectory)
+  }
 
   def downloadUrlToFile(url: URL, file: File, createParentDirectory: Boolean = false): Unit = {
 
@@ -69,14 +75,6 @@ object Downloader {
       cis.close()
     }
   }
-
-  def downloadUrlToDirectory(url: URL, directory: File,
-                             createDirectory: Boolean = false, skipIfExists: Boolean = false): Unit = {
-
-    val file = directory / url.getFile.split("/").last
-    if (!(skipIfExists && file.exists)) downloadUrlToFile(url, file, createDirectory)
-  }
-
 
   def readQueryFile(file: File): String = {
     var queryString: String = ""

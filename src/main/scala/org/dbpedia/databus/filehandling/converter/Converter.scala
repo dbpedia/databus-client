@@ -30,7 +30,7 @@ object Converter {
     val compressionInputFile = getCompressionType(bufferedInputStream)
     val formatInputFile = getFormatType(inputFile, compressionInputFile)
 
-    if (outputCompression == compressionInputFile && (outputFormat == formatInputFile || outputFormat == "same")) {
+    if ((outputCompression == compressionInputFile || outputCompression == "same") && (outputFormat == formatInputFile || outputFormat == "same")) {
       val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
     }
@@ -44,10 +44,10 @@ object Converter {
     //  With FILEFORMAT CONVERSION
     else {
 
-      if(!isSupportedInFormat(formatInputFile)) return
+      if (!isSupportedInFormat(formatInputFile)) return
 
       var newOutCompression = outputCompression
-      if(outputCompression == "same") newOutCompression = compressionInputFile
+      if (outputCompression == "same") newOutCompression = compressionInputFile
 
       val targetFile = getOutputFile(inputFile, outputFormat, newOutCompression, dest_dir)
       var typeConvertedFile = File("")
@@ -70,14 +70,14 @@ object Converter {
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
 
       //DELETE TEMPDIR
-//      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
+      //      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
 
     }
 
   }
 
-  private[this] def isSupportedInFormat(format:String): Boolean ={
-    if(format.matches("rdf|ttl|nt|jsonld|tsv")) true
+  private[this] def isSupportedInFormat(format: String): Boolean = {
+    if (format.matches("rdf|ttl|nt|jsonld|tsv")) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Input file format $format is not supported.")
       println(s"Input file format $format is not supported.")
@@ -100,7 +100,7 @@ object Converter {
     }
   }
 
-  private[this] def getFormatType(inputFile: File, compressionInputFile: String):String = {
+  private[this] def getFormatType(inputFile: File, compressionInputFile: String): String = {
     {
       try {
         if (!(getFormatTypeWithDataID(inputFile) == "")) {
@@ -143,47 +143,47 @@ object Converter {
     else split(split.size - 2)
   }
 
-//  private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, src_dir: File, dest_dir: File): File = {
-//
-//    val nameWithoutExtension = inputFile.nameWithoutExtension
-//    val name = inputFile.name
-//    var filepath_new = ""
-//    val dataIdFile = inputFile.parent / "dataid.ttl"
-//
-//    val newOutputFormat = {
-//      if (outputFormat == "rdfxml") "rdf"
-//      else outputFormat
-//    }
-//
-//    if (dataIdFile.exists) {
-//      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
-//      filepath_new = dest_dir.pathAsString.concat("/")
-//      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
-//      filepath_new = filepath_new.concat(nameWithoutExtension)
-//    }
-//    else {
-//      // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
-//      //      filepath_new = inputFile.pathAsString.replace(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID"))
-//      filepath_new = dest_dir.pathAsString.concat("/NoDataID").concat(inputFile.pathAsString.replace(File(".").pathAsString, "")) //.concat(nameWithoutExtension)
-//
-//      filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
-//    }
-//
-//    if (outputCompression.isEmpty) {
-//      filepath_new = filepath_new.concat(".").concat(newOutputFormat)
-//    }
-//    else {
-//      filepath_new = filepath_new.concat(".").concat(newOutputFormat).concat(".").concat(outputCompression)
-//    }
-//
-//    val outputFile = File(filepath_new)
-//    //create necessary parent directories to write the outputfile there, later
-//    outputFile.parent.createDirectoryIfNotExists(createParents = true)
-//
-//    println(s"converted file:\t${outputFile.pathAsString}\n")
-//
-//    outputFile
-//  }
+  //  private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, src_dir: File, dest_dir: File): File = {
+  //
+  //    val nameWithoutExtension = inputFile.nameWithoutExtension
+  //    val name = inputFile.name
+  //    var filepath_new = ""
+  //    val dataIdFile = inputFile.parent / "dataid.ttl"
+  //
+  //    val newOutputFormat = {
+  //      if (outputFormat == "rdfxml") "rdf"
+  //      else outputFormat
+  //    }
+  //
+  //    if (dataIdFile.exists) {
+  //      val dir_structure: List[String] = QueryHandler.executeDataIdQuery(dataIdFile)
+  //      filepath_new = dest_dir.pathAsString.concat("/")
+  //      dir_structure.foreach(dir => filepath_new = filepath_new.concat(dir).concat("/"))
+  //      filepath_new = filepath_new.concat(nameWithoutExtension)
+  //    }
+  //    else {
+  //      // changeExtensionTo() funktioniert nicht bei noch nicht existierendem File, deswegen ausweichen über Stringmanipulation
+  //      //      filepath_new = inputFile.pathAsString.replace(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID"))
+  //      filepath_new = dest_dir.pathAsString.concat("/NoDataID").concat(inputFile.pathAsString.replace(File(".").pathAsString, "")) //.concat(nameWithoutExtension)
+  //
+  //      filepath_new = filepath_new.replaceAll(name, nameWithoutExtension)
+  //    }
+  //
+  //    if (outputCompression.isEmpty) {
+  //      filepath_new = filepath_new.concat(".").concat(newOutputFormat)
+  //    }
+  //    else {
+  //      filepath_new = filepath_new.concat(".").concat(newOutputFormat).concat(".").concat(outputCompression)
+  //    }
+  //
+  //    val outputFile = File(filepath_new)
+  //    //create necessary parent directories to write the outputfile there, later
+  //    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+  //
+  //    println(s"converted file:\t${outputFile.pathAsString}\n")
+  //
+  //    outputFile
+  //  }
 
   private[this] def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, dest_dir: File): File = {
 
@@ -207,8 +207,8 @@ object Converter {
     }
 
     val newName = {
-      if (outputCompression.isEmpty)  s"$nameWithoutExtension.$newOutputFormat"
-      else  s"$nameWithoutExtension.$newOutputFormat.$outputCompression"
+      if (outputCompression.isEmpty) s"$nameWithoutExtension.$newOutputFormat"
+      else s"$nameWithoutExtension.$newOutputFormat.$outputCompression"
     }
 
     val outputFile = outputDir / newName
@@ -216,7 +216,7 @@ object Converter {
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
-    println(s"converted file:\t${outputFile.pathAsString}\n")
+    println(s"output file:\t${outputFile.pathAsString}\n")
 
     outputFile
   }
@@ -242,7 +242,7 @@ object Converter {
     }
   }
 
-   def compress(outputCompression: String, output: File): OutputStream = {
+  def compress(outputCompression: String, output: File): OutputStream = {
     try {
       // file is created here
       val myOutputStream = new FileOutputStream(output.toJava)
@@ -342,7 +342,7 @@ object Converter {
 
   def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
 
-    val tempDir = File("./target/databus.tmp/temp")
+    val tempDir = File("./target/databus.tmp/temp/")
     if (tempDir.exists) tempDir.delete()
     val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
@@ -355,11 +355,11 @@ object Converter {
 
         if (createMappingFile == "yes") {
           val mappingFile = scala.io.StdIn.readLine("Type Path to create mapping file:\n")
-          val tsvData = TSV_Writer.convertToTSV(data,spark, createMappingFile = true)
+          val tsvData = TSV_Writer.convertToTSV(data, spark, createMappingFile = true)
           tsvData._1.coalesce(1).write
             .option("delimiter", "\t")
-            .option("emptyValue","")
-            .option("header","true")
+            .option("emptyValue", "")
+            .option("header", "true")
             .option("treatEmptyValuesAsNulls", "false")
             .csv(tempDir.pathAsString)
 
@@ -367,11 +367,11 @@ object Converter {
         }
 
         else {
-          val tsvData = TSV_Writer.convertToTSV(data,spark)
+          val tsvData = TSV_Writer.convertToTSV(data, spark)
           tsvData.coalesce(1).write
             .option("delimiter", "\t")
-            .option("emptyValue","")
-            .option("header","true")
+            .option("emptyValue", "")
+            .option("header", "true")
             .option("treatEmptyValuesAsNulls", "false")
             .csv(tempDir.pathAsString)
         }

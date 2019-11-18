@@ -5,11 +5,8 @@ import java.io.PrintWriter
 import better.files.File
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.types.{ArrayType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-import parquet.io.RecordConsumerLoggingWrapper
-
-import scala.collection.immutable.Vector
 
 object TSV_Writer {
 
@@ -20,7 +17,7 @@ object TSV_Writer {
 
     val splitPredicates =
       Seq("resource") ++ allPredicates.map(
-        pre => getSplitPredicate(pre:String)._2
+        pre => getSplitPredicate(pre: String)._2
       ).collect().sortBy(_.head)
 
     val fields: Seq[StructField] = splitPredicates.map(pre => StructField(pre, StringType, nullable = true))
@@ -28,13 +25,15 @@ object TSV_Writer {
 
     val tsvRDD = triplesGroupedBySubject.map(allTriplesOfSubject => convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, splitPredicates))
 
-    spark.createDataFrame(tsvRDD,schema)
+    spark.createDataFrame(tsvRDD, schema)
   }
 
-  def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], predicates:Seq[String]): Row = {
+  def convertAllTriplesOfSubjectToTSV(triples: Iterable[Triple], predicates: Seq[String]): Row = {
 
-    var tsv_line: Seq[String] = Seq.fill(predicates.size){new String}
-    tsv_line = tsv_line.updated(0,triples.last.getSubject.getURI)
+    var tsv_line: Seq[String] = Seq.fill(predicates.size) {
+      new String
+    }
+    tsv_line = tsv_line.updated(0, triples.last.getSubject.getURI)
 
     triples.foreach(triple => {
       var predicate_exists = false
@@ -64,10 +63,20 @@ object TSV_Writer {
     Row.fromSeq(tsv_line)
   }
 
-//  ======================================================
+  //  ======================================================
 
+  def getSplitPredicate(pre: String): (String, String) = {
+    val lastHashkeyIndex = pre.lastIndexOf("#")
+    val lastSlashIndex = pre.lastIndexOf("/")
+    var split = ("", "")
 
-  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile:Boolean): (DataFrame, DataFrame)={
+    if (lastHashkeyIndex >= lastSlashIndex) split = pre.splitAt(pre.lastIndexOf("#") + 1)
+    else split = pre.splitAt(pre.lastIndexOf("/") + 1)
+
+    split
+  }
+
+  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): (DataFrame, DataFrame) = {
 
     val triplesGroupedBySubject = inData.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = inData.groupBy(triple => triple.getPredicate.getURI).map(_._1)
@@ -78,7 +87,7 @@ object TSV_Writer {
     val mappedPredicates =
       Seq(Seq("resource")) ++ allPredicates.map(
         pre => {
-          val split = getSplitPredicate(pre:String)
+          val split = getSplitPredicate(pre: String)
           Seq(split._2, s"$prefixPre${split._2}", split._1)
         }
       ).collect().sortBy(_.head)
@@ -94,21 +103,21 @@ object TSV_Writer {
     val fields: Seq[StructField] = mappedPredicates.map(prepPre => StructField(prepPre.head, StringType, nullable = true))
     val schema: StructType = StructType(fields)
 
-    val triplesDF = spark.createDataFrame(spark.sparkContext.parallelize(convertedData.map(data => data._1)),schema)
+    val triplesDF = spark.createDataFrame(spark.sparkContext.parallelize(convertedData.map(data => data._1)), schema)
     println("TSV DATAFRAME")
     triplesDF.show(false)
     //=================
 
     //Calculated TARQL DATA
-    val schema_mapping:StructType = StructType(
+    val schema_mapping: StructType = StructType(
       Seq(
         StructField("prefixes", StringType, true),
-        StructField("constructs",StringType,true),
-        StructField("bindings",StringType,true)
+        StructField("constructs", StringType, true),
+        StructField("bindings", StringType, true)
       )
     )
 
-    val tarqlDF:DataFrame =
+    val tarqlDF: DataFrame =
       spark.createDataFrame(
         spark.sparkContext.parallelize(convertedData.flatMap(data => data._2)),
         schema_mapping
@@ -119,16 +128,18 @@ object TSV_Writer {
     (triplesDF, tarqlDF)
   }
 
-  def convertTriplesToTSVAndCalculateTarql(triples: Iterable[Triple], predicates:Seq[Seq[String]]): (Row,Seq[Row]) = {
+  def convertTriplesToTSVAndCalculateTarql(triples: Iterable[Triple], predicates: Seq[Seq[String]]): (Row, Seq[Row]) = {
 
     //TSV DATA
-    var TSVseq: IndexedSeq[String] = IndexedSeq.fill(predicates.size){new String}
-    TSVseq = TSVseq.updated(0,triples.last.getSubject.getURI)
+    var TSVseq: IndexedSeq[String] = IndexedSeq.fill(predicates.size) {
+      new String
+    }
+    TSVseq = TSVseq.updated(0, triples.last.getSubject.getURI)
 
     //TARQL DATA
     val bindedPre = "binded"
     val bindedSubject = predicates.head.head.concat(bindedPre)
-    var tarqlSeq:Seq[Seq[String]] =  Seq(Seq("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>", "", s"BIND(URI(?${predicates.head.head}) AS ?$bindedSubject)"))
+    var tarqlSeq: Seq[Seq[String]] = Seq(Seq("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>", "", s"BIND(URI(?${predicates.head.head}) AS ?$bindedSubject)"))
 
     triples.foreach(triple => {
       var predicate_exists = false
@@ -139,18 +150,18 @@ object TSV_Writer {
       if (predicates.exists(seq => seq.contains(triplePredicate))) {
         predicate_exists = true
 
-        var tarqlPart:Seq[String]  = Seq(predicates.filter(pre => pre(0) == triplePredicate).map(pre => s"PREFIX ${pre(1)}: <${pre(2)}>").last)
+        var tarqlPart: Seq[String] = Seq(predicates.filter(pre => pre(0) == triplePredicate).map(pre => s"PREFIX ${pre(1)}: <${pre(2)}>").last)
 
         if (triple.getObject.isLiteral) {
           val datatype = getSplitPredicate(triple.getObject.getLiteralDatatype.getURI)._2
 
-          if( datatype == "langString") tarqlPart = tarqlPart :+ s"?$bindedSubject ${predicates.find(seq => seq.contains(triplePredicate)).get(1)}:${triplePredicate} ?$triplePredicate;" :+ ""
-          else tarqlPart = tarqlPart :+ buildTarqlConstructStr(predicates ,triplePredicate, bindedSubject, bindedPre) :+ s"BIND(xsd:$datatype(?$triplePredicate) AS ?${triplePredicate}${bindedPre})"
+          if (datatype == "langString") tarqlPart = tarqlPart :+ s"?$bindedSubject ${predicates.find(seq => seq.contains(triplePredicate)).get(1)}:${triplePredicate} ?$triplePredicate;" :+ ""
+          else tarqlPart = tarqlPart :+ buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre) :+ s"BIND(xsd:$datatype(?$triplePredicate) AS ?${triplePredicate}${bindedPre})"
 
           tripleObject = triple.getObject.getLiteralLexicalForm
         }
         else if (triple.getObject.isURI) {
-          tarqlPart = tarqlPart :+ buildTarqlConstructStr(predicates ,triplePredicate, bindedSubject, bindedPre) :+ s"BIND(URI(?$triplePredicate) AS ?${triplePredicate}${bindedPre})"
+          tarqlPart = tarqlPart :+ buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre) :+ s"BIND(URI(?$triplePredicate) AS ?${triplePredicate}${bindedPre})"
 
           tripleObject = triple.getObject.getURI
         }
@@ -171,32 +182,21 @@ object TSV_Writer {
         TSVseq = TSVseq.updated(index, "")
       }
     })
-//
-//    println(s"TripleSubj: ${triples.last.getSubject.toString()}")
-//    println(s"TSVSEQ: $TSVseq")
-//    println("TARQLSEQ:")
-//    tarqlSeq.foreach(println(_))
+    //
+    //    println(s"TripleSubj: ${triples.last.getSubject.toString()}")
+    //    println(s"TSVSEQ: $TSVseq")
+    //    println("TARQLSEQ:")
+    //    tarqlSeq.foreach(println(_))
 
-    (Row.fromSeq(TSVseq),tarqlSeq.map(seq => Row.fromSeq(seq)))
+    (Row.fromSeq(TSVseq), tarqlSeq.map(seq => Row.fromSeq(seq)))
   }
 
-  def getSplitPredicate(pre:String): (String, String)={
-    val lastHashkeyIndex = pre.lastIndexOf("#")
-    val lastSlashIndex = pre.lastIndexOf("/")
-    var split = ("","")
-
-    if (lastHashkeyIndex >= lastSlashIndex) split =pre.splitAt(pre.lastIndexOf("#")+1)
-    else split =pre.splitAt(pre.lastIndexOf("/")+1)
-
-    split
-  }
-
-  def buildTarqlConstructStr(mappedPredicates:Seq[Seq[String]],predicate:String, bindedSubject:String, bindedPre:String): String ={
-    val predicateSeq =mappedPredicates.find(seq => seq.contains(predicate)).get
+  def buildTarqlConstructStr(mappedPredicates: Seq[Seq[String]], predicate: String, bindedSubject: String, bindedPre: String): String = {
+    val predicateSeq = mappedPredicates.find(seq => seq.contains(predicate)).get
     s"?$bindedSubject ${predicateSeq(1)}:${predicate} ?$predicate$bindedPre;"
   }
 
-  def createTarqlMapFile(tarqlDF:DataFrame, file:File) ={
+  def createTarqlMapFile(tarqlDF: DataFrame, file: File) = {
     val cols = tarqlDF.columns
 
     println("TARQL DATAFRAME")
@@ -226,7 +226,7 @@ object TSV_Writer {
 
     val constructStrPart =
       tarqlConstruct
-        .map(x => x.split(" ").updated(0,"\t").mkString(" "))
+        .map(x => x.split(" ").updated(0, "\t").mkString(" "))
         .filter(str => !str.contains("type:type"))
         .mkString("", "\n", "")
 
@@ -253,7 +253,9 @@ object TSV_Writer {
 
     println(s"CALCULATED TARQLSTRING: \n$tarqlMappingString")
 
-    new PrintWriter(file.pathAsString) { write(tarqlMappingString); close }
+    new PrintWriter(file.pathAsString) {
+      write(tarqlMappingString); close
+    }
   }
 
 }

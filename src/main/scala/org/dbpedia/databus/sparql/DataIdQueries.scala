@@ -15,6 +15,7 @@ object DataIdQueries {
        |}
     """.stripMargin
   }
+
   def queryGetPublisher(): String =
     s"""
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>

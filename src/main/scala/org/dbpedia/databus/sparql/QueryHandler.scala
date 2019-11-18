@@ -7,15 +7,14 @@ import org.apache.commons.io.FileUtils
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
-import org.dbpedia.databus.filehandling.FileUtil
 
 object QueryHandler {
 
   def executeDownloadQuery(queryString: String): Seq[String] = {
 
     val query: Query = QueryFactory.create(queryString)
-    println("\n--------------------------------------------------------\n")
-    println(s"""Query:\n\n$query""")
+//    println("\n--------------------------------------------------------\n")
+//    println(s"""Query:\n\n$query""")
 
     val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
 
@@ -81,7 +80,7 @@ object QueryHandler {
     sha256
   }
 
-  def getTargetDir(dataIdFile:File, dest_dir:File): File = {
+  def getTargetDir(dataIdFile: File, dest_dir: File): File = {
     val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
     val query: Query = QueryFactory.create(DataIdQueries.queryGetDirStructure())
     val qexec = QueryExecutionFactory.create(query, dataIdModel)
@@ -91,7 +90,7 @@ object QueryHandler {
     try {
       val results = qexec.execSelect
       if (results.hasNext) {
-        val result =results.next()
+        val result = results.next()
         //split the URI at the slashes and take the last cell
         val publisher = result.getResource("?publisher").toString.split("/").last.trim
         val group = result.getResource("?group").toString.split("/").last.trim
@@ -104,60 +103,60 @@ object QueryHandler {
     targetDir
   }
 
-//  def executeDataIdQuery(dataIdFile: File): List[String] = {
-//
-//    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString)
-//
-//    //dir_structure : publisher/group/artifact/version
-//    var dir_structure = List[String]()
-//
-//    var query: Query = QueryFactory.create(DataIdQueries.queryGetPublisher())
-//    var qexec = QueryExecutionFactory.create(query, dataidModel)
-//
-//    try {
-//      val results = qexec.execSelect
-//      if (results.hasNext) {
-//        //split the URI at the slashes and take the last cell
-//        val publisher = results.next().getResource("?o").toString.split("/").map(_.trim).last
-//        dir_structure = dir_structure :+ publisher
-//      }
-//    } finally qexec.close()
-//
-//    query = QueryFactory.create(DataIdQueries.queryGetGroup())
-//    qexec = QueryExecutionFactory.create(query, dataidModel)
-//
-//    try {
-//      val results = qexec.execSelect
-//      if (results.hasNext) {
-//        val group = results.next().getResource("?o").toString.split("/").map(_.trim).last
-//        dir_structure = dir_structure :+ group
-//      }
-//    } finally qexec.close()
-//
-//    query = QueryFactory.create(DataIdQueries.queryGetArtifact())
-//    qexec = QueryExecutionFactory.create(query, dataidModel)
-//
-//    try {
-//      val results = qexec.execSelect
-//      if (results.hasNext()) {
-//        val artifact = results.next().getResource("?o").toString().split("/").map(_.trim).last
-//        dir_structure = dir_structure :+ artifact
-//      }
-//    } finally qexec.close()
-//
-//    query = QueryFactory.create(DataIdQueries.queryGetVersion())
-//    qexec = QueryExecutionFactory.create(query, dataidModel)
-//
-//    try {
-//      val results = qexec.execSelect
-//      if (results.hasNext()) {
-//        val version = results.next().getResource("?o").toString().split("/").map(_.trim).last
-//        dir_structure = dir_structure :+ version
-//      }
-//    } finally qexec.close()
-//
-//    return dir_structure
-//  }
+  //  def executeDataIdQuery(dataIdFile: File): List[String] = {
+  //
+  //    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString)
+  //
+  //    //dir_structure : publisher/group/artifact/version
+  //    var dir_structure = List[String]()
+  //
+  //    var query: Query = QueryFactory.create(DataIdQueries.queryGetPublisher())
+  //    var qexec = QueryExecutionFactory.create(query, dataidModel)
+  //
+  //    try {
+  //      val results = qexec.execSelect
+  //      if (results.hasNext) {
+  //        //split the URI at the slashes and take the last cell
+  //        val publisher = results.next().getResource("?o").toString.split("/").map(_.trim).last
+  //        dir_structure = dir_structure :+ publisher
+  //      }
+  //    } finally qexec.close()
+  //
+  //    query = QueryFactory.create(DataIdQueries.queryGetGroup())
+  //    qexec = QueryExecutionFactory.create(query, dataidModel)
+  //
+  //    try {
+  //      val results = qexec.execSelect
+  //      if (results.hasNext) {
+  //        val group = results.next().getResource("?o").toString.split("/").map(_.trim).last
+  //        dir_structure = dir_structure :+ group
+  //      }
+  //    } finally qexec.close()
+  //
+  //    query = QueryFactory.create(DataIdQueries.queryGetArtifact())
+  //    qexec = QueryExecutionFactory.create(query, dataidModel)
+  //
+  //    try {
+  //      val results = qexec.execSelect
+  //      if (results.hasNext()) {
+  //        val artifact = results.next().getResource("?o").toString().split("/").map(_.trim).last
+  //        dir_structure = dir_structure :+ artifact
+  //      }
+  //    } finally qexec.close()
+  //
+  //    query = QueryFactory.create(DataIdQueries.queryGetVersion())
+  //    qexec = QueryExecutionFactory.create(query, dataidModel)
+  //
+  //    try {
+  //      val results = qexec.execSelect
+  //      if (results.hasNext()) {
+  //        val version = results.next().getResource("?o").toString().split("/").map(_.trim).last
+  //        dir_structure = dir_structure :+ version
+  //      }
+  //    } finally qexec.close()
+  //
+  //    return dir_structure
+  //  }
 
   def getTypeOfFile(fileURL: String, dataIdFile: File): String = {
     var fileType = ""
@@ -177,7 +176,7 @@ object QueryHandler {
     fileType
   }
 
-  def getMediatypesOfQuery(list: List[String]):Array[String] = {
+  def getMediatypesOfQuery(list: List[String]): Array[String] = {
     val files = list.mkString("> , <")
     var mediaTypes = Array.empty[String]
     println(files)

@@ -42,8 +42,8 @@ object RDF_Writer {
         {
           if (triple.getObject.isLiteral) {
             if (triple.getObject.getLiteralLanguage.isEmpty) {
-//              println(triple.getObject.getLiteralLexicalForm)
-//              println(triple.getObject.getLiteralDatatype)
+              //              println(triple.getObject.getLiteralLexicalForm)
+              //              println(triple.getObject.getLiteralDatatype)
               ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralDatatype)
             }
             else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralLanguage)

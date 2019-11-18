@@ -26,6 +26,7 @@ For usage see below:
   val compression: ScallopOption[String] = opt[String](default = Some("same"), descr = "set the compression format of the output file")
   val target: ScallopOption[String] = opt[String](default = Some("./files/"), descr = "set the target directory for converted files")
   val overwrite: ScallopOption[Boolean] = opt[Boolean](default = Some(false), descr = "true -> overwrite files in cache, false -> use cache")
+  val clear: ScallopOption[Boolean] = opt[Boolean](default = Some(false), noshort= true, descr = "true -> clear Cache")
 
   verify()
 }
