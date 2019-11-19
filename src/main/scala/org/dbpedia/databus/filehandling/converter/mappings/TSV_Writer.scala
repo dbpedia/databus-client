@@ -76,7 +76,7 @@ object TSV_Writer {
     split
   }
 
-  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): (DataFrame, DataFrame) = {
+  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean = true): (DataFrame, DataFrame) = {
 
     val triplesGroupedBySubject = inData.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = inData.groupBy(triple => triple.getPredicate.getURI).map(_._1)
@@ -218,11 +218,18 @@ object TSV_Writer {
         .collect()
         .map(row => row.mkString(""))
 
-    val updatedTypeConstructStr =
-      tarqlConstruct
-        .find(str => str.contains("type:type"))
-        .map(str => str.split(" ").updated(1, "a").mkString(" "))
-        .last
+
+    var updatedTypeConstructStr = ""
+
+    try {
+      updatedTypeConstructStr =
+        tarqlConstruct
+          .find(str => str.contains("type:type"))
+          .map(str => str.split(" ").updated(1, "a").mkString(" "))
+          .last
+    } catch {
+      case none:NoSuchElementException => println("NO TYPE IN TRIPLES INCLUDED")
+    }
 
     val constructStrPart =
       tarqlConstruct
