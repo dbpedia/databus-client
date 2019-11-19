@@ -238,6 +238,14 @@
                     </launchers>
                 </configuration>
             </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.4.1</version>
+                    <configuration>
+                        <rules><dependencyConvergence/></rules>
+                    </configuration>
+                </plugin>
         </plugins>
     </build>
 
