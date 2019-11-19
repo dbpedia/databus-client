@@ -76,7 +76,7 @@ object TSV_Writer {
     split
   }
 
-  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean = true): (DataFrame, DataFrame) = {
+  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): (DataFrame, DataFrame) = {
 
     val triplesGroupedBySubject = inData.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = inData.groupBy(triple => triple.getPredicate.getURI).map(_._1)

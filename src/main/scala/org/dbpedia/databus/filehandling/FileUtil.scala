@@ -71,13 +71,15 @@ object FileUtil {
     exists
   }
 
-  def checkSum(file: File, sha: String): Boolean = {
-    var check = false
-    if (MessageDigest.getInstance("SHA-256")
+  def getSha256(file:File) : String = {
+    MessageDigest.getInstance("SHA-256")
       .digest(Files.readAllBytes(file.path))
-      .map("%02x".format(_)).mkString == sha) check = true
+      .map("%02x".format(_)).mkString
+  }
 
-    check
+  def checkSum(file: File, sha: String): Boolean = {
+    if (getSha256(file)== sha) true
+    else false
   }
 
   def getFileWithSHA256(sha: String, dir: File): File = {

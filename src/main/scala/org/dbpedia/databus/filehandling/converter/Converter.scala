@@ -5,6 +5,7 @@ import java.io._
 import better.files.File
 import org.apache.commons.compress.archivers.dump.InvalidFormatException
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
+import org.apache.commons.io.FileUtils
 import org.apache.jena.graph.Triple
 import org.apache.jena.riot.RDFFormat
 import org.apache.spark.SparkException
@@ -65,8 +66,6 @@ object Converter {
       }
 
       val compressedOutStream = compress(newOutCompression, targetFile)
-
-      //file is written here
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
 
       //DELETE TEMPDIR
@@ -283,10 +282,10 @@ object Converter {
     }
   }
 
-  private def convertFormat(inputFile: File, inputFormat: String, outputFormat: String): File = {
+  private def convertFormat(file: File, inputFormat: String, outputFormat: String): File = {
 
     val spark = SparkSession.builder()
-      .appName(s"Triple reader  ${inputFile.name}")
+      .appName(s"Triple reader  ${file.name}")
       .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
@@ -294,10 +293,10 @@ object Converter {
     val sparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
-    val data = readTriples(inputFile, inputFormat, spark: SparkSession)
+    val data = readTriples(file, inputFormat, spark: SparkSession)
 
-    data.foreach(println(_))
-    writeTriples(inputFile, data, outputFormat, spark)
+//    data.foreach(println(_))
+    writeTriples(file, data, outputFormat, spark)
   }
 
   def readTriples(inputFile: File, inputFormat: String, spark: SparkSession): RDD[Triple] = {
@@ -343,6 +342,7 @@ object Converter {
   def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
 
     val tempDir = File("./target/databus.tmp/temp/")
+    val mappingFile = tempDir / "mappingFile"
     if (tempDir.exists) tempDir.delete()
     val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
@@ -351,10 +351,11 @@ object Converter {
         NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
 
       case "tsv" =>
-        val createMappingFile = scala.io.StdIn.readLine("Do you want to create MappingFile?:\n")
+        val createMappingFile = scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a MappingFile.\n")
 
-        if (createMappingFile == "yes") {
-          val mappingFile = scala.io.StdIn.readLine("Type Path to create mapping file:\n")
+        if (createMappingFile.matches("yes|y")) {
+          File("./mappings/").createDirectoryIfNotExists()
+
           val tsvData = TSV_Writer.convertToTSV(data, spark, createMappingFile = true)
           tsvData._1.coalesce(1).write
             .option("delimiter", "\t")
@@ -363,7 +364,7 @@ object Converter {
             .option("treatEmptyValuesAsNulls", "false")
             .csv(tempDir.pathAsString)
 
-          TSV_Writer.createTarqlMapFile(tsvData._2, File(mappingFile))
+          TSV_Writer.createTarqlMapFile(tsvData._2, mappingFile)
         }
 
         else {
@@ -393,6 +394,8 @@ object Converter {
     catch {
       case _: RuntimeException => LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
     }
+
+    if (mappingFile.exists) mappingFile.moveTo(File("./mappings/") / FileUtil.getSha256(targetFile), overwrite = true)
 
     targetFile
   }

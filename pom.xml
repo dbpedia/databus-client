@@ -115,15 +115,17 @@
         <!-- SPARK -->
 
         <!-- JENA -->
+        <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>3.9.0</version>
+            <version>3.13.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
-            <version>3.9.0</version>
+            <version>3.13.1</version>
         </dependency>
         <!-- JENA -->
 

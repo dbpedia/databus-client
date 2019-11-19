@@ -41,24 +41,13 @@ object Main {
 
       val allSHAs = Downloader.downloadWithQuery(queryString, cache_dir, conf.overwrite())
 
-//      println("\n--------------------------------------------------------\n")
-//
-//      if (conf.compression() == "same" && conf.format() == "same") {
-//        allSHAs.foreach(
-//          sha => Converter.convertFile(FileUtil.getFileWithSHA256(sha, cache_dir), File(conf.target()), "same", "same")// FileUtil.copyUnchangedFile(FileUtil.getFileWithSHA256(sha, cache_dir), cache_dir, File(conf.target()))
-//        )
-
-//        println("\n--------------------------------------------------------\n")
-//        println(s"Files have been downloaded to ${conf.target()}")
-//      }
-//      else {
       println("\n========================================================\n")
       println("CONVERSION TOOL - for queried files:\n")
 
       allSHAs.foreach(
         sha => Converter.convertFile(FileUtil.getFileWithSHA256(sha, cache_dir), File(conf.target()), conf.format(), conf.compression())
       )
-//      }
+
     }
 
     // Take already existing files as source
