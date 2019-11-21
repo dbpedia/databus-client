@@ -101,12 +101,12 @@
             <artifactId>spark-sql_2.11</artifactId>
             <version>2.4.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-hive -->
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-hive_2.11</artifactId>
-            <version>2.4.0</version>
-        </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.spark/spark-hive &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.spark</groupId>-->
+<!--            <artifactId>spark-hive_2.11</artifactId>-->
+<!--            <version>2.4.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -115,17 +115,30 @@
         <!-- SPARK -->
 
         <!-- JENA -->
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
+            <version>3.11.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>3.13.1</version>
+            <version>3.11.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.github.jsonld-java/jsonld-java -->
         <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-core</artifactId>
-            <version>3.13.1</version>
+            <groupId>com.github.jsonld-java</groupId>
+            <artifactId>jsonld-java</artifactId>
+            <version>0.12.5</version>
         </dependency>
         <!-- JENA -->
 

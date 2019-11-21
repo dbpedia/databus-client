@@ -18,7 +18,7 @@ object TSV_Reader {
       else null
     }
 
-    var rdd = sc.emptyRDD[Triple]
+    var seq: Seq[Triple] = Seq.empty
 
     if (csvOptions != null) {
       val resultSet = csvFilePath match {
@@ -26,14 +26,15 @@ object TSV_Reader {
         case _ => TarqlQueryExecutionFactory.create(tarqlQuery, csvFilePath, csvOptions).execTriples()
       }
 
-      while (resultSet.hasNext) rdd = sc.union(rdd, sc.parallelize(Seq(resultSet.next())))
+      while (resultSet.hasNext) seq = seq :+ resultSet.next()
+
     }
     else {
       LoggerFactory.getLogger("read_CSV").error(s"Delimiter: $delimiter not supported")
       println(s"ERROR (read_CSV): Delimiter: $delimiter not supported")
     }
 
-    rdd
+    sc.parallelize(seq)
   }
 
   //  def tsv_nt_map(spark: SparkSession): RDD[Triple] = {

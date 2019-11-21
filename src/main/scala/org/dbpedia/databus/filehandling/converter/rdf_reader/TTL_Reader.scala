@@ -38,16 +38,15 @@ object TTL_Reader {
 
     // We can now iterate over data as it is parsed, parsing only runs as
     // far ahead of our consumption as the buffer size allows
-    val sc = spark.sparkContext
-    var data = sc.emptyRDD[Triple]
 
-    while (iter.hasNext) {
-      data = sc.union(data, sc.parallelize(Seq(iter.next)))
-    }
+    var data:Seq[Triple] = Seq.empty
+
+    while (iter.hasNext) data = data :+ iter.next
 
     inputStream.finish()
     executor.shutdown()
 
-    data
+    val sc = spark.sparkContext
+    sc.parallelize(data)
   }
 }

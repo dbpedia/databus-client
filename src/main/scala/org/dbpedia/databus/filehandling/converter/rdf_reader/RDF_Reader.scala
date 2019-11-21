@@ -11,16 +11,14 @@ object RDF_Reader {
   def read(spark: SparkSession, inputFile: File): RDD[Triple] = {
 
     val sc = spark.sparkContext
-    val statements = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements() //.toList
-    var data = sc.emptyRDD[Triple]
+    val statements = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements()
+    var data:Seq[Triple] = Seq.empty
 
     while (statements.hasNext) {
-      val triple = statements.nextStatement().asTriple()
-      val dataTriple = sc.parallelize(Seq(triple))
-      data = sc.union(data, dataTriple)
+      data = data :+ statements.nextStatement().asTriple()
     }
 
-    data
+    sc.parallelize(data)
   }
 
 }
