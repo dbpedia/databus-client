@@ -76,7 +76,7 @@ object Converter {
   }
 
   private[this] def isSupportedInFormat(format: String): Boolean = {
-    if (format.matches("rdf|ttl|nt|jsonld|tsv")) true
+    if (format.matches("rdf|ttl|nt|jsonld|tsv|csv")) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Input file format $format is not supported.")
       println(s"Input file format $format is not supported.")
@@ -334,8 +334,17 @@ object Converter {
 
       case "tsv" =>
         val mappingFile = scala.io.StdIn.readLine("Please type Path to Mapping File:\n")
-        mappings.TSV_Reader.csv_to_rdd(mappingFile, inputFile.pathAsString, "\t", spark.sparkContext)
+        mappings.TSV_Reader.csv_to_rdd(mappingFile, inputFile.pathAsString, '\t', sc = spark.sparkContext)
 
+      case "csv" =>
+        val mappingFile:String = scala.io.StdIn.readLine("Please type Path to Mapping File:\n")
+        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
+        val quotation = scala.io.StdIn.readLine("Please type quote Charater of CSV file:\n(e.x. ' \" ' for double quoted entries or ' null ' if there's no quotation)\n")
+        val quoteChar = quotation match {
+          case "null" => null
+          case _ => quotation.toCharArray.apply(0).asInstanceOf[Character]
+        }
+        mappings.TSV_Reader.csv_to_rdd(mappingFile, inputFile.pathAsString, delimiter, quoteChar, spark.sparkContext)
     }
   }
 

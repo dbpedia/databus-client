@@ -82,7 +82,7 @@ object Main {
   }
 
   def isSupportedOutFormat(format: String): Boolean = {
-    if (format.matches("rdfxml|ttl|nt|jsonld|tsv|same")) true
+    if (format.matches("rdfxml|ttl|nt|jsonld|tsv|csv|same")) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Output file format $format is not supported.")
       println(s"Output file format $format is not supported.")

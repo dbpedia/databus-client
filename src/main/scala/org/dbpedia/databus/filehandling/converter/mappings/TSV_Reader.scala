@@ -8,15 +8,25 @@ import org.slf4j.LoggerFactory
 
 object TSV_Reader {
 
-  def csv_to_rdd(mapFile: String, csvFilePath: String = "", delimiter: String = ",", sc: SparkContext): RDD[Triple] = {
+  def csv_to_rdd(mapFile: String, csvFilePath: String = "", delimiter: Character = ',', quoteChar: Character = '"', sc: SparkContext): RDD[Triple] = {
 
     val tarqlQuery = new TarqlParser(mapFile).getResult
 
-    val csvOptions = {
-      if (delimiter == ",") CSVOptions.withCSVDefaults()
-      else if (delimiter == "\t") CSVOptions.withTSVDefaults()
-      else null
-    }
+    val csvOptions = new CSVOptions()
+    csvOptions.setDelimiter(delimiter)
+    csvOptions.setQuoteChar(quoteChar)
+//    {
+//      if (delimiter == ',') CSVOptions.withCSVDefaults()
+//      else if (delimiter == '\t') CSVOptions.withTSVDefaults()
+//      else if (delimiter == ';') {
+//        val csvOptions = new CSVOptions()
+//        csvOptions.setDelimiter(CSVOptions.charNames.get("semicolon"))
+//        csvOptions
+//      }
+//      else null
+//    }
+
+    println(s"\nUsed CSVOptions:\nEscapeCharacter: ${csvOptions.getEscapeChar}\nQuoteCharacter: ${csvOptions.getQuoteChar}\nEncoding: ${csvOptions.getEncoding}")
 
     var seq: Seq[Triple] = Seq.empty
 
