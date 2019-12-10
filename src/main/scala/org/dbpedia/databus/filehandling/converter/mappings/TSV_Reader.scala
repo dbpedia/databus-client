@@ -3,12 +3,13 @@ package org.dbpedia.databus.filehandling.converter.mappings
 import org.apache.jena.graph.Triple
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.{DataFrame, SQLContext, SparkSession}
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.slf4j.LoggerFactory
 
 object TSV_Reader {
 
-  def csv_to_rdd(mapFile: String, csvFilePath: String = "", delimiter: Character = ',', quoteChar: Character = '"', sc: SparkContext): RDD[Triple] = {
+  def csv_to_rddTriple(mapFile: String, csvFilePath: String = "", delimiter: Character = ',', quoteChar: Character = '"', sc: SparkContext): RDD[Triple] = {
 
     val tarqlQuery = new TarqlParser(mapFile).getResult
 
@@ -46,6 +47,20 @@ object TSV_Reader {
 
     sc.parallelize(seq)
   }
+
+  def csv_to_df(csvFilePath: String = "", delimiter: Character = ',', spark: SparkSession): DataFrame = {
+
+    val data = spark.read.format("csv")
+      .option("sep", delimiter.toString)
+      .option("inferSchema", "true")
+      .option("header", "true")
+      .load(csvFilePath)
+
+    data.foreach(println(_))
+
+    data
+  }
+
 
   //  def tsv_nt_map(spark: SparkSession): RDD[Triple] = {
   //

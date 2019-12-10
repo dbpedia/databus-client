@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -e
-
-cd "$( dirname "${BASH_SOURCE[0]}" )/../"
-
-args=""; for arg in $*; do args="$args|$arg"; done
-
-mvn scala:run -e -Dlauncher="downloadconverter" -DaddArgs="${args#?}"

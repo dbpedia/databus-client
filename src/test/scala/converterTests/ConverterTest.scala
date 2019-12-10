@@ -123,11 +123,11 @@ class ConverterTest extends FlatSpec {
 
   "Conversion" should "not be too slow" in {
 
-    time(Converter.readTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
+    time(Converter.readTripleData(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
 
-    val triples =Converter.readTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
+    val triples =Converter.readTripleData(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
 
-    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
+//    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
 
     time(Databus.source("./src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2").compression(Compression.bz2).format(Format.nt).execute())
 //    Databus.source("./src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2").compression(Compression.bz2).format(Format.nt).execute()

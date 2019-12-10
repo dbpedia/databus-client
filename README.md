@@ -21,17 +21,71 @@ The databus-client is designed to unify and convert data on the client-side in s
 |---|---|---|
 | 1 |  Download As-Is | All files on the [databus](https://databus.dbpedia.org)
 | 2 |  Unify compression | bz2, gz, br, lzma, xz, zstd, snappy-framed, deflate (, no compression)
-| 3 |  Unify isomporphic formats | `Download as` implemented for {nt, ttl, rdfxml, json-ld} 
-| 4 |  Transform with mappings | coming soon
+| 3 |  Unify isomporphic formats | `Download as` implemented for {nt, ttl, rdfxml, json-ld} , {tsv,csv}
+| 4 |  Transform with mappings | {nt, ttl, rdfxml, json-ld} <--> {csv, tsv}
 
 ### Roadmap for levels
 * Level 1: all features finished, testing required
 * Level 2: using Apache Compress library covers most of the compression formats, more testing required
 * Level 3: Scalable RDF libraries from [SANSA-Stack](http://sansa-stack.net/) and [Databus Derive](https://github.com/dbpedia/databus-derive). Step by step, extension for all (quasi-)isomorphic [IANA mediatypes](https://www.iana.org/assignments/media-types/media-types.xhtml).
-* Level 4:  In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT. 
+* Level 4: In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [Tarql](https://tarql.github.io/) (already implemented!), [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT. 
 
 
-## CLI Example: Download the DBpedia ontology as RDF-XML
+## Usage   
+
+Installation
+```
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client
+mvn clean install
+```
+
+Execution example
+```
+bin/DatabusClient --source ./src/query/query1.query --target converted_files/ -f jsonld -c gz 
+```
+
+List of possible command line options.
+
+| Option  | Description  | Default |
+|---|---|---|
+| -c, --compression  <arg> | set the compression format of the output file | `no compression`
+| -t, --target  <arg>| set the target directory for converted files | `./converted_files/` |
+| -f, --format  <arg> | set the file format of the output file  | `same` |  
+| -s, --source  <arg>| Set the source you want to convert. A source can either be a `[file/directory]` to convert already existing files, or a `[query file/query string/collection URI]` to convert queried files. Notice that query files must have `.sparql`/`.query` as extension to be recognized.| |
+| --help| Show this message ||
+
+You can load any ?file query. 
+* You have the choice either to pass the query directly as a program variable (`-e SOURCE="..."`), or save a query in a file and pass the filepath as variable. The filename must match `*.sparql` or `*.query`.
+* Additionally Collection URIs are supported now. The Client gets the related Query itself. (e.g. `https://databus.dbpedia.org/jfrey/collections/id-management_links`)
+
+<!---You can choose between different compression formats:
+    
+ * `bz2, gz, br, snappy-framed, deflate, lzma, xz, zstd` 
+
+> **Important:** At the moment only conversion to NTriples(_"nt"_), TSV(_"tsv"_), Json-LD(_"jsonld"_) or _"same"_ possible
+-->
+
+### Single Modules
+
+You can also use the converter and downloader separately.
+
+**Databus based downloader**
+
+* Due default values of `compression` and `format` are `same`, the Client is a downloader if you don't pass arguments for `compression` and `format`. 
+```
+bin/DatabusClient -s ./src/query/query1.query -d ./downloaded_files/
+```
+
+**File compression and format converter**
+
+* If you choose already existing files as source, the client doesn't use the download module, due behaves like a converter only.
+```
+bin/DatabusClient --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
+```
+
+
+## CLI Example: Download the DBpedia ontology as TTL
 Ontology snapshots are uploaded to the Databus under [Denis Account](https://databus.dbpedia.org/denis/ontology/dbo-snapshots) (moved to DBpedia soon)
 
 
@@ -65,7 +119,7 @@ SELECT DISTINCT ?file WHERE {
 
 # Here is the script to download the latest ontology snapshot as ttl
 
-bin/DownloadConverter --query ./latest_ontology.query --destination converted_files/ -f ttl
+bin/DatabusClient --source ./latest_ontology.query --target converted_files/ -f ttl
 
 ```
 
@@ -106,59 +160,6 @@ Container needs some startup time and endpoint is not immediately reachable, if 
 
 ```
 curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe> ?p ?o }" "http://localhost:8890/sparql"
-```
-
-
-
-## Usage   
-
-Installation
-```
-git clone https://github.com/dbpedia/databus-client.git
-cd databus-client
-mvn clean install
-```
-
-Execution example
-```
-bin/DownloadConverter --query ./src/query/query1 --destination converted_files/ -f jsonld -c gz 
-```
-
-List of possible command line options.
-
-| Option  | Description  | Default |
-|---|---|---|
-| -c, --compression  <arg> | set the compression format of the output file | `no compression`
-| -d, --destination  <arg>| set the destination directory for converted files | `./converted_files/` |
-| -f, --format  <arg> | set the file format of the output file  | `same` |  
-| -q, --query  <arg> | any ?file query; You can pass the query directly or save it in a text file and pass the file path  | `/src/query/query` | 
-| -s, --source  <arg>| set the source directory for files you want to convert| `./temp_dir_downloaded_files/` |
-| --help| Show this message ||
-
-You can load any ?file query. 
-* You have the choice either to pass the query directly as a program variable (`-e QUERY="..."`), or save a query in a file and pass the filepath as variable.
-
-<!---You can choose between different compression formats:
-    
- * `bz2, gz, br, snappy-framed, deflate, lzma, xz, zstd` 
-
-> **Important:** At the moment only conversion to NTriples(_"nt"_), TSV(_"tsv"_), Json-LD(_"jsonld"_) or _"same"_ possible
--->
-
-### Single Modules
-
-You can also use the converter and downloader separately.
-
-**Databus based downloader**
-
-```
-bin/Downloader -q ./src/query/query1 -d ./downloaded_files/
-```
-
-**File compression and format converter**
-
-```
-bin/Converter --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
 ```
 
 ## Dockerized Databus-Client

@@ -14,10 +14,9 @@ object QueryHandler {
 
     val query: Query = QueryFactory.create(queryString)
 //    println("\n--------------------------------------------------------\n")
-//    println(s"""Query:\n\n$query""")
+//    println(s"""Query:\n\n${query.toString()} """)
 
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
-
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
 
     var filesSeq: Seq[String] = Seq[String]()
 
@@ -42,7 +41,7 @@ object QueryHandler {
                     ?distribution dcat:downloadURL <$url> }"""
 
     val query: Query = QueryFactory.create(queryString)
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
 
     try {
       val results: ResultSet = qexec.execSelect
@@ -67,7 +66,7 @@ object QueryHandler {
          |}""".stripMargin
 
     val query: Query = QueryFactory.create(queryString)
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
 
     try {
       val results: ResultSet = qexec.execSelect
@@ -191,7 +190,7 @@ object QueryHandler {
                     GROUP BY ?type"""
 
     val query: Query = QueryFactory.create(queryString)
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("http://databus.dbpedia.org/repo/sparql", query)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
 
 
     try {

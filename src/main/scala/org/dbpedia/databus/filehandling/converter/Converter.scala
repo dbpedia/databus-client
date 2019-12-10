@@ -10,7 +10,8 @@ import org.apache.jena.graph.Triple
 import org.apache.jena.riot.RDFFormat
 import org.apache.spark.SparkException
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.dbpedia.databus.api.Databus.Format.Value
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.filehandling.converter.mappings.TSV_Writer
@@ -22,7 +23,17 @@ import org.slf4j.LoggerFactory
 import scala.io.Source
 import scala.util.control.Breaks.{break, breakable}
 
+object EquivalenceClasses extends Enumeration {
+  val RDFTypes:Seq[String] = Seq("ttl", "nt", "rdfxml", "jsonld")
+  val CSVTypes:Seq[String] = Seq("tsv", "csv")
+}
+
 object Converter {
+
+  val equivalenceClasses: Seq[Seq[String]] = Seq(
+    Seq("csv", "tsv"),
+    Seq("rdfxml", "ttl", "nt", "jsonld")
+  )
 
   def convertFile(inputFile: File, dest_dir: File, outputFormat: String, outputCompression: String): Unit = {
     println(s"input file:\t\t${inputFile.pathAsString}")
@@ -282,10 +293,10 @@ object Converter {
     }
   }
 
-  private def convertFormat(file: File, inputFormat: String, outputFormat: String): File = {
+  private def convertFormat(inputFile: File, inputFormat: String, outputFormat: String): File = {
 
     val spark = SparkSession.builder()
-      .appName(s"Triple reader  ${file.name}")
+      .appName(s"Triple reader  ${inputFile.name}")
       .master("local[*]")
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
@@ -293,14 +304,68 @@ object Converter {
     val sparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
-    val data = readTriples(file, inputFormat, spark: SparkSession)
+    val tempDir = File("./target/databus.tmp/temp/")
+    if (tempDir.exists) tempDir.delete()
+    val mappingFile = tempDir / "mappingFile"
+    val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
-//    data.foreach(println(_))
-    writeTriples(file, data, outputFormat, spark)
+
+    if (EquivalenceClasses.CSVTypes.contains(outputFormat) && EquivalenceClasses.CSVTypes.contains(inputFormat)) {
+      val data: DataFrame = readNonTripleData(inputFile, inputFormat, spark: SparkSession)
+      writeNonTripleData(tempDir, data, outputFormat, spark)
+    }
+    else {
+      val triples: RDD[Triple] = readTripleData(inputFile, inputFormat, spark: SparkSession)
+      writeTripleData(tempDir, mappingFile, triples, outputFormat, spark)
+    }
+
+    try {
+      FileUtil.unionFiles(tempDir, targetFile)
+    }
+    catch {
+      case _: RuntimeException => LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
+    }
+
+    if (mappingFile.exists) mappingFile.moveTo(File("./mappings/") / FileUtil.getSha256(targetFile), overwrite = true)
+
+    targetFile
+
   }
 
-  def readTriples(inputFile: File, inputFormat: String, spark: SparkSession): RDD[Triple] = {
+  def readNonTripleData(inputFile: File, inputFormat: String, spark: SparkSession): DataFrame = {
 
+    inputFormat match {
+      case "tsv" =>
+        mappings.TSV_Reader.csv_to_df(inputFile.pathAsString, '\t', spark)
+      case "csv" =>
+        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
+        mappings.TSV_Reader.csv_to_df(inputFile.pathAsString, delimiter, spark)
+    }
+
+  }
+
+  def writeNonTripleData(tempDir:File, data:DataFrame, outputFormat: String, spark: SparkSession): Unit = {
+
+    outputFormat match {
+      case "tsv" =>
+        data.coalesce(1).write
+          .option("delimiter", "\t")
+          .option("emptyValue", "")
+          .option("header", "true")
+          .option("treatEmptyValuesAsNulls", "false")
+          .csv(tempDir.pathAsString)
+      case "csv" =>
+        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
+        data.coalesce(1).write
+          .option("delimiter", delimiter.toString)
+          .option("emptyValue", "")
+          .option("header", "true")
+          .option("treatEmptyValuesAsNulls", "false")
+          .csv(tempDir.pathAsString)
+    }
+  }
+
+  def readTripleData(inputFile: File, inputFormat: String, spark: SparkSession): RDD[Triple] = {
 
     inputFormat match {
       case "nt" =>
@@ -323,18 +388,9 @@ object Converter {
       case "jsonld" =>
         RDF_Reader.read(spark, inputFile) //Ein Objekt pro Datei
 
-      case "jsonl" =>
-        try { //Mehrere Objekte pro Datei
-          JSONL_Reader.readJSONL(spark, inputFile)
-        } catch {
-          case _: SparkException =>
-            println("Json Object ueber mehrere Zeilen")
-            RDF_Reader.read(spark, inputFile)
-        }
-
       case "tsv" =>
         val mappingFile = scala.io.StdIn.readLine("Please type Path to Mapping File:\n")
-        mappings.TSV_Reader.csv_to_rdd(mappingFile, inputFile.pathAsString, '\t', sc = spark.sparkContext)
+        mappings.TSV_Reader.csv_to_rddTriple(mappingFile, inputFile.pathAsString, '\t', sc = spark.sparkContext)
 
       case "csv" =>
         val mappingFile:String = scala.io.StdIn.readLine("Please type Path to Mapping File:\n")
@@ -344,49 +400,31 @@ object Converter {
           case "null" => null
           case _ => quotation.toCharArray.apply(0).asInstanceOf[Character]
         }
-        mappings.TSV_Reader.csv_to_rdd(mappingFile, inputFile.pathAsString, delimiter, quoteChar, spark.sparkContext)
+        mappings.TSV_Reader.csv_to_rddTriple(mappingFile, inputFile.pathAsString, delimiter, quoteChar, spark.sparkContext)
+
+//      case "jsonl" =>
+//        try { //Mehrere Objekte pro Datei
+//          JSONL_Reader.readJSONL(spark, inputFile)
+//        } catch {
+//          case _: SparkException =>
+//            println("Json Object ueber mehrere Zeilen")
+//            RDF_Reader.read(spark, inputFile)
+//        }
     }
   }
 
-  def writeTriples(inputFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
+  def writeTripleData(tempDir: File, mappingFile: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): Unit = {
 
-    val tempDir = File("./target/databus.tmp/temp/")
-    val mappingFile = tempDir / "mappingFile"
-    if (tempDir.exists) tempDir.delete()
-    val targetFile: File = tempDir / inputFile.nameWithoutExtension.concat(s".$outputFormat")
 
     outputFormat match {
       case "nt" =>
         NTriple_Writer.convertToNTriple(data).saveAsTextFile(tempDir.pathAsString)
 
       case "tsv" =>
-        val createMappingFile = scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a MappingFile.\n")
-
-        if (createMappingFile.matches("yes|y")) {
-          File("./mappings/").createDirectoryIfNotExists()
-
-          val tsvData = TSV_Writer.convertToTSV(data, spark, createMappingFile = true)
-          tsvData._1.coalesce(1).write
-            .option("delimiter", "\t")
-            .option("emptyValue", "")
-            .option("header", "true")
-            .option("treatEmptyValuesAsNulls", "false")
-            .csv(tempDir.pathAsString)
-
-          TSV_Writer.createTarqlMapFile(tsvData._2, mappingFile)
-        }
-
-        else {
-          val tsvData = TSV_Writer.convertToTSV(data, spark)
-          tsvData.coalesce(1).write
-            .option("delimiter", "\t")
-            .option("emptyValue", "")
-            .option("header", "true")
-            .option("treatEmptyValuesAsNulls", "false")
-            .csv(tempDir.pathAsString)
-        }
-
-
+        manageTripleToTSV(data, "\t", tempDir, mappingFile, spark)
+      case "csv" =>
+        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
+        manageTripleToTSV(data, delimiter.toString, tempDir, mappingFile, spark)
       case "ttl" =>
         TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
 
@@ -397,16 +435,34 @@ object Converter {
         RDF_Writer.convertToRDF(data, spark, RDFFormat.RDFXML).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     }
 
-    try {
-      FileUtil.unionFiles(tempDir, targetFile)
-    }
-    catch {
-      case _: RuntimeException => LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
+  }
+
+  def manageTripleToTSV(data:RDD[Triple], delimiter:String, tempDir:File, mappingFile:File, spark: SparkSession): Unit ={
+    val createMappingFile = scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a MappingFile.\n")
+
+    if (createMappingFile.matches("yes|y")) {
+      File("./mappings/").createDirectoryIfNotExists()
+
+      val tsvData = TSV_Writer.convertToTSV(data, spark, createMappingFile = true)
+      tsvData._1.coalesce(1).write
+        .option("delimiter", delimiter)
+        .option("emptyValue", "")
+        .option("header", "true")
+        .option("treatEmptyValuesAsNulls", "false")
+        .csv(tempDir.pathAsString)
+
+      TSV_Writer.createTarqlMapFile(tsvData._2, mappingFile)
     }
 
-    if (mappingFile.exists) mappingFile.moveTo(File("./mappings/") / FileUtil.getSha256(targetFile), overwrite = true)
-
-    targetFile
+    else {
+      val tsvData = TSV_Writer.convertToTSV(data, spark)
+      tsvData.coalesce(1).write
+        .option("delimiter", delimiter)
+        .option("emptyValue", "")
+        .option("header", "true")
+        .option("treatEmptyValuesAsNulls", "false")
+        .csv(tempDir.pathAsString)
+    }
   }
 
 }

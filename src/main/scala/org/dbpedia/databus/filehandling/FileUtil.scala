@@ -99,19 +99,3 @@ object FileUtil {
     fileOfSha
   }
 }
-
-
-//  def unionFilesWithHeaderFile(headerTempDir: File, tempDir: File, targetFile: File, deleteTemp:Boolean = true): Unit = {
-//    //union all part files of Apache Spark
-//
-//    val findTripleFiles = s"find ${headerTempDir.pathAsString}/ -name part*" #&& s"find ${tempDir.pathAsString}/ -name part*" !!
-//    val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
-//
-//    if (concatFiles == 0) {
-//      if (deleteTemp) {
-//        headerTempDir.delete()
-//        tempDir.delete()
-//      }
-//    }
-//    else System.err.println(s"[WARN] failed to merge ${tempDir.pathAsString}/*")
-//  }

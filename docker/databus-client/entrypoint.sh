@@ -4,8 +4,8 @@ DEST="/var/repo"
 
 args="--destination|$DEST"
 
-if { [ -z "$QUERY" ] && [ ! -z "$Q" ]; } || { [ ! -z "$QUERY" ] && [ -z "$Q" ]; }; then
-    args="$args|--query|$QUERY$Q"
+if { [ -z "$SOURCE" ] && [ ! -z "$S" ]; } || { [ ! -z "$SOURCE" ] && [ -z "$S" ]; }; then
+    args="$args|--source|$SOURCE$S"
 fi
 
 if { [ -z "$COMPRESSION" ] && [ ! -z "$C" ]; } || { [ ! -z "$COMPRESSION" ] && [ -z "$C" ]; }; then
@@ -16,8 +16,5 @@ if { [ -z "$FORMAT" ] && [ ! -z "$F" ]; } || { [ ! -z "$FORMAT" ] && [ -z "$F" ]
     args="$args|--format|$FORMAT$F"
 fi
 
-if { [ -z "$SOURCE" ] && [ ! -z "$S" ]; } || { [ ! -z "$SOURCE" ] && [ -z "$S" ]; }; then
-    args="$args|--source|$SOURCE$S"
-fi
 
-mvn scala:run -Dlauncher="downloadconverter" -DaddArgs="$args"
+mvn scala:run -Dlauncher="databusclient" -DaddArgs="$args"

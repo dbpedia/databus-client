@@ -31,22 +31,6 @@
             <version>3.7.1</version>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>net.sansa-stack</groupId>-->
-        <!--            <artifactId>sansa-rdf-spark_2.11</artifactId>-->
-        <!--            <version>0.6.0</version>-->
-        <!--            <exclusions>-->
-        <!--                <exclusion>-->
-        <!--                    <groupId>net.postgis</groupId>-->
-        <!--                    <artifactId>postgis-jdbc</artifactId>-->
-        <!--                </exclusion>-->
-        <!--                <exclusion>-->
-        <!--                    <groupId>com.ibm.sparktc.sparkbench</groupId>-->
-        <!--                    <artifactId>sparkbench</artifactId>-->
-        <!--                </exclusion>-->
-        <!--            </exclusions>-->
-        <!--        </dependency>-->
-
         <!-- MAPPING -->
         <dependency>
             <groupId>com.github.tarql</groupId>
@@ -101,12 +85,6 @@
             <artifactId>spark-sql_2.11</artifactId>
             <version>2.4.0</version>
         </dependency>
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.spark/spark-hive &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-hive_2.11</artifactId>-->
-<!--            <version>2.4.0</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -161,6 +139,15 @@
         </dependency>
         <!-- LOGGER -->
 
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.10</version>
+        </dependency>
+
+
+
         <!-- TEST -->
         <dependency>
             <groupId>org.scalatest</groupId>
@@ -190,12 +177,6 @@
 
 
     <distributionManagement>
-        <!--repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
-        </repository-->
-
         <repository>
             <id>archiva.internal</id>
             <name>Internal Release Repository</name>
@@ -237,16 +218,8 @@
                     <scalaVersion>${scala.version}</scalaVersion>
                     <launchers>
                         <launcher>
-                            <id>downloadconverter</id>
+                            <id>databusclient</id>
                             <mainClass>org.dbpedia.databus.main.Main</mainClass>
-                        </launcher>
-                        <launcher>
-                            <id>downloader</id>
-                            <mainClass>org.dbpedia.databus.main.Main_Downloader</mainClass>
-                        </launcher>
-                        <launcher>
-                            <id>converter</id>
-                            <mainClass>org.dbpedia.databus.main.Main_Converter</mainClass>
                         </launcher>
                     </launchers>
                 </configuration>

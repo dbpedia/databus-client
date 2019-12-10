@@ -11,15 +11,15 @@ object Databus {
 
   def main(args: Array[String]): Unit = {
 
-    Databus.query("./src/query/query1").query("./src/query/query2").execute()
+    Databus.source("./src/query/query1").source("./src/query/query2").execute()
 
   }
 
-  def query(query: QueryString): Inquirer = {
-
-    val inq = new Inquirer()
-    inq.query(query)
-  }
+//  def query(query: QueryString): Inquirer = {
+//
+//    val inq = new Inquirer()
+//    inq.query(query)
+//  }
 
   def source(source: String): Inquirer = {
 
@@ -29,7 +29,7 @@ object Databus {
 
   class Inquirer() {
 
-    private[this] val queries: mutable.ArrayBuffer[QueryString] = mutable.ArrayBuffer.empty[QueryString]
+//    private[this] val queries: mutable.ArrayBuffer[QueryString] = mutable.ArrayBuffer.empty[QueryString]
     private[this] val sources: mutable.ArrayBuffer[String] = mutable.ArrayBuffer.empty[String]
     private[this] val options = new scala.collection.mutable.HashMap[String, String]
 
@@ -38,10 +38,10 @@ object Databus {
       this.options ++= options
     }
 
-    def query(query: QueryString): Inquirer = synchronized {
-      queries += query
-      this
-    }
+//    def query(query: QueryString): Inquirer = synchronized {
+//      queries += query
+//      this
+//    }
 
     def source(source: String): Inquirer = synchronized {
       sources += source
@@ -66,11 +66,12 @@ object Databus {
       if (options.contains("compression")) array = array :+ "-c" :+ options.get("compression").last
       if (options.contains("target")) array = array :+ "-d" :+ options.get("target").last
       if (options.contains("overwrite")) if (options.get("overwrite").last == "true") array = array :+ "-o"
+      if (options.contains("clear")) if (options.get("clear").last == "true") array = array :+ "-c"
 
-      queries.foreach(query => {
-        //        println(s"query $query")
-        org.dbpedia.databus.main.Main.main(Array("-q", query) ++ array)
-      })
+//      queries.foreach(query => {
+//        //        println(s"query $query")
+//        org.dbpedia.databus.main.Main.main(Array("-q", query) ++ array)
+//      })
 
       sources.foreach(source => {
         //        println(s"source: $source")

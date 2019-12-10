@@ -1,3 +1,0 @@
-object R2RMLTests {
-
-}

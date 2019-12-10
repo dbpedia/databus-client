@@ -13,7 +13,7 @@ object Main {
 
     //    args.foreach(println(_))
 
-    println("Welcome to DBPedia - Databus Client")
+    println("Welcome to DBpedia - Databus-Client")
 
     val conf = new CLIConf(args)
     val cache_dir = File("./target/databus.tmp/cache_dir/")
@@ -32,15 +32,7 @@ object Main {
       if (File(conf.source()).exists()) {
         val source: File = File(conf.source())
 
-        if (source.extension.get != ".sparql") {
-          // take already existing files as source
-          FileHandler.handleSource(
-            File(conf.source()),
-            target,
-            conf.format(),
-            conf.compression())
-        }
-        else {
+        if (source.extension.get matches(".sparql|.query")) {
           // file is a query file
           FileHandler.handleQuery(
             Downloader.readQueryFile(source),
@@ -49,6 +41,14 @@ object Main {
             conf.format(),
             conf.compression(),
             conf.overwrite())
+        }
+        else {
+          // take already existing files as source
+          FileHandler.handleSource(
+            File(conf.source()),
+            target,
+            conf.format(),
+            conf.compression())
         }
 
       }

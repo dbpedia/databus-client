@@ -1,9 +1,14 @@
 package org.dbpedia.databus.filehandling
 
 import better.files.File
+import org.apache.http.HttpHeaders
+import org.apache.http.client.ResponseHandler
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.impl.client.{BasicResponseHandler, HttpClientBuilder}
 import org.dbpedia.databus.filehandling.converter.Converter
 import org.dbpedia.databus.filehandling.downloader.Downloader
 import org.slf4j.LoggerFactory
+
 
 object FileHandler {
 
@@ -30,11 +35,17 @@ object FileHandler {
   }
 
   def handleQuery(query:String, target:File, cache:File, format:String, compression:String, overwrite:Boolean) ={
-    printTask("query", query, target.pathAsString)
+
+    val queryStr = {
+      if (isCollection(query)) getQueryOfCollection(query)
+      else query
+    }
+
+    printTask("query", queryStr, target.pathAsString)
 
     println("DOWNLOAD TOOL:")
 
-    val allSHAs = Downloader.downloadWithQuery(query, cache, overwrite)
+    val allSHAs = Downloader.downloadWithQuery(queryStr, cache, overwrite)
 
     println("\n========================================================\n")
     println(s"CONVERSION TOOL:\n")
@@ -43,25 +54,6 @@ object FileHandler {
       sha => Converter.convertFile(FileUtil.getFileWithSHA256(sha, cache), target, format, compression)
     )
 
-  }
-
-  def printTask(sourceType:String, source:String, target:String) ={
-    val str =
-      s"""
-        |========================================================
-        |
-        |TASK:
-        |
-        |convert file(s) from $sourceType:\n${source}\n\nto destination:\n${target}
-
-        |========================================================
-      """.stripMargin
-
-    println(str)
-//    println("\n========================================================\n")
-//    println()
-//    println(s"""convert file(s) from $str:\n${source}\n\nto destination:\n${target}""")
-//    println("\n========================================================\n")
   }
 
   def isSupportedOutFormat(format: String): Boolean = {
@@ -74,11 +66,48 @@ object FileHandler {
   }
 
   def isSupportedOutCompression(compression: String): Boolean = {
-    if (compression.matches("bz2|gz|deflate|lzma|sz|xz|zstd|''|same")) true
+    if (compression.matches("bz2|gz|deflate|lzma|sz|xz|zstd||same")) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Output compression format $compression is not supported.")
-      println(s"Output file format $compression is not supported.")
+      println(s"Output compression format $compression is not supported.")
       false
     }
+  }
+
+  def isCollection (str:String): Boolean ={
+    val collection = """http[s]:\/\/.*\/.*\/collections\/.*""".r
+    str match {
+      case collection(_*) => true
+      case _ => false
+    }
+  }
+
+  def getQueryOfCollection(uri: String): String = {
+    val client = HttpClientBuilder.create().build()
+
+    val httpGet = new HttpGet(uri)
+    httpGet.addHeader(HttpHeaders.ACCEPT, "text/sparql")
+
+    val response = client.execute(httpGet)
+    val handler: ResponseHandler[String] = new BasicResponseHandler();
+
+    handler.handleResponse(response)
+  }
+
+
+
+  def printTask(sourceType:String, source:String, target:String) ={
+    val str =
+      s"""
+         |========================================================
+         |
+         |TASK:
+         |
+         |convert file(s) from $sourceType:\n${source}\n\nto destination:\n${target}
+
+         |========================================================
+      """.stripMargin
+
+    println(str)
   }
 }

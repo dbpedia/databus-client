@@ -5,11 +5,15 @@ LOAD="/data/toLoad"
 
 mkdir -p $DEST && mkdir -p $LOAD
 
-if [ -z "$QUERY" ]; then exit 1; fi
+args="--target|$DEST|--compression|gz"
 
-args="--query|$QUERY|-d|$DEST|--compression|gz"
+if { [ -z "$SOURCE" ] && [ -z "$S" ]; }; then exit 1; fi
 
-mvn -q scala:run -Dlauncher="downloadconverter" -DaddArgs="$args"
+if { [ -z "$SOURCE" ] && [ ! -z "$S" ]; } || { [ ! -z "$SOURCE" ] && [ -z "$S" ]; }; then
+    args="$args|--source|$SOURCE$S"
+fi
+
+mvn -q scala:run -Dlauncher="databusclient" -DaddArgs="$args"
 
 mv -t $LOAD $(find $DEST -name "*.gz")
 
