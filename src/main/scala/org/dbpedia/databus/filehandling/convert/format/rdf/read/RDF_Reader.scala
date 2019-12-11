@@ -1,4 +1,4 @@
-package org.dbpedia.databus.filehandling.converter.rdf_reader
+package org.dbpedia.databus.filehandling.convert.format.rdf.read
 
 import better.files.File
 import org.apache.jena.graph.Triple

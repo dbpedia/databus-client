@@ -2,9 +2,9 @@ package org.dbpedia.databus.main
 
 import better.files.File
 import org.apache.commons.io.FileUtils
-import org.dbpedia.databus.filehandling.FileHandler
-import org.dbpedia.databus.filehandling.downloader.Downloader
-import org.dbpedia.databus.main.cli.CLIConf
+import org.dbpedia.databus.filehandling.{FileUtil, SourceHandler}
+import org.dbpedia.databus.filehandling.download.Downloader
+import org.dbpedia.databus.main.cli.CLIconf
 import org.slf4j.LoggerFactory
 
 object Main {
@@ -15,7 +15,7 @@ object Main {
 
     println("Welcome to DBpedia - Databus-Client")
 
-    val conf = new CLIConf(args)
+    val conf = new CLIconf(args)
     val cache_dir = File("./target/databus.tmp/cache_dir/")
     val target = File(conf.target())
 
@@ -23,8 +23,8 @@ object Main {
     cache_dir.createDirectoryIfNotExists()
 
     // check output format and compression
-    if (!FileHandler.isSupportedOutFormat(conf.format())) System.exit(1)
-    if (!FileHandler.isSupportedOutCompression(conf.compression())) System.exit(1)
+    if (!SourceHandler.isSupportedOutFormat(conf.format())) System.exit(1)
+    if (!SourceHandler.isSupportedOutCompression(conf.compression())) System.exit(1)
 
 
     if (conf.source.isDefined) {
@@ -34,8 +34,8 @@ object Main {
 
         if (source.extension.get matches(".sparql|.query")) {
           // file is a query file
-          FileHandler.handleQuery(
-            Downloader.readQueryFile(source),
+          SourceHandler.handleQuery(
+            FileUtil.readQueryFile(source),
             target,
             cache_dir,
             conf.format(),
@@ -44,7 +44,7 @@ object Main {
         }
         else {
           // take already existing files as source
-          FileHandler.handleSource(
+          SourceHandler.handleSource(
             File(conf.source()),
             target,
             conf.format(),
@@ -54,7 +54,7 @@ object Main {
       }
       else {
         // conf.source() is a query string
-        FileHandler.handleQuery(
+        SourceHandler.handleQuery(
           conf.source(),
           target,
           cache_dir,

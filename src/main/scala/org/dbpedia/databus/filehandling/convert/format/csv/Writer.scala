@@ -1,4 +1,4 @@
-package org.dbpedia.databus.filehandling.converter.mappings
+package org.dbpedia.databus.filehandling.convert.format.csv
 
 import java.io.PrintWriter
 
@@ -8,7 +8,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
-object TSV_Writer {
+object Writer {
 
   def convertToTSV(data: RDD[Triple], spark: SparkSession): DataFrame = {
 

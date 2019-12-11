@@ -1,4 +1,4 @@
-package org.dbpedia.databus.filehandling.downloader
+package org.dbpedia.databus.filehandling.download
 
 import java.io.{IOException, InputStream}
 

@@ -10,8 +10,8 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.filehandling.FileUtil
-import org.dbpedia.databus.filehandling.converter.rdf_reader.RDF_Reader
-import org.dbpedia.databus.filehandling.converter.rdf_writer.RDF_Writer
+import org.dbpedia.databus.filehandling.convert.format.rdf.read.RDF_Reader
+import org.dbpedia.databus.filehandling.convert.format.rdf.write.RDF_Writer
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.scalatest.FlatSpec
 

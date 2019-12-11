@@ -1,4 +1,4 @@
-package org.dbpedia.databus.filehandling.converter.rdf_writer
+package org.dbpedia.databus.filehandling.convert.format.rdf.write
 
 import java.io.ByteArrayOutputStream
 
@@ -7,16 +7,9 @@ import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.filehandling.convert.format.ModelWrapper
 
 import scala.io.{Codec, Source}
-
-object ModelWrapper extends Serializable {
-  var model: Model = ModelFactory.createDefaultModel()
-
-  def resetModel(): Unit = {
-    model = ModelFactory.createDefaultModel()
-  }
-}
 
 object RDF_Writer {
 

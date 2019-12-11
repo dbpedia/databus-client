@@ -2,9 +2,10 @@ package org.dbpedia.databus.main.cli
 
 import org.rogach.scallop._
 
-class CLIConf(arguments: Seq[String]) extends ScallopConf(arguments) {
+class CLIconf(arguments: Seq[String]) extends ScallopConf(arguments) {
 
   version("Databus-Client 1.0-SNAPSHOT (c) DBpedia")
+
   banner(
     """
 ==============================================
@@ -18,7 +19,8 @@ mvn scala:run -e -Dlauncher="databusclient" -DaddArgs="-s|https://databus.dbpedi
 ==============================================
 
 For usage of parameters see below:
-    """)
+    """
+  )
 
   footer("\nFor all other tricks, consult the documentation!")
 

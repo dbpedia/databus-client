@@ -10,8 +10,8 @@ import org.apache.commons.io.FileUtils
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row, SparkSession, types}
-import org.dbpedia.databus.filehandling.converter.mappings.TSV_Writer
-import org.dbpedia.databus.filehandling.converter.rdf_reader.{RDF_Reader, TTL_Reader}
+import org.dbpedia.databus.filehandling.convert.format.csv.Writer
+import org.dbpedia.databus.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
 import org.scalatest.FlatSpec
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD

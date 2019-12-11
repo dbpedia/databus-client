@@ -1,4 +1,4 @@
-package org.dbpedia.databus.filehandling.downloader
+package org.dbpedia.databus.filehandling.download
 
 import java.io.{FileNotFoundException, FileOutputStream}
 import java.net.URL
@@ -76,11 +76,4 @@ object Downloader {
     }
   }
 
-  def readQueryFile(file: File): String = {
-    var queryString: String = ""
-    for (line <- file.lineIterator) {
-      queryString = queryString.concat(line).concat("\n")
-    }
-    queryString
-  }
 }

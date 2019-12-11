@@ -1,6 +1,6 @@
 package cliTests
 
-import org.dbpedia.databus.main.cli.CLIConf
+import org.dbpedia.databus.main.cli.CLIconf
 import org.scalatest.FlatSpec
 
 class cliTest extends FlatSpec {

@@ -1,7 +1,7 @@
 //package org.dbpedia.databus.main
 //
 //import better.files.File
-//import org.dbpedia.databus.filehandling.converter.Converter
+//import org.dbpedia.databus.filehandling.convert.converter.Converter
 //import org.dbpedia.databus.main.cli.CLIConf
 //import org.slf4j.LoggerFactory
 //

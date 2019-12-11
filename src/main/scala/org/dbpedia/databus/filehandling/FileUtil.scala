@@ -98,4 +98,12 @@ object FileUtil {
 
     fileOfSha
   }
+
+  def readQueryFile(file: File): String = {
+    var queryString: String = ""
+    for (line <- file.lineIterator) {
+      queryString = queryString.concat(line).concat("\n")
+    }
+    queryString
+  }
 }

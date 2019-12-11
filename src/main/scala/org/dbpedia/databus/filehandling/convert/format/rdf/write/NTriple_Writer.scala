@@ -1,4 +1,4 @@
-package org.dbpedia.databus.filehandling.converter.rdf_writer
+package org.dbpedia.databus.filehandling.convert.format.rdf.write
 
 import java.io.ByteArrayOutputStream
 

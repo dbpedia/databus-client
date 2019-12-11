@@ -5,18 +5,17 @@ import java.net.URL
 import better.files.File
 import org.apache.commons.io.FileUtils
 import org.apache.jena.query._
-import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
 
 object QueryHandler {
 
+  val service = "https://databus.dbpedia.org/repo/sparql"
+
   def executeDownloadQuery(queryString: String): Seq[String] = {
 
     val query: Query = QueryFactory.create(queryString)
-//    println("\n--------------------------------------------------------\n")
-//    println(s"""Query:\n\n${query.toString()} """)
-
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService(service, query)
 
     var filesSeq: Seq[String] = Seq[String]()
 
@@ -31,7 +30,7 @@ object QueryHandler {
     filesSeq
   }
 
-  def downloadDataIdFile(url: String, dataIdFile: File): Unit = {
+  def getMapping(url: String, dataIdFile: File): Unit = {
     val queryString =
       s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
                     PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -41,7 +40,7 @@ object QueryHandler {
                     ?distribution dcat:downloadURL <$url> }"""
 
     val query: Query = QueryFactory.create(queryString)
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService(service, query)
 
     try {
       val results: ResultSet = qexec.execSelect
@@ -55,107 +54,83 @@ object QueryHandler {
 
   }
 
-  def getSHA256Sum(url: String): String = {
-    var sha256 = ""
+  def downloadDataIdFile(url: String, dataIdFile: File): Unit = {
     val queryString =
       s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-         |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
-         |SELECT ?sha256sum  WHERE {
-         |  ?s dcat:downloadURL <$url>  .
-         |  ?s dataid:sha256sum ?sha256sum .
-         |}""".stripMargin
+                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                    SELECT DISTINCT ?dataset WHERE {
+                    ?dataset dataid:version ?version .
+                    ?dataset dcat:distribution ?distribution .
+                    ?distribution dcat:downloadURL <$url> }"""
 
     val query: Query = QueryFactory.create(queryString)
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService(service, query)
 
     try {
       val results: ResultSet = qexec.execSelect
 
       if (results.hasNext) {
-        sha256 = results.next().getLiteral("?sha256sum").toString
+        val dataidURL = results.next().getResource("?dataset").toString
+        //        println(dataidURL)
+        FileUtils.copyURLToFile(new URL(dataidURL), dataIdFile.toJava)
       }
     } finally qexec.close()
 
-    sha256
+  }
+
+  def executeQuery(queryString: String, model:Model = ModelFactory.createDefaultModel()): Seq[QuerySolution] = {
+
+    val query: Query = QueryFactory.create(queryString)
+    val qexec: QueryExecution = {
+      if(model.isEmpty) QueryExecutionFactory.sparqlService(service,query)
+      else QueryExecutionFactory.create(query,model)
+    }
+
+    var resultSeq: Seq[QuerySolution] = Seq.empty
+
+    try {
+      val results: ResultSet = qexec.execSelect
+      while (results.hasNext) {
+        val result = results.next()
+        resultSeq = resultSeq :+ result
+      }
+    } finally qexec.close()
+
+    resultSeq
+  }
+
+  def getSHA256Sum(url: String): String = {
+
+    val sparqlVar = "?sha256sum"
+
+    val queryString =
+      s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+         |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+         |SELECT $sparqlVar  WHERE {
+         |  ?s dcat:downloadURL <$url>  .
+         |  ?s dataid:sha256sum $sparqlVar .
+         |}""".stripMargin
+
+    val results = executeQuery(queryString)
+
+    results(0).get(sparqlVar).toString
+
   }
 
   def getTargetDir(dataIdFile: File, dest_dir: File): File = {
     val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
-    val query: Query = QueryFactory.create(DataIdQueries.queryGetDirStructure())
-    val qexec = QueryExecutionFactory.create(query, dataIdModel)
 
-    var targetDir = File("")
+    val results = QueryHandler.executeQuery(DataIdQueries.dirStructureQuery(), dataIdModel)
+    val result = results(0)
 
-    try {
-      val results = qexec.execSelect
-      if (results.hasNext) {
-        val result = results.next()
-        //split the URI at the slashes and take the last cell
-        val publisher = result.getResource("?publisher").toString.split("/").last.trim
-        val group = result.getResource("?group").toString.split("/").last.trim
-        val artifact = result.getResource("?artifact").toString.split("/").last.trim
-        val version = result.getResource("?version").toString.split("/").last.trim
-        targetDir = dest_dir / publisher / group / artifact / version
-      }
-    } finally qexec.close()
+    //split the URI at the slashes and take the last cell
+    val publisher = result.getResource("?publisher").toString.split("/").last.trim
+    val group = result.getResource("?group").toString.split("/").last.trim
+    val artifact = result.getResource("?artifact").toString.split("/").last.trim
+    val version = result.getResource("?version").toString.split("/").last.trim
 
-    targetDir
+    dest_dir / publisher / group / artifact / version
   }
-
-  //  def executeDataIdQuery(dataIdFile: File): List[String] = {
-  //
-  //    val dataidModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString)
-  //
-  //    //dir_structure : publisher/group/artifact/version
-  //    var dir_structure = List[String]()
-  //
-  //    var query: Query = QueryFactory.create(DataIdQueries.queryGetPublisher())
-  //    var qexec = QueryExecutionFactory.create(query, dataidModel)
-  //
-  //    try {
-  //      val results = qexec.execSelect
-  //      if (results.hasNext) {
-  //        //split the URI at the slashes and take the last cell
-  //        val publisher = results.next().getResource("?o").toString.split("/").map(_.trim).last
-  //        dir_structure = dir_structure :+ publisher
-  //      }
-  //    } finally qexec.close()
-  //
-  //    query = QueryFactory.create(DataIdQueries.queryGetGroup())
-  //    qexec = QueryExecutionFactory.create(query, dataidModel)
-  //
-  //    try {
-  //      val results = qexec.execSelect
-  //      if (results.hasNext) {
-  //        val group = results.next().getResource("?o").toString.split("/").map(_.trim).last
-  //        dir_structure = dir_structure :+ group
-  //      }
-  //    } finally qexec.close()
-  //
-  //    query = QueryFactory.create(DataIdQueries.queryGetArtifact())
-  //    qexec = QueryExecutionFactory.create(query, dataidModel)
-  //
-  //    try {
-  //      val results = qexec.execSelect
-  //      if (results.hasNext()) {
-  //        val artifact = results.next().getResource("?o").toString().split("/").map(_.trim).last
-  //        dir_structure = dir_structure :+ artifact
-  //      }
-  //    } finally qexec.close()
-  //
-  //    query = QueryFactory.create(DataIdQueries.queryGetVersion())
-  //    qexec = QueryExecutionFactory.create(query, dataidModel)
-  //
-  //    try {
-  //      val results = qexec.execSelect
-  //      if (results.hasNext()) {
-  //        val version = results.next().getResource("?o").toString().split("/").map(_.trim).last
-  //        dir_structure = dir_structure :+ version
-  //      }
-  //    } finally qexec.close()
-  //
-  //    return dir_structure
-  //  }
 
   def getTypeOfFile(fileURL: String, dataIdFile: File): String = {
     var fileType = ""
@@ -190,7 +165,7 @@ object QueryHandler {
                     GROUP BY ?type"""
 
     val query: Query = QueryFactory.create(queryString)
-    val qexec: QueryExecution = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", query)
+    val qexec: QueryExecution = QueryExecutionFactory.sparqlService(service, query)
 
 
     try {

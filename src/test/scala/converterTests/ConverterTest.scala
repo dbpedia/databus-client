@@ -14,9 +14,10 @@ import org.dbpedia.databus.api.Databus
 import org.dbpedia.databus.api.Databus.{Compression, Format}
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.filehandling.FileUtil.copyStream
-import org.dbpedia.databus.filehandling.converter.Converter
-import org.dbpedia.databus.filehandling.converter.Converter.compress
-import org.dbpedia.databus.filehandling.converter.rdf_reader.{RDF_Reader, TTL_Reader}
+import org.dbpedia.databus.filehandling.convert.compression.Compressor
+import org.dbpedia.databus.filehandling.convert.format.Converter
+import org.dbpedia.databus.filehandling.convert.compression.Compressor.compress
+import org.dbpedia.databus.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
@@ -136,13 +137,13 @@ class ConverterTest extends FlatSpec {
   }
 
   "Copy" should "not be too slow" in {
-    val compressedOutStream = Converter.compress("gz", File("src/resources/test/SpeedTest/test"))
+    val compressedOutStream = Compressor.compress("gz", File("src/resources/test/SpeedTest/test"))
     //file is written here
     println("test")
     copyStream(new FileInputStream(File("./src/resources/test/SpeedTest/temp/specific-mappingbased-properties_lang=ca.nt").toJava), compressedOutStream)
 
 
-    val compressedOutStream2 = Converter.compress("", File("src/resources/test/SpeedTest/test2"))
+    val compressedOutStream2 = Compressor.compress("", File("src/resources/test/SpeedTest/test2"))
     copyStream(new FileInputStream(File("./src/resources/test/SpeedTest/temp/specific-mappingbased-properties_lang=ca.nt").toJava), compressedOutStream2)
   }
 
