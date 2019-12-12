@@ -10,6 +10,35 @@ import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 object Writer {
 
+  def writeDF(data:DataFrame, tempDir:File, delimiter:String, header:String) ={
+    data.coalesce(1).write
+      .option("delimiter", delimiter)
+      .option("emptyValue", "")
+      .option("header", "true")
+      .option("treatEmptyValuesAsNulls", "false")
+      .csv(tempDir.pathAsString)
+  }
+
+  def writeTriples(data:RDD[Triple], delimiter:String, tempDir:File, spark: SparkSession, mapping:Boolean = false): File ={
+
+    val mappingFile = tempDir / "mappingFile.sparql"
+
+    if (mapping) {
+
+      val tsvData = Writer.convertToTSV(data, spark, createMappingFile = true)
+
+      writeDF(tsvData(1), tempDir, delimiter, "true")
+
+      Writer.createTarqlMapFile(tsvData(2), mappingFile)
+    }
+
+    else {
+      writeDF(Writer.convertToTSV(data, spark), tempDir, delimiter, "true")
+    }
+
+    mappingFile
+  }
+
   def convertToTSV(data: RDD[Triple], spark: SparkSession): DataFrame = {
 
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
@@ -17,7 +46,7 @@ object Writer {
 
     val splitPredicates =
       Seq("resource") ++ allPredicates.map(
-        pre => getSplitPredicate(pre: String)._2
+        pre => splitPredicate(pre: String)._2
       ).collect().sortBy(_.head)
 
     val fields: Seq[StructField] = splitPredicates.map(pre => StructField(pre, StringType, nullable = true))
@@ -39,7 +68,7 @@ object Writer {
       var predicate_exists = false
       var tripleObject = ""
 
-      val triplePredicate = getSplitPredicate(triple.getPredicate.getURI)._2
+      val triplePredicate = splitPredicate(triple.getPredicate.getURI)._2
 
       if (predicates.exists(seq => seq.contains(triplePredicate))) {
         predicate_exists = true
@@ -65,7 +94,7 @@ object Writer {
 
   //  ======================================================
 
-  def getSplitPredicate(pre: String): (String, String) = {
+  def splitPredicate(pre: String): (String, String) = {
     val lastHashkeyIndex = pre.lastIndexOf("#")
     val lastSlashIndex = pre.lastIndexOf("/")
     var split = ("", "")
@@ -76,56 +105,70 @@ object Writer {
     split
   }
 
-  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): (DataFrame, DataFrame) = {
+  def convertToTSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): Seq[DataFrame] = {
 
     val triplesGroupedBySubject = inData.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = inData.groupBy(triple => triple.getPredicate.getURI).map(_._1)
 
     //TARQL DATA
     val prefixPre = "xxx"
+    //==========
 
     val mappedPredicates =
       Seq(Seq("resource")) ++ allPredicates.map(
         pre => {
-          val split = getSplitPredicate(pre: String)
+          val split = splitPredicate(pre: String)
           Seq(split._2, s"$prefixPre${split._2}", split._1)
         }
       ).collect().sortBy(_.head)
-    //==========
 
 
-    val convertedData = triplesGroupedBySubject
-      .map(allTriplesOfSubject =>
-        convertTriplesToTSVAndCalculateTarql(allTriplesOfSubject, mappedPredicates)).collect()
-
-
-    //Calculated TSV DATA
     val fields: Seq[StructField] = mappedPredicates.map(prepPre => StructField(prepPre.head, StringType, nullable = true))
     val schema: StructType = StructType(fields)
 
-    val triplesDF = spark.createDataFrame(spark.sparkContext.parallelize(convertedData.map(data => data._1)), schema)
-    println("TSV DATAFRAME")
-    triplesDF.show(false)
-    //=================
 
-    //Calculated TARQL DATA
-    val schema_mapping: StructType = StructType(
-      Seq(
-        StructField("prefixes", StringType, true),
-        StructField("constructs", StringType, true),
-        StructField("bindings", StringType, true)
+    if (createMappingFile) {
+
+      val convertedData = triplesGroupedBySubject
+        .map(allTriplesOfSubject =>
+          convertTriplesToTSVAndCalculateTarql(allTriplesOfSubject, mappedPredicates)).collect()
+
+
+      val triplesDF = spark.createDataFrame(
+          spark.sparkContext.parallelize(
+            convertedData.map(data => data._1)), schema)
+
+      println("TSV DATAFRAME")
+      triplesDF.show(false)
+      //=================
+
+      //Calculated TARQL DATA
+      val schema_mapping: StructType = StructType(
+        Seq(
+          StructField("prefixes", StringType, true),
+          StructField("constructs", StringType, true),
+          StructField("bindings", StringType, true)
+        )
       )
-    )
 
-    val tarqlDF: DataFrame =
-      spark.createDataFrame(
-        spark.sparkContext.parallelize(convertedData.flatMap(data => data._2)),
-        schema_mapping
-      ).distinct()
+      val tarqlDF: DataFrame =
+        spark.createDataFrame(
+          spark.sparkContext.parallelize(convertedData.flatMap(data => data._2)),
+          schema_mapping
+        ).distinct()
 
-    //==================
+      //==================
 
-    (triplesDF, tarqlDF)
+      Seq(triplesDF, tarqlDF)
+    }
+    else{
+      val tsvRDD =
+        triplesGroupedBySubject.map(allTriplesOfSubject =>
+          convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, mappedPredicates.map(seq => seq(0))))
+
+      Seq(spark.createDataFrame(tsvRDD, schema))
+    }
+
   }
 
   def convertTriplesToTSVAndCalculateTarql(triples: Iterable[Triple], predicates: Seq[Seq[String]]): (Row, Seq[Row]) = {
@@ -145,7 +188,7 @@ object Writer {
       var predicate_exists = false
       var tripleObject = ""
 
-      val triplePredicate = getSplitPredicate(triple.getPredicate.getURI)._2
+      val triplePredicate = splitPredicate(triple.getPredicate.getURI)._2
 
       if (predicates.exists(seq => seq.contains(triplePredicate))) {
         predicate_exists = true
@@ -153,7 +196,7 @@ object Writer {
         var tarqlPart: Seq[String] = Seq(predicates.filter(pre => pre(0) == triplePredicate).map(pre => s"PREFIX ${pre(1)}: <${pre(2)}>").last)
 
         if (triple.getObject.isLiteral) {
-          val datatype = getSplitPredicate(triple.getObject.getLiteralDatatype.getURI)._2
+          val datatype = splitPredicate(triple.getObject.getLiteralDatatype.getURI)._2
 
           if (datatype == "langString") tarqlPart = tarqlPart :+ s"?$bindedSubject ${predicates.find(seq => seq.contains(triplePredicate)).get(1)}:${triplePredicate} ?$triplePredicate;" :+ ""
           else tarqlPart = tarqlPart :+ buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre) :+ s"BIND(xsd:$datatype(?$triplePredicate) AS ?${triplePredicate}${bindedPre})"
@@ -264,5 +307,6 @@ object Writer {
       write(tarqlMappingString); close
     }
   }
+
 
 }

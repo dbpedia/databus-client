@@ -51,8 +51,6 @@ object FileHandler
         val decompressedFile = File("./target/databus.tmp/") / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
         copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
         typeConvertedFile = Converter.convertFormat(decompressedFile, formatInputFile, outputFormat)
-
-        decompressedFile.delete()
       }
       else {
         typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)

@@ -17,6 +17,7 @@ import org.dbpedia.databus.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.filehandling.convert.format.Converter
 import org.dbpedia.databus.filehandling.convert.compression.Compressor.compress
+import org.dbpedia.databus.filehandling.convert.format.rdf.RDFHandler
 import org.dbpedia.databus.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
 import org.scalatest.FlatSpec
 
@@ -124,9 +125,9 @@ class ConverterTest extends FlatSpec {
 
   "Conversion" should "not be too slow" in {
 
-    time(Converter.readTripleData(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
+    time(RDFHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
 
-    val triples =Converter.readTripleData(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
+    val triples =RDFHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
 
 //    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
 
