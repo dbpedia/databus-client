@@ -39,15 +39,18 @@ object Downloader {
     val dataIdFile = file.parent / "dataid.ttl"
 
     if (!dataIdFile.exists()) { //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
-      try {
-        QueryHandler.downloadDataIdFile(url, dataIdFile)
-      }
-      catch {
-        case _: FileNotFoundException =>
-          println("couldn't query dataidfile")
-          LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
-
-      }
+//      try {
+            if(!QueryHandler.downloadDataIdFile(url, dataIdFile)) {
+              println("couldn't query dataidfile")
+              LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
+            }
+//      }
+//      catch {
+//        case _: FileNotFoundException =>
+//          println("couldn't query dataidfile")
+//          LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
+//
+//      }
     }
   }
 

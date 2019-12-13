@@ -28,7 +28,7 @@ The databus-client is designed to unify and convert data on the client-side in s
 * Level 1: all features finished, testing required
 * Level 2: using Apache Compress library covers most of the compression formats, more testing required
 * Level 3: Scalable RDF libraries from [SANSA-Stack](http://sansa-stack.net/) and [Databus Derive](https://github.com/dbpedia/databus-derive). Step by step, extension for all (quasi-)isomorphic [IANA mediatypes](https://www.iana.org/assignments/media-types/media-types.xhtml).
-* Level 4: In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [Tarql](https://tarql.github.io/) (already implemented!), [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT. 
+* Level 4: In addition, we plan to provide a plugin mechanism to incorporate more sophisticated mapping engines as [Tarql](https://tarql.github.io/) (already implemented), [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT. 
 
 
 ## Usage   
@@ -49,21 +49,23 @@ List of possible command line options.
 
 | Option  | Description  | Default |
 |---|---|---|
-| -c, --compression  <arg> | set the compression format of the output file | `no compression`
-| -t, --target  <arg>| set the target directory for converted files | `./converted_files/` |
+| -s, --source  <arg>| Set the source you want to convert. A source can either be a `[file/directory]` to convert already existing files, or a `[query file/query string/collection URI]` to convert queried files. Notice that query files must have `.sparql`/`.query` as extension to be recognized.||
+| -t, --target  <arg>| set the target directory for converted files | `./files/` |
+| -c, --compression  <arg> | set the compression format of the output file | `same`
 | -f, --format  <arg> | set the file format of the output file  | `same` |  
-| -s, --source  <arg>| Set the source you want to convert. A source can either be a `[file/directory]` to convert already existing files, or a `[query file/query string/collection URI]` to convert queried files. Notice that query files must have `.sparql`/`.query` as extension to be recognized.| |
+| -o, --overwrite | true -> overwrite files in cache, false -> use cache | `true` 
+| --clear | true -> clear Cache | `false`
 | --help| Show this message ||
 
-You can load any ?file query. 
-* You have the choice either to pass the query directly as a program variable (`-e SOURCE="..."`), or save a query in a file and pass the filepath as variable. The filename must match `*.sparql` or `*.query`.
-* Additionally Collection URIs are supported now. The Client gets the related Query itself. (e.g. `https://databus.dbpedia.org/jfrey/collections/id-management_links`)
+You can load any query with one variable selected. That variable must be the object of the predicate `dcat:downloadURL`.    
+So the query should look like: `SELECT ?o WHERE { ?s dcat:downloadURL ?o}`
+* You have the choice either to pass the query directly as a program variable, or save it in a file and pass the filepath as variable. The query file name must match `*.sparql` or `*.query`.
+* Additionally, Collection URIs are supported now (e.g. `https://databus.dbpedia.org/jfrey/collections/id-management_links`). The Client gets the related Query itself.
 
 <!---You can choose between different compression formats:
     
  * `bz2, gz, br, snappy-framed, deflate, lzma, xz, zstd` 
 
-> **Important:** At the moment only conversion to NTriples(_"nt"_), TSV(_"tsv"_), Json-LD(_"jsonld"_) or _"same"_ possible
 -->
 
 ### Single Modules
@@ -72,16 +74,16 @@ You can also use the converter and downloader separately.
 
 **Databus based downloader**
 
-* Due default values of `compression` and `format` are `same`, the Client is a downloader if you don't pass arguments for `compression` and `format`. 
+* Due default values of `compression` and `format` are `same`, the Client is a pure downloader, if you don't pass arguments for `compression` and `format`. 
 ```
-bin/DatabusClient -s ./src/query/query1.query -d ./downloaded_files/
+bin/DatabusClient -s ./src/query/query1.query -t ./downloaded_files/
 ```
 
 **File compression and format converter**
 
-* If you choose already existing files as source, the client doesn't use the download module, due behaves like a converter only.
+* If you choose already existing files as source, the client doesn't use the download module and behaves like a pure converter.
 ```
-bin/DatabusClient --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -d ./converted_files/ -f ttl -c gz
+bin/DatabusClient --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -t ./converted_files/ -f ttl -c gz
 ```
 
 
@@ -117,9 +119,9 @@ SELECT DISTINCT ?file WHERE {
 	
 } " > latest_ontology.query
 
-# Here is the script to download the latest ontology snapshot as ttl
+# Here is the script to download the latest ontology snapshot as ttl without compression
 
-bin/DatabusClient --source ./latest_ontology.query --target converted_files/ -f ttl
+bin/DatabusClient --source ./latest_ontology.query -f ttl -c ""
 
 ```
 
@@ -142,16 +144,16 @@ SELECT DISTINCT ?file  WHERE {
     ?distribution dcat:downloadURL ?file .
     ?distribution dataid:contentVariant ?cv .
      FILTER ( str(?cv) = 'de' )
-}" > query
+}" > query.sparql
 
 # delete docker from previous runs
 # docker rm vosdc
 
 # start docker as deamon by adding -d
 docker run --name vosdc \
-    -v $(pwd)/query:/opt/databus-client/query \
+    -v $(pwd)/query.sparql:/opt/databus-client/query.sparql \
     -v $(pwd)/data:/data \
-    -e QUERY="/opt/databus-client/query" \
+    -e SOURCE="/opt/databus-client/query.sparql" \
     -p 8890:8890 \
     vosdc
 ```    
@@ -167,8 +169,10 @@ curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe
 Creates a repo folder in the current directory, executes the query and loads resulting files into it.
 
 ```
-mkdir repo
-cd repo
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client/docker
+
+docker build -t databus-client -f databus-client/Dockerfile  databus-client/
 
 echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
@@ -180,14 +184,14 @@ SELECT DISTINCT ?file  WHERE {
     ?distribution dcat:downloadURL ?file .
     ?distribution dataid:contentVariant ?cv .
      FILTER ( str(?cv) = 'de' )
-}" > query
+}" > query.sparql
 
 docker run --name databus-client \
-    -v $(pwd)/query:/opt/databus-client/query \
-    -v $(pwd):/var/repo \
+    -v $(pwd)/query.sparql:/opt/databus-client/query.sparql \
+    -v $(pwd)/repo:/var/repo \
     -e FORMAT="ttl" \
     -e COMPRESSION="bz2" \
-    dbpedia/databus-client
+    databus-client
 
 docker rm databus-client
 ```
@@ -207,6 +211,6 @@ docker rmi -f dbpedia/databus-client
 &nbsp;
 
 
-You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `destination` and `source`), but you have to write the Environment Variables in Capital Letters.
+You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `target`), but you have to write the Environment Variables in Capital Letters.
 
 

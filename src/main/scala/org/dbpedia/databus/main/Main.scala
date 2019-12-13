@@ -32,7 +32,7 @@ object Main {
       if (File(conf.source()).exists()) {
         val source: File = File(conf.source())
 
-        if (source.extension.get matches(".sparql|.query")) {
+        if (source.hasExtension && source.extension.get.matches(".sparql|.query")) {
           // file is a query file
           SourceHandler.handleQuery(
             FileUtil.readQueryFile(source),

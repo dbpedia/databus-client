@@ -1,4 +1,5 @@
 import org.apache.jena.query._
+import org.dbpedia.databus.sparql.{DatabusQueries, QueryHandler}
 
 class QueryTest extends org.scalatest.FlatSpec {
 
@@ -39,4 +40,38 @@ class QueryTest extends org.scalatest.FlatSpec {
     results.foreach(downloadIRI => println(downloadIRI))
   }
 
+
+  "look how empty result " should "look" in {
+    val result =QueryHandler.executeQuery(DatabusQueries.queryDataId("iasd.com"))
+
+    println(result.isEmpty)
+    println(result.head.varNames())
+  }
+
+  "asd" should "asd" in {
+
+    val str =
+      """
+        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+        |PREFIX dct: <http://purl.org/dc/terms/>
+        |PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+        |SELECT DISTINCT ?file WHERE {
+        |    ?dataset dataid:artifact <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased> .
+        |    ?dataset dcat:distribution ?distribution .
+        |    ?distribution dcat:downloadURL ?file .
+        |}
+        |Limit 10 Offset 10
+        |
+        |""".stripMargin
+    val result = QueryHandler.executeQuery(str)
+
+    result.foreach(println(_))
+    val mediaTypes = QueryHandler.getMediaTypes(result.map(querySolution => querySolution.getResource("?file").toString))
+
+
+  }
+
+  "mappings" should "be queried" in {
+    QueryHandler.getMapping("https://databus.dbpedia.org/kurzum/mastr/bnetza-mastr/01.04.00/bnetza-mastr_rli_type=hydro.csv.bz2").foreach(println(_))
+  }
 }

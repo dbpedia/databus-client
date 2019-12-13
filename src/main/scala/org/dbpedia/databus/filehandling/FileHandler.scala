@@ -153,7 +153,7 @@ object FileHandler
     }
 
     source.close()
-    QueryHandler.getTypeOfFile(fileURL, inputFile.parent / "dataid.ttl")
+    QueryHandler.getFileExtension(fileURL, inputFile.parent / "dataid.ttl")
   }
 
   def getCompressionType(fileInputStream: BufferedInputStream): String = {
