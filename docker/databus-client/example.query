@@ -1,4 +1,3 @@
-
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-DEST="/data/dumps"
+TARGET="/data/dumps"
 LOAD="/data/toLoad"
 
-mkdir -p $DEST && mkdir -p $LOAD
+mkdir -p $TARGET && mkdir -p $LOAD
 
-args="--target|$DEST|--compression|gz"
+args="--target|$TARGET|--compression|gz"
 
 if { [ -z "$SOURCE" ] && [ -z "$S" ]; }; then exit 1; fi
 
@@ -15,6 +15,6 @@ fi
 
 mvn -q scala:run -Dlauncher="databusclient" -DaddArgs="$args"
 
-mv -t $LOAD $(find $DEST -name "*.gz")
+mv -t $LOAD $(find $TARGET -name "*.gz")
 
 bash /virtuoso.sh

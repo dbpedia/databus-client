@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-DEST="/var/repo"
+TARGET="/var/repo"
 
-args="--destination|$DEST"
+args="--target|$TARGET"
 
 if { [ -z "$SOURCE" ] && [ ! -z "$S" ]; } || { [ ! -z "$SOURCE" ] && [ -z "$S" ]; }; then
     args="$args|--source|$SOURCE$S"

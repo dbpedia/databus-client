@@ -19,7 +19,7 @@ services:
   databus_client:
     build: ../databus-client
     environment:
-      - QUERY="/opt/databus-client/example.query"
+      - SOURCE="/opt/databus-client/example.query"
       - COMPRESSION="gz"
     volumes:
       - ../databus-client/example.query:/opt/databus-client/example.query

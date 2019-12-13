@@ -18,10 +18,10 @@ SELECT DISTINCT ?file  WHERE {
     ?distribution dcat:downloadURL ?file .
     ?distribution dataid:contentVariant ?cv .
      FILTER ( str(?cv) = 'de' )
-}" > query
+}" > query.sparql
 
 docker run --name databus-client \
-    -v $(pwd)/query:/opt/databus-client/query \
+    -v $(pwd)/query.sparql:/opt/databus-client/query.sparql \
     -v $(pwd)/repo:/var/repo \
     -e FORMAT="ttl" \
     -e COMPRESSION="bz2" \
@@ -43,9 +43,9 @@ cd databus-client/docker
 docker build -t vosdc -f virtuoso-image/Dockerfile virtuoso-image/
 
 docker run --name vosdc \
-    -v $(pwd)/databus-client/example.query:/opt/databus-client/query \
+    -v $(pwd)/databus-client/example.query:/opt/databus-client/example.query \
     -v $(pwd)/data:/data \
-    -e QUERY="/opt/databus-client/query" \
+    -e SOURCE="/opt/databus-client/example.query" \
     -p 8890:8890 \
     vosdc
 ```
@@ -82,9 +82,9 @@ services:
   databus_client:
     build: ../databus-client
     environment:
-      - QUERY="/opt/databus-client/example.query"
+      - SOURCE="/opt/databus-client/example.query"
       - COMPRESSION="gz"
-      - DEST="/var/repo"
+      - TARGET="/var/repo"
     volumes:
       - ../databus-client/example.query:/opt/databus-client/example.query
       - toLoad:/var/toLoad
