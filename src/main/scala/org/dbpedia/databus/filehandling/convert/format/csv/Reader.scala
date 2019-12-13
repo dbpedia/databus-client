@@ -46,8 +46,6 @@ object Reader {
       .option("header", "true")
       .load(csvFilePath)
 
-    data.foreach(println(_))
-
     data
   }
 

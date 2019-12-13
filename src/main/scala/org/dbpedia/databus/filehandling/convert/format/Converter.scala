@@ -51,7 +51,6 @@ object Converter {
       else {
         val triples = RDFHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
         mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, spark)
-        println(mappingFile.pathAsString)
       }
     }
 

@@ -66,7 +66,7 @@ class tsvmapperTests extends FlatSpec {
 
       while (resultSet.hasNext) rdd = sc.union(rdd, sc.parallelize(Seq(resultSet.next())))
     } else {
-      println(s"DELIMITER WIRD NICHT UNTERSTUEZT: $delimiter")
+      println(s"Delimiter is not supported: $delimiter")
     }
 
     rdd

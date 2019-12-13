@@ -68,7 +68,7 @@ object Tarql_Writer {
          |}
        """.stripMargin
 
-    println(s"CALCULATED TARQLSTRING: \n$tarqlMappingString")
+//    println(s"CALCULATED TARQLSTRING: \n$tarqlMappingString")
 
     new PrintWriter(file.pathAsString) {
       write(tarqlMappingString)
