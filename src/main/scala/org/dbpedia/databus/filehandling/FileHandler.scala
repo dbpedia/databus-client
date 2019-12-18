@@ -14,7 +14,8 @@ import scala.io.Source
 
 object FileHandler
 {
-  def handleFile(inputFile: File, dest_dir: File, outputFormat: String, outputCompression: String): Unit = {
+  def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String): Unit = {
+
     println(s"input file:\t\t${inputFile.pathAsString}")
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
 
@@ -45,15 +46,16 @@ object FileHandler
 
       val targetFile = getOutputFile(inputFile, outputFormat, newOutCompression, dest_dir)
       var typeConvertedFile = File("")
+      val sha = FileUtil.getSha256(inputFile)
 
       if (!(compressionInputFile == "")) {
         val decompressedInStream = Compressor.decompress(bufferedInputStream)
         val decompressedFile = File("./target/databus.tmp/") / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
         copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
-        typeConvertedFile = Converter.convertFormat(decompressedFile, formatInputFile, outputFormat)
+        typeConvertedFile = Converter.convertFormat(decompressedFile, formatInputFile, outputFormat, sha)
       }
       else {
-        typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat)
+        typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat, sha)
       }
 
       val compressedOutStream = Compressor.compress(newOutCompression, targetFile)

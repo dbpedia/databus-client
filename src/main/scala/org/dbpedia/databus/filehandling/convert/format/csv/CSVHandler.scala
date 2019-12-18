@@ -8,6 +8,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.filehandling.convert.format.csv
 import org.dbpedia.databus.filehandling.convert.format.rdf.read.{NTriple_Reader, RDF_Reader, TTL_Reader}
 import org.dbpedia.databus.filehandling.convert.format.rdf.write.{JSONLD_Writer, NTriple_Writer, RDF_Writer, TTL_Writer}
+import org.dbpedia.databus.sparql.QueryHandler
 
 object CSVHandler {
 
@@ -35,15 +36,16 @@ object CSVHandler {
   }
 
 
-  def readAsTriples(inputFile: File, inputFormat: String, spark: SparkSession): RDD[Triple] = {
+  def readAsTriples(inputFile: File, inputFormat: String, spark: SparkSession, sha:String): RDD[Triple] = {
+
+    var mappingFile = QueryHandler.getMappingInfoOf(sha).head
+    if (mappingFile == "") mappingFile = scala.io.StdIn.readLine("There is no related mapping on the databus.\nPlease type path to mapping file:\n")
 
     inputFormat match {
       case "tsv" =>
-        val mappingFile = scala.io.StdIn.readLine("Please type path to mapping file:\n")
         csv.Reader.csv_to_rddTriple(mappingFile, inputFile.pathAsString, '\t', sc = spark.sparkContext)
 
       case "csv" =>
-        val mappingFile:String = scala.io.StdIn.readLine("Please type path to mapping file:\n")
         val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
         val quotation = scala.io.StdIn.readLine("Please type quote character of CSV file:\n(e.x. ' \" ' for double quoted entries or ' null ' if there's no quotation)\n")
         val quoteChar = quotation match {

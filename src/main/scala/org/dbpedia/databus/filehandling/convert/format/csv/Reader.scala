@@ -35,6 +35,7 @@ object Reader {
       println(s"ERROR (read_CSV): Delimiter: $delimiter not supported")
     }
 
+    seq.foreach(println(_))
     sc.parallelize(seq)
   }
 

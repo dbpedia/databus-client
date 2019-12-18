@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
 
 object Converter {
 
-  def convertFormat(inputFile: File, inputFormat: String, outputFormat: String): File = {
+  def convertFormat(inputFile: File, inputFormat: String, outputFormat: String, sha:String): File = {
 
     val spark = SparkSession.builder()
       .appName(s"Triple reader  ${inputFile.name}")
@@ -36,7 +36,7 @@ object Converter {
 
         }
         else{ // if (EquivalenceClasses.CSVTypes.contains(inputFormat)){
-          RDFHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
+          CSVHandler.readAsTriples(inputFile, inputFormat, spark: SparkSession, sha)
         }
       }
 
@@ -56,7 +56,7 @@ object Converter {
 
     try {
       FileUtil.unionFiles(tempDir, targetFile)
-      if (mappingFile.exists) {
+      if (mappingFile.exists && mappingFile != File("")) {
         val mapDir = File("./mappings/")
           mapDir.createDirectoryIfNotExists()
         mappingFile.moveTo(mapDir / FileUtil.getSha256(targetFile), overwrite = true)

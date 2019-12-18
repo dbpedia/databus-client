@@ -40,11 +40,17 @@ object DatabusQueries {
        |GROUP BY ?type
        |""".stripMargin
 
-  def queryMapping (fileURL: String): String =
+  def queryMappingInfo(sha: String): String =
     s"""
-       |SELECT DISTINCT *
+       |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+       |PREFIX dcat: <http://www.w3.org/ns/dcat#>
+       |PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+       |
+       |SELECT DISTINCT ?mapping
        |WHERE {
-       | 	?mapping <http://tmp-namespace.org/databusFixRequired> <$fileURL> .
+       |  ?dataIdElement dataid:sha256sum "$sha"^^xsd:string .
+       |  ?dataIdElement dataid:file ?file .
+       |  ?mapping <http://tmp-namespace.org/databusFixRequired> ?file .
        |}
        |""".stripMargin
 }

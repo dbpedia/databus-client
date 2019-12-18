@@ -4,6 +4,7 @@ import java.net.URL
 
 import better.files.File
 import org.apache.commons.io.FileUtils
+import org.apache.jena.JenaRuntime
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
@@ -14,11 +15,15 @@ object QueryHandler {
 
   def executeQuery(queryString: String, model:Model = ModelFactory.createDefaultModel()): Seq[QuerySolution] = {
 
+    JenaRuntime.isRDF11 = false
+
     val query: Query = QueryFactory.create(queryString)
     val qexec: QueryExecution = {
       if(model.isEmpty) QueryExecutionFactory.sparqlService(service,query)
       else QueryExecutionFactory.create(query,model)
     }
+
+//    println(query)
 
     var resultSeq: Seq[QuerySolution] = Seq.empty
 
@@ -30,6 +35,7 @@ object QueryHandler {
       }
     } finally qexec.close()
 
+//    resultSeq.foreach(println(_))
     resultSeq
   }
 
@@ -111,17 +117,33 @@ object QueryHandler {
     result.map(querySolution => querySolution.getResource(sparqlVar).toString)
   }
 
-  def getMapping(url: String): Seq[String] = {
-    val queryStr = DatabusQueries.queryMapping(url)
+  def getMappingInfoOf(sha: String): Seq[String] = {
+    val queryStr = DatabusQueries.queryMappingInfo(sha)
 
     val results = executeQuery(queryStr)
 
     if (results.nonEmpty) {
       val sparqlVar = results.head.varNames().next()
-      results.map(querySolution => querySolution.getResource(sparqlVar).toString)
+      val mappingInfo = results.head.getResource(sparqlVar).toString
+      println(s"MappingINFO: $mappingInfo")
+      getMapping(mappingInfo)
     }
     else {
       Seq.empty[String]
     }
+  }
+
+  def getMapping(mappingInfo: String): Seq[String] = {
+    val mappingModel: Model = RDFDataMgr.loadModel(mappingInfo, RDFLanguages.TURTLE)
+
+    val queryStr = MappingQueries.queryMapping(mappingInfo)
+
+    val result = executeQuery(queryStr, mappingModel).head
+
+    val sparqlVar = result.varNames().next()
+
+    val sparqlMap = result.getResource(sparqlVar).toString
+
+    Seq(sparqlMap)
   }
 }
