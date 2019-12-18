@@ -8,6 +8,7 @@ import org.apache.jena.JenaRuntime
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
+import org.dbpedia.databus.sparql.queries.{DataIdQueries, DatabusQueries, MappingQueries}
 
 object QueryHandler {
 

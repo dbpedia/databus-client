@@ -1,5 +1,6 @@
 import org.apache.jena.query._
-import org.dbpedia.databus.sparql.{DatabusQueries, QueryHandler}
+import org.dbpedia.databus.sparql.QueryHandler
+import org.dbpedia.databus.sparql.queries.DatabusQueries
 
 class QueryTest extends org.scalatest.FlatSpec {
 
