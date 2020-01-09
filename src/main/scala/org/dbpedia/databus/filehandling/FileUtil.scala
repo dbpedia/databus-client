@@ -96,6 +96,8 @@ object FileUtil {
       }
     }
 
+//    println(s"Cache $dir")
+//    println(s"sha $sha")
     fileOfSha
   }
 

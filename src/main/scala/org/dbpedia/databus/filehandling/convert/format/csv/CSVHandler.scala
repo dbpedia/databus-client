@@ -47,7 +47,7 @@ object CSVHandler {
 
       case "csv" =>
         val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
-        val quotation = scala.io.StdIn.readLine("Please type quote character of CSV file:\n(e.x. ' \" ' for double quoted entries or ' null ' if there's no quotation)\n")
+        val quotation = scala.io.StdIn.readLine("Please type quote character of CSV file:\n(e.g. ' \" ' for double quoted entries or ' null ' if there's no quotation)\n")
         val quoteChar = quotation match {
           case "null" => null
           case _ => quotation.toCharArray.apply(0).asInstanceOf[Character]

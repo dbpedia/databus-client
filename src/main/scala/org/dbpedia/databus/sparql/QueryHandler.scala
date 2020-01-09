@@ -54,7 +54,7 @@ object QueryHandler {
     val results = executeQuery(DatabusQueries.querySha256(url))
     val sparqlVar = results.head.varNames().next()
 
-    results.head.getLiteral(sparqlVar).toString
+    results.head.getLiteral(sparqlVar).getString
 
   }
 
@@ -73,8 +73,6 @@ object QueryHandler {
       false
     }
   }
-
-
 
   def getTargetDir(dataIdFile: File, dest_dir: File): File = {
     val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
@@ -99,7 +97,7 @@ object QueryHandler {
 
     if (result.nonEmpty) {
       val sparqlVar = result.head.varNames().next()
-      result.head.getLiteral(sparqlVar).toString
+      result.head.getLiteral(sparqlVar).getString
     }
     else {
       ""
