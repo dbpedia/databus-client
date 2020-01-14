@@ -1,8 +1,0 @@
-SELECT DISTINCT ?file  
-WHERE {
-    ?dataset dataid:version <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased/2019.09.01> .
-    ?dataset dcat:distribution ?distribution .
-    ?distribution dcat:downloadURL ?file .
-    ?distribution dataid:contentVariant ?cv .
-     FILTER ( str(?cv) = 'de' )
-}

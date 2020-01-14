@@ -1,0 +1,28 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+
+SELECT DISTINCT ?file WHERE
+{
+        {
+                # Get all files
+                SELECT DISTINCT ?file WHERE {
+                        ?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals> .
+                        ?dataset dcat:distribution ?distribution .
+                        {
+                                ?distribution dct:hasVersion ?latestVersion 
+                                {
+                                        SELECT (?version as ?latestVersion) WHERE { 
+                                                ?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals> . 
+                                                ?dataset dct:hasVersion ?version . 
+                                        } ORDER BY DESC (?version) LIMIT 1 
+                                } 
+                        }
+                        { 
+                                ?distribution <http://dataid.dbpedia.org/ns/cv#lang> 'en'^^<http://www.w3.org/2001/XMLSchema#string> . 
+                        } 
+                        ?distribution dcat:downloadURL ?file .
+                }
+        }
+} 

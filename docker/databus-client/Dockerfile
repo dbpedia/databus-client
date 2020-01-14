@@ -4,9 +4,6 @@ ENV SOURCE /opt/databus-client/query.sparql
 
 RUN cd /opt \
     && git clone https://github.com/dbpedia/databus-client.git
-#WORKDIR /opt/
-#ADD https://api.github.com/repos/dbpedia/databus-client/git/refs/heads/modularClient version.json
-#RUN git clone -b modularClient https://github.com/dbpedia/databus-client.git 
 
 COPY ./entrypoint.sh /opt/databus-client/
 
