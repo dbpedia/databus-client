@@ -113,7 +113,7 @@ class getMappingTest extends FlatSpec{
     val path = "/home/eisenbahnplatte/git/databus-client/src/resources/mappingTests/getMapping/bnetza-mastr_rli_type=hydro.csv.bz2"
     val sha = FileUtil.getSha256(File(path))
     println(sha)
-    println(QueryHandler.getMappingInfoOf(sha))
+    println(QueryHandler.getMapping(sha))
   }
 
   "mappingInfo" should "return mapping" in {
@@ -137,5 +137,29 @@ class getMappingTest extends FlatSpec{
         |""".stripMargin
 
     QueryHandler.executeQuery(queryStr,model).foreach(x=> println(s"sol: $x"))
+  }
+
+  "Query" should "return other values when one values is missing" in {
+
+    val mappingInfoFile = "https://raw.githubusercontent.com/dbpedia/format-mappings/master/tarql/1.ttl#this"
+
+    val model = RDFDataMgr.loadModel(mappingInfoFile)
+
+    val queryStr =
+      s"""
+         |PREFIX tmp: <http://tmp-namespace.org/>
+         |
+        |SELECT DISTINCT *
+         |WHERE {
+         |?mapping a tmp:MappingFile ;
+         |    tmp:hasDelimiter ?delimiter ;
+         |	  tmp:hasQuotation ?quotation .
+         |<$mappingInfoFile> tmp:hasMappingFile ?mapping .
+         |}
+         |""".stripMargin
+
+    val result = QueryHandler.executeQuery(queryStr,model)
+
+    result.head.varNames()
   }
 }

@@ -116,33 +116,47 @@ object QueryHandler {
     result.map(querySolution => querySolution.getResource(sparqlVar).toString)
   }
 
-  def getMappingInfoOf(sha: String): Seq[String] = {
-    val queryStr = DatabusQueries.queryMappingInfo(sha)
+  def getMapping(sha: String): Seq[String] = {
 
-    val results = executeQuery(queryStr)
+    val results = executeQuery(
+      DatabusQueries.queryMappingInfoFile(sha)
+    )
 
     if (results.nonEmpty) {
       val sparqlVar = results.head.varNames().next()
-      val mappingInfo = results.head.getResource(sparqlVar).toString
-      println(s"MappingINFO: $mappingInfo")
-      getMapping(mappingInfo)
+      val mappingInfoFile = results.head.getResource(sparqlVar).toString
+      println(s"MappingInfoFile: $mappingInfoFile")
+      getMappingFileAndInfo(mappingInfoFile)
     }
     else {
       Seq.empty[String]
     }
   }
 
-  def getMapping(mappingInfo: String): Seq[String] = {
-    val mappingModel: Model = RDFDataMgr.loadModel(mappingInfo, RDFLanguages.TURTLE)
+  def getMappingFileAndInfo(mappingInfoFile: String): Seq[String] = {
+    val mappingModel: Model = RDFDataMgr.loadModel(mappingInfoFile, RDFLanguages.TURTLE)
 
-    val queryStr = MappingQueries.queryMapping(mappingInfo)
+    val result = executeQuery(
+      MappingQueries.queryMappingFileAndInfo(mappingInfoFile),
+      mappingModel
+    )
 
-    val result = executeQuery(queryStr, mappingModel).head
+    if (result.nonEmpty) {
+      Seq[String](
+        result.head.getResource("mapping").toString,
+        result.head.getLiteral("delimiter").getString,
+        result.head.getLiteral("quotation").getString)
+    }
+    else {
+      val result = executeQuery(
+        MappingQueries.queryMappingFile(mappingInfoFile),
+        mappingModel
+      ).head
 
-    val sparqlVar = result.varNames().next()
+      val sparqlVar = result.varNames().next()
+      val tarqlMapFile = result.getResource(sparqlVar).toString
 
-    val sparqlMap = result.getResource(sparqlVar).toString
-
-    Seq(sparqlMap)
+      Seq[String](tarqlMapFile)
+    }
   }
 }

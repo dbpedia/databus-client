@@ -17,7 +17,14 @@ object Reader {
     csvOptions.setDelimiter(delimiter)
     csvOptions.setQuoteChar(quoteChar)
 
-    println(s"\nUsed CSVOptions:\nEscapeCharacter: ${csvOptions.getEscapeChar}\nQuoteCharacter: ${csvOptions.getQuoteChar}\nEncoding: ${csvOptions.getEncoding}")
+    println(
+      s"""
+         |Used CSVOptions:
+         |Delimiter:      ${csvOptions.getDelimiter}
+         |EscapeCharacter:${csvOptions.getEscapeChar}
+         |QuoteCharacter: ${csvOptions.getQuoteChar}
+         |Encoding:       ${csvOptions.getEncoding}
+       """.stripMargin)
 
     var seq: Seq[Triple] = Seq.empty
 

@@ -40,7 +40,7 @@ object DatabusQueries {
        |GROUP BY ?type
        |""".stripMargin
 
-  def queryMappingInfo(sha: String): String =
+  def queryMappingInfoFile(sha: String): String =
     s"""
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
        |PREFIX dcat: <http://www.w3.org/ns/dcat#>

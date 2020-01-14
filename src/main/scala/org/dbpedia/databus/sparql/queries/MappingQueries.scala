@@ -2,14 +2,28 @@ package org.dbpedia.databus.sparql.queries
 
 object MappingQueries {
 
-  def queryMapping(mappingInfo:String): String =
+  def queryMappingFile(mappingInfoFile:String): String =
     s"""
        |PREFIX tmp: <http://tmp-namespace.org/>
        |
        |SELECT DISTINCT ?mapping
        |WHERE {
        |?mapping a tmp:MappingFile .
-       |<$mappingInfo> tmp:hasMappingFile ?mapping .
+       |<$mappingInfoFile> tmp:hasMappingFile ?mapping .
+       |}
+       |""".stripMargin
+
+  def queryMappingFileAndInfo(mappingInfoFile:String): String =
+    s"""
+       |PREFIX tmp: <http://tmp-namespace.org/>
+       |
+       |SELECT DISTINCT *
+       |WHERE {
+       |?mapping a tmp:MappingFile .
+       |
+       |<$mappingInfoFile> tmp:hasDelimiter ?delimiter ;
+       |	  tmp:hasQuotation ?quotation ;
+       |    tmp:hasMappingFile ?mapping .
        |}
        |""".stripMargin
 }

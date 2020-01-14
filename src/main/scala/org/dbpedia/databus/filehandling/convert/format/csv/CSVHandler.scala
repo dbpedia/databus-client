@@ -38,7 +38,8 @@ object CSVHandler {
 
   def readAsTriples(inputFile: File, inputFormat: String, spark: SparkSession, sha:String): RDD[Triple] = {
 
-    var mappingFile = QueryHandler.getMappingInfoOf(sha).head
+    val mappingInformation = QueryHandler.getMapping(sha)
+    var mappingFile = mappingInformation.head
     if (mappingFile == "") mappingFile = scala.io.StdIn.readLine("There is no related mapping on the databus.\nPlease type path to mapping file:\n")
 
     inputFormat match {
@@ -46,15 +47,26 @@ object CSVHandler {
         csv.Reader.csv_to_rddTriple(mappingFile, inputFile.pathAsString, '\t', sc = spark.sparkContext)
 
       case "csv" =>
-        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
-        val quotation = scala.io.StdIn.readLine("Please type quote character of CSV file:\n(e.g. ' \" ' for double quoted entries or ' null ' if there's no quotation)\n")
+        val delimiter = {
+          if (mappingInformation.length != 1) mappingInformation(1)
+          else scala.io.StdIn.readLine("Please type delimiter of CSV file:\n")
+        }
+
+        val quotation = {
+          if (mappingInformation.length != 1)  mappingInformation(2)
+          else scala.io.StdIn.readLine("Please type quote character of CSV file:\n(e.g. ' \" ' for double quoted entries or ' null ' if there's no quotation)\n")
+        }
+
+        val delimiterChar = delimiter.toCharArray.apply(0).asInstanceOf[Character]
         val quoteChar = quotation match {
           case "null" => null
           case _ => quotation.toCharArray.apply(0).asInstanceOf[Character]
         }
-        csv.Reader.csv_to_rddTriple(mappingFile, inputFile.pathAsString, delimiter, quoteChar, spark.sparkContext)
+
+        csv.Reader.csv_to_rddTriple(mappingFile, inputFile.pathAsString, delimiterChar, quoteChar, spark.sparkContext)
     }
   }
+
 
   def writeTriples(tempDir: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
 

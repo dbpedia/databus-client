@@ -73,6 +73,7 @@ class QueryTest extends org.scalatest.FlatSpec {
   }
 
   "mappings" should "be queried" in {
-    QueryHandler.getMappingInfoOf("https://databus.dbpedia.org/kurzum/mastr/bnetza-mastr/01.04.00/bnetza-mastr_rli_type=hydro.csv.bz2").foreach(println(_))
+    QueryHandler.getMapping("https://databus.dbpedia.org/kurzum/mastr/bnetza-mastr/01.04.00/bnetza-mastr_rli_type=hydro.csv.bz2").foreach(println(_))
   }
+
 }
