@@ -20,17 +20,17 @@ class getOutPutFileTest extends FlatSpec{
   }
 
 
-  "Object" should "give right outFile to inFile with new Method" in {
-    val inFile = File("/home/eisenbahnplatte/git/databus-client/cache_dir/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2")
-    val outFormat = "nt"
-    val outComp = "gz"
-    val dest_dir = File("./testTarget/")
-
-    val outFile = OutPutFileGetter.newGetOutputFile(inFile, outFormat, outComp, dest_dir)
-
-    val comparisonFile = File("./testTarget/marvin/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.nt.gz")
-    assert( outFile == comparisonFile)
-  }
+//  "Object" should "give right outFile to inFile with new Method" in {
+//    val inFile = File("/home/eisenbahnplatte/git/databus-client/cache_dir/dbpedia-mappings.tib.eu/release/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.ttl.bz2")
+//    val outFormat = "nt"
+//    val outComp = "gz"
+//    val dest_dir = File("./testTarget/")
+//
+//    val outFile = OutPutFileGetter.newGetOutputFile(inFile, outFormat, outComp, dest_dir)
+//
+//    val comparisonFile = File("./testTarget/marvin/mappings/geo-coordinates-mappingbased/2019.04.20/geo-coordinates-mappingbased_lang=ca.nt.gz")
+//    assert( outFile == comparisonFile)
+//  }
 }
 
 object OutPutFileGetter {
@@ -76,39 +76,39 @@ object OutPutFileGetter {
 //    outputFile
 //  }
 
-  def newGetOutputFile(inputFile: File, outputFormat: String, outputCompression: String, dest_dir: File): File = {
-
-    val nameWithoutExtension = inputFile.nameWithoutExtension
-
-    val dataIdFile = inputFile.parent / "dataid.ttl"
-
-    val newOutputFormat = {
-      if (outputFormat == "rdfxml") "rdf"
-      else outputFormat
-    }
-
-    val outputDir = {
-      if (dataIdFile.exists) QueryHandler.getTargetDir(dataIdFile, dest_dir)
-      else
-        File(dest_dir.pathAsString.concat("/NoDataID")
-          .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1
-            .replace(File(".").pathAsString, "")
-          )
-        )
-    }
-
-    val newName = {
-      if (outputCompression.isEmpty)  s"$nameWithoutExtension.$newOutputFormat"
-      else  s"$nameWithoutExtension.$newOutputFormat.$outputCompression"
-    }
-
-    val outputFile = outputDir / newName
-
-    //create necessary parent directories to write the outputfile there, later
-    outputFile.parent.createDirectoryIfNotExists(createParents = true)
-
-    println(s"converted file:\t${outputFile.pathAsString}\n")
-
-    outputFile
-  }
+//  def newGetOutputFile(inputFile: File, outputFormat: String, outputCompression: String, dest_dir: File): File = {
+//
+//    val nameWithoutExtension = inputFile.nameWithoutExtension
+//
+//    val dataIdFile = inputFile.parent / "dataid.ttl"
+//
+//    val newOutputFormat = {
+//      if (outputFormat == "rdfxml") "rdf"
+//      else outputFormat
+//    }
+//
+//    val outputDir = {
+//      if (dataIdFile.exists) QueryHandler.getTargetDir(dataIdFile, dest_dir)
+//      else
+//        File(dest_dir.pathAsString.concat("/NoDataID")
+//          .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1
+//            .replace(File(".").pathAsString, "")
+//          )
+//        )
+//    }
+//
+//    val newName = {
+//      if (outputCompression.isEmpty)  s"$nameWithoutExtension.$newOutputFormat"
+//      else  s"$nameWithoutExtension.$newOutputFormat.$outputCompression"
+//    }
+//
+//    val outputFile = outputDir / newName
+//
+//    //create necessary parent directories to write the outputfile there, later
+//    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+//
+//    println(s"converted file:\t${outputFile.pathAsString}\n")
+//
+//    outputFile
+//  }
 }

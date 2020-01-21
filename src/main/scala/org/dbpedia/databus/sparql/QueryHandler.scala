@@ -74,7 +74,7 @@ object QueryHandler {
     }
   }
 
-  def getTargetDir(dataIdFile: File, dest_dir: File): File = {
+  def getTargetDir(dataIdFile: File): String = {
     val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
 
     val results = QueryHandler.executeQuery(DataIdQueries.queryDirStructure(), dataIdModel)
@@ -86,7 +86,7 @@ object QueryHandler {
     val artifact = result.getResource("?artifact").toString.split("/").last.trim
     val version = result.getResource("?version").toString.split("/").last.trim
 
-    dest_dir / publisher / group / artifact / version
+    s"$publisher/$group/$artifact/$version"
   }
 
   def getFileExtension(fileURL: String, dataIdFile: File): String = {

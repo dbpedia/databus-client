@@ -1,6 +1,6 @@
 package org.dbpedia.databus.filehandling
 
-import java.io.{BufferedInputStream, FileInputStream, FileNotFoundException, FileOutputStream}
+import java.io.{BufferedInputStream, FileInputStream, FileNotFoundException, FileOutputStream, FileWriter}
 
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
@@ -80,7 +80,16 @@ object FileHandler
     }
 
     val outputDir = {
-      if (dataIdFile.exists) QueryHandler.getTargetDir(dataIdFile, dest_dir)
+      if (dataIdFile.exists) {
+        val pgav = QueryHandler.getTargetDir(dataIdFile)
+        val fw = new FileWriter(dest_dir.pathAsString.concat("identifiers_downloadedFiles.txt"), true)
+        try {
+          fw.append(s"https://databus.dbpedia.org/$pgav/${inputFile.name}\n")
+        }
+        finally fw.close()
+
+        File(s"${dest_dir.pathAsString}/$pgav")
+      }
       else
         File(dest_dir.pathAsString.concat("/NoDataID")
           .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1

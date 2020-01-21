@@ -22,22 +22,22 @@ object FileUtil {
     }
   }
 
-  def copyUnchangedFile(inputFile: File, src_dir: File, dest_dir: File): Unit = {
-    val name = inputFile.name
-
-    val dataIdFile = inputFile.parent / "dataid.ttl"
-
-    val outputFile = {
-      if (dataIdFile.exists) QueryHandler.getTargetDir(dataIdFile, dest_dir) / name
-      else File(inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID/")))
-    }
-
-    //    println(s"Copy unchanged File to: ${outputFile.pathAsString}")
-    outputFile.parent.createDirectoryIfNotExists(createParents = true)
-
-    val outputStream = new FileOutputStream(outputFile.toJava)
-    copyStream(new FileInputStream(inputFile.toJava), outputStream)
-  }
+//  def copyUnchangedFile(inputFile: File, src_dir: File, dest_dir: File): Unit = {
+//    val name = inputFile.name
+//
+//    val dataIdFile = inputFile.parent / "dataid.ttl"
+//
+//    val outputFile = {
+//      if (dataIdFile.exists) QueryHandler.getTargetDir(dataIdFile, dest_dir) / name
+//      else File(inputFile.pathAsString.replaceAll(src_dir.pathAsString, dest_dir.pathAsString.concat("/NoDataID/")))
+//    }
+//
+//    //    println(s"Copy unchanged File to: ${outputFile.pathAsString}")
+//    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+//
+//    val outputStream = new FileOutputStream(outputFile.toJava)
+//    copyStream(new FileInputStream(inputFile.toJava), outputStream)
+//  }
 
   def copyStream(in: InputStream, out: OutputStream): Unit = {
     try {
