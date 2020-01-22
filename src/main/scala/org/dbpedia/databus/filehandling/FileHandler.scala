@@ -82,7 +82,7 @@ object FileHandler
     val outputDir = {
       if (dataIdFile.exists) {
         val pgav = QueryHandler.getTargetDir(dataIdFile)
-        val fw = new FileWriter(dest_dir.pathAsString.concat("identifiers_downloadedFiles.txt"), true)
+        val fw = new FileWriter((dest_dir / "identifiers_downloadedFiles.txt").pathAsString, true)
         try {
           fw.append(s"https://databus.dbpedia.org/$pgav/${inputFile.name}\n")
         }
