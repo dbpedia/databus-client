@@ -37,21 +37,21 @@
             <artifactId>tarql</artifactId>
             <version>v1.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-engine</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-logical-source-resolver-csv</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rdf4j</groupId>
-            <artifactId>rdf4j-model</artifactId>
-            <version>3.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.taxonic.carml</groupId>-->
+<!--            <artifactId>carml-engine</artifactId>-->
+<!--            <version>0.2.3</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.taxonic.carml</groupId>-->
+<!--            <artifactId>carml-logical-source-resolver-csv</artifactId>-->
+<!--            <version>0.2.3</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.rdf4j</groupId>-->
+<!--            <artifactId>rdf4j-model</artifactId>-->
+<!--            <version>3.0.0</version>-->
+<!--        </dependency>-->
         <!-- MAPPING -->
 
         <!-- COMPRESSION -->

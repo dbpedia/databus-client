@@ -17,10 +17,11 @@ object Main {
 
     val conf = new CLIconf(args)
     val cache_dir = File("./target/databus.tmp/cache_dir/")
-    val target = File(conf.target())
-
     if (conf.clear()) FileUtils.deleteDirectory(cache_dir.toJava)
     cache_dir.createDirectoryIfNotExists()
+
+    val target = File(conf.target())
+    target.createDirectoryIfNotExists()
 
     // check output format and compression
     if (!SourceHandler.isSupportedOutFormat(conf.format())) System.exit(1)
