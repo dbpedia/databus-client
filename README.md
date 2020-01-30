@@ -42,7 +42,7 @@ mvn clean install
 
 Execution example
 ```
-bin/DatabusClient --source ./src/query/query1.query --target converted_files/ -f jsonld -c gz 
+bin/DatabusClient --source ./src/resources/queries/example.sparql --target converted_files/ -f jsonld -c gz 
 ```
 
 List of possible command line options.
@@ -76,14 +76,14 @@ You can also use the converter and downloader separately.
 
 * Due default values of `compression` and `format` are `same`, the Client is a pure downloader, if you don't pass arguments for `compression` and `format`. 
 ```
-bin/DatabusClient -s ./src/query/query1.query -t ./downloaded_files/
+bin/DatabusClient -s ./src/resources/queries/example.sparql -t ./downloaded_files/
 ```
 
 **File compression and format converter**
 
 * If you choose already existing files as source, the client doesn't use the download module and behaves like a pure converter.
 ```
-bin/DatabusClient --source ./src/resources/databus-client-testbed/format-testbed/2019.08.30/ -t ./converted_files/ -f ttl -c gz
+bin/DatabusClient --source ./src/test/resources/databus-client-testbed/format-testbed/2019.08.30/ -t ./converted_files/ -f ttl -c gz
 ```
 
 
