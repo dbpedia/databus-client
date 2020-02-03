@@ -1,6 +1,6 @@
 package org.dbpedia.databus.filehandling.download
 
-import java.io.{FileNotFoundException, FileOutputStream}
+import java.io.{FileNotFoundException, FileOutputStream, FileWriter}
 import java.net.URL
 
 import better.files.File
@@ -20,9 +20,9 @@ object Downloader {
 
     results.foreach(fileIRI => {
       val fileSHA = QueryHandler.getSHA256Sum(fileIRI)
-      if (overwrite) downloadFile(fileIRI, targetdir)
+      if (overwrite) downloadFile(fileIRI, fileSHA, targetdir)
       else {
-        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) downloadFile(fileIRI, targetdir)
+        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) downloadFile(fileIRI, fileSHA, targetdir)
         else println(s"$fileIRI --> already exists in Cache")
       }
       allSHAs = allSHAs :+ fileSHA
@@ -31,10 +31,17 @@ object Downloader {
     allSHAs
   }
 
-  def downloadFile(url: String, targetdir: File): Unit = {
-    val file = targetdir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
+  def downloadFile(url: String, sha: String, targetDir: File): Unit = {
+    val file = targetDir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
 
     downloadUrlToFile(new URL(url), file, createParentDirectory = true)
+
+    val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
+    try {
+      fw.append(s"$sha\t${file.pathAsString}\n")
+    }
+    finally fw.close()
+
 
     val dataIdFile = file.parent / "dataid.ttl"
 

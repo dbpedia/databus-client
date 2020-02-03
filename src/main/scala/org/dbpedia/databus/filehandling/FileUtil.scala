@@ -8,6 +8,7 @@ import better.files.File
 import org.apache.commons.io.IOUtils
 import org.dbpedia.databus.sparql.QueryHandler
 
+import scala.io.Source
 import scala.sys.process._
 
 object FileUtil {
@@ -55,17 +56,19 @@ object FileUtil {
   }
 
   def checkIfFileInCache(cache_dir: File, fileSHA256: String): Boolean = {
-    var exists = false
 
-    val files = cache_dir.listRecursively.toSeq
-    for (file <- files) {
-      if (!file.isDirectory) {
-        if (!file.name.equals("dataid.ttl")) {
-          if (checkSum(file, fileSHA256)) {
-            exists = true
-          }
+    var exists = false
+    val shaTxt = cache_dir / "shas.txt"
+
+    if (shaTxt.exists){
+      val bufferedSource = Source.fromFile(shaTxt.pathAsString)
+      for (line <- bufferedSource.getLines) {
+        val split = line.split(s"\t")
+        if (split.head == fileSHA256) {
+          exists = true
         }
       }
+      bufferedSource.close()
     }
 
     exists
@@ -84,20 +87,19 @@ object FileUtil {
 
   def getFileWithSHA256(sha: String, dir: File): File = {
     var fileOfSha = File("")
+    val shaTxt = dir / "shas.txt"
 
-    val files = dir.listRecursively.toSeq
-    for (file <- files) {
-      if (!file.isDirectory) {
-        if (!file.name.equals("dataid.ttl")) {
-          if (checkSum(file, sha)) {
-            fileOfSha = file
-          }
+    if (shaTxt.exists){
+      val bufferedSource = Source.fromFile(shaTxt.pathAsString)
+      for (line <- bufferedSource.getLines) {
+        val split = line.split(s"\t")
+        if (split.head == sha) {
+          fileOfSha = File(split(1))
         }
       }
+      bufferedSource.close()
     }
 
-//    println(s"Cache $dir")
-//    println(s"sha $sha")
     fileOfSha
   }
 
