@@ -5,7 +5,7 @@ Download and make data fit for applications using SPARQL on the [databus](https:
 ## Vision
 Any data on the bus can be made interoperable with application requirements. If the application can only read `.gz`, but not `.bz2` and only RDF-NTriples, but not RDF-XML, the client provides  `Download-As` functionality and transforms the data client-side. Files published on the Databus do not need to be offered in several formats. 
 
-Example Application Deployment: Download the files of 5 datasets as given in the SPARQL query, transform all to `.bz2`, convert all RDF to RDF-NTriples and a) map the `.tsv` file from the second dataset to RDF with this <databus-uri> RML-Mapping, and b) use this <databus-uri> XSLT-Mapping for the `.xml` file in the fifth dataset. When finished, load and deploy a Virtuoso SPRARQL Endpoint via Docker. 
+Example Application Deployment: Download the files of 5 datasets as given in the SPARQL query, transform all to `.bz2`, convert all RDF to RDF-NTriples and a) map the `.tsv` file from the second dataset to RDF with this <databus-uri> RML-Mapping, and b) use this <databus-uri> XSLT-Mapping for the `.xml` file in the fifth dataset. When finished, load and deploy a Virtuoso SPARQL Endpoint via Docker. 
 
 ## Current State
 
