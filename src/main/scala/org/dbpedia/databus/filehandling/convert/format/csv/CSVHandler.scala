@@ -39,8 +39,15 @@ object CSVHandler {
   def readAsTriples(inputFile: File, inputFormat: String, spark: SparkSession, sha:String): RDD[Triple] = {
 
     val mappingInformation = QueryHandler.getMapping(sha)
-    var mappingFile = mappingInformation.head
-    if (mappingFile == "") mappingFile = scala.io.StdIn.readLine("There is no related mapping on the databus.\nPlease type path to mapping file:\n")
+
+    val mappingFile = {
+      if(mappingInformation.isEmpty) scala.io.StdIn.readLine("There is no related mapping on the databus.\nPlease type path to local mapping file:\n")
+      else {
+        val whichMapping = scala.io.StdIn.readLine("There exists a related mapping on the databus.\nType 'y' if you want to use it. \n")
+        if (whichMapping == "y" ) mappingInformation.head
+        else scala.io.StdIn.readLine("Please type path to local mapping file:\n")
+      }
+    }
 
     inputFormat match {
       case "tsv" =>
@@ -48,12 +55,12 @@ object CSVHandler {
 
       case "csv" =>
         val delimiter = {
-          if (mappingInformation.length != 1) mappingInformation(1)
+          if (mappingInformation.length > 1) mappingInformation(1)
           else scala.io.StdIn.readLine("Please type delimiter of CSV file:\n")
         }
 
         val quotation = {
-          if (mappingInformation.length != 1)  mappingInformation(2)
+          if (mappingInformation.length > 1)  mappingInformation(2)
           else scala.io.StdIn.readLine("Please type quote character of CSV file:\n(e.g. ' \" ' for double quoted entries or ' null ' if there's no quotation)\n")
         }
 
