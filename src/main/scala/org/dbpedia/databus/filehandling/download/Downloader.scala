@@ -34,7 +34,10 @@ object Downloader {
   def downloadFile(url: String, sha: String, targetDir: File): Unit = {
     val file = targetDir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
 
-    downloadUrlToFile(new URL(url), file, createParentDirectory = true)
+    do {
+      downloadUrlToFile(new URL(url), file, createParentDirectory = true)
+    } while (!FileUtil.checkSum(file, sha))
+
 
     val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
     try {
@@ -85,5 +88,6 @@ object Downloader {
       cis.close()
     }
   }
+
 
 }

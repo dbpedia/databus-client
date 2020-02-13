@@ -42,11 +42,7 @@ object CSVHandler {
 
     val mappingFile = {
       if(mappingInformation.isEmpty) scala.io.StdIn.readLine("There is no related mapping on the databus.\nPlease type path to local mapping file:\n")
-      else {
-        val whichMapping = scala.io.StdIn.readLine("There exists a related mapping on the databus.\nType 'y' if you want to use it. \n")
-        if (whichMapping == "y" ) mappingInformation.head
-        else scala.io.StdIn.readLine("Please type path to local mapping file:\n")
-      }
+      else mappingInformation.head
     }
 
     inputFormat match {

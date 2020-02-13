@@ -46,7 +46,13 @@ object FileHandler
 
       val targetFile = getOutputFile(inputFile, outputFormat, newOutCompression, dest_dir)
       var typeConvertedFile = File("")
-      val sha = FileUtil.getSha256(inputFile)
+
+      val sha = {
+        if (FileUtil.getShaOfFileInCache(inputFile, File("./target/databus.tmp/cache_dir/shas.txt")) != "") FileUtil.getShaOfFileInCache(inputFile, File("./target/databus.tmp/cache_dir/shas.txt"))
+        else FileUtil.getSha256(inputFile)
+      }
+
+
 
       if (!(compressionInputFile == "")) {
         val decompressedInStream = Compressor.decompress(bufferedInputStream)

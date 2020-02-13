@@ -50,7 +50,7 @@ object SourceHandler {
     println(s"CONVERSION TOOL:\n")
 
     allSHAs.foreach(
-      sha => FileHandler.handleFile(FileUtil.getFileWithSHA256(sha, cache), target, format, compression)
+      sha => FileHandler.handleFile(FileUtil.getFileWithSHA256InCache(sha, File("./target/databus.tmp/cache_dir/shas.txt")), target, format, compression)
     )
 
   }

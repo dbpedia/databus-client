@@ -85,9 +85,8 @@ object FileUtil {
     else false
   }
 
-  def getFileWithSHA256(sha: String, dir: File): File = {
+  def getFileWithSHA256InCache(sha: String, shaTxt: File): File = {
     var fileOfSha = File("")
-    val shaTxt = dir / "shas.txt"
 
     if (shaTxt.exists){
       val bufferedSource = Source.fromFile(shaTxt.pathAsString)
@@ -101,6 +100,23 @@ object FileUtil {
     }
 
     fileOfSha
+  }
+
+  def getShaOfFileInCache(file:File, shaFile:File):String={
+    var sha = ""
+
+    if (shaFile.exists) {
+      val bufferedSource = Source.fromFile(shaFile.pathAsString)
+      for (line <- bufferedSource.getLines) {
+        val split = line.split(s"\t")
+        if (split(1) == file.pathAsString) {
+          sha = split.head
+        }
+      }
+      bufferedSource.close()
+    }
+
+    sha
   }
 
   def readQueryFile(file: File): String = {
