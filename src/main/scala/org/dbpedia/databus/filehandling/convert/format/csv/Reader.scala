@@ -34,15 +34,15 @@ object Reader {
         case _ => TarqlQueryExecutionFactory.create(tarqlQuery, csvFilePath, csvOptions).execTriples()
       }
 
-      while (resultSet.hasNext) seq = seq :+ resultSet.next()
-
+      import collection.JavaConverters._
+      seq = resultSet.asScala.toSeq
     }
     else {
       LoggerFactory.getLogger("read_CSV").error(s"Delimiter: $delimiter not supported")
       println(s"ERROR (read_CSV): Delimiter: $delimiter not supported")
     }
 
-    seq.foreach(println(_))
+    //seq.foreach(println(_))
     sc.parallelize(seq)
   }
 
