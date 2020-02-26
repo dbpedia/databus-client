@@ -2,7 +2,7 @@ package org.dbpedia.databus.filehandling
 
 import java.io.{FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.nio.file.Files
-import java.security.MessageDigest
+import java.security.{DigestInputStream, MessageDigest}
 
 import better.files.File
 import org.apache.commons.io.IOUtils
@@ -75,9 +75,13 @@ object FileUtil {
   }
 
   def getSha256(file:File) : String = {
-    MessageDigest.getInstance("SHA-256")
-      .digest(Files.readAllBytes(file.path))
-      .map("%02x".format(_)).mkString
+    val dis = new DigestInputStream(Files.newInputStream(file.path), MessageDigest.getInstance("SHA-256"))
+    // fully consume the inputstream
+    while (dis.available > 0) {
+      dis.read
+    }
+    dis.close
+    dis.getMessageDigest.digest.map("%02x".format(_)).mkString
   }
 
   def checkSum(file: File, sha: String): Boolean = {
