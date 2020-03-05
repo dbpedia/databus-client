@@ -1,7 +1,6 @@
-package converterTests
+package conversionTests.conversion
 
 import better.files.File
-import org.dbpedia.databus.sparql.QueryHandler
 import org.scalatest.FlatSpec
 
 class getOutPutFileTest extends FlatSpec{

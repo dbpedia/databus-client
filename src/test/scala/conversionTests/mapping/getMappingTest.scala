@@ -1,4 +1,4 @@
-package mapping
+package conversionTests.mapping
 
 import better.files.File
 import org.apache.jena.query.{Query, QueryExecution, QueryExecutionFactory, QueryFactory, QuerySolution, ResultSet}
@@ -109,7 +109,7 @@ class getMappingTest extends FlatSpec{
     assert(model.isEmpty)
   }
 
-  "mapping" should "be retourned" in {
+  "conversionTests/mapping" should "be retourned" in {
     val path = "/home/eisenbahnplatte/git/databus-client/src/resources/mappingTests/getMapping/bnetza-mastr_rli_type=hydro.csv.bz2"
     val sha = FileUtil.getSha256(File(path))
     println(sha)

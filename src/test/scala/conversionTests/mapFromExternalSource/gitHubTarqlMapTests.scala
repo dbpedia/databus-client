@@ -1,4 +1,4 @@
-package mapFromExternalSource
+package conversionTests.mapFromExternalSource
 
 import org.apache.jena.query.{Query, QueryExecution, QueryExecutionFactory, QueryFactory, ResultSet}
 import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}

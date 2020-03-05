@@ -56,7 +56,7 @@ object RDFHandler {
         TTL_Writer.convertToTTL(data, spark).coalesce(1).saveAsTextFile(tempDir.pathAsString)
 
       case "jsonld" =>
-        JSONLD_Writer.convertToJSONLD(data, spark).saveAsTextFile(tempDir.pathAsString)
+        RDF_Writer.convertToRDF(data, spark, RDFFormat.JSONLD_PRETTY).saveAsTextFile(tempDir.pathAsString)
 
       case "rdfxml" =>
         RDF_Writer.convertToRDF(data, spark, RDFFormat.RDFXML).coalesce(1).saveAsTextFile(tempDir.pathAsString)

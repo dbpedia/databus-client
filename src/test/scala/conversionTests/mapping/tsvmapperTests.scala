@@ -1,4 +1,4 @@
-package mapping
+package conversionTests.mapping
 
 import better.files.File
 import org.apache.jena.graph.{NodeFactory, Triple}

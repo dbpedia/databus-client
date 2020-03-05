@@ -1,10 +1,10 @@
-package mapping
+package conversionTests.mapping
 
 import java.io.PrintWriter
 import java.util
 
 import better.files.File
-import mapping.TTLWriter2.{convertAllTriplesOfSubjectToTSV, getSplitPredicate}
+import conversionTests.mapping.TTLWriter2.{convertAllTriplesOfSubjectToTSV, getSplitPredicate}
 import org.antlr.v4.runtime.atn.SemanticContext.Predicate
 import org.apache.commons.io.FileUtils
 import org.apache.jena.graph.Triple
@@ -27,7 +27,7 @@ class tsv_writer_tests extends FlatSpec {
 
   val testDir = "./src/resources/test/MappingTests/write/"
 
-  val spark = SparkSession.builder()
+  val spark:SparkSession = SparkSession.builder()
     .appName(s"Triple reader")
     .master("local[*]")
     .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
@@ -216,7 +216,7 @@ class tsv_writer_tests extends FlatSpec {
 
 object TTLWriterTest {
 
-  def convertToTSV(data: RDD[Triple], spark: SparkSession, targetFile:File, createMappingFile:Boolean)={
+  def convertToTSV(data: RDD[Triple], spark: SparkSession, targetFile:File, createMappingFile:Boolean):File={
 
     val tempDir = targetFile.parent / "temp"
     if (tempDir.exists) tempDir.delete()
@@ -238,7 +238,7 @@ object TTLWriterTest {
 
     val tsv_Data = triplesGroupedBySubject
       .map(allTriplesOfSubject =>
-        convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, mappedPredicates, tarqlPrefixes, true))
+        convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, mappedPredicates, tarqlPrefixes, test=true))
 
     val fields: Seq[StructField] = mappedPredicates.map(prepPre => StructField(prepPre.head, StringType, nullable = true))
     val schema: StructType = StructType(fields)
@@ -254,7 +254,7 @@ object TTLWriterTest {
       .csv(tempDir.pathAsString)
 
 
-    val tarqlConstruct = tsv_Data.map(_._2.toSeq).distinct().collect().flatMap(identity).map(x => x.toString)
+    val tarqlConstruct = tsv_Data.map(_._2.toSeq).distinct().collect().flatten.map(x => x.toString)
 
     val tarqlBindings = tsv_Data.map(_._3.toSeq).distinct().collect().flatten.map(x => x.toString)
 

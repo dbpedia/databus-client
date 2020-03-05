@@ -1,4 +1,4 @@
-package mapping
+package conversionTests.mapping
 
 import java.io.PrintWriter
 

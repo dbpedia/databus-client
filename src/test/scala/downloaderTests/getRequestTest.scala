@@ -1,3 +1,5 @@
+package downloaderTests
+
 import org.apache.http.HttpHeaders
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
@@ -13,7 +15,7 @@ class getRequestTest extends FlatSpec {
     httpGet.addHeader(HttpHeaders.ACCEPT, "text/sparql")
 
     val response = client.execute(httpGet)
-    val handler: ResponseHandler[String] = new BasicResponseHandler();
+    val handler: ResponseHandler[String] = new BasicResponseHandler()
 
     handler.handleResponse(response)
   }

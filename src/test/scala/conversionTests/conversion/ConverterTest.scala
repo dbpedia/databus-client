@@ -1,6 +1,6 @@
-package converterTests
+package conversionTests.conversion
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, FileInputStream, InputStream, SequenceInputStream}
+import java.io._
 
 import better.files.File
 import org.apache.jena.atlas.iterator.IteratorResourceClosing
@@ -15,8 +15,6 @@ import org.dbpedia.databus.api.Databus.{Compression, Format}
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.filehandling.convert.compression.Compressor
-import org.dbpedia.databus.filehandling.convert.format.Converter
-import org.dbpedia.databus.filehandling.convert.compression.Compressor.compress
 import org.dbpedia.databus.filehandling.convert.format.rdf.RDFHandler
 import org.dbpedia.databus.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
 import org.scalatest.FlatSpec

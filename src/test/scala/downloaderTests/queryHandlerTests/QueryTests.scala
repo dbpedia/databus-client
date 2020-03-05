@@ -1,4 +1,4 @@
-package queryHandlerTests
+package downloaderTests.queryHandlerTests
 
 import better.files.File
 import org.dbpedia.databus.sparql.QueryHandler
