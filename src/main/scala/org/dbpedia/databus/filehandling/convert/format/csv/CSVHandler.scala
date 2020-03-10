@@ -36,9 +36,7 @@ object CSVHandler {
   }
 
 
-  def readAsTriples(inputFile: File, inputFormat: String, spark: SparkSession, sha:String): RDD[Triple] = {
-
-    val mappingInformation = QueryHandler.getMapping(sha)
+  def readAsTriples(inputFile: File, inputFormat: String, spark: SparkSession, mappingInformation: Seq[String]): RDD[Triple] = {
 
     val mappingFile = {
       if(mappingInformation.isEmpty) scala.io.StdIn.readLine("There is no related mapping on the databus.\nPlease type path to local mapping file:\n")
@@ -71,19 +69,12 @@ object CSVHandler {
   }
 
 
-  def writeTriples(tempDir: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): File = {
-
-    val mapping = {
-      if (scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a mapping file.\n") matches "yes|y") true
-      else false
-    }
-
+  def writeTriples(tempDir: File, data: RDD[Triple], outputFormat: String, delimiter:Character, spark: SparkSession, createMappingFile:Boolean=true): File = {
     outputFormat match {
       case "tsv" =>
-        Writer.writeTriples(data, "\t", tempDir, spark, mapping)
+        Writer.writeTriples(data, "\t", tempDir, spark, createMappingFile)
       case "csv" =>
-        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
-        Writer.writeTriples(data, delimiter.toString, tempDir, spark, mapping)
+        Writer.writeTriples(data, delimiter.toString, tempDir, spark, createMappingFile)
     }
 
   }

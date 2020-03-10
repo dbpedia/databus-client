@@ -7,6 +7,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.filehandling.convert.format.csv.CSVHandler
 import org.dbpedia.databus.filehandling.convert.format.rdf.RDFHandler
+import org.dbpedia.databus.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
 object Converter {
@@ -36,7 +37,8 @@ object Converter {
 
         }
         else{ // if (EquivalenceClasses.CSVTypes.contains(inputFormat)){
-          CSVHandler.readAsTriples(inputFile, inputFormat, spark: SparkSession, sha)
+          val mappingInformation = QueryHandler.getMapping(sha)
+          CSVHandler.readAsTriples(inputFile, inputFormat, spark: SparkSession, mappingInformation)
         }
       }
 
@@ -50,7 +52,13 @@ object Converter {
       }
       else {
         val triples = RDFHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
-        mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, spark)
+
+        val createMappingFile = {
+          if (scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a mapping file.\n") matches "yes|y") true
+          else false
+        }
+        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
+        mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, delimiter, spark, createMappingFile)
       }
     }
 
