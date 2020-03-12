@@ -10,6 +10,13 @@ import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 object Writer {
 
+  /**
+   * write out TSD data as TSD file
+   * @param data input TSD data
+   * @param tempDir directory to save output data in
+   * @param delimiter delimiter for output file
+   * @param header include header
+   */
   def writeDF(data:DataFrame, tempDir:File, delimiter:String, header:String):Unit ={
     data.coalesce(1).write
       .option("delimiter", delimiter)
@@ -19,13 +26,22 @@ object Writer {
       .csv(tempDir.pathAsString)
   }
 
+  /**
+   * write out RDF data as tabular structured data file
+   * @param data input RDF data
+   * @param delimiter delimiter of TSD file
+   * @param tempDir dir to save the output data
+   * @param spark sparkSession
+   * @param mapping create related mapping file
+   * @return TSD file
+   */
   def writeTriples(data:RDD[Triple], delimiter:String, tempDir:File, spark: SparkSession, mapping:Boolean = false): File ={
 
     val mappingFile = tempDir / "mappingFile.sparql"
 
     if (mapping) {
 
-      val tsvData = Writer.triplesToCSV(data, spark, createMappingFile = true)
+      val tsvData = Writer.triplesToTSD(data, spark, createMappingFile = true)
 
       writeDF(tsvData.head, tempDir, delimiter, "true")
 
@@ -33,13 +49,21 @@ object Writer {
     }
 
     else {
-      writeDF(Writer.triplesToCSV(data, spark, createMappingFile = false).head, tempDir, delimiter, "true")
+      writeDF(Writer.triplesToTSD(data, spark, createMappingFile = false).head, tempDir, delimiter, "true")
     }
 
     mappingFile
   }
 
-  def triplesToCSV(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): Seq[DataFrame] = {
+  /**
+   * converts RDF data (RDD[Triple] to TSD data [DataFrame]
+   *
+   * @param inData RDF input data
+   * @param spark sparkSession
+   * @param createMappingFile create a mapping file for conversion back to RDF
+   * @return tabular structured data
+   */
+  def triplesToTSD(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): Seq[DataFrame] = {
 
     val triplesGroupedBySubject = inData.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = inData.groupBy(triple => triple.getPredicate.getURI).map(_._1)
@@ -176,8 +200,14 @@ object Writer {
         if (triple.getObject.isLiteral) {
           val datatype = splitPredicate(triple.getObject.getLiteralDatatype.getURI)._2
 
-          if (datatype == "langString") tarqlPart = tarqlPart :+ s"?$bindedSubject ${predicates.find(seq => seq.contains(triplePredicate)).get(1)}:$triplePredicate ?$triplePredicate;" :+ ""
-          else tarqlPart = tarqlPart :+ Tarql_Writer.buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre) :+ s"BIND(xsd:$datatype(?$triplePredicate) AS ?$triplePredicate$bindedPre)"
+          if (datatype == "langString") {
+//            println(triple.getObject.toString())
+            tarqlPart = tarqlPart :+ s"?$bindedSubject ${predicates.find(seq => seq.contains(triplePredicate)).get(1)}:$triplePredicate ?$triplePredicate;" :+ ""
+          }
+          else {
+//            println(s"BIND(xsd:$datatype(?$triplePredicate) AS ?$triplePredicate$bindedPre)")
+            tarqlPart = tarqlPart :+ Tarql_Writer.buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre) :+ s"BIND(xsd:$datatype(?$triplePredicate) AS ?$triplePredicate$bindedPre)"
+          }
 
           tripleObject = triple.getObject.getLiteralLexicalForm
         }
@@ -190,14 +220,22 @@ object Writer {
           tripleObject = triple.getObject.getBlankNodeLabel
         }
 
-        tarqlSeq = tarqlSeq :+ tarqlPart
+        if(tarqlPart.nonEmpty) tarqlSeq = tarqlSeq :+ tarqlPart
+
       }
 
 
+//      println(predicates.find(seq => seq.contains(triplePredicate)).get)
       val index = predicates.indexOf(predicates.find(seq => seq.contains(triplePredicate)).get)
 
       if (predicate_exists) {
-        TSVseq = TSVseq.updated(index, tripleObject)
+//        println(TSVseq(index))
+        if (TSVseq(index).nonEmpty) {
+          val old = TSVseq(index)
+          TSVseq.updated(index, s"$old $tripleObject")
+        }else{
+          TSVseq = TSVseq.updated(index, tripleObject)
+        }
       }
       else {
         TSVseq = TSVseq.updated(index, "")
@@ -213,5 +251,29 @@ object Writer {
   }
 
 
+//  def handleLangString()={
+////    println(s"""BIND(STRLANG(?$triplePredicate,"${triple.getObject.getLiteralLanguage}") AS ?$triplePredicate$bindedPre)""")
+//    val constructstr= Tarql_Writer.buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre)
+//    val countappearancs = tarqlSeq.count(Seq=>Seq.contains(constructstr))
+//
+//    val countBindings = tarqlSeq.count(Seq=> Seq.contains(s"""BIND(STRLANG(?$triplePredicate,"${triple.getObject.getLiteralLanguage}") AS ?$triplePredicate${countappearancs.toString}$bindedPre)"""))
+//
+//    val constructstring ={
+//      if (countappearancs == 0){
+//        constructstr
+//      }
+//      else{
+//        Tarql_Writer.buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre, countappearancs)
+//      }
+//    }
+//
+//    println(constructstring)
+//
+//    if (countappearancs == 0){
+//      tarqlPart = tarqlPart :+ constructstring :+ s"""BIND(STRLANG(?$triplePredicate,"${triple.getObject.getLiteralLanguage}") AS ?$triplePredicate$bindedPre)"""
+//    }else{
+//      tarqlPart = Seq.empty
+//    }
+//  }
 }
 
