@@ -189,7 +189,6 @@ object Writer {
     triples.foreach(triple => {
       var predicate_exists = false
       var tripleObject = ""
-
       val triplePredicate = splitPredicate(triple.getPredicate.getURI)._2
 
       if (predicates.exists(seq => seq.contains(triplePredicate))) {
@@ -198,10 +197,12 @@ object Writer {
         var tarqlPart: Seq[String] = Seq(predicates.filter(pre => pre.head == triplePredicate).map(pre => s"PREFIX ${pre(1)}: <${pre(2)}>").last)
 
         if (triple.getObject.isLiteral) {
+          println(triple.getObject.getLiteral)
+          println(triple.getObject.getLiteralDatatype)
           val datatype = splitPredicate(triple.getObject.getLiteralDatatype.getURI)._2
 
           if (datatype == "langString") {
-//            println(triple.getObject.toString())
+
             tarqlPart = tarqlPart :+ s"?$bindedSubject ${predicates.find(seq => seq.contains(triplePredicate)).get(1)}:$triplePredicate ?$triplePredicate;" :+ ""
           }
           else {

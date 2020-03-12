@@ -12,11 +12,11 @@ import org.dbpedia.databus.filehandling.{FileHandler, FileUtil}
 import org.dbpedia.databus.filehandling.convert.format.csv.CSVHandler
 import org.dbpedia.databus.filehandling.convert.format.rdf.RDFHandler
 import org.dbpedia.databus.filehandling.download.Downloader
-import org.scalatest.FlatSpec
+import org.scalatest.{FlatSpec, Tag}
 
 import scala.collection.mutable
 
-class roundTripTests extends FlatSpec {
+class roundTripTests extends FlatSpec{
 
   val spark: SparkSession = SparkSession.builder()
     .appName(s"Triple reader")
@@ -27,13 +27,11 @@ class roundTripTests extends FlatSpec {
   val sparkContext: SparkContext = spark.sparkContext
   sparkContext.setLogLevel("WARN")
 
-
-  //  val testFileDir = downloadFiles(File("./src/test/resources/roundTripTestFiles"))
   val testFileDir = File("./src/test/resources/testFiles/roundTripTestFiles/mapping/")
   val tempDir = File("./src/test/resources/testFiles/roundTripTestFiles/mapping/tempDir")
 
 
-  "roundtriptest" should "succeed for RDF to TSV and back to RDF" in {
+  "roundtriptest" should "succeed for RDF to TSV and back to RDF" in{
 
     val inputFile = testFileDir/"ntriples.nt"
     val outputFile = testFileDir / s"${inputFile.nameWithoutExtension(true)}_out${inputFile.extension.get}"
@@ -43,7 +41,7 @@ class roundTripTests extends FlatSpec {
     val quotation = "null"
     val tsdFormat = "tsv"
 
-//    Downloader.downloadUrlToFile(downloadURL, inputFile, true)
+    Downloader.downloadUrlToFile(downloadURL, inputFile, createParentDirectory = true)
 
     TSDtoRDF(
       writeRDFtoTSD(inputFile, delimiter, tsdFormat),

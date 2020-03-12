@@ -121,7 +121,7 @@ class roundTripTests extends FlatSpec{
 
       array1.foreach(
         row => {
-          println(row)
+//          println(row)
           var rowExists = false
           array2.foreach(
             rowArray2 => {
@@ -199,8 +199,8 @@ class roundTripTests extends FlatSpec{
       val dataInput = readTSDasDF(inputFile).sort()
       val dataOutput = readTSDasDF(outputFile).sort()
 
-      dataInput.show()
-      dataOutput.show()
+//      dataInput.show()
+//      dataOutput.show()
 
       if (checkDFEquality(dataInput,dataOutput) && checkDFEquality(dataOutput,dataInput)) successList += Seq(inputFile.pathAsString, "succeed")
       else successList += Seq(inputFile.pathAsString, "error")
