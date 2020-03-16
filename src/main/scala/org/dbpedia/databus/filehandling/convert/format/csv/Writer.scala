@@ -197,16 +197,16 @@ object Writer {
         var tarqlPart: Seq[String] = Seq(predicates.filter(pre => pre.head == triplePredicate).map(pre => s"PREFIX ${pre(1)}: <${pre(2)}>").last)
 
         if (triple.getObject.isLiteral) {
-          println(triple.getObject.getLiteral)
-          println(triple.getObject.getLiteralDatatype)
-          val datatype = splitPredicate(triple.getObject.getLiteralDatatype.getURI)._2
 
-          if (datatype == "langString") {
+          val datatype =
+            splitPredicate(
+              Option(triple.getObject.getLiteralDatatypeURI).getOrElse("http://www.w3.org/2001/XMLSchema#string")
+            )._2
 
+          if (datatype matches "string|langString") {
             tarqlPart = tarqlPart :+ s"?$bindedSubject ${predicates.find(seq => seq.contains(triplePredicate)).get(1)}:$triplePredicate ?$triplePredicate;" :+ ""
           }
           else {
-//            println(s"BIND(xsd:$datatype(?$triplePredicate) AS ?$triplePredicate$bindedPre)")
             tarqlPart = tarqlPart :+ Tarql_Writer.buildTarqlConstructStr(predicates, triplePredicate, bindedSubject, bindedPre) :+ s"BIND(xsd:$datatype(?$triplePredicate) AS ?$triplePredicate$bindedPre)"
           }
 
@@ -226,7 +226,6 @@ object Writer {
       }
 
 
-//      println(predicates.find(seq => seq.contains(triplePredicate)).get)
       val index = predicates.indexOf(predicates.find(seq => seq.contains(triplePredicate)).get)
 
       if (predicate_exists) {
