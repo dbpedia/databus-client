@@ -10,6 +10,7 @@ import org.dbpedia.databus.sparql.QueryHandler
 
 import scala.io.Source
 import scala.sys.process._
+import scala.language.postfixOps
 
 object FileUtil {
 
