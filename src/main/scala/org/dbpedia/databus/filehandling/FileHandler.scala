@@ -22,7 +22,7 @@ object FileHandler
     * @param outputFormat format of output file
     * @param outputCompression compression of output file
     */
-  def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String): Unit = {
+  def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String): Option[File] = {
 
     println(s"input file:\t\t${inputFile.pathAsString}")
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
@@ -31,8 +31,10 @@ object FileHandler
     val formatInputFile = getFormatType(inputFile, compressionInputFile)
 
     if ((outputCompression == compressionInputFile || outputCompression == "same") && (outputFormat == formatInputFile || outputFormat == "same")) {
-      val outputStream = new FileOutputStream(getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir).toJava)
+      val outFile = getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir)
+      val outputStream = new FileOutputStream(outFile.toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
+      Option(outFile)
     }
 
     else if (outputCompression != compressionInputFile && (outputFormat == formatInputFile || outputFormat == "same")) {
@@ -40,12 +42,13 @@ object FileHandler
       val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, dest_dir)
       val compressedOutStream = Compressor.compress(outputCompression, compressedFile)
       copyStream(decompressedInStream, compressedOutStream)
+      Option(compressedFile)
     }
 
     //  With FILEFORMAT CONVERSION
     else {
 
-      if (!isSupportedInFormat(formatInputFile)) return
+      if (!isSupportedInFormat(formatInputFile)) return None
 
       val newOutCompression = {
         if (outputCompression == "same") compressionInputFile
@@ -77,7 +80,7 @@ object FileHandler
 
       //DELETE TEMPDIR
       //      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
-
+      Option(targetFile)
     }
 
   }
