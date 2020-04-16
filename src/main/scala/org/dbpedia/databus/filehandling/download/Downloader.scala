@@ -11,6 +11,14 @@ import org.slf4j.LoggerFactory
 
 object Downloader {
 
+  /**
+    * Download all files of Download-Query
+    *
+    * @param queryString downloadQuery
+    * @param targetdir directory for downloaded files
+    * @param overwrite overwrite already downloaded files
+    * @return Seq of shas of downloaded files
+    */
   def downloadWithQuery(queryString: String, targetdir: File, overwrite: Boolean = false): Seq[String] = {
     val results = QueryHandler.executeDownloadQuery(queryString)
     var allSHAs = Seq.empty[String]
@@ -32,6 +40,14 @@ object Downloader {
     allSHAs
   }
 
+  /**
+    * Download a file
+    *
+    * @param url downloadURL
+    * @param sha sha of file to download
+    * @param targetDir target directory
+    * @return Boolean, return true if download succeeded
+    */
   def downloadFile(url: String, sha: String, targetDir: File): Boolean = {
     val file = targetDir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
 
@@ -71,6 +87,14 @@ object Downloader {
     true
   }
 
+  /**
+    * Download URL to a directory (and create subdirectories depending on slashes of url)
+    *
+    * @param url downloadURL
+    * @param directory target
+    * @param createDirectory create directory
+    * @param skipIfExists skip download if file already exists
+    */
   def downloadUrlToDirectory(url: URL, directory: File,
                              createDirectory: Boolean = false, skipIfExists: Boolean = false): Unit = {
 
@@ -78,6 +102,13 @@ object Downloader {
     if (!(skipIfExists && file.exists)) downloadUrlToFile(url, file, createDirectory)
   }
 
+  /**
+    * Download URL to a file
+    *
+    * @param url downloadURL
+    * @param file target file
+    * @param createParentDirectory create parent directories
+    */
   def downloadUrlToFile(url: URL, file: File, createParentDirectory: Boolean = false): Unit = {
 
     if (createParentDirectory) file.parent.createDirectoryIfNotExists()

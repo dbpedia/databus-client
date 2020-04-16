@@ -14,6 +14,14 @@ import scala.io.Source
 
 object FileHandler
 {
+  /**
+    * handle input file
+    *
+    * @param inputFile input file
+    * @param dest_dir destination directory
+    * @param outputFormat format of output file
+    * @param outputCompression compression of output file
+    */
   def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String): Unit = {
 
     println(s"input file:\t\t${inputFile.pathAsString}")
@@ -74,6 +82,15 @@ object FileHandler
 
   }
 
+  /**
+    * calculate output file depending on input file and desired output compression and format
+    *
+    * @param inputFile input file
+    * @param outputFormat format of output file
+    * @param outputCompression compression of output file
+    * @param dest_dir destination directory
+    * @return output file
+    */
   def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, dest_dir: File): File = {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
@@ -119,6 +136,12 @@ object FileHandler
     outputFile
   }
 
+  /**
+    * checks if a desired format is supported by the Databus Client
+    *
+    * @param format desired format
+    * @return true, if it is supported
+    */
   def isSupportedInFormat(format: String): Boolean = {
     if (format.matches("rdf|ttl|nt|jsonld|tsv|csv")) true
     else {
@@ -128,6 +151,13 @@ object FileHandler
     }
   }
 
+  /**
+    * get format of file
+    *
+    * @param inputFile file to get format from
+    * @param compressionInputFile compression of file
+    * @return format
+    */
   def getFormatType(inputFile: File, compressionInputFile: String): String = {
     {
       try {
@@ -142,14 +172,27 @@ object FileHandler
     }
   }
 
-  //SIZE DURCH LENGTH ERSETZEN
+  /**
+    * get format of file without dataID
+    *
+    * @param inputFile file to get format from
+    * @param compression compression of file
+    * @return format
+    */
   def getFormatTypeWithoutDataID(inputFile: File, compression: String): String = {
+    //SIZE DURCH LENGTH ERSETZEN
     val split = inputFile.name.split("\\.")
 
     if (compression == "") split(split.size - 1)
     else split(split.size - 2)
   }
 
+  /**
+    * get format of file with dataID
+    *
+    * @param inputFile file to get format from
+    * @return format
+    */
   def getFormatTypeWithDataID(inputFile: File): String = {
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
     val source = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8")
@@ -173,6 +216,12 @@ object FileHandler
     QueryHandler.getFileExtension(fileURL, inputFile.parent / "dataid.ttl")
   }
 
+  /**
+    * get compression of fileInputStream
+    *
+    * @param fileInputStream inputStream of file
+    * @return compression format
+    */
   def getCompressionType(fileInputStream: BufferedInputStream): String = {
     try {
       var ctype = CompressorStreamFactory.detect(fileInputStream)
