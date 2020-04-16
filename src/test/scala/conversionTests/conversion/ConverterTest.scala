@@ -10,6 +10,8 @@ import org.apache.jena.riot.lang.RiotParsers
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.client.api.DatabusClient
+import org.dbpedia.databus.client.api.DatabusClient.{Compression, Format}
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
@@ -127,7 +129,7 @@ class ConverterTest extends FlatSpec {
 
 //    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
 
-    time(Databus.source("./src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2").compression(Compression.bz2).format(Format.nt).execute())
+    time(DatabusClient.source("./src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2").compression(Compression.bz2).format(Format.nt).execute())
 //    Databus.source("./src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2").compression(Compression.bz2).format(Format.nt).execute()
 
 
