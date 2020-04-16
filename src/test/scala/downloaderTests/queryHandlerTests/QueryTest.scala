@@ -1,8 +1,8 @@
 package downloaderTests.queryHandlerTests
 
 import org.apache.jena.query._
-import org.dbpedia.databus.sparql.QueryHandler
-import org.dbpedia.databus.sparql.queries.DatabusQueries
+import org.dbpedia.databus.client.sparql.QueryHandler
+import org.dbpedia.databus.client.sparql.queries.DatabusQueries
 
 class QueryTest extends org.scalatest.FlatSpec {
 

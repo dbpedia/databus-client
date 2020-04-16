@@ -3,16 +3,15 @@ package conversionTests.mapping
 import java.net.URL
 
 import better.files.File
-import org.apache.jena.Jena
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory, Statement}
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.filehandling.{FileHandler, FileUtil}
-import org.dbpedia.databus.filehandling.convert.format.csv.CSVHandler
-import org.dbpedia.databus.filehandling.convert.format.rdf.RDFHandler
-import org.dbpedia.databus.filehandling.download.Downloader
-import org.scalatest.{FlatSpec, Tag}
+import org.dbpedia.databus.client.filehandling.convert.format.csv.CSVHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
+import org.dbpedia.databus.client.filehandling.download.Downloader
+import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
+import org.scalatest.FlatSpec
 
 import scala.collection.mutable
 

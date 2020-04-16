@@ -1,11 +1,11 @@
 package conversionTests.mapping
 
 import better.files.File
-import org.apache.jena.query.{Query, QueryExecution, QueryExecutionFactory, QueryFactory, QuerySolution, ResultSet}
+import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.RDFDataMgr
-import org.dbpedia.databus.filehandling.FileUtil
-import org.dbpedia.databus.sparql.QueryHandler
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.sparql.QueryHandler
 import org.scalatest.FlatSpec
 
 class getMappingTest extends FlatSpec{

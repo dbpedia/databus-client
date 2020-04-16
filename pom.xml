@@ -281,7 +281,7 @@
                     <launchers>
                         <launcher>
                             <id>databusclient</id>
-                            <mainClass>org.dbpedia.databus.main.Main</mainClass>
+                            <mainClass>org.dbpedia.databus.client.main.Main</mainClass>
                         </launcher>
                     </launchers>
                 </configuration>

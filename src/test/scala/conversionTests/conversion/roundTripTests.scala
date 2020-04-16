@@ -3,15 +3,15 @@ package conversionTests.conversion
 import better.files.File
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.{Column, DataFrame, SparkSession}
-import org.dbpedia.databus.filehandling.{FileHandler, FileUtil}
-import org.dbpedia.databus.filehandling.convert.format.csv.CSVHandler
-import org.dbpedia.databus.filehandling.convert.format.rdf.RDFHandler
-import org.dbpedia.databus.filehandling.download.Downloader
+import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.dbpedia.databus.client.filehandling.convert.format.csv.CSVHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
+import org.dbpedia.databus.client.filehandling.download.Downloader
+import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
 import org.scalatest.FlatSpec
+import org.scalatest.Matchers._
 
 import scala.collection.mutable.ListBuffer
-import org.scalatest.Matchers._
 class roundTripTests extends FlatSpec{
 
   val spark: SparkSession = SparkSession.builder()

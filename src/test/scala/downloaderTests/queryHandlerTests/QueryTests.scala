@@ -1,7 +1,7 @@
 package downloaderTests.queryHandlerTests
 
 import better.files.File
-import org.dbpedia.databus.sparql.QueryHandler
+import org.dbpedia.databus.client.sparql.QueryHandler
 import org.scalatest.FlatSpec
 
 class QueryTests extends FlatSpec{

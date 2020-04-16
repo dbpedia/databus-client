@@ -1,25 +1,16 @@
 package conversionTests.mapping
 
 import java.io.PrintWriter
-import java.util
 
 import better.files.File
-import conversionTests.mapping.TTLWriter2.{convertAllTriplesOfSubjectToTSV, getSplitPredicate}
-import org.antlr.v4.runtime.atn.SemanticContext.Predicate
 import org.apache.commons.io.FileUtils
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Row, SparkSession, types}
-import org.dbpedia.databus.filehandling.convert.format.csv.Writer
-import org.dbpedia.databus.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.{Row, SparkSession}
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.read.RDF_Reader
 import org.scalatest.FlatSpec
-import org.apache.jena.graph.Triple
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql
-import org.apache.spark.sql.catalyst.ScalaReflection.Schema
-import org.apache.spark.sql.types.{DataType, IntegerType, Metadata, StringType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.dbpedia.databus.filehandling.FileUtil
 
 import scala.collection.immutable.Vector
 

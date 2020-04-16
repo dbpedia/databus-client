@@ -10,13 +10,11 @@ import org.apache.jena.riot.lang.RiotParsers
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.api.Databus
-import org.dbpedia.databus.api.Databus.{Compression, Format}
-import org.dbpedia.databus.filehandling.FileUtil
-import org.dbpedia.databus.filehandling.FileUtil.copyStream
-import org.dbpedia.databus.filehandling.convert.compression.Compressor
-import org.dbpedia.databus.filehandling.convert.format.rdf.RDFHandler
-import org.dbpedia.databus.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
+import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._

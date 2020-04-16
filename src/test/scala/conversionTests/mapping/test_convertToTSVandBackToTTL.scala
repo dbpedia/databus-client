@@ -4,14 +4,9 @@ import java.io.PrintWriter
 
 import better.files.File
 import org.apache.jena.graph.Triple
-import org.apache.jena.riot.RDFFormat
-import org.apache.jena.shared.impl.PrefixMappingImpl
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.dbpedia.databus.filehandling.FileUtil
-import org.dbpedia.databus.filehandling.convert.format.rdf.read.RDF_Reader
-import org.dbpedia.databus.filehandling.convert.format.rdf.write.RDF_Writer
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.scalatest.FlatSpec
 
@@ -106,7 +101,7 @@ object TTLWriterasd {
 
   var tarqlBindings = Seq.empty[String]
   var tarqlConstruct = Seq.empty[String]
-  var tarqlPrefixes = Seq[String]("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>")
+  var tarqlPrefixes: Seq[String] = Seq[String]("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>")
 
   def convertToTSV(data: RDD[Triple], spark: SparkSession): Vector[DataFrame] = {
 
@@ -124,7 +119,7 @@ object TTLWriterasd {
     allPredicates.collect.foreach(pre => {
 
       val split = getSplitPredicate(pre:String)
-      mappingPredicates = mappingPredicates :+ Vector((split._2),(split._1), s"$prefixPre${split._2}")
+      mappingPredicates = mappingPredicates :+ Vector(split._2, split._1, s"$prefixPre${split._2}")
 
       headerVector = headerVector :+ split._2
     })

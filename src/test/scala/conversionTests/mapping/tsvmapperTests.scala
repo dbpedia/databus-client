@@ -1,14 +1,13 @@
 package conversionTests.mapping
 
 import better.files.File
-import org.apache.jena.graph.{NodeFactory, Triple}
+import org.apache.jena.graph.Triple
 import org.apache.jena.riot.RDFFormat
-import org.apache.jena.shared.impl.PrefixMappingImpl
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.filehandling.FileUtil
-import org.dbpedia.databus.filehandling.convert.format.rdf.write.RDF_Writer
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.write.RDF_Writer
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.scalatest.FlatSpec
 
