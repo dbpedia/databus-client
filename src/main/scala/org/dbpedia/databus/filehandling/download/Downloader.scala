@@ -20,24 +20,37 @@ object Downloader {
 
     results.foreach(fileIRI => {
       val fileSHA = QueryHandler.getSHA256Sum(fileIRI)
-      if (overwrite) downloadFile(fileIRI, fileSHA, targetdir)
+      var downloaded = true
+      if (overwrite) downloaded = downloadFile(fileIRI, fileSHA, targetdir)
       else {
-        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) downloadFile(fileIRI, fileSHA, targetdir)
+        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) downloaded = downloadFile(fileIRI, fileSHA, targetdir)
         else println(s"$fileIRI --> already exists in Cache")
       }
-      allSHAs = allSHAs :+ fileSHA
+      if(downloaded) allSHAs = allSHAs :+ fileSHA
     })
 
     allSHAs
   }
 
-  def downloadFile(url: String, sha: String, targetDir: File): Unit = {
+  def downloadFile(url: String, sha: String, targetDir: File): Boolean = {
     val file = targetDir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
 
-    do {
-      downloadUrlToFile(new URL(url), file, createParentDirectory = true)
-    } while (!FileUtil.checkSum(file, sha))
+    var correctFileTransfer = false
 
+    //repeat download 5 times if file transfer errors occure
+    (0 to 4).iterator
+      .takeWhile(_ => !correctFileTransfer)
+      .foreach(_ => {
+        Downloader.downloadUrlToFile(new URL(url), file, createParentDirectory = true)
+        correctFileTransfer = FileUtil.checkSum(file, sha)
+      })
+
+    if (!correctFileTransfer) {
+      println("file download had issues")
+      LoggerFactory.getLogger("Download-Logger").error(s"couldn't download file ${url} properly")
+      file.delete()
+      return false
+    }
 
     val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
     try {
@@ -49,19 +62,13 @@ object Downloader {
     val dataIdFile = file.parent / "dataid.ttl"
 
     if (!dataIdFile.exists()) { //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
-//      try {
-            if(!QueryHandler.downloadDataIdFile(url, dataIdFile)) {
-              println("couldn't query dataidfile")
-              LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
-            }
-//      }
-//      catch {
-//        case _: FileNotFoundException =>
-//          println("couldn't query dataidfile")
-//          LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
-//
-//      }
+      if(!QueryHandler.downloadDataIdFile(url, dataIdFile)) {
+        println("couldn't query dataidfile")
+        LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
+      }
     }
+
+    true
   }
 
   def downloadUrlToDirectory(url: URL, directory: File,
