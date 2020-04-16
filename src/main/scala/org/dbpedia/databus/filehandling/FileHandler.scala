@@ -34,7 +34,7 @@ object FileHandler
       val outFile = getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir)
       val outputStream = new FileOutputStream(outFile.toJava)
       copyStream(new FileInputStream(inputFile.toJava), outputStream)
-      Option(outFile)
+      Some(outFile)
     }
 
     else if (outputCompression != compressionInputFile && (outputFormat == formatInputFile || outputFormat == "same")) {
@@ -42,7 +42,7 @@ object FileHandler
       val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, dest_dir)
       val compressedOutStream = Compressor.compress(outputCompression, compressedFile)
       copyStream(decompressedInStream, compressedOutStream)
-      Option(compressedFile)
+      Some(compressedFile)
     }
 
     //  With FILEFORMAT CONVERSION
@@ -80,7 +80,7 @@ object FileHandler
 
       //DELETE TEMPDIR
       //      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
-      Option(targetFile)
+      Some(targetFile)
     }
 
   }

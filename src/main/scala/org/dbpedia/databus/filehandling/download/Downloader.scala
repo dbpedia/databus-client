@@ -1,6 +1,6 @@
 package org.dbpedia.databus.filehandling.download
 
-import java.io.{FileNotFoundException, FileOutputStream, FileWriter}
+import java.io.{FileNotFoundException, FileOutputStream, FileWriter, IOException}
 import java.net.URL
 
 import better.files.File
@@ -28,27 +28,39 @@ object Downloader {
 
     results.foreach(fileIRI => {
       val fileSHA = QueryHandler.getSHA256Sum(fileIRI)
-      var downloaded = true
-      if (overwrite) downloaded = downloadFile(fileIRI, fileSHA, targetdir)
-      else {
-        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) downloaded = downloadFile(fileIRI, fileSHA, targetdir)
-        else println(s"$fileIRI --> already exists in Cache")
+
+      if (overwrite) {
+        downloadFile(fileIRI, fileSHA, targetdir) match {
+          case Some(file: File) => allSHAs = allSHAs :+ fileSHA
+          case None => ""
+        }
       }
-      if(downloaded) allSHAs = allSHAs :+ fileSHA
+      else {
+        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) {
+          downloadFile(fileIRI, fileSHA, targetdir) match {
+              case Some(file: File) => allSHAs = allSHAs :+ fileSHA
+              case None => ""
+          }
+        }
+        else {
+          println(s"$fileIRI --> already exists in Cache")
+          allSHAs = allSHAs :+ fileSHA
+        }
+      }
     })
 
     allSHAs
   }
 
   /**
-    * Download a file
+    * Download a file and its dataID-file and record it in the cache(shas.txt)
     *
     * @param url downloadURL
     * @param sha sha of file to download
     * @param targetDir target directory
     * @return Boolean, return true if download succeeded
     */
-  def downloadFile(url: String, sha: String, targetDir: File): Boolean = {
+  def downloadFile(url: String, sha: String, targetDir: File): Option[File] = {
     val file = targetDir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
 
     var correctFileTransfer = false
@@ -63,16 +75,14 @@ object Downloader {
 
     if (!correctFileTransfer) {
       println("file download had issues")
-      LoggerFactory.getLogger("Download-Logger").error(s"couldn't download file ${url} properly")
+      LoggerFactory.getLogger("Download-Logger").error(s"couldn't download file $url properly")
       file.delete()
-      return false
+      return None
     }
 
     val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
-    try {
-      fw.append(s"$sha\t${file.pathAsString}\n")
-    }
-    finally fw.close()
+    fw.append(s"$sha\t${file.pathAsString}\n")
+    fw.close()
 
 
     val dataIdFile = file.parent / "dataid.ttl"
@@ -84,7 +94,7 @@ object Downloader {
       }
     }
 
-    true
+    Some(file)
   }
 
   /**

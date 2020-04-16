@@ -27,8 +27,8 @@ class roundTripTests extends FlatSpec{
   val sparkContext: SparkContext = spark.sparkContext
   sparkContext.setLogLevel("WARN")
 
-  val testFileDir = File("./src/test/resources/testFiles/roundTripTestFiles/mapping/")
-  val tempDir = File("./src/test/resources/testFiles/roundTripTestFiles/mapping/tempDir")
+  val testFileDir:File = File("./src/test/resources/roundTripTestFiles/mapping/")
+  val tempDir:File = testFileDir / "tempDir"
 
 
   "roundtriptest" should "succeed for RDF to TSV and back to RDF" in{
@@ -160,6 +160,13 @@ class roundTripTests extends FlatSpec{
         false
       }
     }
+println("in")
+    val it = statementsInput.iterator()
+    while (it.hasNext) {println(it.next())}
+
+println("out")
+    val out = statementsOutput.iterator()
+    while (out.hasNext) {println(out.next())}
 
     if (inputContainsAllOutputData && outputContainsAllofInput) true
     else false
@@ -182,13 +189,13 @@ class roundTripTests extends FlatSpec{
 
     val stmtsOnlyInInput = inputModel.listStatements()
 
-    println("Some data can be lost in TSV because only one object can be saved per predicate. The following instructions are not in the outputModel:")
+    println("Some data can be lost in TSV because only one object can be saved per predicate. The following data is not in the outputModel:")
 
     while (stmtsOnlyInInput.hasNext) {
       val stmt = stmtsOnlyInInput.nextStatement()
       val prop = outputModel.getProperty(stmt.getSubject, stmt.getPredicate)
 
-      println(s"Statement: $prop")
+      println(s"Statement: $stmt")
       if (prop == null) {equal=false}
     }
 

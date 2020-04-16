@@ -24,9 +24,10 @@ class roundTripTests extends FlatSpec{
   sparkContext.setLogLevel("WARN")
 
 
-  val testFileDir:File = downloadFiles(File("./src/test/resources/roundTripTestFiles"))
+  val testFileDir:File = downloadFiles(File("./src/test/resources/roundTripTestFiles/conversion"))
 //  val testFileDir = File("./src/test/resources/roundTripTestFiles")
-  val tempDir:File = File("./src/test/resources/tempDir")
+  val outDir:File = testFileDir / "output"
+  val tempDir:File = outDir / "tempDir"
 
   def downloadFiles(testFileDir:File): File ={
 
@@ -165,7 +166,12 @@ class roundTripTests extends FlatSpec{
     }
 
 
-    var success = true
+    println(successList.isEmpty)
+    var success = {
+      if (successList.isEmpty) false
+      else true
+    }
+
     successList.foreach(conversion => {
       if (conversion(1) == "error") {
         success = false
@@ -206,9 +212,13 @@ class roundTripTests extends FlatSpec{
       else successList += Seq(inputFile.pathAsString, "error")
     }
 
-    var success = true
+    var success = {
+      if (successList.isEmpty) false
+      else true
+    }
 
     successList.foreach(conversion => {
+      println(s"${conversion.head},${conversion(1)}")
       if (conversion(1) == "error") {
         success = false
         println(s"${conversion.head} did not convert properly")
