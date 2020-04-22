@@ -10,6 +10,14 @@ import org.dbpedia.databus.client.filehandling.convert.format.rdf.write.{NTriple
 
 object RDFHandler {
 
+  /**
+   * read RDF file as RDD[Triple]
+   *
+   * @param inputFile rdf file
+   * @param inputFormat rdf serialization
+   * @param spark sparkSession
+   * @return rdf data as RDD[Triples]
+   */
   def readRDF(inputFile: File, inputFormat: String, spark: SparkSession): RDD[Triple] = {
 
     inputFormat match {
@@ -31,19 +39,18 @@ object RDFHandler {
         }
 
       case "jsonld" =>
-        RDF_Reader.read(spark, inputFile) //Ein Objekt pro Datei
-
-//      case "jsonl" =>
-//        try { //Mehrere Objekte pro Datei
-//          JSONL_Reader.readJSONL(spark, inputFile)
-//        } catch {
-//          case _: SparkException =>
-//            println("Json Object ueber mehrere Zeilen")
-//            RDF_Reader.read(spark, inputFile)
-//        }
+        RDF_Reader.read(spark, inputFile)
     }
   }
 
+  /**
+   * write data to a rdf serialization
+   *
+   * @param tempDir target temporary directory
+   * @param data input data
+   * @param outputFormat output format
+   * @param spark sparkSession
+   */
   def writeRDF(tempDir: File, data: RDD[Triple], outputFormat: String, spark: SparkSession): Unit = {
 
     outputFormat match {

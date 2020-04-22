@@ -24,9 +24,6 @@ For usage of parameters see below:
 
   footer("\nFor all other tricks, consult the documentation!")
 
-//  //used to download files
-//  val query: ScallopOption[String] = opt[String](descr = "any ?file query; You can pass the query directly or save it in a textfile and pass the filepath")
-
   val source: ScallopOption[String] = opt[String](descr = "Set the source you want to convert. A source can either be a [file|directory] to convert already existing files, or a [query file|query string|collection URI] to convert queried files. Notice that query files must have .sparql or .query as extension to be recognized.") //default = Some("./src/resources/databus-client-testbed/format-testbed/2019.08.30/"),
 
   val format: ScallopOption[String] = opt[String](default = Some("same"), descr = "set the file format of the output file")

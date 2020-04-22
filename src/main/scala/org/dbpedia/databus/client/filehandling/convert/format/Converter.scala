@@ -8,8 +8,20 @@ import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
+/**
+ * Converter for tsv, csv and several RDF serializations (nt,ttl,rdfxml,json-ld)
+ */
 object Converter {
 
+  /**
+   * converts a file to a desired format
+   *
+   * @param inputFile input file
+   * @param inputFormat input format
+   * @param outputFormat output format
+   * @param sha sha256-sum of input file
+   * @return converted file
+   */
   def convertFormat(inputFile: File, inputFormat: String, outputFormat: String, sha:String): File = {
 
     val spark = SparkSession.builder()

@@ -10,9 +10,7 @@ object Main {
 
   def main(args: Array[String]) {
 
-    //    args.foreach(println(_))
-
-    println("Welcome to DBpedia - Databus-Client")
+    println("DBpedia - Databus-Client")
 
     val conf = new CLIconf(args)
     val cache_dir = File("./target/databus.tmp/cache_dir/")

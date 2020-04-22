@@ -6,8 +6,19 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.client.filehandling.convert.format.csv
 
+/**
+ * object to handle csv and tsv files
+ */
 object CSVHandler {
 
+  /**
+   * read file with tsv or csv format as Spark DataFrame
+   *
+   * @param inputFile input file
+   * @param inputFormat input format
+   * @param spark sparkSession
+   * @return data in a Spark DataFrame
+   */
   def read(inputFile: File, inputFormat: String, spark: SparkSession): DataFrame = {
 
     inputFormat match {
@@ -19,6 +30,7 @@ object CSVHandler {
     }
 
   }
+
 
   def write(tempDir:File, data:DataFrame, outputFormat: String, spark: SparkSession): Unit = {
 

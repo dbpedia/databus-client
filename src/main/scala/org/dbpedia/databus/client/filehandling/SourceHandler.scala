@@ -11,6 +11,14 @@ import org.slf4j.LoggerFactory
 
 object SourceHandler {
 
+  /**
+   * convert input files in client-supported formats(no query files!) to the desired format and compression
+   *
+   * @param source file or directory
+   * @param target target directory
+   * @param format desired format
+   * @param compression desired compression
+   */
   def handleSource(source: File, target: File, format: String, compression: String):Unit = {
     printTask("source", source.pathAsString, target.pathAsString)
 
@@ -33,7 +41,17 @@ object SourceHandler {
     }
   }
 
-  def handleQuery(query: String, target: File, cache: File, format: String, compression: String, overwrite: Boolean):Unit = {
+  /**
+   * download files of the input query and convert them to the desired format and compression
+   *
+   * @param query sparql query
+   * @param target target directory
+   * @param cache cache directory
+   * @param format output format
+   * @param compression output compression
+   * @param overwrite overwrite files in the cache directory
+   */
+  def handleQuery(query: String, target: File, cache: File, format: String, compression: String, overwrite: Boolean=false):Unit = {
 
     val queryStr = {
       if (isCollection(query)) getQueryOfCollection(query)
@@ -50,11 +68,16 @@ object SourceHandler {
     println(s"CONVERSION TOOL:\n")
 
     allSHAs.foreach(
-      sha => FileHandler.handleFile(FileUtil.getFileWithSHA256InCache(sha, File("./target/databus.tmp/cache_dir/shas.txt")), target, format, compression)
+      sha => FileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")), target, format, compression)
     )
 
   }
 
+  /**
+   * checks if desired format is supported
+   * @param format input format
+   * @return
+   */
   def isSupportedOutFormat(format: String): Boolean = {
     if (format.matches("rdfxml|ttl|nt|jsonld|tsv|csv|same")) true
     else {
@@ -64,6 +87,11 @@ object SourceHandler {
     }
   }
 
+  /**
+   * checks if desired compression is a supported
+   * @param compression input compression
+   * @return
+   */
   def isSupportedOutCompression(compression: String): Boolean = {
     if (compression.matches("bz2|gz|deflate|lzma|sz|xz|zstd||same")) true
     else {
@@ -73,14 +101,24 @@ object SourceHandler {
     }
   }
 
+  /**
+   * checks if a string is a DBpedia collection
+   * @param str string to check
+   * @return
+   */
   def isCollection(str: String): Boolean = {
-    val collection = """http[s]:\/\/.*\/.*\/collections\/.*""".r
+    val collection = """http[s]?://databus.dbpedia.org/.*/collections/.*""".r
     str match {
       case collection(_*) => true
       case _ => false
     }
   }
 
+  /**
+   * gets collection-related sparql query
+   * @param uri collectionURI
+   * @return query string
+   */
   def getQueryOfCollection(uri: String): String = {
     val client = HttpClientBuilder.create().build()
 
