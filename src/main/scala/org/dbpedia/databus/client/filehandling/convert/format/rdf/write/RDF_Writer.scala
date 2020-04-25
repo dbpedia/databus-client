@@ -18,19 +18,19 @@ object RDF_Writer {
     val os = new ByteArrayOutputStream()
     val models = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToRDF(allTriplesOfSubject)).toSeq
 
-    var mergedModel: Model = ModelFactory.createDefaultModel()
+    val mergedModel: Model = ModelFactory.createDefaultModel()
     models.foreach(model => mergedModel.add(model))
 
     RDFDataMgr.write(os, mergedModel, lang)
 
-    val rdfxml_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
+    val rdf_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
 
-    spark.sparkContext.parallelize(Seq(rdfxml_string))
+    spark.sparkContext.parallelize(Seq(rdf_string))
   }
 
   def convertIteratorToRDF(triples: Iterable[Triple]): Model = {
 
-    var model: Model = ModelFactory.createDefaultModel()
+    val model: Model = ModelFactory.createDefaultModel()
 
     triples.foreach(triple => {
       val stmt = ResourceFactory.createStatement(
