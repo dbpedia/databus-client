@@ -3,30 +3,34 @@ package org.dbpedia.databus.client.filehandling.convert.format.rdf.write
 import java.io.ByteArrayOutputStream
 
 import org.apache.jena.graph.{NodeFactory, Triple}
-import org.apache.jena.rdf.model.{Model, ResourceFactory}
+import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.convert.format.ModelWrapper
 
 import scala.io.{Codec, Source}
 
 object RDF_Writer {
 
   def convertToRDF(data: RDD[Triple], spark: SparkSession, lang: RDFFormat): RDD[String] = {
-    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2).collect()
 
     val os = new ByteArrayOutputStream()
-    triplesGroupedBySubject.foreach(allTriplesOfSubject => convertIteratorToRDF(allTriplesOfSubject, ModelWrapper.model))
+    val models = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToRDF(allTriplesOfSubject)).toSeq
 
-    RDFDataMgr.write(os, ModelWrapper.model, lang)
+    var mergedModel: Model = ModelFactory.createDefaultModel()
+    models.foreach(model => mergedModel.add(model))
+
+    RDFDataMgr.write(os, mergedModel, lang)
+
     val rdfxml_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
-    ModelWrapper.resetModel()
 
     spark.sparkContext.parallelize(Seq(rdfxml_string))
   }
 
-  def convertIteratorToRDF(triples: Iterable[Triple], model: Model): Unit = {
+  def convertIteratorToRDF(triples: Iterable[Triple]): Model = {
+
+    var model: Model = ModelFactory.createDefaultModel()
 
     triples.foreach(triple => {
       val stmt = ResourceFactory.createStatement(
@@ -47,6 +51,8 @@ object RDF_Writer {
       model.add(stmt)
 
     })
+
+    model
   }
 
 }
