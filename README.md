@@ -9,8 +9,8 @@ Example Application Deployment: Download the files of 5 datasets as given in the
 
 ## Current State
 
-**alpha**: 
-code should compile and - if you are lucky - produce results for compression and RDF conversion. Please expect a tremendous amount of code refactoring and fluctuation. There will be an open-source licence, presumably GPL. 
+**beta**: 
+most of the times it should produce expected results for compression and RDF conversion. Please expect some code refactoring and fluctuation. There will be an open-source licence, either GPL or Apache.  
 
 
 ## Concept
