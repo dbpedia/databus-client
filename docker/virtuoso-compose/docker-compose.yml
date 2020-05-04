@@ -26,8 +26,8 @@ services:
       - toLoad:/var/toLoad
     entrypoint: >
       bash -c 'bash /opt/databus-client/entrypoint.sh
-      && mv -t /var/toLoad $$(find /var/repo -name "*.gz")
-      && touch /var/toLoad/complete'
+      && mv -t /var/toLoad $$(find /var/repo -name "*.gz");
+      touch /var/toLoad/complete'
 
 volumes:
   toLoad:
