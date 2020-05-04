@@ -1,6 +1,6 @@
 package org.dbpedia.databus.client.filehandling.download
 
-import java.io.{FileOutputStream, FileWriter}
+import java.io.{FileNotFoundException, FileOutputStream, FileWriter}
 import java.net.URL
 
 import better.files.File
@@ -125,16 +125,21 @@ object Downloader {
 
     System.err.println(s"$url -> $file")
 
-    val conn = url.openConnection()
-    val cis = new LoggingInputStream(conn.getInputStream, conn.getContentLengthLong, 1L << 21)
-    val fos = new FileOutputStream(file.toJava)
+    try{
+      val conn = url.openConnection()
+      val cis = new LoggingInputStream(conn.getInputStream, conn.getContentLengthLong, 1L << 21)
+      val fos = new FileOutputStream(file.toJava)
 
-    try {
-      IOUtils.copy(cis, fos)
-    } finally {
-      fos.close()
-      cis.close()
+      try {
+        IOUtils.copy(cis, fos)
+      } finally {
+        fos.close()
+        cis.close()
+      }
+    } catch {
+      case noInputStream: FileNotFoundException => LoggerFactory.getLogger("DownloadLogger").error(s"Uri ${url.toString} doesnt have inputstream")
     }
+
   }
 
 
