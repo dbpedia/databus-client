@@ -1,8 +1,7 @@
 package org.dbpedia.databus.client.filehandling
 
-import java.io.{InputStream, OutputStream}
-import java.nio.file.Files
-import java.security.MessageDigest
+import java.io.{FileInputStream, InputStream, OutputStream}
+import java.security.{DigestInputStream, MessageDigest}
 
 import better.files.File
 import org.apache.commons.io.IOUtils
@@ -78,9 +77,18 @@ object FileUtil {
    * @return sha256 string
    */
   def getSha256(file:File) : String = {
-    MessageDigest.getInstance("SHA-256")
-      .digest(Files.readAllBytes(file.path))
-      .map("%02x".format(_)).mkString
+    val sha = MessageDigest.getInstance("SHA-256")
+    val buffer = new Array[Byte](8192)
+    val dis = new DigestInputStream(new FileInputStream(file.toJava), sha)
+
+    try {
+      while (dis.read(buffer) != -1) {
+      }
+    } finally {
+      dis.close()
+    }
+
+    sha.digest.map("%02x".format(_)).mkString
   }
 
   /**
