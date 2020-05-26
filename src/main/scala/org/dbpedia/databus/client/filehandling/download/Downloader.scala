@@ -1,6 +1,6 @@
 package org.dbpedia.databus.client.filehandling.download
 
-import java.io.{FileNotFoundException, FileOutputStream, FileWriter}
+import java.io.{FileNotFoundException, FileOutputStream, FileWriter, IOException}
 import java.net.URL
 
 import better.files.File
@@ -137,6 +137,7 @@ object Downloader {
         cis.close()
       }
     } catch {
+      case noPermission: IOException => LoggerFactory.getLogger("DownloadLogger").error(s"No Permission for ${url.toString}")
       case noInputStream: FileNotFoundException => LoggerFactory.getLogger("DownloadLogger").error(s"Uri ${url.toString} doesnt have inputstream")
     }
 
