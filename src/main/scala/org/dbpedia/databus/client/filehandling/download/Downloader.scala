@@ -70,13 +70,17 @@ object Downloader {
       .takeWhile(_ => !correctFileTransfer)
       .foreach(_ => {
         Downloader.downloadUrlToFile(new URL(url), file, createParentDirectory = true)
-        correctFileTransfer = FileUtil.checkSum(file, sha)
+        try {
+          correctFileTransfer = FileUtil.checkSum(file, sha)
+        } catch {
+          case fileNotFoundException: FileNotFoundException => ""
+        }
       })
 
     if (!correctFileTransfer) {
       println("file download had issues")
       LoggerFactory.getLogger("Download-Logger").error(s"couldn't download file $url properly")
-      file.delete()
+      file.delete(true)
       return None
     }
 
