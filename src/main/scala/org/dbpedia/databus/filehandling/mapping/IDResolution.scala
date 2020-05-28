@@ -56,7 +56,7 @@ object IDResolution {
           .write
           .option("compression", "bzip2")
           .text(targetPath + "/" + file.getName)
-      case dir if dir.isFile =>
+      case dir if dir.isDirectory =>
         dir.listFiles().filter(_.isFile).foreach(file => {
           resolve(file.getAbsolutePath, mappingDS)
             .write
