@@ -2,9 +2,8 @@ package org.dbpedia.databus.filehandling.mapping
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.{Dataset, SQLContext, SparkSession}
-import org.dbpedia.databus.filehandling.mapping.IDResolution.master
 
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import scala.collection.mutable.ListBuffer
 
 /**
  * Create owl:sameAs links for a specific IRI namespace based on the DBpedia id-management
@@ -16,12 +15,12 @@ object Links {
 
   private val helpMsg: String =
     """
-      |mvn scala:run -DmainClass=org.example.MyClass -DaddArgs="<input>|<namespace>|<output>"
+      |mvn scala:run -DmainClass=org.dbpedia.databus.filehandling.mapping.Links -DaddArgs="<input>|<namespace>|<output>"
       |
       |arguments:
       |  input     - input tsv (DBpedia-Databus: jj-author/id-management/global-ids)
-      |  namespcae - namespace to create links for
-      |  output    - output directory of created ntriple files
+      |  namespace - namespace to create links for
+      |  output    - output directory of created NTriples files
       |""".stripMargin
 
   def main(args: Array[String]): Unit = {
@@ -50,15 +49,6 @@ object Links {
       .write
       .option("compression", "bzip2")
       .text(targetPath)
-  }
-
-  /**
-   * DBpedia id-management entry
-   * @param original_iri original source IRI
-   * @param cluster_id_base58 DBpedia global id
-   */
-  case class SameThingEntry(original_iri: String, cluster_id_base58: String) {
-    lazy val global_iri: String = "https://global.dbpedia.org/id/" + cluster_id_base58
   }
 
   def sameAs(sameThingEntiesDS: Dataset[SameThingEntry], iRINamespace: Broadcast[String])
