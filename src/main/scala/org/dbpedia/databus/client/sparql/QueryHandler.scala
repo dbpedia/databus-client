@@ -1,5 +1,6 @@
 package org.dbpedia.databus.client.sparql
 
+import java.io.FileNotFoundException
 import java.net.URL
 
 import better.files.File
@@ -9,6 +10,7 @@ import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
 import org.dbpedia.databus.client.sparql.queries.{DataIdQueries, DatabusQueries, MappingQueries}
+import org.slf4j.LoggerFactory
 
 object QueryHandler {
 
@@ -66,8 +68,16 @@ object QueryHandler {
     if (result.nonEmpty) {
       val sparqlVar = result.head.varNames().next()
       val dataIdURL = result.head.getResource(sparqlVar).toString
-      FileUtils.copyURLToFile(new URL(dataIdURL), dataIdFile.toJava)
-      true
+
+      try {
+        FileUtils.copyURLToFile(new URL(dataIdURL), dataIdFile.toJava)
+        true
+      } catch {
+        case fileNotFoundException: FileNotFoundException =>
+          LoggerFactory.getLogger("DownloadLogger").error(s"dataID URL: $dataIdURL not found.")
+          false
+      }
+
     }
     else{
       false
