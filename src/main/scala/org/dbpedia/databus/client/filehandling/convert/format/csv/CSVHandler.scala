@@ -77,7 +77,7 @@ object CSVHandler {
   }
 
 
-  def writeTriples(tempDir: File, data: RDD[Triple], outputFormat: String, delimiter:Character, spark: SparkSession, createMappingFile:Boolean=true): File = {
+  def writeTriples(tempDir: File, data: RDD[Triple], outputFormat: String, delimiter:Char, spark: SparkSession, createMappingFile:Boolean=true): File = {
     outputFormat match {
       case "tsv" =>
         Writer.writeTriples(data, "\t", tempDir, spark, createMappingFile)

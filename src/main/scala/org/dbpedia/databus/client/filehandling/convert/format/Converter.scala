@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory
  */
 object Converter {
 
+  var delimiter = ""
+  var createMappingFile:Option[Boolean] = None
+
   /**
    * converts a file to a desired format
    *
@@ -63,12 +66,18 @@ object Converter {
       else {
         val triples = RDFHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
 
-        val createMappingFile = {
-          if (scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a mapping file.\n") matches "yes|y") true
-          else false
+        if (createMappingFile.isEmpty){
+          createMappingFile = {
+            if (scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a mapping file.\n") matches "yes|y") Option(true)
+            else Option(false)
+          }
         }
-        val delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).asInstanceOf[Character]
-        mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, delimiter, spark, createMappingFile)
+
+        if (delimiter.isEmpty){
+          delimiter = scala.io.StdIn.readLine("Please type delimiter of CSV file:\n").toCharArray.apply(0).toString
+        }
+
+        mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, delimiter.charAt(0), spark, createMappingFile.get)
       }
     }
 
