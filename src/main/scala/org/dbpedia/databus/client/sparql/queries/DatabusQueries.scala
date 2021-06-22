@@ -53,4 +53,17 @@ object DatabusQueries {
        |  ?mapping <http://tmp-namespace.org/databusFixRequired> ?file .
        |}
        |""".stripMargin
+
+  def queryDownloadURLOfDatabusFiles(files: Seq[String]): String = {
+    val databusFilesString = files.mkString("(<",">) (<",">)")
+    s"""
+       |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+       |
+       |SELECT DISTINCT ?file WHERE {
+       |  	VALUES (?databusfile) {$databusFilesString}
+       |  	?distribution ?o ?databusfile .
+       |	  ?distribution dcat:downloadURL ?file .
+       |}
+       |""".stripMargin
+  }
 }

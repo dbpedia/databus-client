@@ -6,6 +6,8 @@ import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.{BasicResponseHandler, HttpClientBuilder}
 import org.dbpedia.databus.client.filehandling.download.Downloader
+import org.dbpedia.databus.client.sparql.QueryHandler
+import org.dbpedia.databus.client.sparql.queries.DatabusQueries
 import org.slf4j.LoggerFactory
 
 
@@ -53,12 +55,15 @@ object SourceHandler {
    */
   def handleQuery(query: String, target: File, cache: File, format: String, compression: String, overwrite: Boolean=false):Unit = {
 
-    val queryStr = {
+    var queryStr = {
       if (isCollection(query)) getQueryOfCollection(query)
       else query
     }
 
     printTask("query", queryStr, target.pathAsString)
+
+    //necessary due collection queries query the permament DBpedia URIs not the actual download links
+    if(isCollection(query)) queryStr = DatabusQueries.queryDownloadURLOfDatabusFiles(QueryHandler.executeDownloadQuery(queryStr))
 
     println("DOWNLOAD TOOL:")
 

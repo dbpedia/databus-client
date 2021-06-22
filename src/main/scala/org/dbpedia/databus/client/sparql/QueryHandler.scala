@@ -2,7 +2,6 @@ package org.dbpedia.databus.client.sparql
 
 import java.io.FileNotFoundException
 import java.net.URL
-
 import better.files.File
 import org.apache.commons.io.FileUtils
 import org.apache.jena.JenaRuntime
@@ -10,11 +9,12 @@ import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
 import org.dbpedia.databus.client.sparql.queries.{DataIdQueries, DatabusQueries, MappingQueries}
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 object QueryHandler {
 
   val service = "https://databus.dbpedia.org/repo/sparql"
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def executeQuery(queryString: String, model:Model = ModelFactory.createDefaultModel()): Seq[QuerySolution] = {
 
@@ -54,9 +54,15 @@ object QueryHandler {
   def getSHA256Sum(url: String): String = {
 
     val results = executeQuery(DatabusQueries.querySha256(url))
-    val sparqlVar = results.head.varNames().next()
 
-    results.head.getLiteral(sparqlVar).getString
+    try{
+      val sparqlVar = results.head.varNames().next()
+      results.head.getLiteral(sparqlVar).getString
+    } catch {
+      case noSuchElementException: NoSuchElementException =>
+        logger.error(s"No Sha Sum found for $url")
+        ""
+    }
 
   }
 

@@ -29,22 +29,24 @@ object Downloader {
     results.foreach(fileIRI => {
       val fileSHA = QueryHandler.getSHA256Sum(fileIRI)
 
-      if (overwrite) {
-        downloadFile(fileIRI, fileSHA, targetdir) match {
-          case Some(file: File) => allSHAs = allSHAs :+ fileSHA
-          case None => ""
-        }
-      }
-      else {
-        if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) {
+      if (fileSHA != "") {
+        if (overwrite) {
           downloadFile(fileIRI, fileSHA, targetdir) match {
-              case Some(file: File) => allSHAs = allSHAs :+ fileSHA
-              case None => ""
+            case Some(file: File) => allSHAs = allSHAs :+ fileSHA
+            case None => ""
           }
         }
         else {
-          println(s"$fileIRI --> already exists in Cache")
-          allSHAs = allSHAs :+ fileSHA
+          if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) {
+            downloadFile(fileIRI, fileSHA, targetdir) match {
+                case Some(file: File) => allSHAs = allSHAs :+ fileSHA
+                case None => ""
+            }
+          }
+          else {
+            println(s"$fileIRI --> already exists in Cache")
+            allSHAs = allSHAs :+ fileSHA
+          }
         }
       }
     })
@@ -80,7 +82,7 @@ object Downloader {
     if (!correctFileTransfer) {
       println("file download had issues")
       LoggerFactory.getLogger("Download-Logger").error(s"couldn't download file $url properly")
-      file.delete(true)
+      file.delete(swallowIOExceptions = true)
       return None
     }
 
