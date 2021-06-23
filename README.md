@@ -45,6 +45,11 @@ Execution example
 bin/DatabusClient --source ./src/resources/queries/example.sparql --target converted_files/ -f jsonld -c gz 
 ```
 
+You can also use the released jar, instead of cloning the whole repository
+```
+java -jar databus-client-1.0-SNAPSHOT.jar -s "https://databus.dbpedia.org/rogargon/collections/browsable_core"
+```
+
 List of possible command line options.
 
 | Option  | Description  | Default |

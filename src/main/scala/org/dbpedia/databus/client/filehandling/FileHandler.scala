@@ -24,7 +24,7 @@ object FileHandler
     */
   def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String): Option[File] = {
 
-    println(s"input file:\t\t${inputFile.pathAsString}")
+    println(s"input file:\t${inputFile.pathAsString}")
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
 
     val compressionInputFile = getCompressionType(bufferedInputStream)
