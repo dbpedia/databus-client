@@ -132,7 +132,7 @@ object QueryHandler {
     result.map(querySolution => querySolution.getResource(sparqlVar).toString)
   }
 
-  def getMapping(sha: String): Seq[String] = {
+  def getPossibleMappings(sha: String): Seq[String] = {
 
     val results = executeQuery(
       DatabusQueries.queryMappingInfoFile(sha)
@@ -140,9 +140,19 @@ object QueryHandler {
 
     if (results.nonEmpty) {
       val sparqlVar = results.head.varNames().next()
-      val mappingInfoFile = results.head.getResource(sparqlVar).toString
-      println(s"MappingInfoFile: $mappingInfoFile")
-      getMappingFileAndInfo(mappingInfoFile)
+      val possibleMappings = {
+        try {
+          results.map(solution => solution.getResource(sparqlVar).toString)
+        } catch {
+          case nullPointerException: NullPointerException => Seq.empty[String]
+        }
+      }
+
+      println(s"possible MappingInfoFile's:")
+      possibleMappings.foreach(println(_))
+
+//      getMappingFileAndInfo(mappingInfoFile)
+      possibleMappings
     }
     else {
       Seq.empty[String]

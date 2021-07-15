@@ -4,26 +4,26 @@ object MappingQueries {
 
   def queryMappingFile(mappingInfoFile:String): String =
     s"""
-       |PREFIX tmp: <http://tmp-namespace.org/>
+       |PREFIX map: <http://databus-client.tools.dbpedia.org/vocab/mapping/>
        |
        |SELECT DISTINCT ?mapping
        |WHERE {
-       |?mapping a tmp:MappingFile .
-       |<$mappingInfoFile> tmp:hasMappingFile ?mapping .
+       |?mapping a map:MappingFile .
+       |<$mappingInfoFile> map:hasMappingFile ?mapping .
        |}
        |""".stripMargin
 
   def queryMappingFileAndInfo(mappingInfoFile:String): String =
     s"""
-       |PREFIX tmp: <http://tmp-namespace.org/>
+       |PREFIX map: <http://databus-client.tools.dbpedia.org/vocab/mapping/>
        |
        |SELECT DISTINCT *
        |WHERE {
-       |?mapping a tmp:MappingFile .
+       |?mapping a map:MappingFile .
        |
-       |<$mappingInfoFile> tmp:hasDelimiter ?delimiter ;
-       |	  tmp:hasQuotation ?quotation ;
-       |    tmp:hasMappingFile ?mapping .
+       |<$mappingInfoFile> map:hasDelimiter ?delimiter ;
+       |	  map:hasQuotation ?quotation ;
+       |    map:hasMappingFile ?mapping .
        |}
        |""".stripMargin
 }

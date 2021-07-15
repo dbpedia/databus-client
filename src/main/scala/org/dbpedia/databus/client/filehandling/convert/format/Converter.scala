@@ -8,6 +8,8 @@ import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
+import scala.util.control.Breaks.{break, breakable}
+
 /**
  * Converter for tsv, csv and several RDF serializations (nt,ttl,rdfxml,json-ld)
  */
@@ -50,8 +52,18 @@ object Converter {
 
         }
         else{ // if (EquivalenceClasses.CSVTypes.contains(inputFormat)){
-          val mappingInformation = QueryHandler.getMapping(sha)
-          CSVHandler.readAsTriples(inputFile, inputFormat, spark: SparkSession, mappingInformation)
+          val possibleMappings = QueryHandler.getPossibleMappings(sha)
+          var triples = sparkContext.emptyRDD[org.apache.jena.graph.Triple]
+
+          breakable {
+            possibleMappings.foreach(mapping => {
+              val mappingFileAndInfo = QueryHandler.getMappingFileAndInfo(mapping)
+              triples = CSVHandler.readAsTriples(inputFile, inputFormat, spark: SparkSession, mappingFileAndInfo)
+              if (!triples.isEmpty()) break
+            })
+          }
+
+          triples
         }
       }
 

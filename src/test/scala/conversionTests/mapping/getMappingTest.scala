@@ -109,12 +109,12 @@ class getMappingTest extends FlatSpec{
     assert(model.isEmpty)
   }
 
-  "conversionTests/mapping" should "be retourned" in {
-    val path = "/home/eisenbahnplatte/git/databus-client/src/resources/mappingTests/getMapping/bnetza-mastr_rli_type=hydro.csv.bz2"
-    val sha = FileUtil.getSha256(File(path))
-    println(sha)
-    println(QueryHandler.getMapping(sha))
-  }
+//  "conversionTests/mapping" should "be retourned" in {
+//    val path = "/home/eisenbahnplatte/git/databus-client/src/resources/mappingTests/getMapping/bnetza-mastr_rli_type=hydro.csv.bz2"
+//    val sha = FileUtil.getSha256(File(path))
+//    println(sha)
+//    println(QueryHandler.getMapping(sha))
+//  }
 
   "mappingInfo" should "return mapping" in {
 
