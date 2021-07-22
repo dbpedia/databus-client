@@ -1,7 +1,6 @@
 package conversionTests.mapping
 
 import java.io.PrintWriter
-
 import better.files.File
 import org.apache.commons.io.FileUtils
 import org.apache.jena.graph.Triple
@@ -9,7 +8,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Row, SparkSession}
 import org.dbpedia.databus.client.filehandling.FileUtil
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.read.RDF_Reader
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.TripleLangs
 import org.scalatest.FlatSpec
 
 import scala.collection.immutable.Vector
@@ -183,7 +182,7 @@ class tsv_writer_tests extends FlatSpec {
     if (tempDir.exists) tempDir.delete()
     if(headerTempDir.exists) headerTempDir.delete()
 
-    val triplesRDD= RDF_Reader.read(spark,inputFile)
+    val triplesRDD= TripleLangs.read(spark,inputFile)
 
     TTLWriter2.convertToTSV(triplesRDD, spark, targetFile)
   }
@@ -197,7 +196,7 @@ class tsv_writer_tests extends FlatSpec {
     if (tempDir.exists) tempDir.delete()
     if(headerTempDir.exists) headerTempDir.delete()
 
-    val triplesRDD= RDF_Reader.read(spark,inputFile)
+    val triplesRDD= TripleLangs.read(spark,inputFile)
 
     TTLWriterTest.convertToTSV(triplesRDD, spark, targetFile, true)
   }

@@ -8,6 +8,7 @@ import org.apache.jena.JenaRuntime
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
+import org.dbpedia.databus.client.filehandling.convert.mapping.MappingInfo
 import org.dbpedia.databus.client.sparql.queries.{DataIdQueries, DatabusQueries, MappingQueries}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -159,7 +160,7 @@ object QueryHandler {
     }
   }
 
-  def getMappingFileAndInfo(mappingInfoFile: String): Seq[String] = {
+  def getMappingFileAndInfo(mappingInfoFile: String): MappingInfo = {
     val mappingModel: Model = RDFDataMgr.loadModel(mappingInfoFile, RDFLanguages.TURTLE)
 
     val result = executeQuery(
@@ -168,10 +169,11 @@ object QueryHandler {
     )
 
     if (result.nonEmpty) {
-      Seq[String](
+      new MappingInfo(
         result.head.getResource("mapping").toString,
-        result.head.getLiteral("delimiter").getString,
-        result.head.getLiteral("quotation").getString)
+        result.head.getLiteral("delimiter").getString.asInstanceOf[Character],
+        result.head.getLiteral("quotation").getString.asInstanceOf[Character]
+      )
     }
     else {
       val result = executeQuery(
@@ -182,7 +184,7 @@ object QueryHandler {
       val sparqlVar = result.varNames().next()
       val tarqlMapFile = result.getResource(sparqlVar).toString
 
-      Seq[String](tarqlMapFile)
+      new MappingInfo(tarqlMapFile)
     }
   }
 }

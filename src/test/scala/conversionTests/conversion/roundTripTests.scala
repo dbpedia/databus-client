@@ -5,7 +5,8 @@ import org.apache.jena.riot.RDFDataMgr
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.client.filehandling.convert.format.csv.CSVHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.download.Downloader
 import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
 import org.scalatest.FlatSpec
@@ -62,10 +63,10 @@ class roundTripTests extends FlatSpec{
 
   def readAndWriteTriples(inputFile:File, tempDir:File, spark:SparkSession): File = {
     val format = FileHandler.getFormatType(inputFile,"")
-    val triples = RDFHandler.readRDF(inputFile, format, spark)
+    val triples = TripleHandler.readRDF(inputFile, format, spark)
 
-    if(format=="rdf") RDFHandler.writeRDF(tempDir, triples, "rdfxml", spark)
-    else RDFHandler.writeRDF(tempDir, triples, format, spark)
+    if(format=="rdf") TripleHandler.writeRDF(tempDir, triples, "rdfxml", spark)
+    else TripleHandler.writeRDF(tempDir, triples, format, spark)
 
     val targetFile = tempDir.parent / inputFile.name
 
@@ -82,9 +83,13 @@ class roundTripTests extends FlatSpec{
 
   def readAndWriteTSD(inputFile:File, tempDir:File, spark:SparkSession):File={
     val format = FileHandler.getFormatType(inputFile,"")
-    val dataFrame = CSVHandler.read(inputFile, format, spark)
+    val delimiter = {
+      if(format=="csv") ','
+      else '\t'
+    }
+    val dataFrame = CSVHandler.read(inputFile, format, spark, delimiter)
 
-    CSVHandler.write(tempDir, dataFrame, format, spark)
+    CSVHandler.write(tempDir, dataFrame, format, spark, delimiter)
 
     val targetFile = tempDir.parent / inputFile.name
 
@@ -226,5 +231,22 @@ class roundTripTests extends FlatSpec{
     })
 
     success shouldBe true
+  }
+
+  "roundtriptest" should "succeed for all RDF Quad formats" in {
+    val quads = QuadsHandler.readRDF(File("src/test/resources/roundTripTestFiles/conversion/quads/trig.trig"),"trig", spark)
+    QuadsHandler.writeRDF(tempDir, quads, "trig", spark)
+
+    val targetFile = tempDir.parent / "nq.nq"
+
+    try {
+      FileUtil.unionFiles(tempDir, targetFile)
+      tempDir.delete()
+    }
+    catch {
+      case _: RuntimeException => "File $targetFile already exists"
+    }
+
+    targetFile
   }
 }

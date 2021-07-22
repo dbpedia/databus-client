@@ -1,7 +1,6 @@
 package conversionTests.conversion
 
 import java.io._
-
 import better.files.File
 import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.graph.Triple
@@ -15,8 +14,8 @@ import org.dbpedia.databus.client.api.DatabusClient.{Compression, Format}
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.read.{RDF_Reader, TTL_Reader}
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.{TripleLangs, Turtle}
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
@@ -52,13 +51,13 @@ class ConverterTest extends FlatSpec {
     val sparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
-    TTL_Reader.read(spark, file)
+    Turtle.read(spark, file)
   }
 
   def readTriplesWithRDFReader(file: File): RDD[Triple] = {
 
 
-    RDF_Reader.read(spark, file)
+    TripleLangs.read(spark, file)
   }
 
 
@@ -123,9 +122,9 @@ class ConverterTest extends FlatSpec {
 
   "Conversion" should "not be too slow" in {
 
-    time(RDFHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
+    time(TripleHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
 
-    val triples =RDFHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
+    val triples =TripleHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
 
 //    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
 

@@ -1,21 +1,49 @@
-package org.dbpedia.databus.client.filehandling.convert.format.rdf.write
+package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang
 
-import java.io.ByteArrayOutputStream
-
+import better.files.File
 import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import scala.io.{Codec, Source}
 
-object JSONLD_Writer {
+object JsonLD {
 
-  def convertToJSONLD(data: RDD[Triple], spark: SparkSession): RDD[String] = {
-    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+  def readJSONL(spark: SparkSession, inputFile: File): RDD[Triple] = {
+    val sc = spark.sparkContext
+    val data = sc.textFile(inputFile.pathAsString)
+    var tripleRDD = sc.emptyRDD[Triple]
 
-    triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToJSONLD(allTriplesOfSubject))
+    //    data.foreach(println(_))
+
+    data.foreach(line => {
+      println(s"LINE: $line")
+      if (!line.trim().isEmpty) {
+        println(s"LINE: $line")
+        tripleRDD = sc.union(tripleRDD, readJSONLObject(spark, line))
+      }
+    })
+
+    tripleRDD
+  }
+
+  def readJSONLObject(spark: SparkSession, line: String): RDD[Triple] = {
+    //    println(line)
+    val sc = spark.sparkContext
+    var triples = sc.emptyRDD[Triple]
+
+    val statements = ModelFactory.createDefaultModel().read(new ByteArrayInputStream(line.getBytes), "UTF-8", "JSONLD").listStatements()
+
+    while (statements.hasNext) {
+      val triple = statements.nextStatement().asTriple()
+      val dataTriple = sc.parallelize(Seq(triple))
+      triples = sc.union(triples, dataTriple)
+    }
+
+    triples
   }
 
   def convertIteratorToJSONLD(triples: Iterable[Triple]): String = {
@@ -45,4 +73,9 @@ object JSONLD_Writer {
     //    val jsonld_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
   }
 
+  def convertToJSONLD(data: RDD[Triple], spark: SparkSession): RDD[String] = {
+    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+
+    triplesGroupedBySubject.map(allTriplesOfSubject => JsonLD.convertIteratorToJSONLD(allTriplesOfSubject))
+  }
 }

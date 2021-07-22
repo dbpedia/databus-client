@@ -1,19 +1,17 @@
-package org.dbpedia.databus.client.filehandling.convert.format.rdf.read
-
-import java.io.{ByteArrayInputStream, InputStream, SequenceInputStream}
+package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang
 
 import better.files.File
-import org.apache.spark.sql.SparkSession
-//import com.google.common.collect.Streams
 import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.graph.Triple
+import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.RiotParsers
 import org.apache.spark.rdd.RDD
-//import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.SparkSession
 
-import scala.collection.JavaConverters._
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, SequenceInputStream}
+import scala.collection.JavaConverters.{asJavaEnumerationConverter, asJavaIteratorConverter, asScalaIteratorConverter}
 
-object NTriple_Reader {
+object NTriples {
 
   //  def readNTriples(spark: SparkSession, inputFile: File): RDD[Triple] = {
   //    NTripleReader.load(spark, inputFile.pathAsString, ErrorParseMode.SKIP, WarningParseMode.IGNORE, checkRDFTerms = false, LoggerFactory.getLogger("ErrorlogReadTriples"))
@@ -36,5 +34,14 @@ object NTriple_Reader {
       }
     )
 
+  }
+
+  def convertToNTriple(triples: RDD[Triple]): RDD[String] = {
+
+    triples.map(triple => {
+      val os = new ByteArrayOutputStream()
+      RDFDataMgr.writeTriples(os, Iterator[Triple](triple).asJava)
+      os.toString.trim
+    })
   }
 }

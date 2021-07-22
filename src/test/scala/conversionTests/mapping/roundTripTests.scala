@@ -1,15 +1,15 @@
 package conversionTests.mapping
 
 import java.net.URL
-
 import better.files.File
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory, Statement}
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.client.filehandling.convert.format.csv.CSVHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.download.Downloader
+import org.dbpedia.databus.client.filehandling.convert.mapping.MappingInfo
 import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
 import org.scalatest.FlatSpec
 
@@ -36,8 +36,8 @@ class roundTripTests extends FlatSpec{
     val outputFile = testFileDir / s"${inputFile.nameWithoutExtension(true)}_out${inputFile.extension.get}"
 
     val downloadURL= new URL("http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob2.nt")
-    val delimiter = ";"
-    val quotation = "null"
+    val delimiter = ';'
+    val quotation = null
     val tsdFormat = "tsv"
 
     Downloader.downloadUrlToFile(downloadURL, inputFile, createParentDirectory = true)
@@ -55,12 +55,12 @@ class roundTripTests extends FlatSpec{
   }
 
 
-  def writeRDFtoTSD(inputFile:File, delimiter:String, outputFormat:String):File={
+  def writeRDFtoTSD(inputFile:File, delimiter:Character, outputFormat:String):File={
     val inputFormat = FileHandler.getFormatType(inputFile, "")
 
     tempDir.delete(swallowIOExceptions = true)
-    val triples = RDFHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
-    val mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, delimiter.toCharArray.head,spark)
+    val triples = TripleHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
+    val mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, delimiter, spark)
 
     val csvFile = testFileDir/s"ntriples.$outputFormat"
     try {
@@ -79,10 +79,15 @@ class roundTripTests extends FlatSpec{
     csvFile
   }
 
-  def TSDtoRDF(csvFile:File, outputFile:File, tsdFormat:String, spark:SparkSession,delimiter:String,quotation:String):File={
-    val csvtriples = CSVHandler.readAsTriples(csvFile, tsdFormat, spark, Seq((testFileDir/"mappings" / FileUtil.getSha256(csvFile)).pathAsString,delimiter,quotation))
+  def TSDtoRDF(csvFile:File, outputFile:File, tsdFormat:String, spark:SparkSession,delimiter:Character,quotation:Character):File={
+    val mappingInfo = new MappingInfo(
+      (testFileDir/"mappings" / FileUtil.getSha256(csvFile)).pathAsString,
+      delimiter,
+      quotation
+    )
+    val csvtriples = CSVHandler.readAsTriples(csvFile, tsdFormat, spark, mappingInfo)
 
-    RDFHandler.writeRDF(tempDir,csvtriples,"nt", spark)
+    TripleHandler.writeRDF(tempDir,csvtriples,"nt", spark)
 
     try {
       FileUtil.unionFiles(tempDir, outputFile)

@@ -38,7 +38,12 @@ object Main {
             cache_dir,
             conf.format(),
             conf.compression(),
-            conf.overwrite())
+            conf.overwrite(),
+            conf.mapping(),
+            conf.delimiter().asInstanceOf[Character],
+            conf.quotation().asInstanceOf[Character],
+            conf.createMapping()
+          )
         }
         else {
           // take already existing files as source
@@ -46,7 +51,12 @@ object Main {
             File(conf.source()),
             target,
             conf.format(),
-            conf.compression())
+            conf.compression(),
+            conf.mapping(),
+            conf.delimiter().asInstanceOf[Character],
+            conf.quotation().asInstanceOf[Character],
+            conf.createMapping()
+          )
         }
 
       }
@@ -58,7 +68,11 @@ object Main {
           cache_dir,
           conf.format(),
           conf.compression(),
-          conf.overwrite()
+          conf.overwrite(),
+          conf.mapping(),
+          conf.delimiter().asInstanceOf[Character],
+          conf.quotation().asInstanceOf[Character],
+          conf.createMapping()
         )
       }
 

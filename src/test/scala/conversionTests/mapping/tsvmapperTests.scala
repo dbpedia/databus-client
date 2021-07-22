@@ -7,7 +7,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.client.filehandling.FileUtil
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.write.RDF_Writer
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.TripleLangs
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.scalatest.FlatSpec
 
@@ -129,7 +129,7 @@ class tsvmapperTests extends FlatSpec {
 
     val data = csv_map_to_rdd(mappingFilePath, inputFilePath, "\t", sc)
 
-    RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+    TripleLangs.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     FileUtil.unionFiles(tempDir, outputFile)
 
     println(s"number triples: ${data.count}")
@@ -155,7 +155,7 @@ class tsvmapperTests extends FlatSpec {
 
     val data = csv_map_to_rdd(mappingFilePath, inputFilePath, "\t", sc)
 
-    RDF_Writer.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+    TripleLangs.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
     FileUtil.unionFiles(tempDir, outputFile)
 
     data.foreach(println(_))

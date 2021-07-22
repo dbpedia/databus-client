@@ -13,6 +13,10 @@ import org.slf4j.LoggerFactory
 
 object SourceHandler {
 
+  //supported formats
+  val fileFormats = "rdfxml|ttl|nt|jsonld|tsv|csv|nq|trix|trig|same"
+  val compressionFormats = "bz2|gz|deflate|lzma|sz|xz|zstd||same"
+
   /**
    * convert input files in client-supported formats(no query files!) to the desired format and compression
    *
@@ -21,7 +25,7 @@ object SourceHandler {
    * @param format desired format
    * @param compression desired compression
    */
-  def handleSource(source: File, target: File, format: String, compression: String):Unit = {
+  def handleSource(source: File, target: File, format: String, compression: String, mapping: String, delimiter:Character, quotation:Character, createMapping:Boolean):Unit = {
     printTask("source", source.pathAsString, target.pathAsString)
 
     println(s"CONVERSION TOOL:\n")
@@ -33,13 +37,13 @@ object SourceHandler {
       for (file <- files) {
         if (!file.isDirectory) {
           if (!file.name.equals(dataId_string)) {
-            FileHandler.handleFile(file, target, format, compression)
+            FileHandler.handleFile(file, target, format, compression, mapping, delimiter, quotation, createMapping)
           }
         }
       }
     }
     else {
-      FileHandler.handleFile(source, target, format, compression)
+      FileHandler.handleFile(source, target, format, compression, mapping, delimiter, quotation, createMapping)
     }
   }
 
@@ -53,7 +57,7 @@ object SourceHandler {
    * @param compression output compression
    * @param overwrite overwrite files in the cache directory
    */
-  def handleQuery(query: String, target: File, cache: File, format: String, compression: String, overwrite: Boolean=false):Unit = {
+  def handleQuery(query: String, target: File, cache: File, format: String, compression: String, overwrite: Boolean=false, mapping: String, delimiter:Character, quotation:Character, createMapping:Boolean):Unit = {
 
     var queryStr = {
       if (isCollection(query)) getQueryOfCollection(query)
@@ -73,7 +77,7 @@ object SourceHandler {
     println(s"CONVERSION TOOL:\n")
 
     allSHAs.foreach(
-      sha => FileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")), target, format, compression)
+      sha => FileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")), target, format, compression, mapping, delimiter, quotation, createMapping)
     )
 
   }
@@ -84,7 +88,7 @@ object SourceHandler {
    * @return
    */
   def isSupportedOutFormat(format: String): Boolean = {
-    if (format.matches("rdfxml|ttl|nt|jsonld|tsv|csv|same")) true
+    if (format.matches(fileFormats)) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Output file format $format is not supported.")
       println(s"Output file format $format is not supported.")
@@ -98,7 +102,7 @@ object SourceHandler {
    * @return
    */
   def isSupportedOutCompression(compression: String): Boolean = {
-    if (compression.matches("bz2|gz|deflate|lzma|sz|xz|zstd||same")) true
+    if (compression.matches(compressionFormats)) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Output compression format $compression is not supported.")
       println(s"Output compression format $compression is not supported.")

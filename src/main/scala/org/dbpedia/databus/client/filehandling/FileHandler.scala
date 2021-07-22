@@ -1,12 +1,11 @@
 package org.dbpedia.databus.client.filehandling
 
 import java.io._
-
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
+import org.dbpedia.databus.client.filehandling.convert.FormatHandler
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
-import org.dbpedia.databus.client.filehandling.convert.format.Converter
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
@@ -22,7 +21,7 @@ object FileHandler
     * @param outputFormat format of output file
     * @param outputCompression compression of output file
     */
-  def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String): Option[File] = {
+  def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String, mapping: String, delimiter:Character, quotation:Character, createMapping:Boolean): Option[File] = {
 
     println(s"input file:\t${inputFile.pathAsString}")
     val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
@@ -69,10 +68,10 @@ object FileHandler
         val decompressedInStream = Compressor.decompress(bufferedInputStream)
         val decompressedFile = File("./target/databus.tmp/") / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
         copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
-        typeConvertedFile = Converter.convertFormat(decompressedFile, formatInputFile, outputFormat, sha)
+        typeConvertedFile = FormatHandler.convertFormat(decompressedFile, formatInputFile, outputFormat, sha, mapping, delimiter, quotation, createMapping)
       }
       else {
-        typeConvertedFile = Converter.convertFormat(inputFile, formatInputFile, outputFormat, sha)
+        typeConvertedFile = FormatHandler.convertFormat(inputFile, formatInputFile, outputFormat, sha, mapping, delimiter, quotation, createMapping)
       }
 
       val compressedOutStream = Compressor.compress(newOutCompression, targetFile)
@@ -146,7 +145,7 @@ object FileHandler
     * @return true, if it is supported
     */
   def isSupportedInFormat(format: String): Boolean = {
-    if (format.matches("rdf|ttl|nt|jsonld|tsv|csv")) true
+    if (format.matches("rdf|ttl|nt|jsonld|tsv|csv|nq|trix|trig")) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Input file format $format is not supported.")
       println(s"Input file format $format is not supported.")
