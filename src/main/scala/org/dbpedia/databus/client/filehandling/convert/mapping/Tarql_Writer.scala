@@ -1,12 +1,12 @@
-package org.dbpedia.databus.client.filehandling.convert.format.csv
-
-import java.io.PrintWriter
+package org.dbpedia.databus.client.filehandling.convert.mapping
 
 import better.files.File
 import org.apache.spark.sql.DataFrame
 
+import java.io.PrintWriter
+
 object Tarql_Writer {
-  def createTarqlMapFile(tarqlDF: DataFrame, file: File):Unit = {
+  def createTarqlMapFile(tarqlDF: DataFrame, mappingFilePath: String): Unit = {
     val cols = tarqlDF.columns
 
     println("TARQL DATAFRAME")
@@ -38,7 +38,7 @@ object Tarql_Writer {
           .map(str => str.split(" ").updated(1, "a").mkString(" "))
           .last
     } catch {
-      case none:NoSuchElementException => println("NO TYPE IN TRIPLES INCLUDED")
+      case none: NoSuchElementException => println("NO TYPE IN TRIPLES INCLUDED")
     }
 
     val constructStrPart =
@@ -68,9 +68,9 @@ object Tarql_Writer {
          |}
        """.stripMargin
 
-//    println(s"CALCULATED TARQLSTRING: \n$tarqlMappingString")
+    //    println(s"CALCULATED TARQLSTRING: \n$tarqlMappingString")
 
-    new PrintWriter(file.pathAsString) {
+    new PrintWriter(mappingFilePath) {
       write(tarqlMappingString)
       close()
     }

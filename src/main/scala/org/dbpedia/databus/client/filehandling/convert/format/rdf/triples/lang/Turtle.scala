@@ -5,16 +5,18 @@ import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
 import org.apache.jena.riot.lang.{PipedRDFIterator, PipedRDFStream, PipedTriplesStream}
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFLang
 
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.{ExecutorService, Executors}
 import scala.io.{Codec, Source}
 
-object Turtle {
+object Turtle extends RDFLang[RDD[Triple]]{
 
-  def read(spark: SparkSession, inputFile: File): RDD[Triple] = {
+  override def read(source: String)(implicit sc:SparkContext):RDD[Triple] = {
     // Create a PipedRDFStream to accept input and a PipedRDFIterator to consume it
     // You can optionally supply a buffer size here for the
     // PipedRDFIterator, see the documentation for details about recommended buffer sizes
@@ -30,7 +32,7 @@ object Turtle {
       @Override
       def run(): Unit = {
         // Call the parsing process.
-        RDFDataMgr.parse(inputStream, inputFile.pathAsString)
+        RDFDataMgr.parse(inputStream, source)
       }
     }
 
@@ -49,15 +51,17 @@ object Turtle {
     inputStream.finish()
     executor.shutdown()
 
-    val sc = spark.sparkContext
     sc.parallelize(data)
   }
 
-  def convertToTTL(data: RDD[Triple], spark: SparkSession): RDD[String] = {
+
+  override def write(data: RDD[Triple])(implicit sc:SparkContext): File = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val triplesTTL = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToTTL(allTriplesOfSubject))
 
-    triplesTTL
+    triplesTTL.coalesce(1).saveAsTextFile(tempDir.pathAsString)
+
+    tempDir
   }
 
   def convertIteratorToTTL(triples: Iterable[Triple]): String = {

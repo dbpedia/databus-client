@@ -1,11 +1,12 @@
 package org.dbpedia.databus.client.filehandling.convert
 
 import better.files.File
+import org.apache.spark.SparkContext
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.client.filehandling.FileUtil
-import org.dbpedia.databus.client.filehandling.convert.format.csv.CSVHandler
+import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
-import org.dbpedia.databus.client.filehandling.convert.mapping.{MappingInfo, RDF_Quads_Mapper, TSD_Mapper}
+import org.dbpedia.databus.client.filehandling.convert.mapping.{MappingInfo, RDF_Quads_Mapper, RDF_Triples_Mapper, TSD_Mapper}
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
@@ -36,7 +37,7 @@ object FormatHandler {
       .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .getOrCreate()
 
-    val sparkContext = spark.sparkContext
+    implicit val sparkContext: SparkContext = spark.sparkContext
     sparkContext.setLogLevel("WARN")
 
     val tempDir = File("./target/databus.tmp/temp/")
@@ -50,36 +51,36 @@ object FormatHandler {
       //read
       val triples = {
         if (EquivalenceClasses.RDF_TRIPLES.contains(inputFormat)) {
-          TripleHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
+          TripleHandler.read(inputFile.pathAsString, inputFormat)
         }
-        if (EquivalenceClasses.RDF_QUADS.contains(inputFormat)){
-          RDF_Quads_Mapper.map_to_triples
-        }
+//        if (EquivalenceClasses.RDF_QUADS.contains(inputFormat)){
+//          RDF_Quads_Mapper.map_to_triples
+//        }
         else { // if (EquivalenceClasses.CSVTypes.contains(inputFormat)){
           TSD_Mapper.map_to_triples(spark, inputFile, inputFormat, sha, mapping, delimiter, quotation)
         }
       }
 
       //write
-      TripleHandler.writeRDF(tempDir, triples, outputFormat, spark)
+      TripleHandler.write(triples, outputFormat)
     }
 
     else if (EquivalenceClasses.TSD.contains(outputFormat)) {
       if (EquivalenceClasses.TSD.contains(inputFormat)) {
-        val data: DataFrame = CSVHandler.read(inputFile, inputFormat, spark: SparkSession, delimiter)
-        CSVHandler.write(tempDir, data, outputFormat, spark, delimiter)
+        val data: DataFrame = TSDHandler.read(inputFile.pathAsString, inputFormat, delimiter)
+        TSDHandler.write(data, outputFormat, delimiter)
       }
       else {
-        val triples = TripleHandler.readRDF(inputFile, inputFormat, spark: SparkSession)
-        //
-        //        if (createMappingFile.isEmpty){
-        //          createMappingFile = {
-        //            if (scala.io.StdIn.readLine("Type 'y' or 'yes' if you want to create a mapping file.\n") matches "yes|y") Option(true)
-        //            else Option(false)
-        //          }
-        //        }
+        val triples = TripleHandler.read(inputFile.pathAsString, inputFormat)
 
-        mappingFile = CSVHandler.writeTriples(tempDir, triples, outputFormat, delimiter, spark, createMapping)
+        val newMappingFilePath = {
+          if (createMapping) (tempDir / "mappingFile.sparql").pathAsString
+          else ""
+        }
+
+        val dataFrame = RDF_Triples_Mapper.map_to_tsd(triples, spark, newMappingFilePath)
+        TSDHandler.write(dataFrame, outputFormat, delimiter)
+
       }
     }
 

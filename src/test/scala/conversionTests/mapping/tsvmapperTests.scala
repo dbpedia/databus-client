@@ -7,7 +7,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.client.filehandling.FileUtil
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.TripleLangs
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.{RDFXML, Turtle}
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.scalatest.FlatSpec
 
@@ -20,6 +20,8 @@ class tsvmapperTests extends FlatSpec {
     .master("local[*]")
     .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     .getOrCreate()
+
+  implicit val sc:SparkContext = spark.sparkContext
 
   def csv_map(mapFile:String, csvFilePath:String = "", isTsvFile:Boolean=false, map:Boolean=true): Unit = {
 
@@ -119,8 +121,6 @@ class tsvmapperTests extends FlatSpec {
 
   "databus-client" should "convert tsv to ttl" in {
 
-    val sc = spark.sparkContext
-
     val inputFilePath = s"${testDir}testBob.tsv"
     val mappingFilePath = s"${testDir}testBob.sparql"
     val outputFile= File(s"${testDir}testBob.ttl")
@@ -129,7 +129,7 @@ class tsvmapperTests extends FlatSpec {
 
     val data = csv_map_to_rdd(mappingFilePath, inputFilePath, "\t", sc)
 
-    TripleLangs.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+    Turtle.write(data)
     FileUtil.unionFiles(tempDir, outputFile)
 
     println(s"number triples: ${data.count}")
@@ -145,8 +145,6 @@ class tsvmapperTests extends FlatSpec {
 
   "databus-client" should "convert tsv to ttlTest" in {
 
-    val sc = spark.sparkContext
-
     val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob3.tsv"
     val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob4_mapping.sparql"
     val outputFile= File("/home/eisenbahnplatte/git/databus-client/files/NoDataID/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob3.ttl")
@@ -155,7 +153,7 @@ class tsvmapperTests extends FlatSpec {
 
     val data = csv_map_to_rdd(mappingFilePath, inputFilePath, "\t", sc)
 
-    TripleLangs.convertToRDF(data, spark, RDFFormat.TURTLE_PRETTY).coalesce(1).saveAsTextFile(tempDir.pathAsString)
+    Turtle.write(data)
     FileUtil.unionFiles(tempDir, outputFile)
 
     data.foreach(println(_))

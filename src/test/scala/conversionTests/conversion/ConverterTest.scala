@@ -15,7 +15,7 @@ import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.{TripleLangs, Turtle}
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.{RDFXML, Turtle}
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
@@ -28,7 +28,7 @@ class ConverterTest extends FlatSpec {
     .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     .getOrCreate()
 
-  val sparkContext: SparkContext = spark.sparkContext
+  implicit val sparkContext: SparkContext = spark.sparkContext
   sparkContext.setLogLevel("WARN")
 
   "RDD" should "not contain empty Lines" in {
@@ -42,22 +42,22 @@ class ConverterTest extends FlatSpec {
   }
 
   def readTriples(file: File): RDD[Triple] = {
-    val spark = SparkSession.builder()
-      .appName(s"Triple reader")
-      .master("local[*]")
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate()
+//    val spark = SparkSession.builder()
+//      .appName(s"Triple reader")
+//      .master("local[*]")
+//      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+//      .getOrCreate()
+//
+//    val sparkContext = spark.sparkContext
+//    sparkContext.setLogLevel("WARN")
 
-    val sparkContext = spark.sparkContext
-    sparkContext.setLogLevel("WARN")
-
-    Turtle.read(spark, file)
+    Turtle.read(file.pathAsString)
   }
 
   def readTriplesWithRDFReader(file: File): RDD[Triple] = {
 
 
-    TripleLangs.read(spark, file)
+    RDFXML.read(file.pathAsString)
   }
 
 
@@ -122,9 +122,9 @@ class ConverterTest extends FlatSpec {
 
   "Conversion" should "not be too slow" in {
 
-    time(TripleHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark))
+    time(TripleHandler.read("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2", "ttl"))
 
-    val triples =TripleHandler.readRDF(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), "ttl", spark)
+    val triples =TripleHandler.read("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2", "ttl")
 
 //    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
 

@@ -10,23 +10,28 @@ import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
 import org.apache.jena.riot.lang.RiotParsers
 import org.apache.jena.sparql.core.{DatasetGraph, DatasetGraphSink, Quad}
 import org.apache.jena.sparql.graph.GraphFactory
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFLang
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, FileInputStream, InputStream, SequenceInputStream}
 import scala.collection.JavaConverters.{asJavaEnumerationConverter, asJavaIteratorConverter, asScalaIteratorConverter}
 import scala.io.{Codec, Source}
 
-object QuadLangs {
+object Trix extends RDFLang[RDD[Quad]]{
 
-  def read(spark: SparkSession, inputFile: File, lang: Lang): RDD[Quad] = {
-    val data = RDFDataMgr.loadDatasetGraph(inputFile.pathAsString, lang).find().asScala.toSeq
+  override def read(source:String)(implicit sc:SparkContext): RDD[Quad] = {
+    val data = RDFDataMgr.loadDatasetGraph(source, Lang.TRIX).find().asScala.toSeq
 
-    val sc = spark.sparkContext
     sc.parallelize(data)
   }
 
-  def write(spark: SparkSession, data: RDD[Quad], lang: Lang): RDD[String] = {
+  override def write(data: RDD[Quad])(implicit sc: SparkContext): File = {
+    convert(data, Lang.TRIX)
+  }
+
+  def convert(data: RDD[Quad], lang:Lang)(implicit sc: SparkContext): File={
     val graphs = data
       .groupBy(quad ⇒ quad.getGraph)
       .map(_._2)
@@ -47,7 +52,9 @@ object QuadLangs {
 
     val rdf_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
 
-    spark.sparkContext.parallelize(Seq(rdf_string))
+    sc.parallelize(Seq(rdf_string)).saveAsTextFile(tempDir.pathAsString)
+
+    tempDir
   }
 
   def convertIteratorToGraph(graph: Iterable[Quad]): DatasetGraph = {

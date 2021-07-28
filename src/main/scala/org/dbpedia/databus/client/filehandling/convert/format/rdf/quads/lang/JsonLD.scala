@@ -1,4 +1,4 @@
-package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang
+package org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.lang
 
 import better.files.File
 import org.apache.jena.graph.{NodeFactory, Triple}
@@ -21,7 +21,7 @@ object JsonLD {
 
     data.foreach(line => {
       println(s"LINE: $line")
-      if (!line.trim().isEmpty) {
+      if (line.trim().nonEmpty) {
         println(s"LINE: $line")
         tripleRDD = sc.union(tripleRDD, readJSONLObject(spark, line))
       }

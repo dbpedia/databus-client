@@ -5,22 +5,19 @@ import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.graph.Triple
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.RiotParsers
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFLang
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, SequenceInputStream}
 import scala.collection.JavaConverters.{asJavaEnumerationConverter, asJavaIteratorConverter, asScalaIteratorConverter}
 
-object NTriples {
+object NTriples extends RDFLang[RDD[Triple]]{
 
-  //  def readNTriples(spark: SparkSession, inputFile: File): RDD[Triple] = {
-  //    NTripleReader.load(spark, inputFile.pathAsString, ErrorParseMode.SKIP, WarningParseMode.IGNORE, checkRDFTerms = false, LoggerFactory.getLogger("ErrorlogReadTriples"))
-  //  }
+  override def read(source: String)(implicit sc: SparkContext): RDD[Triple] = {
 
-  def read(spark: SparkSession, inputFile: File): RDD[Triple] = {
-
-    val sc = spark.sparkContext
-    val rdd = sc.textFile(inputFile.pathAsString, 20)
+    val rdd = sc.textFile(source, 20)
 
     rdd.mapPartitions(
       part => {
@@ -36,12 +33,15 @@ object NTriples {
 
   }
 
-  def convertToNTriple(triples: RDD[Triple]): RDD[String] = {
+   def write(triples: RDD[Triple])(implicit sc: SparkContext): File ={
 
     triples.map(triple => {
       val os = new ByteArrayOutputStream()
       RDFDataMgr.writeTriples(os, Iterator[Triple](triple).asJava)
       os.toString.trim
-    })
+    }).saveAsTextFile(tempDir.pathAsString)
+
+    tempDir
   }
+
 }

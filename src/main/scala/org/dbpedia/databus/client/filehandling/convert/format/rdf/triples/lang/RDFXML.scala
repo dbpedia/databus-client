@@ -3,19 +3,20 @@ package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang
 import better.files.File
 import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
-import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
+import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFLang
 
 import java.io.ByteArrayOutputStream
 import scala.io.{Codec, Source}
 
-object TripleLangs {
+object RDFXML extends RDFLang[RDD[Triple]] {
 
-  def read(spark: SparkSession, inputFile: File): RDD[Triple] = {
+  override def read(source:String)(implicit sc:SparkContext): RDD[Triple] = {
 
-    val sc = spark.sparkContext
-    val statements = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements()
+    val statements = RDFDataMgr.loadModel(source).listStatements()
     var data: Seq[Triple] = Seq.empty
 
     while (statements.hasNext) {
@@ -25,7 +26,7 @@ object TripleLangs {
     sc.parallelize(data)
   }
 
-  def convertToRDF(data: RDD[Triple], spark: SparkSession, lang: RDFFormat): RDD[String] = {
+  override def write(data: RDD[Triple])(implicit sc:SparkContext): File = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2).collect()
 
     val os = new ByteArrayOutputStream()
@@ -34,11 +35,15 @@ object TripleLangs {
     val mergedModel: Model = ModelFactory.createDefaultModel()
     models.foreach(model => mergedModel.add(model))
 
-    RDFDataMgr.write(os, mergedModel, lang)
+    RDFDataMgr.write(os, mergedModel, Lang.RDFXML)
 
     val rdf_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
 
-    spark.sparkContext.parallelize(Seq(rdf_string))
+    sc.parallelize(Seq(rdf_string))
+      .coalesce(1)
+      .saveAsTextFile(tempDir.pathAsString)
+
+    tempDir
   }
 
   def convertIteratorToRDF(triples: Iterable[Triple]): Model = {
@@ -52,8 +57,6 @@ object TripleLangs {
         {
           if (triple.getObject.isLiteral) {
             if (triple.getObject.getLiteralLanguage.isEmpty) {
-              //              println(triple.getObject.getLiteralLexicalForm)
-              //              println(triple.getObject.getLiteralDatatype)
               ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralDatatype)
             }
             else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralLanguage)
