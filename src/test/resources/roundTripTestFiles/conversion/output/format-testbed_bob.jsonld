@@ -1,0 +1,51 @@
+{
+  "@graph" : [ {
+    "@id" : "http://dbpedia.org/resource/Bob_Marley",
+    "@type" : "http://xmlns.com/foaf/0.1/Person",
+    "birthPlace" : "http://dbpedia.org/resource/Jamaica",
+    "label" : [ {
+      "@language" : "fr",
+      "@value" : "Bob Marley"
+    }, {
+      "@language" : "en",
+      "@value" : "Bob Marley"
+    } ],
+    "seeAlso" : "http://dbpedia.org/resource/Rastafari"
+  }, {
+    "@id" : "http://dbpedia.org/resource/Jamaica",
+    "@type" : "http://schema.org/Country",
+    "label" : [ {
+      "@language" : "it",
+      "@value" : "Giamaica"
+    }, {
+      "@language" : "en",
+      "@value" : "Jamaica"
+    } ],
+    "lat" : "17.9833",
+    "long" : "-76.8",
+    "homepage" : "http://jis.gov.jm/"
+  } ],
+  "@context" : {
+    "seeAlso" : {
+      "@id" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+      "@type" : "@id"
+    },
+    "label" : "http://www.w3.org/2000/01/rdf-schema#label",
+    "birthPlace" : {
+      "@id" : "http://dbpedia.org/ontology/birthPlace",
+      "@type" : "@id"
+    },
+    "homepage" : {
+      "@id" : "http://xmlns.com/foaf/0.1/homepage",
+      "@type" : "@id"
+    },
+    "long" : {
+      "@id" : "http://www.w3.org/2003/01/geo/wgs84_pos#long",
+      "@type" : "http://www.w3.org/2001/XMLSchema#float"
+    },
+    "lat" : {
+      "@id" : "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
+      "@type" : "http://www.w3.org/2001/XMLSchema#float"
+    }
+  }
+}

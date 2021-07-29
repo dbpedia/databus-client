@@ -1,0 +1,19 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ns0: <http://dbpedia.org/ontology/> .
+@prefix schema: <http://schema.org/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://dbpedia.org/resource/Bob_Marley>
+  a foaf:Person ;
+  rdfs:label "Bob Marley"@en, "Bob Marley"@fr ;
+  rdfs:seeAlso <http://dbpedia.org/resource/Rastafari> ;
+  ns0:birthPlace <http://dbpedia.org/resource/Jamaica> .
+
+<http://dbpedia.org/resource/Jamaica>
+  a schema:Country ;
+  rdfs:label "Jamaica"@en, "Giamaica"@it ;
+  geo:lat "17.9833"^^xsd:float ;
+  geo:long "-76.8"^^xsd:float ;
+  foaf:homepage <http://jis.gov.jm/> . 

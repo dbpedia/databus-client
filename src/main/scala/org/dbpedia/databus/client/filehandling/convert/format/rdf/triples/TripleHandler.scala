@@ -7,9 +7,9 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClassHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.{NTriples, RDFXML, Turtle}
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format.{NTriples, RDFXML, Turtle}
 
-object TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
+class TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
 
   /**
    * read RDF file as RDD[Triple]
@@ -18,20 +18,20 @@ object TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
    * @param inputFormat rdf serialization
    * @return rdf data as RDD[Triples]
    */
-  override def read(source: String, inputFormat: String, delimiter:Character=',')(implicit sc:SparkContext): RDD[Triple] = {
+  override def read(source: String, inputFormat: String)(implicit sc:SparkContext): RDD[Triple] = {
 
     inputFormat match {
-      case "nt" => NTriples.read(source)
-      case "rdf" => RDFXML.read(source)
+      case "nt" => new NTriples().read(source)
+      case "rdf" => new RDFXML().read(source)
       case "ttl" =>
         //wie geht das besser?
         try {
-          val data = NTriples.read(source)
+          val data = new NTriples().read(source)
           data.isEmpty()
           data
         }
         catch {
-          case _: org.apache.spark.SparkException => Turtle.read(source)
+          case _: org.apache.spark.SparkException => new Turtle().read(source)
         }
     }
   }
@@ -42,11 +42,12 @@ object TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
    * @param data         input data
    * @param outputFormat output format
    */
-  override def write(data: RDD[Triple], outputFormat: String, delimiter:Character=',')(implicit sc:SparkContext): File = {
+  override def write(data: RDD[Triple], outputFormat: String)(implicit sc:SparkContext): File = {
+
     outputFormat match {
-      case "nt" => NTriples.write(data)
-      case "ttl" => Turtle.write(data)
-      case "rdfxml" => RDFXML.write(data)
+      case "nt" => new NTriples().write(data)
+      case "ttl" => new Turtle().write(data)
+      case "rdfxml" => new RDFXML().write(data)
     }
   }
 }

@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory
 
 import scala.io.Source
 
-object FileHandler
-{
+object FileHandler {
   /**
     * handle input file
     *
@@ -29,6 +28,7 @@ object FileHandler
     val compressionInputFile = getCompressionType(bufferedInputStream)
     val formatInputFile = getFormatType(inputFile, compressionInputFile)
 
+    // Without any Conversion
     if ((outputCompression == compressionInputFile || outputCompression == "same") && (outputFormat == formatInputFile || outputFormat == "same")) {
       val outFile = getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir)
       val outputStream = new FileOutputStream(outFile.toJava)
@@ -36,6 +36,7 @@ object FileHandler
       Some(outFile)
     }
 
+    // Only Compression Conversion
     else if (outputCompression != compressionInputFile && (outputFormat == formatInputFile || outputFormat == "same")) {
       val decompressedInStream = Compressor.decompress(bufferedInputStream)
       val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, dest_dir)
@@ -44,7 +45,7 @@ object FileHandler
       Some(compressedFile)
     }
 
-    //  With FILEFORMAT CONVERSION
+    // File Format Conversion (need to uncompress anyway)
     else {
 
       if (!isSupportedInFormat(formatInputFile)) return None
@@ -61,7 +62,6 @@ object FileHandler
         if (FileUtil.getShaOfFileInCache(inputFile, File("./target/databus.tmp/cache_dir/shas.txt")) != "") FileUtil.getShaOfFileInCache(inputFile, File("./target/databus.tmp/cache_dir/shas.txt"))
         else FileUtil.getSha256(inputFile)
       }
-
 
 
       if (!(compressionInputFile == "")) {

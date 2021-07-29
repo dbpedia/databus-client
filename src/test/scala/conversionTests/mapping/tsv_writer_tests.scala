@@ -9,7 +9,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Row, SparkSession}
 import org.dbpedia.databus.client.filehandling.FileUtil
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.RDFXML
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format.RDFXML
 import org.scalatest.FlatSpec
 
 import scala.collection.immutable.Vector

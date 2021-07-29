@@ -1,4 +1,4 @@
-package org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.lang
+package org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.format
 
 import better.files.File
 import org.apache.jena.atlas.iterator.IteratorResourceClosing
@@ -13,13 +13,13 @@ import org.apache.jena.sparql.graph.GraphFactory
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFLang
+import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClass
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, FileInputStream, InputStream, SequenceInputStream}
 import scala.collection.JavaConverters.{asJavaEnumerationConverter, asJavaIteratorConverter, asScalaIteratorConverter}
 import scala.io.{Codec, Source}
 
-object Trix extends RDFLang[RDD[Quad]]{
+class Trix extends EquivalenceClass[RDD[Quad]]{
 
   override def read(source:String)(implicit sc:SparkContext): RDD[Quad] = {
     val data = RDFDataMgr.loadDatasetGraph(source, Lang.TRIX).find().asScala.toSeq

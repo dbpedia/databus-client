@@ -1,0 +1,133 @@
+0    [ScalaTest-main] WARN  org.apache.spark.util.Utils  - Your hostname, pop-os resolves to a loopback address: 127.0.1.1; using 192.168.107.105 instead (on interface enp0s31f6)
+1    [ScalaTest-main] WARN  org.apache.spark.util.Utils  - Set SPARK_LOCAL_IP if you need to bind to another address
+32   [ScalaTest-main] INFO  org.apache.spark.SparkContext  - Running Spark version 2.4.0
+261  [ScalaTest-main] WARN  org.apache.hadoop.util.NativeCodeLoader  - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+402  [ScalaTest-main] INFO  org.apache.spark.SparkContext  - Submitted application: Triple reader
+463  [ScalaTest-main] INFO  org.apache.spark.SecurityManager  - Changing view acls to: eisenbahnplatte
+463  [ScalaTest-main] INFO  org.apache.spark.SecurityManager  - Changing modify acls to: eisenbahnplatte
+464  [ScalaTest-main] INFO  org.apache.spark.SecurityManager  - Changing view acls groups to: 
+464  [ScalaTest-main] INFO  org.apache.spark.SecurityManager  - Changing modify acls groups to: 
+465  [ScalaTest-main] INFO  org.apache.spark.SecurityManager  - SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(eisenbahnplatte); groups with view permissions: Set(); users  with modify permissions: Set(eisenbahnplatte); groups with modify permissions: Set()
+745  [ScalaTest-main] INFO  org.apache.spark.util.Utils  - Successfully started service 'sparkDriver' on port 40139.
+765  [ScalaTest-main] INFO  org.apache.spark.SparkEnv  - Registering MapOutputTracker
+781  [ScalaTest-main] INFO  org.apache.spark.SparkEnv  - Registering BlockManagerMaster
+784  [ScalaTest-main] INFO  org.apache.spark.storage.BlockManagerMasterEndpoint  - Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+784  [ScalaTest-main] INFO  org.apache.spark.storage.BlockManagerMasterEndpoint  - BlockManagerMasterEndpoint up
+828  [ScalaTest-main] INFO  org.apache.spark.storage.DiskBlockManager  - Created local directory at /tmp/blockmgr-2ec7f3fc-9fa8-4d7b-b393-88f3f8b7359c
+849  [ScalaTest-main] INFO  org.apache.spark.storage.memory.MemoryStore  - MemoryStore started with capacity 4.0 GB
+862  [ScalaTest-main] INFO  org.apache.spark.SparkEnv  - Registering OutputCommitCoordinator
+926  [ScalaTest-main] INFO  org.spark_project.jetty.util.log  - Logging initialized @1537ms
+979  [ScalaTest-main] INFO  org.spark_project.jetty.server.Server  - jetty-9.3.z-SNAPSHOT, build timestamp: unknown, git hash: unknown
+990  [ScalaTest-main] INFO  org.spark_project.jetty.server.Server  - Started @1603ms
+1004 [ScalaTest-main] INFO  org.spark_project.jetty.server.AbstractConnector  - Started ServerConnector@51a06cbe{HTTP/1.1,[http/1.1]}{0.0.0.0:4040}
+1004 [ScalaTest-main] INFO  org.apache.spark.util.Utils  - Successfully started service 'SparkUI' on port 4040.
+1022 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@c8b96ec{/jobs,null,AVAILABLE,@Spark}
+1022 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@4d157787{/jobs/json,null,AVAILABLE,@Spark}
+1023 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@68ed96ca{/jobs/job,null,AVAILABLE,@Spark}
+1024 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@3228d990{/jobs/job/json,null,AVAILABLE,@Spark}
+1024 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@54e7391d{/stages,null,AVAILABLE,@Spark}
+1025 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@50b8ae8d{/stages/json,null,AVAILABLE,@Spark}
+1025 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@255990cc{/stages/stage,null,AVAILABLE,@Spark}
+1026 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@29d2d081{/stages/stage/json,null,AVAILABLE,@Spark}
+1027 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@40e4ea87{/stages/pool,null,AVAILABLE,@Spark}
+1028 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@58783f6c{/stages/pool/json,null,AVAILABLE,@Spark}
+1028 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@3a7b503d{/storage,null,AVAILABLE,@Spark}
+1029 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@512d92b{/storage/json,null,AVAILABLE,@Spark}
+1029 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@62c5bbdc{/storage/rdd,null,AVAILABLE,@Spark}
+1030 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@7bdf6bb7{/storage/rdd/json,null,AVAILABLE,@Spark}
+1031 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@1bc53649{/environment,null,AVAILABLE,@Spark}
+1031 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@88d6f9b{/environment/json,null,AVAILABLE,@Spark}
+1032 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@47d93e0d{/executors,null,AVAILABLE,@Spark}
+1032 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@475b7792{/executors/json,null,AVAILABLE,@Spark}
+1033 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@751e664e{/executors/threadDump,null,AVAILABLE,@Spark}
+1033 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@160c3ec1{/executors/threadDump/json,null,AVAILABLE,@Spark}
+1038 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@182b435b{/static,null,AVAILABLE,@Spark}
+1038 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@610db97e{/,null,AVAILABLE,@Spark}
+1039 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@6f0628de{/api,null,AVAILABLE,@Spark}
+1040 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@4ced35ed{/jobs/job/kill,null,AVAILABLE,@Spark}
+1040 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@2c22a348{/stages/stage/kill,null,AVAILABLE,@Spark}
+1042 [ScalaTest-main] INFO  org.apache.spark.ui.SparkUI  - Bound SparkUI to 0.0.0.0, and started at http://pop-os.lan:4040
+1100 [ScalaTest-main] INFO  org.apache.spark.executor.Executor  - Starting executor ID driver on host localhost
+1143 [ScalaTest-main] INFO  org.apache.spark.util.Utils  - Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 44295.
+1143 [ScalaTest-main] INFO  org.apache.spark.network.netty.NettyBlockTransferService  - Server created on pop-os.lan:44295
+1145 [ScalaTest-main] INFO  org.apache.spark.storage.BlockManager  - Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+1163 [ScalaTest-main] INFO  org.apache.spark.storage.BlockManagerMaster  - Registering BlockManager BlockManagerId(driver, pop-os.lan, 44295, None)
+1165 [dispatcher-event-loop-2] INFO  org.apache.spark.storage.BlockManagerMasterEndpoint  - Registering block manager pop-os.lan:44295 with 4.0 GB RAM, BlockManagerId(driver, pop-os.lan, 44295, None)
+1166 [ScalaTest-main] INFO  org.apache.spark.storage.BlockManagerMaster  - Registered BlockManager BlockManagerId(driver, pop-os.lan, 44295, None)
+1167 [ScalaTest-main] INFO  org.apache.spark.storage.BlockManager  - Initialized BlockManager: BlockManagerId(driver, pop-os.lan, 44295, None)
+1283 [ScalaTest-main] INFO  org.spark_project.jetty.server.handler.ContextHandler  - Started o.s.j.s.ServletContextHandler@7b208b45{/metrics/json,null,AVAILABLE,@Spark}
+1862 [ScalaTest-main] WARN  org.apache.spark.sql.SparkSession$Builder  - Using an existing SparkSession; some configuration may not take effect.
+13639 [Executor task launch worker for task 1554] ERROR org.apache.jena.riot  - [line: 1, col: 1 ] Expected BNode or IRI: Got: [DIRECTIVE:prefix]
+13641 [Executor task launch worker for task 1554] ERROR org.apache.spark.executor.Executor  - Exception in task 0.0 in stage 29.0 (TID 1554)
+org.apache.jena.riot.RiotException: [line: 1, col: 1 ] Expected BNode or IRI: Got: [DIRECTIVE:prefix]
+	at org.apache.jena.riot.system.ErrorHandlerFactory$ErrorHandlerStd.fatal(ErrorHandlerFactory.java:147)
+	at org.apache.jena.riot.lang.LangEngine.raiseException(LangEngine.java:148)
+	at org.apache.jena.riot.lang.LangEngine.exceptionDirect(LangEngine.java:143)
+	at org.apache.jena.riot.lang.LangEngine.exception(LangEngine.java:137)
+	at org.apache.jena.riot.lang.LangNTuple.checkIRIOrBNode(LangNTuple.java:89)
+	at org.apache.jena.riot.lang.LangNTriples.parseOne(LangNTriples.java:74)
+	at org.apache.jena.riot.lang.LangNTriples.parseOne(LangNTriples.java:38)
+	at org.apache.jena.riot.lang.LangNTuple.next(LangNTuple.java:67)
+	at org.apache.jena.atlas.iterator.IteratorResourceClosing.next(IteratorResourceClosing.java:77)
+	at scala.collection.convert.Wrappers$JIteratorWrapper.next(Wrappers.scala:43)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:394)
+	at scala.collection.Iterator$class.foreach(Iterator.scala:891)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1334)
+	at scala.collection.generic.Growable$class.$plus$plus$eq(Growable.scala:59)
+	at scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:104)
+	at scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:48)
+	at scala.collection.TraversableOnce$class.to(TraversableOnce.scala:310)
+	at scala.collection.AbstractIterator.to(Iterator.scala:1334)
+	at scala.collection.TraversableOnce$class.toBuffer(TraversableOnce.scala:302)
+	at scala.collection.AbstractIterator.toBuffer(Iterator.scala:1334)
+	at scala.collection.TraversableOnce$class.toArray(TraversableOnce.scala:289)
+	at scala.collection.AbstractIterator.toArray(Iterator.scala:1334)
+	at org.apache.spark.rdd.RDD$$anonfun$take$1$$anonfun$29.apply(RDD.scala:1364)
+	at org.apache.spark.rdd.RDD$$anonfun$take$1$$anonfun$29.apply(RDD.scala:1364)
+	at org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:2101)
+	at org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:2101)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:90)
+	at org.apache.spark.scheduler.Task.run(Task.scala:121)
+	at org.apache.spark.executor.Executor$TaskRunner$$anonfun$10.apply(Executor.scala:402)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:1360)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:408)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+13659 [task-result-getter-1] WARN  org.apache.spark.scheduler.TaskSetManager  - Lost task 0.0 in stage 29.0 (TID 1554, localhost, executor driver): org.apache.jena.riot.RiotException: [line: 1, col: 1 ] Expected BNode or IRI: Got: [DIRECTIVE:prefix]
+	at org.apache.jena.riot.system.ErrorHandlerFactory$ErrorHandlerStd.fatal(ErrorHandlerFactory.java:147)
+	at org.apache.jena.riot.lang.LangEngine.raiseException(LangEngine.java:148)
+	at org.apache.jena.riot.lang.LangEngine.exceptionDirect(LangEngine.java:143)
+	at org.apache.jena.riot.lang.LangEngine.exception(LangEngine.java:137)
+	at org.apache.jena.riot.lang.LangNTuple.checkIRIOrBNode(LangNTuple.java:89)
+	at org.apache.jena.riot.lang.LangNTriples.parseOne(LangNTriples.java:74)
+	at org.apache.jena.riot.lang.LangNTriples.parseOne(LangNTriples.java:38)
+	at org.apache.jena.riot.lang.LangNTuple.next(LangNTuple.java:67)
+	at org.apache.jena.atlas.iterator.IteratorResourceClosing.next(IteratorResourceClosing.java:77)
+	at scala.collection.convert.Wrappers$JIteratorWrapper.next(Wrappers.scala:43)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:394)
+	at scala.collection.Iterator$class.foreach(Iterator.scala:891)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1334)
+	at scala.collection.generic.Growable$class.$plus$plus$eq(Growable.scala:59)
+	at scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:104)
+	at scala.collection.mutable.ArrayBuffer.$plus$plus$eq(ArrayBuffer.scala:48)
+	at scala.collection.TraversableOnce$class.to(TraversableOnce.scala:310)
+	at scala.collection.AbstractIterator.to(Iterator.scala:1334)
+	at scala.collection.TraversableOnce$class.toBuffer(TraversableOnce.scala:302)
+	at scala.collection.AbstractIterator.toBuffer(Iterator.scala:1334)
+	at scala.collection.TraversableOnce$class.toArray(TraversableOnce.scala:289)
+	at scala.collection.AbstractIterator.toArray(Iterator.scala:1334)
+	at org.apache.spark.rdd.RDD$$anonfun$take$1$$anonfun$29.apply(RDD.scala:1364)
+	at org.apache.spark.rdd.RDD$$anonfun$take$1$$anonfun$29.apply(RDD.scala:1364)
+	at org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:2101)
+	at org.apache.spark.SparkContext$$anonfun$runJob$5.apply(SparkContext.scala:2101)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:90)
+	at org.apache.spark.scheduler.Task.run(Task.scala:121)
+	at org.apache.spark.executor.Executor$TaskRunner$$anonfun$10.apply(Executor.scala:402)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:1360)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:408)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+13660 [task-result-getter-1] ERROR org.apache.spark.scheduler.TaskSetManager  - Task 0 in stage 29.0 failed 1 times; aborting job

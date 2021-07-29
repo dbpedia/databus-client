@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import scala.util.control.Breaks.{break, breakable}
 
 /**
- * Converter for tsv, csv and several RDF serializations (nt,ttl,rdfxml,json-ld)
+ * Converter for tsv, csv and several RDF serializations (nt,ttl,rdfxml,json-ld, nq, trix, trig)
  */
 object FormatHandler {
 

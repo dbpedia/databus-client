@@ -15,7 +15,7 @@ import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang.{RDFXML, Turtle}
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format.{RDFXML, Turtle}
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._

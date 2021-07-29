@@ -1,0 +1,243 @@
+
+
+######
+#     #   ##   #####   ##   #####  #    #  ####
+#     #  #  #    #    #  #  #    # #    # #
+#     # #    #   #   #    # #####  #    #  ####
+#     # ######   #   ###### #    # #    #      #
+#     # #    #   #   #    # #    # #    # #    #
+######  #    #   #   #    # #####   ####   ####
+
+# Plugin version 1.3-SNAPSHOT - https://github.com/dbpedia/databus-maven-plugin
+
+
+@prefix databus: <https://databus.dbpedia.org/> .
+@prefix dataid-mt: <http://dataid.dbpedia.org/ns/mt#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dataid-cv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid-pl: <http://dataid.dbpedia.org/ns/pl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob5.rdf>
+        a                            dataid:SingleFile ;
+        dataid:associatedAgent       <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dataid:compression           "None" ;
+        dataid:contentVariant        "bob5" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:file                  <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob5.rdf> ;
+        dataid:formatExtension       "rdf" ;
+        dataid:isDistributionOf      <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#Dataset> ;
+        dataid:nonEmptyLines         "24"^^xsd:decimal ;
+        dataid:preview               "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n   xmlns:dbo=\"http://dbpedia.org/ontology/\"\n   xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"\n   xmlns:ns1=\"http://www.w3.org/2003/01/geo/wgs84_pos#\"\n   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n   xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"\n>\n  <rdf:Description rdf:about=\"http://dbpedia.org/resource/Jamaica\">\n    <rdfs:label xml:lang=\"en\">Jamaica</rdfs:label>" ;
+        dataid:sha256sum             "48940a6f9d0a4be8192f316a01d4a31bf6f1d4fc5e0088ec5d4ccafc62bb2b95" ;
+        dataid:signature             "rghvljYQhOy6dmCi9MElYOku5D/6MgmJQ4e8Bcx/8Xqs7bG0XyuTMu6e4LK5s9YYweFHDG7/GGsEjA8H/B7JvEYcB16m8jCg1OWwtG6WyYI3etaXmOruTlF6R1IO5g3VByTn3C4U2LUezRnLDET0TpWR4gxNMmdq8OnX8wdTc5o9nFpNZIXq323KOi/4mhm8WF7/VAX54Vx3BdI8bBnK2LHMbk2zPG+VcrLD8R8QtqeIlYrEDtrb6d8lVNH6IXl9kg9uoHo2bRKGV0VilLNWBZyRVXO63RIL4VuxQfSlahtYo8dnZdquLU3v8tXnKwIZBZwVpiAkw0vu55g+ue0BYA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1201"^^xsd:decimal ;
+        dataid-cv:tag                "bob5" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.08.30" ;
+        dct:issued                   "2019-08-30T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-09-06T14:27:51Z"^^xsd:dateTime ;
+        dct:publisher                <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dcat:byteSize                "1201"^^xsd:decimal ;
+        dcat:downloadURL             <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob5.rdf> ;
+        dcat:mediaType               dataid-mt:ApplicationRDFXML .
+
+dataid-mt:ApplicationRDFXML
+        a                dataid-mt:MediaType ;
+        dataid:mimetype  "application/rdf+xml" .
+
+dataid-cv:tag  rdfs:subPropertyOf  dataid:contentVariant .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob3.tsv>
+        a                            dataid:SingleFile ;
+        dataid:associatedAgent       <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dataid:compression           "None" ;
+        dataid:contentVariant        "bob3" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:file                  <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob3.tsv> ;
+        dataid:formatExtension       "tsv" ;
+        dataid:isDistributionOf      <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#Dataset> ;
+        dataid:nonEmptyLines         "3"^^xsd:decimal ;
+        dataid:preview               "resource\thttp://www.w3.org/1999/02/22-rdf-syntax-ns#type\thttp://dbpedia.org/ontology/birthPlace\thttp://www.w3.org/2000/01/rdf-schema#seeAlso\thttp://www.w3.org/2003/01/geo/wgs84_pos#lat\thttp://www.w3.org/2003/01/geo/wgs84_pos#long\thttp://www.w3.org/2000/01/rdf-schema#label\thttp://xmlns.com/foaf/0.1/homepage\nhttp://dbpedia.org/resource/Bob_Marley\thttp://xmlns.com/foaf/0.1/Person\thttp://dbpedia.org/resource/Jamaica\thttp://dbpedia.org/resource/Rastafari\t\t\tBob Marley\t\nhttp://dbpedia.org/resource/Jamaica\thttp://schema.org/Country\t\t\t17.9833\t-76.8\tGiamaica\thttp://jis.gov.jm/" ;
+        dataid:sha256sum             "7af3a7cef890966c88dfb3d076551eb5a7be0e478081a4922f693beec0fab9e2" ;
+        dataid:signature             "uvYx/ontTecFU1jRMBK8JJu2Bxjo/GMeSSXcOWjoYgUIYwlGlfamrvk5tJnOd5pQixx+UNSTEFeO9EkESJMFr8pU9OWMYYvWvXDfBKxdh5EAlxDbvskSyE1+mhZlIwrCtbV/VrjU+A+BY0MaPVq16p8q/L6bRAVSbqQ5tdrQqPx7NXDWOebPr2lSNzKLYb9/nEg/5KtPauRwYyroCNd5sDOUIz7s3TTb+40reJExKMmofORS4Np6+pPpRHsV7FlBl6hYQmMDsv8oA7YYxcfPLH4ywd+xmK/XJQPf4POlnqzQJlT8HixsnuhIQVFbTySbLBY/lsONNlYR3T6qgwUgAQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "574"^^xsd:decimal ;
+        dataid-cv:tag                "bob3" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.08.30" ;
+        dct:issued                   "2019-08-30T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-09-06T14:27:51Z"^^xsd:dateTime ;
+        dct:publisher                <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dcat:byteSize                "574"^^xsd:decimal ;
+        dcat:downloadURL             <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob3.tsv> ;
+        dcat:mediaType               dataid-mt:TextTabSeparatedValues .
+
+dataid-mt:TextTabSeparatedValues
+        a                dataid-mt:MediaType ;
+        dataid:mimetype  "text/tab-separated-values" .
+
+<https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30>
+        a       dataid:Version .
+
+dataid-mt:UNKNOWN  a     dataid-mt:MediaType ;
+        dataid:mimetype  "UNKNOWN" .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#Dataset>
+        a                       dataid:Dataset ;
+        rdfs:comment            "Contains several files with information about Bob Marley. They all have the same data, but are written in different file formats."@en ;
+        rdfs:label              "Testbed to test the format conversion ability of the Databus-Client."@en ;
+        dataid:account          databus:fabian ;
+        dataid:artifact         <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed> ;
+        dataid:associatedAgent  <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dataid:group            <https://databus.dbpedia.org/fabian/databus-client-testbed> ;
+        dataid:groupdocu        "## Origin\nThis dataset was created by Eisenbahnplatte" ;
+        dataid:version          <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30> ;
+        <http://dataid.dbpedia.org/ns/debug.ttl#documentationLocation>
+                <https://github.com/Eisenbahnplatte/testbed/blob/master/databus-client-testbed/format-testbed/format-testbed.md> ;
+        <http://dataid.dbpedia.org/ns/debug.ttl#feedbackChannel>
+                <https://forum.dbpedia.org/u/eisenbahnplatte> ;
+        <http://dataid.dbpedia.org/ns/debug.ttl#issueTracker>
+                <https://github.com/dbpedia/databus-client/issues> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:description         "" ;
+        dct:hasVersion          "2019.08.30" ;
+        dct:issued              "2019-08-30T00:00:00Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:publisher           <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dct:title               "Testbed to test the format conversion ability of the Databus-Client."@en ;
+        dcat:distribution       <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob5.rdf> , <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bobcompact.jsonld> , <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob2.nt> , <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob4.ttl> , <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob.jsonld> , <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob3.tsv> .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob2.nt>
+        a                            dataid:SingleFile ;
+        dataid:associatedAgent       <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dataid:compression           "None" ;
+        dataid:contentVariant        "bob2" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:file                  <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob2.nt> ;
+        dataid:formatExtension       "nt" ;
+        dataid:isDistributionOf      <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#Dataset> ;
+        dataid:nonEmptyLines         "11"^^xsd:decimal ;
+        dataid:preview               "<http://dbpedia.org/resource/Bob_Marley> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .\n<http://dbpedia.org/resource/Bob_Marley> <http://www.w3.org/2000/01/rdf-schema#label> \"Bob Marley\"@en .\n<http://dbpedia.org/resource/Bob_Marley> <http://www.w3.org/2000/01/rdf-schema#label> \"Bob Marley\"@fr .\n<http://dbpedia.org/resource/Bob_Marley> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://dbpedia.org/resource/Rastafari> .\n<http://dbpedia.org/resource/Bob_Marley> <http://dbpedia.org/ontology/birthPlace> <http://dbpedia.org/resource/Jamaica> .\n<http://dbpedia.org/resource/Jamaica> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Country> .\n<http://dbpedia.org/resource/Jamaica> <http://www.w3.org/2000/01/rdf-schema#label> \"Jamaica\"@en .\n<http://dbpedia.org/resource/Jamaica> <http://www.w3.org/2000/01/rdf-schema#label> \"Giamaica\"@it .\n<http://dbpedia.org/resource/Jamaica> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> \"17.9833\"^^<http://www.w3.org/2001/XMLSchema#float> .\n<http://dbpedia.org/resource/Jamaica> <http://www.w3.org/2003/01/geo/wgs84_pos#long> \"-76.8\"^^<http://www.w3.org/2001/XMLSchema#float> ." ;
+        dataid:sha256sum             "9a39a1bac821a66bde87e3c986ced948ef235aa219645f5c952afc75d54f54f1" ;
+        dataid:signature             "jPmMeHEywa983y+U2tL8T487Y1nPPeWHs0SPfcK1QAWuVBeV1pTcZFaXrMe7YMtim6EIlWfo4Bo4EIIy2vmaTHaN4+rj+Snge2dpSFTG6Uh/mN6DP/szI4MDceoMIs5MlFL/MOEJwBf9WpYxMoD1a4bE4dFt7Bvd5WBmlVFq/tM/v0E++U2HMNV/PNofOomkiyLynV+xO6Q8SSavdzF96wAuKH6rC7TmmOfaGcVBBHyHAW+fXZqr92ruiaU17gliXz9ip2BHCYHlIZMBc3Zs7xxlB86KsuDPPELi1nq8AHr2r1ZP4nIoMBF4gOigSq8V/TOfmmrZY8jHSjdBsWz/nQ==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1277"^^xsd:decimal ;
+        dataid-cv:tag                "bob2" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.08.30" ;
+        dct:issued                   "2019-08-30T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-09-06T14:27:51Z"^^xsd:dateTime ;
+        dct:publisher                <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dcat:byteSize                "1277"^^xsd:decimal ;
+        dcat:downloadURL             <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob2.nt> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob.jsonld>
+        a                            dataid:SingleFile ;
+        dataid:associatedAgent       <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dataid:compression           "None" ;
+        dataid:contentVariant        "bob" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:file                  <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob.jsonld> ;
+        dataid:formatExtension       "" ;
+        dataid:isDistributionOf      <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#Dataset> ;
+        dataid:nonEmptyLines         "57"^^xsd:decimal ;
+        dataid:preview               "{\n  \"@context\": {\n    \"dbpedia\": \"http://dbpedia.org/resource/\",\n    \"foaf\": \"http://xmlns.com/foaf/0.1/\",\n    \"rdf\": \"http://www.w3.org/1999/02/22-rdf-syntax-ns#\",\n    \"rdfs\": \"http://www.w3.org/2000/01/rdf-schema#\",\n    \"schema\": \"http://schema.org/\",\n    \"xsd\": \"http://www.w3.org/2001/XMLSchema#\"\n  },\n  \"@graph\": [" ;
+        dataid:sha256sum             "b88dd8c15c9321b1441694f5683dee0adce8e8bd13795c5246b687c9248a49ec" ;
+        dataid:signature             "k03qBH7c4NeSGc7V/4qkwBFmne4H5vG8Q/dxrL3+wUTXo42H9rxSvDHVuuDvKUl/1Q/SQLNjH9DwoRmsIf14aKrgmXl/+uzTVSLMupXg1dLIot2GOyVRl/aL1yOUvm8I1JDxdS+pfkRb9S/ub3olsNK6OEE/uaZ2WxTqiZQmsWaQ/2EID/FAiAe/aqk9mw+2jA2r9yHdPRp0rI34bE1NpLP0PqirvEkKZvfXRH4t8EgqRQkvHdH2DC31tE8A8iaPgJbAHsXUF8h2g3EySmPoz8R1Rl+RH+hhld00I/unXZU5tBYx4pPxwlW3gsobHr+IGjLbZgdvJVgh4MMaHWD3Og==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "1397"^^xsd:decimal ;
+        dataid-cv:tag                "bob" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.08.30" ;
+        dct:issued                   "2019-08-30T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-09-06T14:27:51Z"^^xsd:dateTime ;
+        dct:publisher                <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dcat:byteSize                "1397"^^xsd:decimal ;
+        dcat:downloadURL             <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob.jsonld> ;
+        dcat:mediaType               dataid-mt:UNKNOWN .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bobcompact.jsonld>
+        a                            dataid:SingleFile ;
+        dataid:associatedAgent       <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dataid:compression           "None" ;
+        dataid:contentVariant        "bobcompact" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:file                  <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bobcompact.jsonld> ;
+        dataid:formatExtension       "" ;
+        dataid:isDistributionOf      <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#Dataset> ;
+        dataid:nonEmptyLines         "1"^^xsd:decimal ;
+        dataid:preview               "[{\"@id\":\"http://dbpedia.org/resource/Bob_Marley\",\"@type\":[\"http://xmlns.com/foaf/0.1/Person\"],\"http://www.w3.org/2000/01/rdf-schema#label\":[{\"@value\":\"Bob Marley\",\"@language\":\"en\"},{\"@value\":\"Bob Marley\",\"@language\":\"fr\"}],\"http://www.w3.org/2000/01/rdf-schema#seeAlso\":[{\"@id\":\"http://dbpedia.org/resource/Rastafari\"}],\"http://dbpedia.org/ontology/birthPlace\":[{\"@id\":\"http://dbpedia.org/resource/Jamaica\"}]},{\"@id\":\"http://dbpedia.org/resource/Jamaica\",\"@type\":[\"http://schema.org/Country\"],\"http://www.w3.org/2000/01/rdf-schema#label\":[{\"@value\":\"Jamaica\",\"@language\":\"en\"},{\"@value\":\"Giamaica\",\"@language\":\"it\"}],\"http://www.w3.org/2003/01/geo/wgs84_pos#lat\":[{\"@value\":\"17.9833\",\"@type\":\"http://www.w3.org/2001/XMLSchema#float\"}],\"http://www.w3.org/2003/01/geo/wgs84_pos#long\":[{\"@value\":\"-76.8\",\"@type\":\"http://www.w3.org/2001/XMLSchema#float\"}],\"http://xmlns.com/foaf/0.1/homepage\":[{\"@id\":\"http://jis.gov.jm/\"}]},{\"@id\":\"http://dbpedia.org/resource/Rastafari\"},{\"@id\":\"http://jis.gov.jm/\"},{\"@id\":\"http://schema.org/Country\"},{\"@id\":\"http://xmlns.com/foaf/0.1/Person\"}] " ;
+        dataid:sha256sum             "3867bf70c58fb826038c433432e095c86865a903d9e667f08a3a4d147e919fba" ;
+        dataid:signature             "ahFXKyZXqT6XCkCpnFuVvy2ZBGYXnkwDmeTQLmUFd7lEMu68H56OFN9HDjTtrJxawVq2p+7co4fE+aZsgx+x3cVdGZYxuzcApO/KjinUaDYmfw4zyNZLteDYKWL3Zb6dSNTLFY1ZAmw31LHKYm5l1hhXWXbIU5aBGbqjPsEifT1UBSZhUnkSAZdfAwMS9zxF5/hbyvLYEJYs7sQN7/zaoPOhMznhDGHoWLALjgKLwYbBsn8ie4xfM1qs1vyeIoqpb3FHpi7Tl0j27L2usyHUfCq0DHLXxbQ8gzKEdcvkVE7RHZAXGQqS4CzOhYMhlw/IucudzjzAK9+694nr2CkD4w==" ;
+        dataid:sorted                true ;
+        dataid:uncompressedByteSize  "1079"^^xsd:decimal ;
+        dataid-cv:tag                "bobcompact" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.08.30" ;
+        dct:issued                   "2019-08-30T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-09-06T14:38:57Z"^^xsd:dateTime ;
+        dct:publisher                <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dcat:byteSize                "1079"^^xsd:decimal ;
+        dcat:downloadURL             <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bobcompact.jsonld> ;
+        dcat:mediaType               dataid-mt:UNKNOWN .
+
+<https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed>
+        a       dataid:Artifact .
+
+<https://databus.dbpedia.org/fabian/databus-client-testbed>
+        a       dataid:Group .
+
+dataid-mt:ApplicationNTriples
+        a                dataid-mt:MediaType ;
+        dataid:mimetype  "application/n-triples" .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl>
+        a                       dataid:DataId ;
+        rdfs:comment            "Metadata created by the DBpedia Databus Maven Plugin: https://github.com/dbpedia/databus-maven-plugin (Version 1.3-SNAPSHOT)\nThe DataID ontology is a metadata omnibus, which can be extended to be interoperable with all metadata formats\nNote that the metadata (the dataid.ttl file) is always CC-0, the files are licensed individually\nMetadata created by https://eisenbahnplatte.github.io/webid.ttl#this" ;
+        rdfs:label              "DataID metadata for databus-client-testbed/format-testbed"@en ;
+        dataid:associatedAgent  <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dct:conformsTo          "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion          "1.3-SNAPSHOT" ;
+        dct:issued              "2019-09-06T15:35:22Z"^^xsd:dateTime ;
+        dct:license             <http://purl.oclc.org/NET/rdflicense/cc-zero1.0> ;
+        dct:publisher           <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dct:title               "DataID metadata for databus-client-testbed/format-testbed"@en .
+
+<http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#format-testbed_bob4.ttl>
+        a                            dataid:SingleFile ;
+        dataid:associatedAgent       <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dataid:compression           "None" ;
+        dataid:contentVariant        "bob4" ;
+        dataid:duplicates            "0"^^xsd:decimal ;
+        dataid:file                  <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob4.ttl> ;
+        dataid:formatExtension       "ttl" ;
+        dataid:isDistributionOf      <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/dataid.ttl#Dataset> ;
+        dataid:nonEmptyLines         "17"^^xsd:decimal ;
+        dataid:preview               "@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix ns0: <http://dbpedia.org/ontology/> .\n@prefix schema: <http://schema.org/> .\n@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://dbpedia.org/resource/Bob_Marley>\n  a foaf:Person ;\n  rdfs:label \"Bob Marley\"@en, \"Bob Marley\"@fr ;" ;
+        dataid:sha256sum             "d884a13b5c2b5c0e7f9239c817ad6b4c5058e1293d76381405d70306c734b210" ;
+        dataid:signature             "kLj/leeSEfnN9DBor6vGSDAxe3oXFfg9t9h3dMYqiDSIN9HkdFK+gerk7VAdo0w7WG40n7vNUDHyr37oLW0qPO1XjN+J4aecYEhOLXMY1g94K2c9ff8GaT+IaC6rf3SIKAExFckBUlO/Sbu3DwaknQNQs86K9JOuahgHDle4hRa8Ag5pJs1lQjLJ5jrl23CNlZrLi3ja4mxLW2/hkr6qb1zhYEYxUvurDMWanpCyAgKBNIDqigOq2ZqcS5q0PnUsYFKUUOmCm3+WxN/3MIfY1IXBZmy+Kk2QusANReQBXDSlHv/t8LOdzExpd/oHnlgGJiPVp6E5Dbyzgfv90P6+HA==" ;
+        dataid:sorted                false ;
+        dataid:uncompressedByteSize  "725"^^xsd:decimal ;
+        dataid-cv:tag                "bob4" ;
+        dct:conformsTo               "http://dataid.dbpedia.org/ns/core#" ;
+        dct:hasVersion               "2019.08.30" ;
+        dct:issued                   "2019-08-30T00:00:00Z"^^xsd:dateTime ;
+        dct:license                  <http://purl.oclc.org/NET/rdflicense/cc-by3.0> ;
+        dct:modified                 "2019-09-06T14:27:51Z"^^xsd:dateTime ;
+        dct:publisher                <https://eisenbahnplatte.github.io/webid.ttl#this> ;
+        dcat:byteSize                "725"^^xsd:decimal ;
+        dcat:downloadURL             <http://dbpedia-mappings.tib.eu/databus-repo/eisenbahnplatte/databus-client-testbed/format-testbed/2019.08.30/format-testbed_bob4.ttl> ;
+        dcat:mediaType               dataid-mt:ApplicationNTriples .

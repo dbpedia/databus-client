@@ -1,9 +1,9 @@
-package org.dbpedia.databus.client.filehandling.convert.format.rdf
+package org.dbpedia.databus.client.filehandling.convert.format
 
 import better.files.File
 import org.apache.spark.SparkContext
 
-trait RDFLang[T] {
+trait EquivalenceClass[T] {
 
   val tempDir: File = File("./target/databus.tmp/temp/")
   if (tempDir.exists) tempDir.delete()

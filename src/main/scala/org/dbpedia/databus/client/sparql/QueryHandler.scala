@@ -145,7 +145,9 @@ object QueryHandler {
         try {
           results.map(solution => solution.getResource(sparqlVar).toString)
         } catch {
-          case nullPointerException: NullPointerException => Seq.empty[String]
+          case nullPointerException: NullPointerException =>
+            logger.warn("No Mapping found for")
+            Seq.empty[String]
         }
       }
 

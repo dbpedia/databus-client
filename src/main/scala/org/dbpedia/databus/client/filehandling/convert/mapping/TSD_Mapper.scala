@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory
 
 object TSD_Mapper {
 
-
   def map_to_triples(spark: SparkSession, inputFile: File, inputFormat:String, sha:String, mapping:String, delimiter:Character, quotation:Character): RDD[Triple]={
     var triples = spark.sparkContext.emptyRDD[org.apache.jena.graph.Triple]
 

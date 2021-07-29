@@ -1,12 +1,13 @@
-package org.dbpedia.databus.client.filehandling.convert.format.tsd.lang
+package org.dbpedia.databus.client.filehandling.convert.format.tsd.format
 
 import better.files.File
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClass
 
-object CSV extends TSDLang[DataFrame] {
+class CSV(delimiter: Character = ',') extends EquivalenceClass[DataFrame] {
 
-  override def read(source: String, delimiter: Character = ',')(implicit sc: SparkContext): DataFrame = {
+  override def read(source: String)(implicit sc: SparkContext): DataFrame = {
     val spark = SparkSession.builder.config(sc.getConf).getOrCreate()
 
     spark.read.format("csv")
@@ -16,7 +17,7 @@ object CSV extends TSDLang[DataFrame] {
       .load(source)
   }
 
-  override def write(data: DataFrame, delimiter: Character = ',')(implicit sc: SparkContext): File = {
+  override def write(data: DataFrame)(implicit sc: SparkContext): File = {
     data.coalesce(1).write
       .option("delimiter", delimiter.toString)
       .option("emptyValue", "")

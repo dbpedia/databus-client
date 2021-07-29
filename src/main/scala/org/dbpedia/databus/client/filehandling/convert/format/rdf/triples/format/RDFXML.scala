@@ -1,4 +1,4 @@
-package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.lang
+package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format
 
 import better.files.File
 import org.apache.jena.graph.{NodeFactory, Triple}
@@ -7,12 +7,12 @@ import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.RDFLang
+import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClass
 
 import java.io.ByteArrayOutputStream
 import scala.io.{Codec, Source}
 
-object RDFXML extends RDFLang[RDD[Triple]] {
+class RDFXML extends EquivalenceClass[RDD[Triple]] {
 
   override def read(source:String)(implicit sc:SparkContext): RDD[Triple] = {
 
