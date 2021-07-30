@@ -8,16 +8,18 @@ import org.apache.jena.sparql.core.Quad
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClass
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.convert.Spark
+import org.dbpedia.databus.client.filehandling.convert.format.Format
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, SequenceInputStream}
 import scala.collection.JavaConverters.{asJavaEnumerationConverter, asJavaIteratorConverter, asScalaIteratorConverter}
 
-class NQuads extends EquivalenceClass[RDD[Quad]]{
+class NQuads extends Format[RDD[Quad]]{
 
-  override def read(source: String)(implicit sc:SparkContext): RDD[Quad] = {
+  override def read(source: String): RDD[Quad] = {
 
-    val rdd = sc.textFile(source, 20)
+    val rdd = Spark.context.textFile(source, 20)
 
     rdd.mapPartitions(
       part => {
@@ -33,7 +35,7 @@ class NQuads extends EquivalenceClass[RDD[Quad]]{
 
   }
 
-   override def write(quads: RDD[Quad])(implicit sparkContext: SparkContext): File ={
+   override def write(quads: RDD[Quad]): File ={
 
     quads.map(quad => {
       val os = new ByteArrayOutputStream()
@@ -41,7 +43,7 @@ class NQuads extends EquivalenceClass[RDD[Quad]]{
       os.toString.trim
     }).saveAsTextFile(tempDir.pathAsString)
 
-    tempDir
+     FileUtil.unionFiles(tempDir, tempDir / "converted.nq")
   }
 
 }

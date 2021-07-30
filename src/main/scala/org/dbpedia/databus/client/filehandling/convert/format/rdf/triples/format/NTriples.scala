@@ -8,16 +8,18 @@ import org.apache.jena.riot.lang.RiotParsers
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClass
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.convert.Spark
+import org.dbpedia.databus.client.filehandling.convert.format.Format
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, InputStream, SequenceInputStream}
 import scala.collection.JavaConverters.{asJavaEnumerationConverter, asJavaIteratorConverter, asScalaIteratorConverter}
 
-class NTriples extends EquivalenceClass[RDD[Triple]]{
+class NTriples extends Format[RDD[Triple]]{
 
-  override def read(source: String)(implicit sc: SparkContext): RDD[Triple] = {
+  override def read(source: String): RDD[Triple] = {
 
-    val rdd = sc.textFile(source, 20)
+    val rdd = Spark.context.textFile(source, 20)
 
     rdd.mapPartitions(
       part => {
@@ -33,15 +35,14 @@ class NTriples extends EquivalenceClass[RDD[Triple]]{
 
   }
 
-   def write(triples: RDD[Triple])(implicit sc: SparkContext): File ={
+   def write(triples: RDD[Triple]): File ={
+     triples.map(triple => {
+       val os = new ByteArrayOutputStream()
+       RDFDataMgr.writeTriples(os, Iterator[Triple](triple).asJava)
+       os.toString.trim
+     }).saveAsTextFile(tempDir.pathAsString)
 
-    triples.map(triple => {
-      val os = new ByteArrayOutputStream()
-      RDFDataMgr.writeTriples(os, Iterator[Triple](triple).asJava)
-      os.toString.trim
-    }).saveAsTextFile(tempDir.pathAsString)
-
-    tempDir
+     FileUtil.unionFiles(tempDir, tempDir / "converted.nt")
   }
 
 }

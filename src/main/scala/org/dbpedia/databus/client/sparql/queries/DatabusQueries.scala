@@ -68,21 +68,44 @@ object DatabusQueries {
        |
        |SELECT DISTINCT ?mapping
        |WHERE {
-       |  	?dataIdElement dataid:sha256sum "$sha"^^xsd:string .
-       |  	?dataIdElement dataid:file ?file .
-       |    ?dataset dcat:distribution ?dataIdElement .
-       |    ?dataset dataid:artifact ?artifact .
-       |  	OPTIONAL { ?mapping1 map:versionedFile ?file }
+       |  ?dataIdElement dataid:sha256sum "$sha"^^xsd:string ;
+       |  	dataid:file ?file ;
+       |   	dct:hasVersion ?version .
+       |  ?dataset dcat:distribution ?dataIdElement ;
+       |    dataid:artifact ?artifact .
        |
+       |  # Priority 1: stable, versioned File URI
+       |  OPTIONAL { ?mapping1 map:versionedFile ?file }
+       |
+       |  # Priority 2: artifact and name, optional range of suitable versions possible
+       |  OPTIONAL {
+       |	?mapping2 map:artifact ?artifact .
+       |  	?mapping2 map:fileName ?fileName2 .
        |    OPTIONAL {
-       |		?mapping2 map:artifact ?artifact .
-       |  		?mapping2 map:fileName ?fileName2 .
+       |    	?mapping2 map:fromVersion ?from .
+       |    }
+       |   	OPTIONAL {
+       |   		?mapping2 map:untilVersion ?until .
        |   	}
-       |    FILTER (?fileName=STR(?fileName2))
-       |    BIND( strafter ( STR(?dataIdElement) , "#") as ?fileName) .
+       |  }
+       |  BIND( strafter ( STR(?dataIdElement) , "#") as ?fileName) .
+       |  FILTER (?fileName=STR(?fileName2))
+       |  FILTER (?from <= ?version && ?until >= ?version)
        |
-       |    OPTIONAL { ?mapping3 map:artifact ?artifact }
-       |	BIND( coalesce(?mapping1, ?mapping2, ?mapping3) as ?mapping)
+       |  # Priority 3: Only Artifact, optional range of suitable versions
+       |  OPTIONAL {
+       |    ?mapping3 map:artifact ?artifact
+       |    OPTIONAL {
+       |    	?mapping3 map:fromVersion ?from .
+       |    }
+       |   	OPTIONAL {
+       |   		?mapping3 map:untilVersion ?until .
+       |   	}
+       |  }
+       |  FILTER (?from <= ?version && ?until >= ?version)
+       |
+       |
+       |  BIND( coalesce(?mapping1, ?mapping2, ?mapping3) as ?mapping)
        |}
        |""".stripMargin
 

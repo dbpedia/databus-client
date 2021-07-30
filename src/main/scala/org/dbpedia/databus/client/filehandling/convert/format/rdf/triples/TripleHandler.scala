@@ -6,6 +6,7 @@ import org.apache.jena.riot.RDFFormat
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClassHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format.{NTriples, RDFXML, Turtle}
 
@@ -18,7 +19,7 @@ class TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
    * @param inputFormat rdf serialization
    * @return rdf data as RDD[Triples]
    */
-  override def read(source: String, inputFormat: String)(implicit sc:SparkContext): RDD[Triple] = {
+  override def read(source: String, inputFormat: String): RDD[Triple] = {
 
     inputFormat match {
       case "nt" => new NTriples().read(source)
@@ -42,12 +43,13 @@ class TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
    * @param data         input data
    * @param outputFormat output format
    */
-  override def write(data: RDD[Triple], outputFormat: String)(implicit sc:SparkContext): File = {
+  override def write(data: RDD[Triple], outputFormat: String): File = {
 
     outputFormat match {
       case "nt" => new NTriples().write(data)
       case "ttl" => new Turtle().write(data)
       case "rdfxml" => new RDFXML().write(data)
     }
+
   }
 }

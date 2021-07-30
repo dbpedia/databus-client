@@ -1,7 +1,6 @@
 package org.dbpedia.databus.client.filehandling.convert.compression
 
-import java.io.{BufferedInputStream, FileOutputStream, InputStream, OutputStream}
-
+import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
 import better.files.File
 import org.apache.commons.compress.archivers.dump.InvalidFormatException
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
@@ -9,7 +8,8 @@ import org.slf4j.LoggerFactory
 
 object Compressor {
 
-  def decompress(bufferedInputStream: BufferedInputStream): InputStream = {
+  def decompress(file:File): InputStream = {
+    val bufferedInputStream = new BufferedInputStream(new FileInputStream(file.toJava))
     //Welche Funktion hat actualDecompressConcatenated?
     try {
 
@@ -30,7 +30,7 @@ object Compressor {
     }
   }
 
-  def compress(outputCompression: String, output: File): OutputStream = {
+  def compress(output: File, outputCompression: String): OutputStream = {
     try {
       // file is created here
       val myOutputStream = new FileOutputStream(output.toJava)
@@ -70,4 +70,6 @@ object Compressor {
         new FileOutputStream(output.toJava)
     }
   }
+
+
 }

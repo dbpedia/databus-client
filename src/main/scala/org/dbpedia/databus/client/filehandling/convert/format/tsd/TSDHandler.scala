@@ -21,7 +21,7 @@ class TSDHandler(delimiter:Character=',') extends EquivalenceClassHandler[DataFr
    * @param inputFormat input format
    * @return data in a Spark DataFrame
    */
-  override def read(source: String, inputFormat: String)(implicit sparkContext: SparkContext): DataFrame = {
+  override def read(source: String, inputFormat: String): DataFrame = {
 
     inputFormat match {
       case "tsv" => new TSV().read(source)
@@ -30,7 +30,7 @@ class TSDHandler(delimiter:Character=',') extends EquivalenceClassHandler[DataFr
   }
 
 
-  override def write(data:DataFrame, outputFormat: String)(implicit sparkContext: SparkContext): File = {
+  override def write(data:DataFrame, outputFormat: String): File = {
 
     outputFormat match {
       case "tsv" => new TSV().write(data)

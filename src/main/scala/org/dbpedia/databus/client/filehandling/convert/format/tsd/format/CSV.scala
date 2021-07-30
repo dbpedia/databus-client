@@ -3,21 +3,21 @@ package org.dbpedia.databus.client.filehandling.convert.format.tsd.format
 import better.files.File
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClass
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.convert.Spark
+import org.dbpedia.databus.client.filehandling.convert.format.Format
 
-class CSV(delimiter: Character = ',') extends EquivalenceClass[DataFrame] {
+class CSV(delimiter: Character = ',') extends Format[DataFrame] {
 
-  override def read(source: String)(implicit sc: SparkContext): DataFrame = {
-    val spark = SparkSession.builder.config(sc.getConf).getOrCreate()
-
-    spark.read.format("csv")
+  override def read(source: String): DataFrame = {
+    Spark.session.read.format("csv")
       .option("sep", delimiter.toString)
       .option("inferSchema", "true")
       .option("header", "true")
       .load(source)
   }
 
-  override def write(data: DataFrame)(implicit sc: SparkContext): File = {
+  override def write(data: DataFrame): File = {
     data.coalesce(1).write
       .option("delimiter", delimiter.toString)
       .option("emptyValue", "")
@@ -25,7 +25,7 @@ class CSV(delimiter: Character = ',') extends EquivalenceClass[DataFrame] {
       .option("treatEmptyValuesAsNulls", "false")
       .csv(tempDir.pathAsString)
 
-    tempDir
+    FileUtil.unionFiles(tempDir, tempDir / "converted.csv")
   }
 
 }

@@ -5,8 +5,10 @@ import org.apache.spark.SparkContext
 
 trait EquivalenceClassHandler[T] {
 
-  def read(source: String, inputFormat: String)(implicit sc: SparkContext): T
+  val tempDir: File = File("./target/databus.tmp/temp/")
 
-  def write(data: T, outputFormat: String)(implicit sc: SparkContext): File
+  def read(source: String, inputFormat: String): T
+
+  def write(data: T, outputFormat: String): File
 
 }

@@ -1,49 +1,67 @@
 package org.dbpedia.databus.client.filehandling
 
 import better.files.File
+import org.apache.commons.io.FileUtils
 import org.apache.http.HttpHeaders
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.{BasicResponseHandler, HttpClientBuilder}
 import org.dbpedia.databus.client.filehandling.download.Downloader
+import org.dbpedia.databus.client.main.cli.CLIconf
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.dbpedia.databus.client.sparql.queries.DatabusQueries
 import org.slf4j.LoggerFactory
 
 
-object SourceHandler {
+class SourceHandler(conf:CLIconf) {
 
   //supported formats
-  val fileFormats = "rdfxml|ttl|nt|jsonld|tsv|csv|nq|trix|trig|same"
-  val compressionFormats = "bz2|gz|deflate|lzma|sz|xz|zstd||same"
+  val fileFormats:String = "rdfxml|ttl|nt|jsonld|tsv|csv|nq|trix|trig|same"
+  val compressionFormats:String = "bz2|gz|deflate|lzma|sz|xz|zstd||same"
+
+  val cache: File = File("./target/databus.tmp/cache_dir/")
+
+  def process(): Unit={
+    if (File(conf.source()).exists()) {
+      val sourceFile: File = File(conf.source())
+
+      if (sourceFile.hasExtension && sourceFile.extension.get.matches(".sparql|.query")) { // conf.source() is a query file
+        val queryString = readQueryFile(sourceFile)
+        handleQuery(queryString)
+      }
+      else { // conf.source() is an already existing file or directory
+        handleSource(sourceFile)
+      }
+    }
+    else { // conf.source() is a query string
+      handleQuery(conf.source())
+    }
+  }
 
   /**
    * convert input files in client-supported formats(no query files!) to the desired format and compression
    *
    * @param source file or directory
-   * @param target target directory
-   * @param format desired format
-   * @param compression desired compression
    */
-  def handleSource(source: File, target: File, format: String, compression: String, mapping: String, delimiter:Character, quotation:Character, createMapping:Boolean):Unit = {
-    printTask("source", source.pathAsString, target.pathAsString)
-
+  def handleSource(source: File):Unit = {
+    printTask("source", source.pathAsString, File(conf.target()).pathAsString)
     println(s"CONVERSION TOOL:\n")
 
     val dataId_string = "dataid.ttl"
+    val fileHandler = new FileHandler(conf)
 
     if (source.isDirectory) {
       val files = source.listRecursively.toSeq
       for (file <- files) {
         if (!file.isDirectory) {
           if (!file.name.equals(dataId_string)) {
-            FileHandler.handleFile(file, target, format, compression, mapping, delimiter, quotation, createMapping)
+            fileHandler.handleFile(file)
           }
         }
       }
     }
     else {
-      FileHandler.handleFile(source, target, format, compression, mapping, delimiter, quotation, createMapping)
+      fileHandler.handleFile(source)
     }
   }
 
@@ -51,35 +69,50 @@ object SourceHandler {
    * download files of the input query and convert them to the desired format and compression
    *
    * @param query sparql query
-   * @param target target directory
-   * @param cache cache directory
-   * @param format output format
-   * @param compression output compression
-   * @param overwrite overwrite files in the cache directory
    */
-  def handleQuery(query: String, target: File, cache: File, format: String, compression: String, overwrite: Boolean=false, mapping: String, delimiter:Character, quotation:Character, createMapping:Boolean):Unit = {
+  def handleQuery(query: String):Unit = {
 
     var queryStr = {
       if (isCollection(query)) getQueryOfCollection(query)
       else query
     }
 
-    printTask("query", queryStr, target.pathAsString)
+    printTask("query", queryStr, File(conf.target()).pathAsString)
 
     //necessary due collection queries query the permament DBpedia URIs not the actual download links
     if(isCollection(query)) queryStr = DatabusQueries.queryDownloadURLOfDatabusFiles(QueryHandler.executeDownloadQuery(queryStr))
 
     println("DOWNLOAD TOOL:")
 
-    val allSHAs = Downloader.downloadWithQuery(queryStr, cache, overwrite)
+    val allSHAs = Downloader.downloadWithQuery(queryStr, cache, conf.overwrite())
 
     println("\n========================================================\n")
     println(s"CONVERSION TOOL:\n")
 
+    val fileHandler = new FileHandler(conf)
+
     allSHAs.foreach(
-      sha => FileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")), target, format, compression, mapping, delimiter, quotation, createMapping)
+      sha => fileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")))
     )
 
+  }
+
+  def initialChecks():Unit={
+    // check output format and compression
+    if (!isSupportedOutFormat(conf.format())) System.exit(1)
+    if (!isSupportedOutCompression(conf.compression())) System.exit(1)
+
+    if (!conf.source.isDefined) {
+      LoggerFactory.getLogger("Source Logger").error(s"No source found.")
+      println(s"No source set.")
+      System.exit(1)
+    }
+
+    if (conf.clear()) FileUtils.deleteDirectory(cache.toJava)
+    cache.createDirectoryIfNotExists()
+
+    val target = File(conf.target())
+    target.createDirectoryIfNotExists()
   }
 
   /**
@@ -140,6 +173,19 @@ object SourceHandler {
     handler.handleResponse(response)
   }
 
+  /**
+   * read a query file as string
+   *
+   * @param file query file
+   * @return query string
+   */
+  def readQueryFile(file: File): String = {
+    var queryString: String = ""
+    for (line <- file.lineIterator) {
+      queryString = queryString.concat(line).concat("\n")
+    }
+    queryString
+  }
 
   def printTask(sourceType: String, source: String, target: String):Unit = {
     val str =
@@ -155,5 +201,4 @@ object SourceHandler {
 
     println(str)
   }
-
 }

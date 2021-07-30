@@ -4,139 +4,89 @@ import java.io._
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
-import org.dbpedia.databus.client.filehandling.convert.FormatHandler
+import org.dbpedia.databus.client.filehandling.convert.FormatConverter
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
+import org.dbpedia.databus.client.main.cli.CLIconf
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
 import scala.io.Source
 
-object FileHandler {
+class FileHandler(cliConfig: CLIconf) {
+
   /**
     * handle input file
     *
     * @param inputFile input file
-    * @param dest_dir destination directory
-    * @param outputFormat format of output file
-    * @param outputCompression compression of output file
     */
-  def handleFile(inputFile:File, dest_dir: File, outputFormat: String, outputCompression: String, mapping: String, delimiter:Character, quotation:Character, createMapping:Boolean): Option[File] = {
+  def handleFile(inputFile:File): Option[File] = {
 
     println(s"input file:\t${inputFile.pathAsString}")
-    val bufferedInputStream = new BufferedInputStream(new FileInputStream(inputFile.toJava))
 
-    val compressionInputFile = getCompressionType(bufferedInputStream)
-    val formatInputFile = getFormatType(inputFile, compressionInputFile)
+    val inCompression = FileUtil.getCompressionType(inputFile)
+    val inFormat = FileUtil.getFormatType(inputFile, inCompression)
+
+    val config:CompileConfig = new CompileConfig(
+      inputFormat = inFormat,
+      inputCompression = inCompression,
+      outputFormat = {
+        if (cliConfig.format()=="same") inFormat
+        else cliConfig.format() },
+      outputCompression = {
+        if(cliConfig.compression()=="same") inCompression
+        else cliConfig.compression() },
+      target = File(cliConfig.target()),
+      mapping = cliConfig.mapping(),
+      delimiter = cliConfig.delimiter().toCharArray.head,
+      quotation = cliConfig.quotation().toCharArray.head,
+      createMapping = cliConfig.createMapping()
+    )
+
+    val outFile: File = getOutputFile(inputFile)
 
     // Without any Conversion
-    if ((outputCompression == compressionInputFile || outputCompression == "same") && (outputFormat == formatInputFile || outputFormat == "same")) {
-      val outFile = getOutputFile(inputFile, formatInputFile, compressionInputFile, dest_dir)
-      val outputStream = new FileOutputStream(outFile.toJava)
-      copyStream(new FileInputStream(inputFile.toJava), outputStream)
+    if ((config.inputCompression == config.outputCompression) && (config.inputFormat == config.outputFormat)) {
+      copyStream(new FileInputStream(inputFile.toJava), new FileOutputStream(outFile.toJava))
       Some(outFile)
     }
-
     // Only Compression Conversion
-    else if (outputCompression != compressionInputFile && (outputFormat == formatInputFile || outputFormat == "same")) {
-      val decompressedInStream = Compressor.decompress(bufferedInputStream)
-      val compressedFile = getOutputFile(inputFile, formatInputFile, outputCompression, dest_dir)
-      val compressedOutStream = Compressor.compress(outputCompression, compressedFile)
-      copyStream(decompressedInStream, compressedOutStream)
-      Some(compressedFile)
+    else if (config.inputCompression != config.outputCompression && (config.inputFormat == config.outputFormat)) {
+      copyStream(Compressor.decompress(inputFile), Compressor.compress(outFile, config.outputCompression))
+      Some(outFile)
     }
 
     // File Format Conversion (need to uncompress anyway)
     else {
+      if (!isSupportedInFormat(config.inputFormat)) return None
 
-      if (!isSupportedInFormat(formatInputFile)) return None
-
-      val newOutCompression = {
-        if (outputCompression == "same") compressionInputFile
-        else outputCompression
-      }
-
-      val targetFile = getOutputFile(inputFile, outputFormat, newOutCompression, dest_dir)
-      var typeConvertedFile = File("")
-
-      val sha = {
+      config.sha = {
         if (FileUtil.getShaOfFileInCache(inputFile, File("./target/databus.tmp/cache_dir/shas.txt")) != "") FileUtil.getShaOfFileInCache(inputFile, File("./target/databus.tmp/cache_dir/shas.txt"))
         else FileUtil.getSha256(inputFile)
       }
 
-
-      if (!(compressionInputFile == "")) {
-        val decompressedInStream = Compressor.decompress(bufferedInputStream)
-        val decompressedFile = File("./target/databus.tmp/") / inputFile.nameWithoutExtension(true).concat(s".$formatInputFile")
-        copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
-        typeConvertedFile = FormatHandler.convertFormat(decompressedFile, formatInputFile, outputFormat, sha, mapping, delimiter, quotation, createMapping)
+      val typeConvertedFile = {
+        if (!(config.inputCompression == "")) {
+          val decompressedInStream = Compressor.decompress(inputFile)
+          val decompressedFile = File("./target/databus.tmp/") / inputFile.nameWithoutExtension(true).concat(s".${config.inputFormat}")
+          copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
+          FormatConverter.convert(decompressedFile, config)
+        }
+        else {
+          FormatConverter.convert(inputFile, config)
+        }
       }
-      else {
-        typeConvertedFile = FormatHandler.convertFormat(inputFile, formatInputFile, outputFormat, sha, mapping, delimiter, quotation, createMapping)
-      }
 
-      val compressedOutStream = Compressor.compress(newOutCompression, targetFile)
+      val compressedOutStream = Compressor.compress(outFile, config.outputCompression)
       copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
 
       //DELETE TEMPDIR
       //      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
-      Some(targetFile)
+      Some(outFile)
     }
 
   }
 
-  /**
-    * calculate output file depending on input file and desired output compression and format
-    *
-    * @param inputFile input file
-    * @param outputFormat format of output file
-    * @param outputCompression compression of output file
-    * @param dest_dir destination directory
-    * @return output file
-    */
-  def getOutputFile(inputFile: File, outputFormat: String, outputCompression: String, dest_dir: File): File = {
 
-    val nameWithoutExtension = inputFile.nameWithoutExtension
-
-    val dataIdFile = inputFile.parent / "dataid.ttl"
-
-    val newOutputFormat = {
-      if (outputFormat == "rdfxml") "rdf"
-      else outputFormat
-    }
-
-    val outputDir = {
-      if (dataIdFile.exists) {
-        val pgav = QueryHandler.getTargetDir(dataIdFile)
-        val fw = new FileWriter((dest_dir / "identifiers_downloadedFiles.txt").pathAsString, true)
-        try {
-          fw.append(s"https://databus.dbpedia.org/$pgav/${inputFile.name}\n")
-        }
-        finally fw.close()
-
-        File(s"${dest_dir.pathAsString}/$pgav")
-      }
-      else
-        File(dest_dir.pathAsString.concat("/NoDataID")
-          .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1
-            .replace(File(".").pathAsString, "")
-          )
-        )
-    }
-
-    val newName = {
-      if (outputCompression.isEmpty) s"$nameWithoutExtension.$newOutputFormat"
-      else s"$nameWithoutExtension.$newOutputFormat.$outputCompression"
-    }
-
-    val outputFile = outputDir / newName
-
-    //create necessary parent directories to write the outputfile there, later
-    outputFile.parent.createDirectoryIfNotExists(createParents = true)
-
-    println(s"output file:\t${outputFile.pathAsString}\n")
-
-    outputFile
-  }
 
   /**
     * checks if a desired format is supported by the Databus Client
@@ -154,89 +104,55 @@ object FileHandler {
   }
 
   /**
-    * get format of file
-    *
-    * @param inputFile file to get format from
-    * @param compressionInputFile compression of file
-    * @return format
-    */
-  def getFormatType(inputFile: File, compressionInputFile: String): String = {
-    {
-      try {
-        if (!(FileHandler.getFormatTypeWithDataID(inputFile) == "")) {
-          FileHandler.getFormatTypeWithDataID(inputFile)
-        } else {
-          FileHandler.getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+   * calculate output file depending on input file and desired output compression and format
+   *
+   * @param inputFile input file
+   * @return output file
+   */
+  def getOutputFile(inputFile: File): File = {
+
+    val nameWithoutExtension = inputFile.nameWithoutExtension
+
+    val dataIdFile = inputFile.parent / "dataid.ttl"
+
+    val target_dir = File(cliConfig.target())
+
+    val newOutputFormat = {
+      if (cliConfig.format() == "rdfxml") "rdf"
+      else cliConfig.format()
+    }
+
+    val outputDir = {
+      if (dataIdFile.exists) {
+        val pgav = QueryHandler.getTargetDir(dataIdFile)
+        val fw = new FileWriter((target_dir / "identifiers_downloadedFiles.txt").pathAsString, true)
+        try {
+          fw.append(s"https://databus.dbpedia.org/$pgav/${inputFile.name}\n")
         }
-      } catch {
-        case _: FileNotFoundException => FileHandler.getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+        finally fw.close()
+
+        File(s"${target_dir.pathAsString}/$pgav")
       }
-    }
-  }
-
-  /**
-    * get format of file without dataID
-    *
-    * @param inputFile file to get format from
-    * @param compression compression of file
-    * @return format
-    */
-  def getFormatTypeWithoutDataID(inputFile: File, compression: String): String = {
-    //SIZE DURCH LENGTH ERSETZEN
-    val split = inputFile.name.split("\\.")
-
-    if (compression == "") split(split.size - 1)
-    else split(split.size - 2)
-  }
-
-  /**
-    * get format of file with dataID
-    *
-    * @param inputFile file to get format from
-    * @return format
-    */
-  def getFormatTypeWithDataID(inputFile: File): String = {
-    // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
-    val source = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8")
-    val lines = source.getLines().filter(_ contains s"${inputFile.name}")
-
-    val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
-    var fileURL = ""
-
-    import scala.util.control.Breaks.{break, breakable}
-
-    for (line <- lines) {
-      breakable {
-        for (x <- regex.findAllMatchIn(line)) {
-          fileURL = x.toString().replace(">", "").replace("<", "")
-          break
-        }
-      }
+      else
+        File(target_dir.pathAsString.concat("/NoDataID")
+          .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1
+            .replace(File(".").pathAsString, "")
+          )
+        )
     }
 
-    source.close()
-    QueryHandler.getFileExtension(fileURL, inputFile.parent / "dataid.ttl")
-  }
-
-  /**
-    * get compression of fileInputStream
-    *
-    * @param fileInputStream inputStream of file
-    * @return compression format
-    */
-  def getCompressionType(fileInputStream: BufferedInputStream): String = {
-    try {
-      var ctype = CompressorStreamFactory.detect(fileInputStream)
-      if (ctype == "bzip2") {
-        ctype = "bz2"
-      }
-      ctype
+    val newName = {
+      if (cliConfig.compression().isEmpty) s"$nameWithoutExtension.$newOutputFormat"
+      else s"$nameWithoutExtension.$newOutputFormat.${cliConfig.compression()}"
     }
-    catch {
-      case _: CompressorException => ""
-      case _: ExceptionInInitializerError => ""
-      case _: NoClassDefFoundError => ""
-    }
-  }
 
+    val outputFile = outputDir / newName
+
+    //create necessary parent directories to write the outputfile there, later
+    outputFile.parent.createDirectoryIfNotExists(createParents = true)
+
+    println(s"output file:\t${outputFile.pathAsString}\n")
+
+    outputFile
+  }
 }

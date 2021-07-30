@@ -7,14 +7,16 @@ import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClass
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.convert.Spark
+import org.dbpedia.databus.client.filehandling.convert.format.Format
 
 import java.io.ByteArrayOutputStream
 import scala.io.{Codec, Source}
 
-class RDFXML extends EquivalenceClass[RDD[Triple]] {
+class RDFXML extends Format[RDD[Triple]] {
 
-  override def read(source:String)(implicit sc:SparkContext): RDD[Triple] = {
+  override def read(source:String): RDD[Triple] = {
 
     val statements = RDFDataMgr.loadModel(source).listStatements()
     var data: Seq[Triple] = Seq.empty
@@ -23,10 +25,10 @@ class RDFXML extends EquivalenceClass[RDD[Triple]] {
       data = data :+ statements.nextStatement().asTriple()
     }
 
-    sc.parallelize(data)
+    Spark.context.parallelize(data)
   }
 
-  override def write(data: RDD[Triple])(implicit sc:SparkContext): File = {
+  override def write(data: RDD[Triple]): File = {
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2).collect()
 
     val os = new ByteArrayOutputStream()
@@ -39,11 +41,11 @@ class RDFXML extends EquivalenceClass[RDD[Triple]] {
 
     val rdf_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
 
-    sc.parallelize(Seq(rdf_string))
+    Spark.context.parallelize(Seq(rdf_string))
       .coalesce(1)
       .saveAsTextFile(tempDir.pathAsString)
 
-    tempDir
+    FileUtil.unionFiles(tempDir, tempDir / "converted.rdf")
   }
 
   def convertIteratorToRDF(triples: Iterable[Triple]): Model = {

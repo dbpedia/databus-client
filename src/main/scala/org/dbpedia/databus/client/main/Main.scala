@@ -13,74 +13,10 @@ object Main {
     println("DBpedia - Databus-Client")
 
     val conf = new CLIconf(args)
-    val cache_dir = File("./target/databus.tmp/cache_dir/")
-    if (conf.clear()) FileUtils.deleteDirectory(cache_dir.toJava)
-    cache_dir.createDirectoryIfNotExists()
+    val sourceHandler = new SourceHandler(conf)
 
-    val target = File(conf.target())
-    target.createDirectoryIfNotExists()
-
-    // check output format and compression
-    if (!SourceHandler.isSupportedOutFormat(conf.format())) System.exit(1)
-    if (!SourceHandler.isSupportedOutCompression(conf.compression())) System.exit(1)
-
-
-    if (conf.source.isDefined) {
-
-      if (File(conf.source()).exists()) {
-        val source: File = File(conf.source())
-
-        if (source.hasExtension && source.extension.get.matches(".sparql|.query")) {
-          // file is a query file
-          SourceHandler.handleQuery(
-            FileUtil.readQueryFile(source),
-            target,
-            cache_dir,
-            conf.format(),
-            conf.compression(),
-            conf.overwrite(),
-            conf.mapping(),
-            conf.delimiter().asInstanceOf[Character],
-            conf.quotation().asInstanceOf[Character],
-            conf.createMapping()
-          )
-        }
-        else {
-          // take already existing files as source
-          SourceHandler.handleSource(
-            File(conf.source()),
-            target,
-            conf.format(),
-            conf.compression(),
-            conf.mapping(),
-            conf.delimiter().asInstanceOf[Character],
-            conf.quotation().asInstanceOf[Character],
-            conf.createMapping()
-          )
-        }
-
-      }
-      else {
-        // conf.source() is a query string
-        SourceHandler.handleQuery(
-          conf.source(),
-          target,
-          cache_dir,
-          conf.format(),
-          conf.compression(),
-          conf.overwrite(),
-          conf.mapping(),
-          conf.delimiter().asInstanceOf[Character],
-          conf.quotation().asInstanceOf[Character],
-          conf.createMapping()
-        )
-      }
-
-    }
-    else {
-      LoggerFactory.getLogger("Source Logger").error(s"No source found.")
-      println(s"No source set.")
-    }
+    sourceHandler.initialChecks()
+    sourceHandler.process()
   }
 
 

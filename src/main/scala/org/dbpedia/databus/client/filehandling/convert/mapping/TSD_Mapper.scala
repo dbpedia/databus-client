@@ -10,25 +10,27 @@ import org.dbpedia.databus.client.sparql.QueryHandler
 import scala.util.control.Breaks.{break, breakable}
 import org.apache.jena.graph.Triple
 import org.apache.parquet.io.InputFile
+import org.dbpedia.databus.client.filehandling.CompileConfig
+import org.dbpedia.databus.client.filehandling.convert.Spark
 import org.dbpedia.databus.client.filehandling.convert.format.tsd
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.slf4j.LoggerFactory
 
 object TSD_Mapper {
 
-  def map_to_triples(spark: SparkSession, inputFile: File, inputFormat:String, sha:String, mapping:String, delimiter:Character, quotation:Character): RDD[Triple]={
-    var triples = spark.sparkContext.emptyRDD[org.apache.jena.graph.Triple]
+  def map_to_triples(inputFile: File, conf:CompileConfig): RDD[Triple]={
+    var triples = Spark.context.emptyRDD[org.apache.jena.graph.Triple]
 
-    if (mapping != "") {
-      val mappingInfo = new MappingInfo(mapping, delimiter, quotation)
-      triples = readAsTriples(inputFile, inputFormat, spark: SparkSession, mappingInfo)
+    if (conf.mapping != "") {
+      val mappingInfo = new MappingInfo(conf.mapping, conf.delimiter.toString, conf.quotation.toString)
+      triples = readAsTriples(inputFile, conf.inputFormat, mappingInfo)
     }
     else {
-      val possibleMappings = QueryHandler.getPossibleMappings(sha)
+      val possibleMappings = QueryHandler.getPossibleMappings(conf.sha)
       breakable {
         possibleMappings.foreach(mapping => {
           val mappingInfo = QueryHandler.getMappingFileAndInfo(mapping)
-          triples = readAsTriples(inputFile, inputFormat, spark: SparkSession, mappingInfo)
+          triples = readAsTriples(inputFile, conf.inputFormat, mappingInfo)
           if (!triples.isEmpty()) break
         })
       }
@@ -37,23 +39,23 @@ object TSD_Mapper {
     triples
   }
 
-  def readAsTriples(inputFile: File, inputFormat: String, spark: SparkSession, mappingInfo: MappingInfo): RDD[Triple] = {
+  def readAsTriples(inputFile: File, inputFormat:String, mappingInfo: MappingInfo): RDD[Triple] = {
 
     inputFormat match {
       case "tsv" =>
-        csv_to_rddTriple(mappingInfo.mappingFile, inputFile.pathAsString, '\t', sc = spark.sparkContext)
+        csv_to_rddTriple(mappingInfo.mappingFile, inputFile.pathAsString, "\t")
       case "csv" =>
-        csv_to_rddTriple(mappingInfo.mappingFile, inputFile.pathAsString, mappingInfo.delimiter, mappingInfo.quotation, spark.sparkContext)
+        csv_to_rddTriple(mappingInfo.mappingFile, inputFile.pathAsString, mappingInfo.delimiter, mappingInfo.quotation)
     }
   }
 
-  def csv_to_rddTriple(mapFile: String, csvFilePath: String = "", delimiter: Character = ',', quoteChar: Character = '"', sc: SparkContext): RDD[Triple] = {
+  def csv_to_rddTriple(mapFile: String, csvFilePath: String = "", delimiter: String = ",", quoteChar: String ="\""): RDD[Triple] = {
 
     val tarqlQuery = new TarqlParser(mapFile).getResult
 
     val csvOptions = new CSVOptions()
-    csvOptions.setDelimiter(delimiter)
-    csvOptions.setQuoteChar(quoteChar)
+    if (delimiter != "null") csvOptions.setDelimiter(delimiter.toCharArray.head)
+    if (quoteChar != "null") csvOptions.setQuoteChar(quoteChar.toCharArray.head)
 
     println(
       s"""
@@ -81,7 +83,7 @@ object TSD_Mapper {
     }
 
     //seq.foreach(println(_))
-    sc.parallelize(seq)
+    Spark.context.parallelize(seq)
   }
 
 

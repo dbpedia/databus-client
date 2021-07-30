@@ -173,8 +173,8 @@ object QueryHandler {
     if (result.nonEmpty) {
       new MappingInfo(
         result.head.getResource("mapping").toString,
-        result.head.getLiteral("delimiter").getString.asInstanceOf[Character],
-        result.head.getLiteral("quotation").getString.asInstanceOf[Character]
+        result.head.getLiteral("delimiter").getString,
+        result.head.getLiteral("quotation").getString
       )
     }
     else {

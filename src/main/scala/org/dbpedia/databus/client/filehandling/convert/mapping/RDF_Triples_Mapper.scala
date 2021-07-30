@@ -7,8 +7,11 @@ import org.apache.jena.query.QueryExecution
 import org.apache.jena.sparql.core.Quad
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.dbpedia.databus.client.filehandling.convert.Spark
 
 object RDF_Triples_Mapper {
+
+  val tempDir:File = File("./target/databus.tmp/temp/")
 
   def map_to_quads(data:RDD[Triple]): RDD[Quad] ={
     data.map(triple => Quad.create(NodeFactory.createBlankNode(), triple))
@@ -17,18 +20,17 @@ object RDF_Triples_Mapper {
   /**
    * write out RDF data as tabular structured data file
    * @param data input RDF data
-   * @param spark sparkSession
    * @return TSD file
    */
-  def map_to_tsd(data:RDD[Triple], spark: SparkSession, mappingFilePath:String = ""): DataFrame ={
+  def map_to_tsd(data:RDD[Triple], createMapping:Boolean): DataFrame ={
 
-    if (mappingFilePath!="") {
-      val tsvData = triplesToTSD(data, spark, createMappingFile = true)
-      Tarql_Writer.createTarqlMapFile(tsvData(1), mappingFilePath)
+    if (createMapping) {
+      val tsvData = triplesToTSD(data, createMappingFile = true)
+      Tarql_Writer.createTarqlMapFile(tsvData(1), (tempDir / "mappingFile.sparql").pathAsString)
       tsvData.head
     }
     else {
-      triplesToTSD(data, spark, createMappingFile = false).head
+      triplesToTSD(data, createMappingFile = false).head
     }
   }
 
@@ -36,11 +38,10 @@ object RDF_Triples_Mapper {
    * converts RDF data (RDD[Triple] to TSD data [DataFrame]
    *
    * @param inData RDF input data
-   * @param spark sparkSession
    * @param createMappingFile create a mapping file for conversion back to RDF
    * @return tabular structured data
    */
-  def triplesToTSD(inData: RDD[Triple], spark: SparkSession, createMappingFile: Boolean): Seq[DataFrame] = {
+  def triplesToTSD(inData: RDD[Triple], createMappingFile: Boolean): Seq[DataFrame] = {
 
     val triplesGroupedBySubject = inData.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = inData.groupBy(triple => triple.getPredicate.getURI).map(_._1)
@@ -65,7 +66,7 @@ object RDF_Triples_Mapper {
         triplesGroupedBySubject.map(allTriplesOfSubject =>
           convertAllTriplesOfSubjectToTSV(allTriplesOfSubject, mappedPredicates.map(seq => seq.head)))
 
-      Seq(spark.createDataFrame(csvRDD, schema))
+      Seq(Spark.session.createDataFrame(csvRDD, schema))
     }
     else{
 
@@ -74,8 +75,8 @@ object RDF_Triples_Mapper {
           convertTriplesToTSVAndCalculateTarql(allTriplesOfSubject, mappedPredicates)).collect()
 
 
-      val triplesDF = spark.createDataFrame(
-        spark.sparkContext.parallelize(
+      val triplesDF = Spark.session.createDataFrame(
+        Spark.context.parallelize(
           convertedData.map(data => data._1)), schema)
 
       println("TSV DATAFRAME")
@@ -92,8 +93,8 @@ object RDF_Triples_Mapper {
       )
 
       val tarqlDF: DataFrame =
-        spark.createDataFrame(
-          spark.sparkContext.parallelize(convertedData.flatMap(data => data._2)),
+        Spark.session.createDataFrame(
+          Spark.context.parallelize(convertedData.flatMap(data => data._2)),
           schema_mapping
         ).distinct()
 

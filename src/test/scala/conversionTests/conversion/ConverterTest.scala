@@ -51,13 +51,13 @@ class ConverterTest extends FlatSpec {
 //    val sparkContext = spark.sparkContext
 //    sparkContext.setLogLevel("WARN")
 
-    Turtle.read(file.pathAsString)
+    new Turtle().read(file.pathAsString)
   }
 
   def readTriplesWithRDFReader(file: File): RDD[Triple] = {
 
 
-    RDFXML.read(file.pathAsString)
+    new RDFXML().read(file.pathAsString)
   }
 
 
@@ -122,9 +122,9 @@ class ConverterTest extends FlatSpec {
 
   "Conversion" should "not be too slow" in {
 
-    time(TripleHandler.read("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2", "ttl"))
+    time(new TripleHandler().read("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2", "ttl"))
 
-    val triples =TripleHandler.read("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2", "ttl")
+    val triples = new TripleHandler().read("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2", "ttl")
 
 //    time(Converter.writeTriples(File("/home/eisenbahnplatte/git/databus-client/src/resources/test/SpeedTest/specific-mappingbased-properties_lang=ca.ttl.bz2"), triples, "nt", spark))
 
@@ -135,13 +135,13 @@ class ConverterTest extends FlatSpec {
   }
 
   "Copy" should "not be too slow" in {
-    val compressedOutStream = Compressor.compress("gz", File("src/resources/test/SpeedTest/test"))
+    val compressedOutStream = Compressor.compress(File("src/resources/test/SpeedTest/test"),"gz")
     //file is written here
     println("test")
     copyStream(new FileInputStream(File("./src/resources/test/SpeedTest/temp/specific-mappingbased-properties_lang=ca.nt").toJava), compressedOutStream)
 
 
-    val compressedOutStream2 = Compressor.compress("", File("src/resources/test/SpeedTest/test2"))
+    val compressedOutStream2 = Compressor.compress(File("src/resources/test/SpeedTest/test2"),"")
     copyStream(new FileInputStream(File("./src/resources/test/SpeedTest/temp/specific-mappingbased-properties_lang=ca.nt").toJava), compressedOutStream2)
   }
 

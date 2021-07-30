@@ -4,6 +4,7 @@ import better.files.File
 import org.apache.jena.sparql.core.Quad
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClassHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.format.{NQuads, Trig, Trix}
 
@@ -16,7 +17,7 @@ class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
    * @param inputFormat rdf serialization
    * @return rdf data as RDD[Triples]
    */
-  override def read(source: String, inputFormat: String)(implicit sc:SparkContext): RDD[Quad] = {
+  override def read(source: String, inputFormat: String): RDD[Quad] = {
 
     inputFormat match {
       case "nq" =>    new NQuads().read(source)
@@ -31,12 +32,13 @@ class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
    * @param data         input data
    * @param outputFormat output format
    */
-  override def write(data: RDD[Quad], outputFormat: String)(implicit sc:SparkContext): File = {
+  override def write(data: RDD[Quad], outputFormat: String): File = {
 
     outputFormat match {
       case "nq" =>   new NQuads().write(data)
       case "trig" => new Trig().write(data)
       case "trix" => new Trix().write(data)
     }
+
   }
 }

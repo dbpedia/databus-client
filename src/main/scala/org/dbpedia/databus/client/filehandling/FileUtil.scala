@@ -1,10 +1,12 @@
 package org.dbpedia.databus.client.filehandling
 
-import java.io.{FileInputStream, InputStream, OutputStream}
+import java.io.{BufferedInputStream, FileInputStream, FileNotFoundException, InputStream, OutputStream}
 import java.security.{DigestInputStream, MessageDigest}
-
 import better.files.File
+import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.apache.commons.io.IOUtils
+import org.dbpedia.databus.client.sparql.QueryHandler
+import org.slf4j.LoggerFactory
 
 import scala.io.Source
 import scala.language.postfixOps
@@ -18,16 +20,24 @@ object FileUtil {
    * @param dir directory that contains the part* files
    * @param targetFile target file
    */
-  def unionFiles(dir: File, targetFile: File): Unit = {
-    //union all part files of Apache Spark
-    val findTripleFiles = s"find ${dir.pathAsString}/ -name part* -not -empty" !!
-    val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
+  def unionFiles(dir: File, targetFile: File): File = {
+    try {
+      //union all part files of Apache Spark
+      val findTripleFiles = s"find ${dir.pathAsString}/ -name part* -not -empty" !!
+      val concatFiles = s"cat $findTripleFiles" #> targetFile.toJava !
 
-    if (!(concatFiles == 0)) {
-      System.err.println(s"[WARN] failed to merge ${dir.pathAsString}/*")
+      if (!(concatFiles == 0)) {
+        System.err.println(s"[WARN] failed to merge ${dir.pathAsString}/*")
+      }
+      targetFile
     }
-  }
+    catch {
+      case _: RuntimeException =>
+        LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
+        targetFile
+    }
 
+  }
 
   /**
    * copy inputstream to outputstream
@@ -152,17 +162,90 @@ object FileUtil {
   }
 
   /**
-   * read a query file as string
+   * get compression of fileInputStream
    *
-   * @param file query file
-   * @return query string
+   * @param file input file
+   * @return compression format
    */
-  def readQueryFile(file: File): String = {
-    var queryString: String = ""
-    for (line <- file.lineIterator) {
-      queryString = queryString.concat(line).concat("\n")
+  def getCompressionType(file:File): String = {
+    val bfi_stream = new BufferedInputStream(new FileInputStream(file.toJava))
+    try {
+      var ctype = CompressorStreamFactory.detect(bfi_stream)
+      if (ctype == "bzip2") {
+        ctype = "bz2"
+      }
+      ctype
     }
-    queryString
+    catch {
+      case _: CompressorException => ""
+      case _: ExceptionInInitializerError => ""
+      case _: NoClassDefFoundError => ""
+    }
+  }
+
+  /**
+   * get format of file
+   *
+   * @param inputFile file to get format from
+   * @param compressionInputFile compression of file
+   * @return format
+   */
+  def getFormatType(inputFile: File, compressionInputFile: String): String = {
+    {
+      try {
+        if (!(getFormatTypeWithDataID(inputFile) == "")) {
+          getFormatTypeWithDataID(inputFile)
+        } else {
+          getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+        }
+      } catch {
+        case _: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+      }
+    }
+  }
+
+  /**
+   * get format of file without dataID
+   *
+   * @param inputFile file to get format from
+   * @param compression compression of file
+   * @return format
+   */
+  def getFormatTypeWithoutDataID(inputFile: File, compression: String): String = {
+    //SIZE DURCH LENGTH ERSETZEN
+    val split = inputFile.name.split("\\.")
+
+    if (compression == "") split(split.size - 1)
+    else split(split.size - 2)
+  }
+
+  /**
+   * get format of file with dataID
+   *
+   * @param inputFile file to get format from
+   * @return format
+   */
+  def getFormatTypeWithDataID(inputFile: File): String = {
+    // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
+    val source = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8")
+    val lines = source.getLines().filter(_ contains s"${inputFile.name}")
+
+    val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
+    var fileURL = ""
+
+    import scala.util.control.Breaks.{break, breakable}
+
+    for (line <- lines) {
+      breakable {
+        for (x <- regex.findAllMatchIn(line)) {
+          fileURL = x.toString().replace(">", "").replace("<", "")
+          break
+        }
+      }
+    }
+
+    source.close()
+    QueryHandler.getFileExtension(fileURL, inputFile.parent / "dataid.ttl")
   }
 
 
