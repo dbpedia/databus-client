@@ -1,8 +1,8 @@
-package org.dbpedia.databus.client.main.cli
+package org.dbpedia.databus.client.main
 
 import org.rogach.scallop._
 
-class CLIconf(arguments: Seq[String]) extends ScallopConf(arguments) {
+class CLI_Config(arguments: Seq[String]) extends ScallopConf(arguments) {
 
   version("Databus-Client 1.0-SNAPSHOT (c) DBpedia")
 

@@ -6,13 +6,13 @@ import org.apache.commons.compress.compressors.{CompressorException, CompressorS
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.client.filehandling.convert.FormatConverter
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
-import org.dbpedia.databus.client.main.cli.CLIconf
+import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
 import scala.io.Source
 
-class FileHandler(cliConfig: CLIconf) {
+class FileHandler(cliConfig: CLI_Config) {
 
   /**
     * handle input file

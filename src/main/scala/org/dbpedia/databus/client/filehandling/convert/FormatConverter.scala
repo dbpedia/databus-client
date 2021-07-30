@@ -8,7 +8,7 @@ import org.dbpedia.databus.client.filehandling.{CompileConfig, FileUtil}
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.convert.mapping.{MappingInfo, RDF_Quads_Mapper, RDF_Triples_Mapper, TSD_Mapper}
-import org.dbpedia.databus.client.main.cli.CLIconf
+import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 

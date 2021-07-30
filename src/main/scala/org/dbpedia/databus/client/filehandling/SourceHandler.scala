@@ -7,13 +7,13 @@ import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.{BasicResponseHandler, HttpClientBuilder}
 import org.dbpedia.databus.client.filehandling.download.Downloader
-import org.dbpedia.databus.client.main.cli.CLIconf
+import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.dbpedia.databus.client.sparql.queries.DatabusQueries
 import org.slf4j.LoggerFactory
 
 
-class SourceHandler(conf:CLIconf) {
+class SourceHandler(conf:CLI_Config) {
 
   //supported formats
   val fileFormats:String = "rdfxml|ttl|nt|jsonld|tsv|csv|nq|trix|trig|same"
@@ -21,7 +21,7 @@ class SourceHandler(conf:CLIconf) {
 
   val cache: File = File("./target/databus.tmp/cache_dir/")
 
-  def process(): Unit={
+  def execute(): Unit={
     if (File(conf.source()).exists()) {
       val sourceFile: File = File(conf.source())
 
