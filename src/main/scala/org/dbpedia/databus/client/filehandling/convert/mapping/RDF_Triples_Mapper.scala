@@ -121,7 +121,7 @@ object RDF_Triples_Mapper {
     var tsv_line: Seq[String] = Seq.fill(predicates.size) {
       new String
     }
-    tsv_line = tsv_line.updated(0, triples.last.getSubject.getURI)
+    tsv_line = tsv_line.updated(0, triples.last.getSubject.toString)
 
     triples.foreach(triple => {
       var predicate_exists = false

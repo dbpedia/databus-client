@@ -64,7 +64,7 @@ class FileHandler(cliConfig: CLI_Config) {
         else FileUtil.getSha256(inputFile)
       }
 
-      val typeConvertedFile = {
+      val formatConvertedData = {
         if (!(config.inputCompression == "")) {
           val decompressedInStream = Compressor.decompress(inputFile)
           val decompressedFile = File("./target/databus.tmp/") / inputFile.nameWithoutExtension(true).concat(s".${config.inputFormat}")
@@ -76,8 +76,24 @@ class FileHandler(cliConfig: CLI_Config) {
         }
       }
 
-      val compressedOutStream = Compressor.compress(outFile, config.outputCompression)
-      copyStream(new FileInputStream(typeConvertedFile.toJava), compressedOutStream)
+      if (formatConvertedData.isDirectory){
+        outFile.createDirectoryIfNotExists()
+        val formatConvertedFiles = formatConvertedData.children
+        var i = 1
+        while(formatConvertedFiles.hasNext) {
+          val formatConvertedFile = formatConvertedFiles.next()
+          val newOutFile = {
+            if (config.outputCompression.nonEmpty) outFile / s"$i.${config.outputFormat}.${config.outputCompression}"
+            else outFile / s"$i.${config.outputFormat}"
+          }
+          val compressedOutStream = Compressor.compress(newOutFile, config.outputCompression)
+          copyStream(new FileInputStream(formatConvertedFile.toJava), compressedOutStream)
+          i+=1
+        }
+      } else {
+        val compressedOutStream = Compressor.compress(outFile, config.outputCompression)
+        copyStream(new FileInputStream(formatConvertedData.toJava), compressedOutStream)
+      }
 
       //DELETE TEMPDIR
       //      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()

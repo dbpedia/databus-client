@@ -3,7 +3,7 @@ package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.forma
 import better.files.File
 import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
-import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
+import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
 import org.apache.jena.riot.lang.{PipedRDFIterator, PipedRDFStream, PipedTriplesStream}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -56,38 +56,43 @@ class Turtle extends Format[RDD[Triple]]{
     Spark.context.parallelize(data)
   }
 
-
   override def write(data: RDD[Triple]): File = {
-    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
-    val triplesTTL = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToTTL(allTriplesOfSubject))
 
-    triplesTTL.coalesce(1).saveAsTextFile(tempDir.pathAsString)
-
-    FileUtil.unionFiles(tempDir, tempDir / "converted.ttl")
+    new RDFXML().convertToRDF(data, Lang.TURTLE)
   }
 
-  def convertIteratorToTTL(triples: Iterable[Triple]): String = {
-    val model: Model = ModelFactory.createDefaultModel()
-    val os = new ByteArrayOutputStream()
-
-    triples.foreach(triple => {
-      val stmt = ResourceFactory.createStatement(
-        ResourceFactory.createResource(triple.getSubject.getURI),
-        ResourceFactory.createProperty(triple.getPredicate.getURI),
-        {
-          if (triple.getObject.isLiteral) {
-            if (triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralDatatype)
-            else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralLanguage)
-          }
-          else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)
-          else model.asRDFNode(NodeFactory.createBlankNode())
-        })
-
-      model.add(stmt)
-    })
-
-    RDFDataMgr.write(os, model, RDFFormat.TURTLE)
-
-    Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
-  }
+//  override def write(data: RDD[Triple]): File = {
+//    val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2)
+//    val triplesTTL = triplesGroupedBySubject.map(allTriplesOfSubject => convertIteratorToTTL(allTriplesOfSubject))
+//
+//    triplesTTL.coalesce(1).saveAsTextFile(tempDir.pathAsString)
+//
+//    FileUtil.unionFiles(tempDir, tempDir / "converted.ttl")
+//  }
+//
+//  def convertIteratorToTTL(triples: Iterable[Triple]): String = {
+//    val model: Model = ModelFactory.createDefaultModel()
+//    val os = new ByteArrayOutputStream()
+//
+//    triples.foreach(triple => {
+//      val stmt = ResourceFactory.createStatement(
+//        if(triple.getSubject.isBlank) ResourceFactory.createResource()
+//        else ResourceFactory.createResource(triple.getSubject.getURI),
+//        ResourceFactory.createProperty(triple.getPredicate.getURI),
+//        {
+//          if (triple.getObject.isLiteral) {
+//            if (triple.getObject.getLiteralLanguage.isEmpty) ResourceFactory.createTypedLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralDatatype)
+//            else ResourceFactory.createLangLiteral(triple.getObject.getLiteralLexicalForm, triple.getObject.getLiteralLanguage)
+//          }
+//          else if (triple.getObject.isURI) ResourceFactory.createResource(triple.getObject.getURI)
+//          else model.asRDFNode(NodeFactory.createBlankNode())
+//        })
+//
+//      model.add(stmt)
+//    })
+//
+//    RDFDataMgr.write(os, model, RDFFormat.TURTLE)
+//
+//    Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "\n")
+//  }
 }

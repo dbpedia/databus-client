@@ -29,6 +29,10 @@ class RDFXML extends Format[RDD[Triple]] {
   }
 
   override def write(data: RDD[Triple]): File = {
+    convertToRDF(data)
+  }
+
+  def convertToRDF(data: RDD[Triple], lang:Lang = Lang.RDFXML)={
     val triplesGroupedBySubject = data.groupBy(triple ⇒ triple.getSubject).map(_._2).collect()
 
     val os = new ByteArrayOutputStream()
@@ -37,7 +41,7 @@ class RDFXML extends Format[RDD[Triple]] {
     val mergedModel: Model = ModelFactory.createDefaultModel()
     models.foreach(model => mergedModel.add(model))
 
-    RDFDataMgr.write(os, mergedModel, Lang.RDFXML)
+    RDFDataMgr.write(os, mergedModel, lang)
 
     val rdf_string = Source.fromBytes(os.toByteArray)(Codec.UTF8).getLines().mkString("", "\n", "")
 
@@ -45,7 +49,7 @@ class RDFXML extends Format[RDD[Triple]] {
       .coalesce(1)
       .saveAsTextFile(tempDir.pathAsString)
 
-    FileUtil.unionFiles(tempDir, tempDir / "converted.rdf")
+    FileUtil.unionFiles(tempDir, tempDir / "converted")
   }
 
   def convertIteratorToRDF(triples: Iterable[Triple]): Model = {
@@ -54,7 +58,8 @@ class RDFXML extends Format[RDD[Triple]] {
 
     triples.foreach(triple => {
       val stmt = ResourceFactory.createStatement(
-        ResourceFactory.createResource(triple.getSubject.getURI),
+        if(triple.getSubject.isBlank) ResourceFactory.createResource()
+        else ResourceFactory.createResource(triple.getSubject.getURI),
         ResourceFactory.createProperty(triple.getPredicate.getURI),
         {
           if (triple.getObject.isLiteral) {
