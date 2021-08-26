@@ -1,4 +1,4 @@
-package org.dbpedia.databus.client.filehandling.convert.mapping
+package org.dbpedia.databus.client.filehandling.convert.mapping.util
 
 class MappingInfo(
                    val mappingFile: String,

@@ -9,7 +9,7 @@
 //import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
 //import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 //import org.dbpedia.databus.client.filehandling.download.Downloader
-//import org.dbpedia.databus.client.filehandling.convert.mapping.MappingInfo
+//import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
 //import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
 //import org.scalatest.FlatSpec
 //

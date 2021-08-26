@@ -10,7 +10,9 @@ class CompileConfig(val inputFormat: String,
                    val mapping: String,
                    val delimiter: Character,
                    val quotation: Character,
-                   val createMapping: Boolean) {
+                   val createMapping: Boolean,
+                    val graphURI: String,
+                   val outFile: File) {
 
   var sha = ""
 }

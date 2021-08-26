@@ -13,6 +13,7 @@ import org.apache.parquet.io.InputFile
 import org.dbpedia.databus.client.filehandling.CompileConfig
 import org.dbpedia.databus.client.filehandling.convert.Spark
 import org.dbpedia.databus.client.filehandling.convert.format.tsd
+import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.slf4j.LoggerFactory
 

@@ -7,7 +7,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.format.{CSV, TSV}
 import org.dbpedia.databus.client.filehandling.convert.format.{EquivalenceClassHandler, tsd}
-import org.dbpedia.databus.client.filehandling.convert.mapping.MappingInfo
+import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
 
 /**
  * object to handle csv and tsv files

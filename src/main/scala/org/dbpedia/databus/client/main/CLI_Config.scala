@@ -35,6 +35,7 @@ For usage of parameters see below:
   val delimiter: ScallopOption[String] = opt[String](default = Some(","), descr = "set the delimiter (only for some formats)")
   val quotation: ScallopOption[String] = opt[String](default = Some("\""), descr = "set the quotation (only for some formats)")
   val createMapping: ScallopOption[Boolean] = opt[Boolean](default = Some(false), descr = "Do you want to create mapping files for mapped sources?")
+  val graphURI: ScallopOption[String] = opt[String](default = Some(""), descr = "set the graph uri for mapping from rdf triples to rdf quads")
 
   verify()
 }

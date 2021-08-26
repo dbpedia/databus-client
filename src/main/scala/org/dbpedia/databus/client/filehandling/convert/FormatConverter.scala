@@ -7,7 +7,7 @@ import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHan
 import org.dbpedia.databus.client.filehandling.{CompileConfig, FileUtil}
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
-import org.dbpedia.databus.client.filehandling.convert.mapping.{MappingInfo, RDF_Quads_Mapper, RDF_Triples_Mapper, TSD_Mapper}
+import org.dbpedia.databus.client.filehandling.convert.mapping.{RDF_Quads_Mapper, RDF_Triples_Mapper, TSD_Mapper}
 import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory
 import scala.util.control.Breaks.{break, breakable}
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
+
+import java.net.URLEncoder
 /**
  * Converter for tsv, csv and several RDF serializations (nt,ttl,rdfxml,json-ld, nq, trix, trig)
  */
@@ -56,29 +58,28 @@ object FormatConverter {
       val tripleHandler = new TripleHandler()
 
       //read process
-      val triples:Array[RDD[Triple]] = {
-        if (RDF_TRIPLES.contains(conf.inputFormat)) {
-          Array(tripleHandler.read(file.pathAsString, conf.inputFormat))
-        }
-        if (RDF_QUADS.contains(conf.inputFormat)) {
-          val quads = new QuadsHandler().read(file.pathAsString, conf.inputFormat)
-          RDF_Quads_Mapper.map_to_triples(quads)
-        }
-        else Array(TSD_Mapper.map_to_triples(file, conf))
-      }
+      if (RDF_QUADS.contains(conf.inputFormat)) {
+        val quads = new QuadsHandler().read(file.pathAsString, conf.inputFormat)
+        val triples = RDF_Quads_Mapper.map_to_triples(quads)
 
-      //write process
-      if (triples.length>1){
-        tripleHandler.write(triples.head, conf.outputFormat)
-      } else {
-        var i=1
-        triples.foreach(rdd => {
-          val convertedFile = tripleHandler.write(rdd, conf.outputFormat)
-          convertedFile.moveTo(targetTempDir / s"$i.${conf.outputFormat}")
-          i+=1
+        triples.foreach(triplesResult => {
+          val convertedFile = tripleHandler.write(triplesResult.graph, conf.outputFormat)
+          val outFile = targetTempDir / s"${conf.outFile.nameWithoutExtension}_graph=${URLEncoder.encode(triplesResult.graphName, "UTF-8")}.${conf.outputFormat}"
+          convertedFile.moveTo(outFile)
         })
 
         targetTempDir
+      } else {
+        val triples:Array[RDD[Triple]] = {
+          if (RDF_TRIPLES.contains(conf.inputFormat)) {
+            Array(tripleHandler.read(file.pathAsString, conf.inputFormat))
+          }
+          else { //TSD.contains(conf.inputFormat)
+            Array(TSD_Mapper.map_to_triples(file, conf))
+          }
+        }
+
+        tripleHandler.write(triples.head, conf.outputFormat)
       }
 
     }
@@ -89,41 +90,30 @@ object FormatConverter {
       //read process
       val quads = {
         if (RDF_QUADS.contains(conf.inputFormat))  quadsHandler.read(file.pathAsString, conf.inputFormat)
-        else RDF_Triples_Mapper.map_to_quads(new TripleHandler().read(file.pathAsString, conf.inputFormat))
+        else RDF_Triples_Mapper.map_to_quads(new TripleHandler().read(file.pathAsString, conf.inputFormat), conf.graphURI)
       }
 
       //write process
       quadsHandler.write(quads, conf.outputFormat)
     }
+
     else { // convert to Tabular structured data (TSD)
       val tsdHandler = new TSDHandler(conf.delimiter)
 
       //read process
       val data = {
-        if (TSD.contains(conf.inputFormat)) Array(tsdHandler.read(file.pathAsString, conf.inputFormat))
+        if (TSD.contains(conf.inputFormat)) tsdHandler.read(file.pathAsString, conf.inputFormat)
         else if (RDF_QUADS.contains(conf.inputFormat)) {
           val quads = new QuadsHandler().read(file.pathAsString, conf.inputFormat)
           RDF_Quads_Mapper.map_to_tsd(quads, conf.createMapping)
         }
         else { //RDF_TRIPLES.contains(conf.inputFormat)
           val triples = new TripleHandler().read(file.pathAsString, conf.inputFormat)
-          Array(RDF_Triples_Mapper.map_to_tsd(triples, conf.createMapping))
+          RDF_Triples_Mapper.map_to_tsd(triples, conf.createMapping)
         }
       }
 
-      //write
-      if (data.length==1){
-        tsdHandler.write(data.head, conf.outputFormat)
-      } else {
-        var i=1
-        data.foreach(rdd => {
-          val convertedFile = tsdHandler.write(rdd, conf.outputFormat)
-          convertedFile.moveTo(targetTempDir / s"$i.${conf.outputFormat}")
-          i+=1
-        })
-
-        targetTempDir
-      }
+      tsdHandler.write(data, conf.outputFormat)
     }
   }
 //  FileUtil.unionFiles(tempDir, targetFile)

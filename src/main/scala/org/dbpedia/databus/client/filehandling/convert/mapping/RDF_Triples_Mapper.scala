@@ -8,13 +8,15 @@ import org.apache.jena.sparql.core.Quad
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.dbpedia.databus.client.filehandling.convert.Spark
+import org.dbpedia.databus.client.filehandling.convert.mapping.util.Tarql_Writer
 
 object RDF_Triples_Mapper {
 
   val tempDir:File = File("./target/databus.tmp/temp/")
 
-  def map_to_quads(data:RDD[Triple]): RDD[Quad] ={
-    data.map(triple => Quad.create(NodeFactory.createBlankNode(), triple))
+  def map_to_quads(data:RDD[Triple], graphName:String): RDD[Quad] = {
+    if (graphName == "DefaultGraph") data.map(triple => Quad.create(Quad.defaultGraphIRI, triple))
+    else data.map(triple => Quad.create(NodeFactory.createURI(graphName), triple))
   }
 
   /**

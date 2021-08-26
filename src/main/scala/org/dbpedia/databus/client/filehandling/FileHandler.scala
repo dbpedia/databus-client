@@ -39,20 +39,20 @@ class FileHandler(cliConfig: CLI_Config) {
       mapping = cliConfig.mapping(),
       delimiter = cliConfig.delimiter().toCharArray.head,
       quotation = cliConfig.quotation().toCharArray.head,
-      createMapping = cliConfig.createMapping()
+      createMapping = cliConfig.createMapping(),
+      graphURI = cliConfig.graphURI(),
+      outFile = getOutputFile(inputFile)
     )
-
-    val outFile: File = getOutputFile(inputFile)
 
     // Without any Conversion
     if ((config.inputCompression == config.outputCompression) && (config.inputFormat == config.outputFormat)) {
-      copyStream(new FileInputStream(inputFile.toJava), new FileOutputStream(outFile.toJava))
-      Some(outFile)
+      copyStream(new FileInputStream(inputFile.toJava), new FileOutputStream(config.outFile.toJava))
+      Some(config.outFile)
     }
     // Only Compression Conversion
     else if (config.inputCompression != config.outputCompression && (config.inputFormat == config.outputFormat)) {
-      copyStream(Compressor.decompress(inputFile), Compressor.compress(outFile, config.outputCompression))
-      Some(outFile)
+      copyStream(Compressor.decompress(inputFile), Compressor.compress(config.outFile, config.outputCompression))
+      Some(config.outFile)
     }
 
     // File Format Conversion (need to uncompress anyway)
@@ -77,27 +77,25 @@ class FileHandler(cliConfig: CLI_Config) {
       }
 
       if (formatConvertedData.isDirectory){
-        outFile.createDirectoryIfNotExists()
+        config.outFile.createDirectoryIfNotExists()
         val formatConvertedFiles = formatConvertedData.children
-        var i = 1
         while(formatConvertedFiles.hasNext) {
           val formatConvertedFile = formatConvertedFiles.next()
           val newOutFile = {
-            if (config.outputCompression.nonEmpty) outFile / s"$i.${config.outputFormat}.${config.outputCompression}"
-            else outFile / s"$i.${config.outputFormat}"
+            if (config.outputCompression.nonEmpty) config.outFile / s"${formatConvertedFile.name}.${config.outputCompression}"
+            else config.outFile / s"${formatConvertedFile.name}"
           }
           val compressedOutStream = Compressor.compress(newOutFile, config.outputCompression)
           copyStream(new FileInputStream(formatConvertedFile.toJava), compressedOutStream)
-          i+=1
         }
       } else {
-        val compressedOutStream = Compressor.compress(outFile, config.outputCompression)
+        val compressedOutStream = Compressor.compress(config.outFile, config.outputCompression)
         copyStream(new FileInputStream(formatConvertedData.toJava), compressedOutStream)
       }
 
       //DELETE TEMPDIR
       //      if (typeConvertedFile.parent.exists) typeConvertedFile.parent.delete()
-      Some(outFile)
+      Some(config.outFile)
     }
 
   }

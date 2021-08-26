@@ -1,6 +1,5 @@
-package org.dbpedia.databus.client.filehandling.convert.mapping
+package org.dbpedia.databus.client.filehandling.convert.mapping.util
 
-import better.files.File
 import org.apache.spark.sql.DataFrame
 
 import java.io.PrintWriter
