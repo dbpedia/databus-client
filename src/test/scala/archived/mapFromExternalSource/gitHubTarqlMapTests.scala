@@ -1,4 +1,4 @@
-package conversionTests.mapFromExternalSource
+package archived.mapFromExternalSource
 
 import org.apache.jena.query.{Query, QueryExecution, QueryExecutionFactory, QueryFactory, ResultSet}
 import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}
@@ -6,7 +6,7 @@ import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.scalatest.FlatSpec
 
 class gitHubTarqlMapTests extends FlatSpec{
-  "Sparql Query" should "necessary data for mapping" in {
+  "Sparql Query" should "necessary data for format.mapping" in {
 
     val url = "https://raw.githubusercontent.com/dbpedia/format-mappings/master/tarql/1.ttl"
     val model = RDFDataMgr.loadModel(url,Lang.TTL)

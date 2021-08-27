@@ -6,7 +6,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClassHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.format.{NQuads, Trig, Trix}
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.format.{JsonLD, NQuads, Trig, Trix}
 
 class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
 
@@ -23,6 +23,7 @@ class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
       case "nq" =>    new NQuads().read(source)
       case "trig" =>  new Trix().read(source)
       case "trix" =>  new Trig().read(source)
+      case "jsonld" => new JsonLD().read(source)
     }
   }
 
@@ -38,6 +39,7 @@ class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
       case "nq" =>   new NQuads().write(data)
       case "trig" => new Trig().write(data)
       case "trix" => new Trix().write(data)
+      case "jsonld" => new JsonLD().write(data)
     }
 
   }

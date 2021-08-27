@@ -1,6 +1,5 @@
-package conversionTests.conversion
+package archived
 
-import java.io._
 import better.files.File
 import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.graph.Triple
@@ -18,6 +17,7 @@ import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.Triple
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format.{RDFXML, Turtle}
 import org.scalatest.FlatSpec
 
+import java.io._
 import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 
@@ -33,7 +33,7 @@ class ConverterTest extends FlatSpec {
 
   "RDD" should "not contain empty Lines" in {
 
-    val file = File("/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob4.ttl")
+    val file = File("/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-format.conversion-testbed_bob4.ttl")
 
     readTriples(file).foreach(println(_))
 
@@ -63,7 +63,7 @@ class ConverterTest extends FlatSpec {
 
   "Written File" should "not contain empty Lines" in {
 
-    val file = File("/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob4.ttl")
+    val file = File("/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-format.conversion-testbed_bob4.ttl")
 
     val triples = readTriples(file)
 

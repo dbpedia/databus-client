@@ -40,7 +40,7 @@ object RDF_Triples_Mapper {
    * converts RDF data (RDD[Triple] to TSD data [DataFrame]
    *
    * @param inData RDF input data
-   * @param createMappingFile create a mapping file for conversion back to RDF
+   * @param createMappingFile create a format.mapping file for format.conversion back to RDF
    * @return tabular structured data
    */
   def triplesToTSD(inData: RDD[Triple], createMappingFile: Boolean): Seq[DataFrame] = {
@@ -48,7 +48,7 @@ object RDF_Triples_Mapper {
     val triplesGroupedBySubject = inData.groupBy(triple ⇒ triple.getSubject).map(_._2)
     val allPredicates = inData.groupBy(triple => triple.getPredicate.getURI).map(_._1)
 
-    val prefixPre = "xxx" //for mapping file
+    val prefixPre = "xxx" //for format.mapping file
 
     val mappedPredicates =
       Seq(Seq("resource")) ++ allPredicates.map(

@@ -1,4 +1,4 @@
-//package conversionTests.mapping
+//package archived.format.mapping
 //
 //import java.io.PrintWriter
 //import better.files.File
@@ -190,7 +190,7 @@
 //    TTLWriter2.convertToTSV(triplesRDD, spark, targetFile)
 //  }
 //
-//  "DataFrame with right header" should "be create from testBob.ttl and saved as csv with corresponding mapping file" in {
+//  "DataFrame with right header" should "be create from testBob.ttl and saved as csv with corresponding format.mapping file" in {
 //
 //    val inputFile = File(s"${testDir}testBob.ttl")
 //    val targetFile: File = inputFile.parent / inputFile.nameWithoutExtension.concat(".tsv")

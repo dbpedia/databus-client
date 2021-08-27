@@ -201,7 +201,7 @@
                 <artifactId>scalatest-maven-plugin</artifactId>
                 <version>1.0</version>
                 <configuration>
-                    <suites>conversionTests.mapping.roundTripTests, conversionTests.conversion.roundTripTests</suites>
+                    <suites>archived.format.mapping.roundTripTests, format.conversion.format.conversion.roundTripTests</suites>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <junitxml>.</junitxml>
                     <filereports>WDF TestSuite.txt</filereports>

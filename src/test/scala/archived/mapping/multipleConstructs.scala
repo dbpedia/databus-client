@@ -1,4 +1,4 @@
-package conversionTests.mapping
+package archived.mapping
 
 import java.io.StringReader
 

@@ -1,4 +1,4 @@
-package conversionTests.mapping
+package archived.mapping
 
 import better.files.File
 import org.apache.jena.query._
@@ -109,14 +109,14 @@ class getMappingTest extends FlatSpec{
     assert(model.isEmpty)
   }
 
-//  "conversionTests/mapping" should "be retourned" in {
+//  "conversionTests/format.mapping" should "be retourned" in {
 //    val path = "/home/eisenbahnplatte/git/databus-client/src/resources/mappingTests/getMapping/bnetza-mastr_rli_type=hydro.csv.bz2"
 //    val sha = FileUtil.getSha256(File(path))
 //    println(sha)
 //    println(QueryHandler.getMapping(sha))
 //  }
 
-  "mappingInfo" should "return mapping" in {
+  "mappingInfo" should "return format.mapping" in {
 
     val mappingInfo = "https://raw.githubusercontent.com/dbpedia/format-mappings/master/tarql/1.ttl#this"
     val model = RDFDataMgr.loadModel(mappingInfo)
@@ -129,10 +129,10 @@ class getMappingTest extends FlatSpec{
       s"""
         |PREFIX tmp: <http://tmp-namespace.org/>
         |
-        |SELECT DISTINCT ?mapping
+        |SELECT DISTINCT ?format.mapping
         |WHERE {
-        |?mapping a tmp:MappingFile .
-        |<$mappingInfo> tmp:hasMappingFile ?mapping .
+        |?format.mapping a tmp:MappingFile .
+        |<$mappingInfo> tmp:hasMappingFile ?format.mapping .
         |}
         |""".stripMargin
 
@@ -151,10 +151,10 @@ class getMappingTest extends FlatSpec{
          |
         |SELECT DISTINCT *
          |WHERE {
-         |?mapping a tmp:MappingFile ;
+         |?format.mapping a tmp:MappingFile ;
          |    tmp:hasDelimiter ?delimiter ;
          |	  tmp:hasQuotation ?quotation .
-         |<$mappingInfoFile> tmp:hasMappingFile ?mapping .
+         |<$mappingInfoFile> tmp:hasMappingFile ?format.mapping .
          |}
          |""".stripMargin
 

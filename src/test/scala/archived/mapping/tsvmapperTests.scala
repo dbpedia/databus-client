@@ -1,4 +1,4 @@
-//package conversionTests.mapping
+//package archived.format.mapping
 //
 //import better.files.File
 //import org.apache.jena.graph.Triple
@@ -145,9 +145,9 @@
 //
 //  "databus-client" should "convert tsv to ttlTest" in {
 //
-//    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob3.tsv"
-//    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob4_mapping.sparql"
-//    val outputFile= File("/home/eisenbahnplatte/git/databus-client/files/NoDataID/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-conversion-testbed_bob3.ttl")
+//    val inputFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-format.conversion-testbed_bob3.tsv"
+//    val mappingFilePath = "/home/eisenbahnplatte/git/databus-client/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-format.conversion-testbed_bob4_mapping.sparql"
+//    val outputFile= File("/home/eisenbahnplatte/git/databus-client/files/NoDataID/src/resources/databus-client-testbed/format-testbed/2019.08.30/format-format.conversion-testbed_bob3.ttl")
 //    val tempDir = File(s"${testDir}tempDir")
 //    if (tempDir.exists) tempDir.delete()
 //

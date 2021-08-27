@@ -1,4 +1,4 @@
-//package conversionTests.mapping
+//package archived.format.mapping
 //
 //import java.net.URL
 //import better.files.File
@@ -9,7 +9,7 @@
 //import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
 //import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 //import org.dbpedia.databus.client.filehandling.download.Downloader
-//import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
+//import org.dbpedia.databus.client.filehandling.convert.format.mapping.util.MappingInfo
 //import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
 //import org.scalatest.FlatSpec
 //
@@ -26,7 +26,7 @@
 //  implicit val sparkContext: SparkContext = spark.sparkContext
 //  sparkContext.setLogLevel("WARN")
 //
-//  val testFileDir:File = File("./src/test/resources/roundTripTestFiles/mapping/")
+//  val testFileDir:File = File("./src/test/resources/roundTripTestFiles/format.mapping/")
 //  val tempDir:File = testFileDir / "tempDir"
 //
 //

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 
 import scala.util.control.Breaks.{break, breakable}
 import org.apache.jena.graph.Triple
+import org.apache.jena.sparql.core.Quad
 import org.apache.spark.rdd.RDD
 
 import java.net.URLEncoder
@@ -90,7 +91,8 @@ object FormatConverter {
       //read process
       val quads = {
         if (RDF_QUADS.contains(conf.inputFormat))  quadsHandler.read(file.pathAsString, conf.inputFormat)
-        else RDF_Triples_Mapper.map_to_quads(new TripleHandler().read(file.pathAsString, conf.inputFormat), conf.graphURI)
+        else if (RDF_TRIPLES.contains(conf.inputFormat)) RDF_Triples_Mapper.map_to_quads(new TripleHandler().read(file.pathAsString, conf.inputFormat), conf.graphURI)
+        else Spark.context.emptyRDD[Quad]
       }
 
       //write process
@@ -113,19 +115,8 @@ object FormatConverter {
         }
       }
 
+      //write process
       tsdHandler.write(data, conf.outputFormat)
     }
   }
-//  FileUtil.unionFiles(tempDir, targetFile)
-//  if (mappingFile.exists && mappingFile != File("")) {
-//    val mapDir = File("./mappings/")
-//    mapDir.createDirectoryIfNotExists()
-//    mappingFile.moveTo(mapDir / FileUtil.getSha256(targetFile), overwrite = true)
-//  }
-//}
-//catch {
-//  case _: RuntimeException => LoggerFactory.getLogger("UnionFilesLogger").error(s"File $targetFile already exists") //deleteAndRestart(inputFile, inputFormat, outputFormat, targetFile: File)
-//}
-//
-//  targetFile
 }

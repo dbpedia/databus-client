@@ -45,13 +45,13 @@ object DatabusQueries {
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
        |PREFIX dcat: <http://www.w3.org/ns/dcat#>
        |PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-       |PREFIX mapping: <
+       |PREFIX format.mapping: <
        |
-       |SELECT DISTINCT ?mapping
+       |SELECT DISTINCT ?format.mapping
        |WHERE {
        |  ?dataIdElement dataid:sha256sum "$sha"^^xsd:string .
        |  ?dataIdElement dataid:file ?file .
-       |  ?mapping <http://tmp-namespace.org/databusFixRequired> ?file .
+       |  ?format.mapping <http://tmp-namespace.org/databusFixRequired> ?file .
        |}
        |""".stripMargin
 
@@ -66,7 +66,7 @@ object DatabusQueries {
        |PREFIX map: <http://databus-client.tools.dbpedia.org/vocab/mapping/>
        |PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
        |
-       |SELECT DISTINCT ?mapping
+       |SELECT DISTINCT ?format.mapping
        |WHERE {
        |  ?dataIdElement dataid:sha256sum "$sha"^^xsd:string ;
        |  	dataid:file ?file ;
@@ -105,7 +105,7 @@ object DatabusQueries {
        |  FILTER (?from <= ?version && ?until >= ?version)
        |
        |
-       |  BIND( coalesce(?mapping1, ?mapping2, ?mapping3) as ?mapping)
+       |  BIND( coalesce(?mapping1, ?mapping2, ?mapping3) as ?format.mapping)
        |}
        |""".stripMargin
 

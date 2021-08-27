@@ -1,4 +1,4 @@
-package conversionTests.mapping
+package archived.mapping
 
 import java.io.PrintWriter
 
@@ -47,7 +47,7 @@ class test_convertToTSVandBackToTTL extends FlatSpec{
   }
 
 
-//  "databus-client" should "convert created tsv and mapping file back to ttl" in {
+//  "databus-client" should "convert created tsv and format.mapping file back to ttl" in {
 //
 ////    CONVERT TO TSV
 //    println("CONVERT TO TSV")

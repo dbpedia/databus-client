@@ -23,7 +23,7 @@ class TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
 
     inputFormat match {
       case "nt" => new NTriples().read(source)
-      case "rdf" => new RDFXML().read(source)
+      case "rdfxml" => new RDFXML().read(source)
       case "ttl" =>
         //wie geht das besser?
         try {

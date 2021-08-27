@@ -26,7 +26,7 @@ class SourceHandler(conf:CLI_Config) {
       val sourceFile: File = File(conf.source())
 
       if (sourceFile.hasExtension && sourceFile.extension.get.matches(".sparql|.query")) { // conf.source() is a query file
-        val queryString = readQueryFile(sourceFile)
+        val queryString = FileUtil.readQueryFile(sourceFile)
         handleQuery(queryString)
       }
       else { // conf.source() is an already existing file or directory
@@ -171,20 +171,6 @@ class SourceHandler(conf:CLI_Config) {
     val handler: ResponseHandler[String] = new BasicResponseHandler()
 
     handler.handleResponse(response)
-  }
-
-  /**
-   * read a query file as string
-   *
-   * @param file query file
-   * @return query string
-   */
-  def readQueryFile(file: File): String = {
-    var queryString: String = ""
-    for (line <- file.lineIterator) {
-      queryString = queryString.concat(line).concat("\n")
-    }
-    queryString
   }
 
   def printTask(sourceType: String, source: String, target: String):Unit = {

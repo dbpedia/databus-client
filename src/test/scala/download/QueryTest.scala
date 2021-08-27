@@ -1,4 +1,4 @@
-package downloaderTests.queryHandlerTests
+package download
 
 import org.apache.jena.query._
 import org.dbpedia.databus.client.sparql.QueryHandler
