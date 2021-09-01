@@ -1,16 +1,14 @@
 package org.dbpedia.databus.client.filehandling
 
-import java.io._
 import better.files.File
-import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
-import org.dbpedia.databus.client.filehandling.convert.FormatConverter
+import org.dbpedia.databus.client.filehandling.convert.Converter
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
-import scala.io.Source
+import java.io._
 
 class FileHandler(cliConfig: CLI_Config) {
 
@@ -54,7 +52,6 @@ class FileHandler(cliConfig: CLI_Config) {
       copyStream(Compressor.decompress(inputFile), Compressor.compress(config.outFile, config.outputCompression))
       Some(config.outFile)
     }
-
     // File Format Conversion (need to uncompress anyway)
     else {
       if (!isSupportedInFormat(config.inputFormat)) return None
@@ -69,10 +66,10 @@ class FileHandler(cliConfig: CLI_Config) {
           val decompressedInStream = Compressor.decompress(inputFile)
           val decompressedFile = File("./target/databus.tmp/") / inputFile.nameWithoutExtension(true).concat(s".${config.inputFormat}")
           copyStream(decompressedInStream, new FileOutputStream(decompressedFile.toJava))
-          FormatConverter.convert(decompressedFile, config)
+          Converter.convert(decompressedFile, config)
         }
         else {
-          FormatConverter.convert(inputFile, config)
+          Converter.convert(inputFile, config)
         }
       }
 

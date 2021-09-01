@@ -1,29 +1,21 @@
 package org.dbpedia.databus.client.filehandling.convert
 
 import better.files.File
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
-import org.dbpedia.databus.client.filehandling.{CompileConfig, FileUtil}
-import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
-import org.dbpedia.databus.client.filehandling.convert.mapping.{RDF_Quads_Mapper, RDF_Triples_Mapper, TSD_Mapper}
-import org.dbpedia.databus.client.main.CLI_Config
-import org.dbpedia.databus.client.sparql.QueryHandler
-import org.slf4j.LoggerFactory
-
-import scala.util.control.Breaks.{break, breakable}
 import org.apache.jena.graph.Triple
 import org.apache.jena.sparql.core.Quad
 import org.apache.spark.rdd.RDD
+import org.dbpedia.databus.client.filehandling.CompileConfig
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
+import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
+import org.dbpedia.databus.client.filehandling.convert.mapping.{RDF_Quads_Mapper, RDF_Triples_Mapper, TSD_Mapper}
 
 import java.net.URLEncoder
+
 /**
  * Converter for tsv, csv and several RDF serializations (nt,ttl,rdfxml,json-ld, nq, trix, trig)
  */
-object FormatConverter {
-  val tempDir = File("./target/databus.tmp/temp/")
-  val targetTempDir = File("./target/databus.tmp/converted/")
+object Converter {
 
   val RDF_TRIPLES: Seq[String] = Seq(
     "ttl",
@@ -51,15 +43,14 @@ object FormatConverter {
    */
   def convert(file: File, conf:CompileConfig): File = {
 
-    if (tempDir.exists) tempDir.delete()
-    if (targetTempDir.exists) targetTempDir.clear()
-    else targetTempDir.createDirectory()
-
     if (RDF_TRIPLES.contains(conf.outputFormat)) { // convert to RDF_Triples
       val tripleHandler = new TripleHandler()
 
       //read process
       if (RDF_QUADS.contains(conf.inputFormat)) {
+        val targetTempDir = File("./target/databus.tmp/converted/")
+        targetTempDir.createDirectoryIfNotExists()
+
         val quads = new QuadsHandler().read(file.pathAsString, conf.inputFormat)
         val triples = RDF_Quads_Mapper.map_to_triples(quads)
 

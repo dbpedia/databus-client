@@ -5,9 +5,7 @@ import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.RiotParsers
 import org.apache.jena.sparql.core.Quad
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.convert.Spark
 import org.dbpedia.databus.client.filehandling.convert.format.Format
@@ -43,7 +41,7 @@ class NQuads extends Format[RDD[Quad]]{
       os.toString.trim
     }).saveAsTextFile(tempDir.pathAsString)
 
-     FileUtil.unionFiles(tempDir, tempDir / "converted.nq")
+     FileUtil.unionFiles(tempDir, tempDir.parent / "converted.nq")
   }
 
 }

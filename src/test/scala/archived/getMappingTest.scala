@@ -1,15 +1,13 @@
-package archived.mapping
+package archived
 
-import better.files.File
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.RDFDataMgr
-import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.scalatest.FlatSpec
 
-class getMappingTest extends FlatSpec{
- "mappingInfo" should "be interpreted right to convert related csv" in {
+class getMappingTest extends FlatSpec {
+  "mappingInfo" should "be interpreted right to convert related csv" in {
 
    val mapInfo = "/home/eisenbahnplatte/git/format-mappings/tarql/1.ttl"
 

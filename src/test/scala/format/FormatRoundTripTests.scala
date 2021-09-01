@@ -1,32 +1,27 @@
-package conversionTests.format.conversion
+package format
 
 import better.files.File
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
+import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.convert.Spark
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
-import org.dbpedia.databus.client.filehandling.download.Downloader
-import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
+import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers._
+
 import scala.collection.mutable.ListBuffer
 
-class RoundTripTests extends FlatSpec{
+class FormatRoundTripTests extends FlatSpec {
 
-  val spark: SparkSession = SparkSession.builder()
-    .appName(s"Triple reader")
-    .master("local[*]")
-    .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    .getOrCreate()
+  val spark: SparkSession = Spark.session
+  val sparkContext: SparkContext = Spark.context
 
-  implicit val sparkContext: SparkContext = spark.sparkContext
-  sparkContext.setLogLevel("WARN")
-
-  val testFileDir:File = File("./src/test/resources/conversion")
-  val outDir:File = testFileDir / "output"
-  val tempDir:File = outDir / "tempDir"
+  val testFileDir: File = File("./src/test/resources/conversion")
+  val outDir: File = testFileDir / "output"
+  val tempDir: File = outDir / "tempDir"
 
   outDir.createDirectoryIfNotExists().clear()
 

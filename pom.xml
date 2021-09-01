@@ -201,7 +201,7 @@
                 <artifactId>scalatest-maven-plugin</artifactId>
                 <version>1.0</version>
                 <configuration>
-                    <suites>archived.format.mapping.roundTripTests, format.conversion.format.conversion.roundTripTests</suites>
+                    <suites>format.FormatRoundTripTests, format.MappingRoundTripTests</suites>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <junitxml>.</junitxml>
                     <filereports>WDF TestSuite.txt</filereports>
@@ -247,6 +247,15 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>

@@ -1,18 +1,14 @@
 package org.dbpedia.databus.client.filehandling.convert.mapping
 
-import better.files.File
-import org.apache.spark.rdd.RDD
 import org.apache.jena.graph.{NodeFactory, Triple}
-import org.apache.jena.query.QueryExecution
 import org.apache.jena.sparql.core.Quad
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, Row}
 import org.dbpedia.databus.client.filehandling.convert.Spark
 import org.dbpedia.databus.client.filehandling.convert.mapping.util.Tarql_Writer
 
 object RDF_Triples_Mapper {
-
-  val tempDir:File = File("./target/databus.tmp/temp/")
 
   def map_to_quads(data:RDD[Triple], graphName:String): RDD[Quad] = {
     if (graphName == "DefaultGraph") data.map(triple => Quad.create(Quad.defaultGraphIRI, triple))
@@ -28,7 +24,7 @@ object RDF_Triples_Mapper {
 
     if (createMapping) {
       val tsvData = triplesToTSD(data, createMappingFile = true)
-      Tarql_Writer.createTarqlMapFile(tsvData(1), (tempDir / "mappingFile.sparql").pathAsString)
+      Tarql_Writer.createTarqlMapFile(tsvData(1), "./target/databus.tmp/mappingFile.sparql")
       tsvData.head
     }
     else {
@@ -81,14 +77,14 @@ object RDF_Triples_Mapper {
         Spark.context.parallelize(
           convertedData.map(data => data._1)), schema)
 
-      println("TSV DATAFRAME")
-      triplesDF.show(false)
+      //      println("TSV DATAFRAME")
+      //      triplesDF.show(false)
       //=================
 
       //Calculated TARQL DATA
       val schema_mapping: StructType = StructType(
         Seq(
-          StructField("prefixes", StringType,nullable = true),
+          StructField("prefixes", StringType, nullable = true),
           StructField("constructs", StringType, nullable = true),
           StructField("bindings", StringType, nullable = true)
         )

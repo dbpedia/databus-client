@@ -113,6 +113,9 @@ class SourceHandler(conf:CLI_Config) {
 
     val target = File(conf.target())
     target.createDirectoryIfNotExists()
+
+    val temp = File("./target/databus.tmp/temp/")
+    temp.createDirectoryIfNotExists()
   }
 
   /**

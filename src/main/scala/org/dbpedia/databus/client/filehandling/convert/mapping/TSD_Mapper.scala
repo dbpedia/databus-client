@@ -1,25 +1,20 @@
 package org.dbpedia.databus.client.filehandling.convert.mapping
 
 import better.files.File
-import org.apache.spark.SparkContext
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
-import org.dbpedia.databus.client.sparql.QueryHandler
-
-import scala.util.control.Breaks.{break, breakable}
 import org.apache.jena.graph.Triple
-import org.apache.parquet.io.InputFile
+import org.apache.spark.rdd.RDD
 import org.dbpedia.databus.client.filehandling.CompileConfig
 import org.dbpedia.databus.client.filehandling.convert.Spark
-import org.dbpedia.databus.client.filehandling.convert.format.tsd
 import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
+import org.dbpedia.databus.client.sparql.QueryHandler
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
 import org.slf4j.LoggerFactory
 
+import scala.util.control.Breaks.{break, breakable}
+
 object TSD_Mapper {
 
-  def map_to_triples(inputFile: File, conf:CompileConfig):RDD[Triple]={
+  def map_to_triples(inputFile: File, conf: CompileConfig): RDD[Triple] = {
     var triples = Spark.context.emptyRDD[org.apache.jena.graph.Triple]
 
     if (conf.mapping != "") {
@@ -58,14 +53,14 @@ object TSD_Mapper {
     if (delimiter != "null") csvOptions.setDelimiter(delimiter.toCharArray.head)
     if (quoteChar != "null") csvOptions.setQuoteChar(quoteChar.toCharArray.head)
 
-    println(
-      s"""
-         |Used CSVOptions:
-         |Delimiter:      ${csvOptions.getDelimiter}
-         |EscapeCharacter:${csvOptions.getEscapeChar}
-         |QuoteCharacter: ${csvOptions.getQuoteChar}
-         |Encoding:       ${csvOptions.getEncoding}
-       """.stripMargin)
+    //    println(
+    //      s"""
+    //         |Used CSVOptions:
+    //         |Delimiter:      ${csvOptions.getDelimiter}
+    //         |EscapeCharacter:${csvOptions.getEscapeChar}
+    //         |QuoteCharacter: ${csvOptions.getQuoteChar}
+    //         |Encoding:       ${csvOptions.getEncoding}
+    //       """.stripMargin)
 
     var seq: Seq[Triple] = Seq.empty
 
