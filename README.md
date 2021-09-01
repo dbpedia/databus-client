@@ -66,6 +66,7 @@ List of possible command line options.
 | -o, --overwrite | true -> overwrite files in cache, false -> use cache | `true`
 | --clear | true -> clear Cache | `false`
 | --help| Show this message ||
+	
 You can load any query with one variable selected. That variable must be the object of the predicate `dcat:downloadURL`.    
 So the query should look like: `SELECT ?o WHERE { ?s dcat:downloadURL ?o}`
 * You have the choice either to pass the query directly as a program variable, or save it in a file and pass the filepath as variable. The query file name must match `*.sparql` or `*.query`.
