@@ -35,8 +35,8 @@ class NTriples extends Format[RDD[Triple]]{
 
   }
 
-   def write(triples: RDD[Triple]): File ={
-     triples.map(triple => {
+   def write(data: RDD[Triple]): File ={
+     data.map(triple => {
        val os = new ByteArrayOutputStream()
        RDFDataMgr.writeTriples(os, Iterator[Triple](triple).asJava)
        os.toString.trim

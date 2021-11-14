@@ -21,13 +21,14 @@ object Converter {
     "ttl",
     "nt",
     "rdfxml",
-    "jsonld"
+    "owl"
   )
 
   val RDF_QUADS: Seq[String] = Seq(
     "nq",
     "trix",
-    "trig"
+    "trig",
+    "jsonld"
   )
 
   val TSD: Seq[String] = Seq(

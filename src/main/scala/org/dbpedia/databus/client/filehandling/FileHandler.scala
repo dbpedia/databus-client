@@ -39,7 +39,7 @@ class FileHandler(cliConfig: CLI_Config) {
       quotation = cliConfig.quotation().toCharArray.head,
       createMapping = cliConfig.createMapping(),
       graphURI = cliConfig.graphURI(),
-      outFile = getOutputFile(inputFile)
+      outFile = getOutputFile(inputFile, inCompression)
     )
 
     // Without any Conversion
@@ -106,7 +106,7 @@ class FileHandler(cliConfig: CLI_Config) {
     * @return true, if it is supported
     */
   def isSupportedInFormat(format: String): Boolean = {
-    if (format.matches("rdf|ttl|nt|jsonld|tsv|csv|nq|trix|trig")) true
+    if (format.matches("rdf|ttl|nt|owl|jsonld|tsv|csv|nq|trix|trig")) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Input file format $format is not supported.")
       println(s"Input file format $format is not supported.")
@@ -120,7 +120,7 @@ class FileHandler(cliConfig: CLI_Config) {
    * @param inputFile input file
    * @return output file
    */
-  def getOutputFile(inputFile: File): File = {
+  def getOutputFile(inputFile: File, inCompression: String): File = {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
 
@@ -153,7 +153,7 @@ class FileHandler(cliConfig: CLI_Config) {
     }
 
     val newName = {
-      if (cliConfig.compression().isEmpty) s"$nameWithoutExtension.$newOutputFormat"
+      if (cliConfig.compression().isEmpty || cliConfig.compression()=="same" && inCompression=="") s"$nameWithoutExtension.$newOutputFormat"
       else s"$nameWithoutExtension.$newOutputFormat.${cliConfig.compression()}"
     }
 

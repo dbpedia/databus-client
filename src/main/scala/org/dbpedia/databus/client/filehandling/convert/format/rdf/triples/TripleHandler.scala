@@ -8,7 +8,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.convert.format.EquivalenceClassHandler
-import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format.{NTriples, RDFXML, Turtle}
+import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format.{NTriples, OWL, RDFXML, Turtle}
 
 class TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
 
@@ -24,6 +24,7 @@ class TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
     inputFormat match {
       case "nt" => new NTriples().read(source)
       case "rdfxml" => new RDFXML().read(source)
+      case "owl" => new OWL().read(source)
       case "ttl" =>
         //wie geht das besser?
         try {
@@ -49,6 +50,7 @@ class TripleHandler extends EquivalenceClassHandler[RDD[Triple]] {
       case "nt" => new NTriples().write(data)
       case "ttl" => new Turtle().write(data)
       case "rdfxml" => new RDFXML().write(data)
+      case "owl" => new OWL().write(data)
     }
 
   }

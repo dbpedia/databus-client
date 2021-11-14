@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
 class SourceHandler(conf:CLI_Config) {
 
   //supported formats
-  val fileFormats:String = "rdfxml|ttl|nt|jsonld|tsv|csv|nq|trix|trig|same"
+  val fileFormats:String = "rdfxml|ttl|nt|owl|jsonld|tsv|csv|nq|trix|trig|same"
   val compressionFormats:String = "bz2|gz|deflate|lzma|sz|xz|zstd||same"
 
   val cache: File = File("./target/databus.tmp/cache_dir/")
