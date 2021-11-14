@@ -31,7 +31,24 @@ The databus-client is designed to unify and convert data on the client-side in s
 * Level 4: In addition, we plan to provide a plugin mechanism to incorporate more sophisticated format.mapping engines as [Tarql](https://tarql.github.io/) (already implemented), [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT. 
 
 
-## Usage   
+## Usage (API)
+
+The DBpedia Databus-Client offers an API for easy integration into your project.
+
+Example
+```
+DatabusClient
+    .source("./src/query/query1")
+    .source("./src/query/query2")
+    .compression(Compression.gz)
+    .format(Format.nt)
+    .execute()
+```
+
+We have also created a sample project that shows how the Databus-Client can be integrated into a project. 
+https://github.com/Eisenbahnplatte/Databus-Client-Example
+
+## Usage (stand-alone)   
 
 Installation
 ```
