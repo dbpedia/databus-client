@@ -21,7 +21,8 @@ object Converter {
     "ttl",
     "nt",
     "rdfxml",
-    "owl"
+    "owl",
+    "omn"
   )
 
   val RDF_QUADS: Seq[String] = Seq(

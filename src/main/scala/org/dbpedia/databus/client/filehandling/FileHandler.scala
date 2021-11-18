@@ -106,7 +106,7 @@ class FileHandler(cliConfig: CLI_Config) {
     * @return true, if it is supported
     */
   def isSupportedInFormat(format: String): Boolean = {
-    if (format.matches("rdf|ttl|nt|owl|jsonld|tsv|csv|nq|trix|trig")) true
+    if (format.matches(Config.fileFormats)) true
     else {
       LoggerFactory.getLogger("File Format Logger").error(s"Input file format $format is not supported.")
       println(s"Input file format $format is not supported.")
