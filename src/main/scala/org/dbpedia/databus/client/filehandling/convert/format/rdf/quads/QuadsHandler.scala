@@ -17,7 +17,7 @@ class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
    * @param inputFormat rdf serialization
    * @return rdf data as RDD[Triples]
    */
-  override def read(source: String, inputFormat: String): RDD[Quad] = {
+  override def read(source: String, inputFormat: String, baseURI:String=""): RDD[Quad] = {
 
     inputFormat match {
       case "nq" =>    new NQuads().read(source)
@@ -33,7 +33,7 @@ class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
    * @param data         input data
    * @param outputFormat output format
    */
-  override def write(data: RDD[Quad], outputFormat: String): File = {
+  override def write(data: RDD[Quad], outputFormat: String, baseURI:String=""): File = {
 
     outputFormat match {
       case "nq" =>   new NQuads().write(data)

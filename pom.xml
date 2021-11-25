@@ -234,8 +234,8 @@
 
 
         <!-- FORMAT-CONVERSION -->
-        <!-- JENA -->
 
+        <!-- JENA (Ntriple,Turtle,RDFXML,JsonLd,Nquads,Trix,Trig) -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
@@ -263,15 +263,28 @@
             <artifactId>jsonld-java</artifactId>
             <version>0.13.0</version>
         </dependency>
-
         <!-- JENA -->
 
-        <!-- https://mvnrepository.com/artifact/net.sourceforge.owlapi/owlapi-distribution -->
+        <!-- OWL -->
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
             <artifactId>owlapi-distribution</artifactId>
             <version>5.1.19</version>
         </dependency>
+        <!-- OWL -->
+
+        <!-- HDT -->
+        <dependency>
+            <groupId>org.rdfhdt</groupId>
+            <artifactId>hdt-java-core</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rdfhdt</groupId>
+            <artifactId>hdt-jena</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+        <!-- HDT -->
 
         <!-- FORMAT-CONVERSION -->
 

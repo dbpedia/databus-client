@@ -11,6 +11,7 @@ import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHan
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
 import org.dbpedia.databus.client.filehandling.convert.mapping.{RDF_Quads_Mapper, RDF_Triples_Mapper, TSD_Mapper}
+import org.dbpedia.databus.client.main.CLI_Config
 import org.scalatest.FlatSpec
 
 import scala.collection.mutable
@@ -55,28 +56,18 @@ class MappingRoundTripTests extends FlatSpec {
 
     val inputFile = testFileDir / "test.nt"
 
-    val config: CompileConfig = new CompileConfig(
-      inputFormat = "tsv",
-      inputCompression = "",
-      outputFormat = "",
-      outputCompression = "",
-      target = File(""),
-      mapping = (testFileTempDir / "mappingFile.sparql").pathAsString,
-      delimiter = '\t',
-      quotation = '"',
-      createMapping = true,
-      graphURI = "",
-      outFile = File("")
-    )
 
     val tripleHandler = new TripleHandler()
     val tsdHandler = new TSDHandler()
     val triples = tripleHandler.read(inputFile.pathAsString, "nt")
     val dataFrame = RDF_Triples_Mapper.map_to_tsd(triples, createMapping = true)
 
-    File("./target/databus.tmp/mappingFile.sparql").moveTo(File(config.mapping))
+    File("./target/databus.tmp/mappingFile.sparql").moveTo(testFileTempDir / "mappingFile.sparql")
 
     val tsvFile = tsdHandler.write(dataFrame, "tsv")
+
+    val cli_Config = new CLI_Config(Array("-s", tsvFile.pathAsString))
+    val config = new CompileConfig(tsvFile, cli_Config)
     val triples2 = TSD_Mapper.map_to_triples(tsvFile, config)
     val outFile = tripleHandler.write(triples2, "nt")
 

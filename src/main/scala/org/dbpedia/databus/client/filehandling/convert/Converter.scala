@@ -4,7 +4,7 @@ import better.files.File
 import org.apache.jena.graph.Triple
 import org.apache.jena.sparql.core.Quad
 import org.apache.spark.rdd.RDD
-import org.dbpedia.databus.client.filehandling.CompileConfig
+import org.dbpedia.databus.client.filehandling.{CompileConfig, Config}
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
@@ -17,25 +17,9 @@ import java.net.URLEncoder
  */
 object Converter {
 
-  val RDF_TRIPLES: Seq[String] = Seq(
-    "ttl",
-    "nt",
-    "rdfxml",
-    "owl",
-    "omn"
-  )
-
-  val RDF_QUADS: Seq[String] = Seq(
-    "nq",
-    "trix",
-    "trig",
-    "jsonld"
-  )
-
-  val TSD: Seq[String] = Seq(
-    "tsv",
-    "csv"
-  )
+  val RDF_TRIPLES: Seq[String] = Config.RDF_TRIPLES
+  val RDF_QUADS: Seq[String] = Config.RDF_QUADS
+  val TSD: Seq[String] = Config.TSD
 
   /**
    * converts a file to a desired format
@@ -45,51 +29,51 @@ object Converter {
    */
   def convert(file: File, conf:CompileConfig): File = {
 
-    if (RDF_TRIPLES.contains(conf.outputFormat)) { // convert to RDF_Triples
+    if (RDF_TRIPLES.contains(conf.outFormat)) { // convert to RDF_Triples
       val tripleHandler = new TripleHandler()
 
       //read process
-      if (RDF_QUADS.contains(conf.inputFormat)) {
+      if (RDF_QUADS.contains(conf.inFormat)) {
         val targetTempDir = File("./target/databus.tmp/converted/")
         targetTempDir.createDirectoryIfNotExists()
 
-        val quads = new QuadsHandler().read(file.pathAsString, conf.inputFormat)
+        val quads = new QuadsHandler().read(file.pathAsString, conf.inFormat)
         val triples = RDF_Quads_Mapper.map_to_triples(quads)
 
         triples.foreach(triplesResult => {
-          val convertedFile = tripleHandler.write(triplesResult.graph, conf.outputFormat)
-          val outFile = targetTempDir / s"${conf.outFile.nameWithoutExtension}_graph=${URLEncoder.encode(triplesResult.graphName, "UTF-8")}.${conf.outputFormat}"
+          val convertedFile = tripleHandler.write(triplesResult.graph, conf.outFormat, conf.baseURI)
+          val outFile = targetTempDir / s"${conf.outFile.nameWithoutExtension}_graph=${URLEncoder.encode(triplesResult.graphName, "UTF-8")}.${conf.outFormat}"
           convertedFile.moveTo(outFile)
         })
 
         targetTempDir
       } else {
         val triples:Array[RDD[Triple]] = {
-          if (RDF_TRIPLES.contains(conf.inputFormat)) {
-            Array(tripleHandler.read(file.pathAsString, conf.inputFormat))
+          if (RDF_TRIPLES.contains(conf.inFormat)) {
+            Array(tripleHandler.read(file.pathAsString, conf.inFormat))
           }
           else { //TSD.contains(conf.inputFormat)
             Array(TSD_Mapper.map_to_triples(file, conf))
           }
         }
 
-        tripleHandler.write(triples.head, conf.outputFormat)
+        tripleHandler.write(triples.head, conf.outFormat, conf.baseURI)
       }
 
     }
 
-    else if(RDF_QUADS.contains(conf.outputFormat)){ // convert to RDF_Quads
+    else if(RDF_QUADS.contains(conf.outFormat)){ // convert to RDF_Quads
       val quadsHandler = new QuadsHandler()
 
       //read process
       val quads = {
-        if (RDF_QUADS.contains(conf.inputFormat))  quadsHandler.read(file.pathAsString, conf.inputFormat)
-        else if (RDF_TRIPLES.contains(conf.inputFormat)) RDF_Triples_Mapper.map_to_quads(new TripleHandler().read(file.pathAsString, conf.inputFormat), conf.graphURI)
+        if (RDF_QUADS.contains(conf.inFormat))  quadsHandler.read(file.pathAsString, conf.inFormat)
+        else if (RDF_TRIPLES.contains(conf.inFormat)) RDF_Triples_Mapper.map_to_quads(new TripleHandler().read(file.pathAsString, conf.inFormat), conf.graphURI)
         else Spark.context.emptyRDD[Quad]
       }
 
       //write process
-      quadsHandler.write(quads, conf.outputFormat)
+      quadsHandler.write(quads, conf.outFormat)
     }
 
     else { // convert to Tabular structured data (TSD)
@@ -97,19 +81,19 @@ object Converter {
 
       //read process
       val data = {
-        if (TSD.contains(conf.inputFormat)) tsdHandler.read(file.pathAsString, conf.inputFormat)
-        else if (RDF_QUADS.contains(conf.inputFormat)) {
-          val quads = new QuadsHandler().read(file.pathAsString, conf.inputFormat)
+        if (TSD.contains(conf.inFormat)) tsdHandler.read(file.pathAsString, conf.inFormat)
+        else if (RDF_QUADS.contains(conf.inFormat)) {
+          val quads = new QuadsHandler().read(file.pathAsString, conf.inFormat)
           RDF_Quads_Mapper.map_to_tsd(quads, conf.createMapping)
         }
         else { //RDF_TRIPLES.contains(conf.inputFormat)
-          val triples = new TripleHandler().read(file.pathAsString, conf.inputFormat)
+          val triples = new TripleHandler().read(file.pathAsString, conf.inFormat)
           RDF_Triples_Mapper.map_to_tsd(triples, conf.createMapping)
         }
       }
 
       //write process
-      tsdHandler.write(data, conf.outputFormat)
+      tsdHandler.write(data, conf.outFormat)
     }
   }
 }

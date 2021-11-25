@@ -19,14 +19,14 @@ object TSD_Mapper {
 
     if (conf.mapping != "") {
       val mappingInfo = new MappingInfo(conf.mapping, conf.delimiter.toString, conf.quotation.toString)
-      triples = readAsTriples(inputFile, conf.inputFormat, mappingInfo)
+      triples = readAsTriples(inputFile, conf.inFormat, mappingInfo)
     }
     else {
       val possibleMappings = QueryHandler.getPossibleMappings(conf.sha)
       breakable {
         possibleMappings.foreach(mapping => {
           val mappingInfo = QueryHandler.getMappingFileAndInfo(mapping)
-          triples = readAsTriples(inputFile, conf.inputFormat, mappingInfo)
+          triples = readAsTriples(inputFile, conf.inFormat, mappingInfo)
           if (!triples.isEmpty()) break
         })
       }

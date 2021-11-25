@@ -20,6 +20,7 @@ class SourceHandler(conf:CLI_Config) {
   val compressionFormats:String = Config.compressionFormats
 
   val cache: File = Config.cache
+  val fileHandler = new FileHandler(conf)
 
   def execute(): Unit={
     if (File(conf.source()).exists()) {
@@ -48,7 +49,7 @@ class SourceHandler(conf:CLI_Config) {
     println(s"CONVERSION TOOL:\n")
 
     val dataId_string = "dataid.ttl"
-    val fileHandler = new FileHandler(conf)
+
 
     if (source.isDirectory) {
       val files = source.listRecursively.toSeq
@@ -88,8 +89,6 @@ class SourceHandler(conf:CLI_Config) {
 
     println("\n========================================================\n")
     println(s"CONVERSION TOOL:\n")
-
-    val fileHandler = new FileHandler(conf)
 
     allSHAs.foreach(
       sha => fileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")))
