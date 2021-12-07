@@ -259,9 +259,9 @@
             <version>4.5.5</version>
         </dependency>
         <dependency>
-            <groupId>com.github.jsonld-java.jsonld-java</groupId>
-            <artifactId>jsonld-java</artifactId>
-            <version>0.13.3</version>
+	    <groupId>com.github.jsonld-java.jsonld-java</groupId>
+	    <artifactId>jsonld-java</artifactId>
+	    <version>v0.13.3</version>
         </dependency>
         <!-- JENA -->
 
