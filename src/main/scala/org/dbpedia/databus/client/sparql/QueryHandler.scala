@@ -39,7 +39,6 @@ object QueryHandler {
       }
     } finally qexec.close()
 
-//    resultSeq.foreach(println(_))
     resultSeq
   }
 

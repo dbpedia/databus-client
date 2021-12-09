@@ -56,19 +56,24 @@ class MappingRoundTripTests extends FlatSpec {
 
     val inputFile = testFileDir / "test.nt"
 
-
     val tripleHandler = new TripleHandler()
     val tsdHandler = new TSDHandler()
     val triples = tripleHandler.read(inputFile.pathAsString, "nt")
     val dataFrame = RDF_Triples_Mapper.map_to_tsd(triples, createMapping = true)
 
-    File("./target/databus.tmp/mappingFile.sparql").moveTo(testFileTempDir / "mappingFile.sparql")
+    //    File("./target/databus.tmp/mappingFile.sparql").moveTo(testFileTempDir / "mappingFile.sparql")
 
-    val tsvFile = tsdHandler.write(dataFrame, "tsv")
+    val tsvFile = tsdHandler.write(dataFrame, "csv")
+    val savedTsvFile = tsvFile.parent.parent / tsvFile.name
+    if (savedTsvFile.exists) savedTsvFile.delete()
+    tsvFile.moveTo(savedTsvFile)
 
-    val cli_Config = new CLI_Config(Array("-s", tsvFile.pathAsString))
-    val config = new CompileConfig(tsvFile, cli_Config)
-    val triples2 = TSD_Mapper.map_to_triples(tsvFile, config)
+    val cli_Config = new CLI_Config(Array("-s", savedTsvFile.pathAsString, "-m", File("./target/databus.tmp/mappingFile.sparql").pathAsString))
+    val config = new CompileConfig(savedTsvFile, cli_Config)
+    config.init()
+
+    val triples2 = TSD_Mapper.map_to_triples(savedTsvFile, config)
+
     val outFile = tripleHandler.write(triples2, "nt")
 
     assert(RDFEqualityWithMissingTriples(inputFile, outFile, "tsv"))
