@@ -6,7 +6,7 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from typing import List
 
-DATABUS_URI_BASE = "https://dev.databus.dbpedia.org"
+DATABUS_URI_BASE = "http://localhost:3000"
 
 @dataclass
 class DataGroup:
@@ -79,7 +79,7 @@ class DataVersion:
 
     def get_target_uri(self):
 
-        return f"https://dev.databus.dbpedia.org/{self.account_name}/{self.group}/{self.artifact}/{self.version}"
+        return f"{DATABUS_URI_BASE}/{self.account_name}/{self.group}/{self.artifact}/{self.version}"
 
     def __distinct_cvs(self) -> dict:
 
@@ -217,9 +217,15 @@ def deploy_to_dev_databus(api_key: str, *databus_objects):
 
             print(f"Problematic file:\n {submission_data}")
 
+
+def main():
+    print("DATABUS CLIENT v0.1")
+    print("-------------------")
+
+
 if __name__ == "__main__":
 
-    account_name = "denis"
+    account_name = "vehnem"
 
     group = "general"
 
@@ -231,7 +237,7 @@ if __name__ == "__main__":
 
 
     # currently its advised to use the internal webid found at https://dev.databus.dbpedia.org/{{user}}#settings
-    publisher = "https://dev.databus.dbpedia.org/denis#this"
+    publisher = "http://localhost:3000/vehnem#this"
 
     label = "Test Label"
 
@@ -291,4 +297,4 @@ if __name__ == "__main__":
 
     # For the new version deployed to dev.databus.dbpedia.org
     # API KEY can be found or generated under https://dev.databus.dbpedia.org/{{user}}#settings
-    deploy_to_dev_databus("some-mysterious-key", databus_group, databus_version)
+    deploy_to_dev_databus("035d682f-767c-47ad-aa0c-f6731b6ce21d", databus_group, databus_version)
