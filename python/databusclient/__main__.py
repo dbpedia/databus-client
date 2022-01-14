@@ -1,3 +1,3 @@
-from databusclient import databus_client as d8c
+from databusclient import cli
 
-d8c.main()
+cli.main()
