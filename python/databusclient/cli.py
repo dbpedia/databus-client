@@ -47,7 +47,7 @@ def generate_version(args):
     for uri in args.URIs:
         dbfiles.append(databus_client.DatabusFile(uri, {}, "file"))
 
-    version = databus_client.DataVersion(
+    version_metadata = databus_client.DatabusVersionMetadata(
         args.user,
         args.group,
         args.artifact,
@@ -59,8 +59,12 @@ def generate_version(args):
         args.documentation,
         args.documentation,
         args.license,
-        dbfiles,
         DATABUS_BASE=args.base,
+    )
+
+    version = databus_client.DataVersion(
+        version_metadata,
+        dbfiles,
     )
     if args.file is not None and args.file != "":
         fname = args.file
@@ -78,7 +82,7 @@ def direct_version_deploy(args):
     for uri in args.URIs:
         dbfiles.append(databus_client.DatabusFile(uri, {}, "file"))
 
-    version = databus_client.DataVersion(
+    version_metadata = databus_client.DatabusVersionMetadata(
         args.user,
         args.group,
         args.artifact,
@@ -90,8 +94,12 @@ def direct_version_deploy(args):
         args.documentation,
         args.documentation,
         args.license,
-        dbfiles,
         DATABUS_BASE=args.base,
+    )
+
+    version = databus_client.DataVersion(
+        version_metadata,
+        dbfiles,
     )
 
     databus_client.deploy_to_dev_databus(args.apikey, version)

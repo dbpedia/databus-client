@@ -48,25 +48,43 @@ class DataGroup:
 
 
 class DatabusFile:
-    def __init__(self, uri: str, cvs: dict, file_ext: str, verbose=False, **kwargs):
+    def __init__(
+        self,
+        uri: str,
+        cvs: dict,
+        file_ext: str,
+        verbose=False,
+        shasum=None,
+        content_length=None,
+        **kwargs,
+    ):
         """Fetches the necessary information of a file URI for the deploy to the databus."""
         self.uri = uri
         self.cvs = cvs
+
+        if shasum is None or content_length is None:
+            self.__fetch_file_info(uri, **kwargs)
+        else:
+            self.sha256sum = shasum
+            self.content_length = content_length
+
+        self.file_ext = file_ext
+        self.id_string = "_".join([f"{k}={v}" for k, v in cvs.items()]) + "." + file_ext
+
+    def __fetch_file_info(uri, **kwargs):
         resp = requests.get(uri, **kwargs)
 
         if verbose:
-            print()
+            print(f"")
         if resp.status_code > 400:
             print(f"ERROR for {uri} -> Status {str(resp.status_code)}")
 
         self.sha256sum = hashlib.sha256(bytes(resp.content)).hexdigest()
         self.content_length = str(len(resp.content))
-        self.file_ext = file_ext
-        self.id_string = "_".join([f"{k}={v}" for k, v in cvs.items()]) + "." + file_ext
 
 
-@dataclass
-class DataVersion:
+@dataclass(eq=True, frozen=True)
+class DatabusVersionMetadata:
     account_name: str
     group: str
     artifact: str
@@ -78,14 +96,19 @@ class DataVersion:
     abstract: str
     description: str
     license: str
-    databus_files: List[DatabusFile]
     issued: datetime = field(default_factory=datetime.now)
     DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
     context: str = "https://raw.githubusercontent.com/dbpedia/databus-git-mockup/main/dev/context.jsonld"
 
+
+class DatabusVersion:
+    def __init__(self, metadata, databus_files):
+        self.metadata = metadata
+        self.databus_files = databus_files
+
     def get_target_uri(self):
 
-        return f"https://dev.databus.dbpedia.org/{self.account_name}/{self.group}/{self.artifact}/{self.version}"
+        return f"https://dev.databus.dbpedia.org/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}/{self.metadata.version}"
 
     def __distinct_cvs(self) -> dict:
 
@@ -122,14 +145,14 @@ class DataVersion:
             yield file_dst
 
     def to_jsonld(self, **kwargs) -> str:
-        self.version_uri = (
-            f"{self.DATABUS_BASE}/{account_name}/{group}/{artifact}/{version}"
-        )
+        self.version_uri = f"{self.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}/{self.metadata.version}"
         self.data_id_uri = self.version_uri + "#Dataset"
 
-        self.artifact_uri = f"{self.DATABUS_BASE}/{account_name}/{group}/{artifact}"
+        self.artifact_uri = f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}"
 
-        self.group_uri = f"{self.DATABUS_BASE}/{account_name}/{group}"
+        self.group_uri = (
+            f"{self.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}"
+        )
 
         self.timestamp = self.issued.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -142,15 +165,18 @@ class DataVersion:
                     "version": self.version_uri,
                     "artifact": self.artifact_uri,
                     "group": self.group_uri,
-                    "hasVersion": self.version,
+                    "hasVersion": self.metadata.version,
                     "issued": self.timestamp,
-                    "publisher": self.publisher,
-                    "label": {"@value": self.label, "@language": "en"},
-                    "title": {"@value": self.title, "@language": "en"},
-                    "comment": {"@value": self.comment, "@language": "en"},
-                    "abstract": {"@value": self.abstract, "@language": "en"},
-                    "description": {"@value": self.description, "@language": "en"},
-                    "license": {"@id": self.license},
+                    "publisher": self.metadata.publisher,
+                    "label": {"@value": self.metadata.label, "@language": "en"},
+                    "title": {"@value": self.metadata.title, "@language": "en"},
+                    "comment": {"@value": self.metadata.comment, "@language": "en"},
+                    "abstract": {"@value": self.metadata.abstract, "@language": "en"},
+                    "description": {
+                        "@value": self.metadata.description,
+                        "@language": "en",
+                    },
+                    "license": {"@id": self.metadata.license},
                     "distribution": [d for d in self.__dbfiles_to_dict()],
                 }
             ],
