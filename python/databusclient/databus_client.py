@@ -10,7 +10,7 @@ import logging
 
 
 @dataclass
-class DataGroup:
+class DatabusGroup:
     account_name: str
     id: str
     label: str
@@ -108,7 +108,7 @@ class DatabusVersion:
 
     def get_target_uri(self):
 
-        return f"https://dev.databus.dbpedia.org/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}/{self.metadata.version}"
+        return f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}/{self.metadata.version}"
 
     def __distinct_cvs(self) -> dict:
 
@@ -129,14 +129,14 @@ class DatabusVersion:
         for dbfile in self.databus_files:
             file_dst = {
                 "@id": self.version_uri + "#" + dbfile.id_string,
-                "file": self.version_uri + "/" + self.artifact + "_" + dbfile.id_string,
+                "file": self.version_uri + "/" + self.metadata.artifact + "_" + dbfile.id_string,
                 "@type": "dataid:SingleFile",
                 "formatExtension": dbfile.file_ext,
                 "compression": "none",
                 "downloadURL": dbfile.uri,
                 "byteSize": dbfile.content_length,
                 "sha256sum": dbfile.sha256sum,
-                "hasVersion": self.version,
+                "hasVersion": self.metadata.version,
             }
             for key, value in dbfile.cvs.items():
 
@@ -145,19 +145,19 @@ class DatabusVersion:
             yield file_dst
 
     def to_jsonld(self, **kwargs) -> str:
-        self.version_uri = f"{self.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}/{self.metadata.version}"
+        self.version_uri = f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}/{self.metadata.version}"
         self.data_id_uri = self.version_uri + "#Dataset"
 
         self.artifact_uri = f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}"
 
         self.group_uri = (
-            f"{self.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}"
+            f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}"
         )
 
-        self.timestamp = self.issued.strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.timestamp = self.metadata.issued.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         data_id_dict = {
-            "@context": self.context,
+            "@context": self.metadata.context,
             "@graph": [
                 {
                     "@type": "dataid:Dataset",
@@ -201,8 +201,8 @@ class DatabusVersion:
 
 def deploy_to_dev_databus(api_key: str, *databus_objects):
 
-    for dbobj in databus_objects:
-        print(f"Deploying {dbobj.get_target_uri()}")
+    for i, dbobj in enumerate(databus_objects):
+        print(f"{i}: Deploying {dbobj.get_target_uri()}")
         submission_data = dbobj.to_jsonld()
 
         resp = requests.put(

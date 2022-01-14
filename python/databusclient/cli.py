@@ -4,7 +4,7 @@ import argparse_prompt
 
 def direct_group_deploy(args):
 
-    group = databus_client.DataGroup(
+    group = databus_client.DatabusGroup(
         args.user,
         accountargs.group,
         args.title,
@@ -20,7 +20,7 @@ def direct_group_deploy(args):
 
 def generate_group(args):
 
-    group = databus_client.DataGroup(
+    group = databus_client.DatabusGroup(
         args.user,
         args.group,
         args.title,
