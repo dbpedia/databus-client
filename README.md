@@ -1,15 +1,24 @@
 # DBpedia Databus Client [![Build Status](https://travis-ci.org/dbpedia/databus-client.svg?branch=master)](https://travis-ci.org/dbpedia/databus-client)
 
 Download and make data fit for applications using SPARQL on the [databus](https://databus.dbpedia.org).
- 
-## Vision
-Any data on the bus can be made interoperable with application requirements. If the application can only read `.gz`, but not `.bz2` and only RDF-NTriples, but not RDF-XML, the client provides  `Download-As` functionality and transforms the data client-side. Files published on the Databus do not need to be offered in several formats. 
 
-Example Application Deployment: Download the files of 5 datasets as given in the SPARQL query, transform all to `.bz2`, convert all RDF to RDF-NTriples and a) map the `.tsv` file from the second dataset to RDF with this <databus-uri> RML-Mapping, and b) use this <databus-uri> XSLT-Mapping for the `.xml` file in the fifth dataset. When finished, load and deploy a Virtuoso SPARQL Endpoint via Docker. 
+## Vision
+Any data on the bus can be made interoperable with application requirements. If an application can only read `RDF-NTriples` and `.gz`, but the desired data is only offered in `RDF-XML` and `.bz2`, 
+the client provides a `Download-As` functionality and transforms the data client-side. Files published on the Databus do not need to be offered in several formats.
+
+**Example Application Deployment:** 
+
+1. Download the files of 5 datasets as given in the SPARQL query
+2. Conversion
+   1. convert all `RDF` files to `RDF-NTriple` files, and
+   2. map the `.tsv` file from the second dataset to `RDF-NTriple` with this <databus-uri> `RML-Mapping`, and 
+   3. use this <databus-uri> `XSLT-Mapping` for the `.xml` file in the fifth dataset. 
+2. Transform all files to `.bz2`
+3. Finally, load and deploy a Virtuoso SPARQL Endpoint via Docker.
 
 ## Current State
 
-**beta**: 
+**beta**:
 most of the times it should produce expected results for compression and RDF format.conversion. Please expect some code refactoring and fluctuation. There will be an open-source licence, either GPL or Apache.  
 
 
@@ -28,7 +37,7 @@ The databus-client is designed to unify and convert data on the client-side in s
 * Level 1: all features finished, testing required
 * Level 2: using Apache Compress library covers most of the compression formats, more testing required
 * Level 3: Scalable RDF libraries from [SANSA-Stack](http://sansa-stack.net/) and [Databus Derive](https://github.com/dbpedia/databus-derive). Step by step, extension for all (quasi-)isomorphic [IANA mediatypes](https://www.iana.org/assignments/media-types/media-types.xhtml).
-* Level 4: In addition, we plan to provide a plugin mechanism to incorporate more sophisticated format.mapping engines as [Tarql](https://tarql.github.io/) (already implemented), [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT. 
+* Level 4: In addition, we plan to provide a plugin mechanism to incorporate more sophisticated format.mapping engines as [Tarql](https://tarql.github.io/) (already implemented), [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT.
 
 
 ## Usage (API)
@@ -45,8 +54,8 @@ DatabusClient
     .execute()
 ```
 
-We have also created a sample project that shows how the Databus-Client can be integrated into a project. 
-https://github.com/Eisenbahnplatte/Databus-Client-Example
+We have also created a sample project that shows how the Databus-Client can be integrated into a project.
+[Sample-Project](https://github.com/Eisenbahnplatte/Databus-Client-Example)
 
 ## Usage (stand-alone)   
 
@@ -59,7 +68,7 @@ mvn clean install
 
 Execution example
 ```
-bin/DatabusClient --source ./src/resources/queries/example.sparql --target converted_files/ -f jsonld -c gz 
+bin/DatabusClient --source ./src/resources/queries/example.sparql --target converted_files/ -f jsonld -c gz
 ```
 
 You can also use the released jar, instead of cloning the whole repository
@@ -83,15 +92,15 @@ List of possible command line options.
 | -o, --overwrite | true -> overwrite files in cache, false -> use cache | `true`
 | --clear | true -> clear Cache | `false`
 | --help| Show this message ||
-	
+
 You can load any query with one variable selected. That variable must be the object of the predicate `dcat:downloadURL`.    
 So the query should look like: `SELECT ?o WHERE { ?s dcat:downloadURL ?o}`
 * You have the choice either to pass the query directly as a program variable, or save it in a file and pass the filepath as variable. The query file name must match `*.sparql` or `*.query`.
 * Additionally, Collection URIs are supported now (e.g. `https://databus.dbpedia.org/jfrey/collections/id-management_links`). The Client gets the related Query itself.
 
 <!---You can choose between different compression formats:
-    
- * `bz2, gz, br, snappy-framed, deflate, lzma, xz, zstd` 
+
+ * `bz2, gz, br, snappy-framed, deflate, lzma, xz, zstd`
 
 -->
 
@@ -101,7 +110,7 @@ You can also use the converter and downloader separately.
 
 **Databus based downloader**
 
-* Due default values of `compression` and `format` are `same`, the Client is a pure downloader, if you don't pass arguments for `compression` and `format`. 
+* Due default values of `compression` and `format` are `same`, the Client is a pure downloader, if you don't pass arguments for `compression` and `format`.
 ```
 bin/DatabusClient -s ./src/resources/queries/example.sparql -t ./downloaded_files/
 ```
@@ -129,21 +138,21 @@ PREFIX dataid-mt: <http://dataid.dbpedia.org/ns/mt#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 
-# Get latest ontology NTriples file 
+# Get latest ontology NTriples file
 SELECT DISTINCT ?file WHERE {
  	?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> .
 	?dataset dcat:distribution ?distribution .
-        ?distribution dcat:mediaType dataid-mt:ApplicationNTriples . 
+        ?distribution dcat:mediaType dataid-mt:ApplicationNTriples .
 	?distribution dct:hasVersion ?latestVersion .  
 	?distribution dcat:downloadURL ?file .
 
 	{
-	SELECT (?version as ?latestVersion) WHERE { 
-		?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> . 
-		?dataset dct:hasVersion ?version . 
-	} ORDER BY DESC (?version) LIMIT 1 
-	} 
-	
+	SELECT (?version as ?latestVersion) WHERE {
+		?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> .
+		?dataset dct:hasVersion ?version .
+	} ORDER BY DESC (?version) LIMIT 1
+	}
+
 } " > latest_ontology.query
 
 # Here is the script to download the latest ontology snapshot as ttl without compression
@@ -152,8 +161,8 @@ bin/DatabusClient --source ./latest_ontology.query -f ttl -c ""
 
 ```
 
-## Docker example: Deploy a small dataset to docker SPARQL endpoint 
-Loading geocoordinates extracted from DE Wikipedia into Virtuoso and host it locally 
+## Docker example: Deploy a small dataset to docker SPARQL endpoint
+Loading geocoordinates extracted from DE Wikipedia into Virtuoso and host it locally
 
 ```
 git clone https://github.com/dbpedia/databus-client.git
@@ -230,7 +239,7 @@ docker rm -f databus-client
 ```
 
 Delete pulled image
- 
+
 ```
 docker rmi -f dbpedia/databus-client
 ```
@@ -239,5 +248,3 @@ docker rmi -f dbpedia/databus-client
 
 
 You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `target`), but you have to write the Environment Variables in Capital Letters.
-
-
