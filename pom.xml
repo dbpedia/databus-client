@@ -32,6 +32,10 @@
 
 
     <repositories>
+	<repository>
+	    <id>maven.repo</id>
+	    <url>https://repo1.maven.org/maven2</url>
+        </repository>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -190,8 +194,14 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.18</version>
+            <version>1.21</version>
         </dependency>
+<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.15</version>
+</dependency>
         <!-- for lzma compression-->
         <dependency>
             <groupId>org.tukaani</groupId>
@@ -236,10 +246,24 @@
         <!-- FORMAT-CONVERSION -->
 
         <!-- JENA (Ntriple,Turtle,RDFXML,JsonLd,Nquads,Trix,Trig) -->
+
+<!--        <dependency>-->
+<!--            <groupId>com.github.jsonld-java</groupId>-->
+<!--            <artifactId>jsonld-java</artifactId>-->
+<!--            <version>0.13.3</version>-->
+<!--&lt;!&ndash;            <type>bundle</type>&ndash;&gt;-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
             <version>3.11.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsonld-java.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -248,20 +272,17 @@
             <version>3.11.0</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.github.jsonld-java</groupId>
+                    <groupId>com.github.jsonld-java.jsonld-java</groupId>
                     <artifactId>jsonld-java</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
+
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jsonld-java.jsonld-java</groupId>
-            <artifactId>jsonld-java</artifactId>
-            <version>0.13.0</version>
         </dependency>
         <!-- JENA -->
 

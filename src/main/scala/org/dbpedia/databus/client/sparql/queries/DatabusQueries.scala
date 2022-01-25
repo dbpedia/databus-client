@@ -66,7 +66,7 @@ object DatabusQueries {
        |PREFIX map: <http://databus-client.tools.dbpedia.org/vocab/mapping/>
        |PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
        |
-       |SELECT DISTINCT ?format.mapping
+       |SELECT DISTINCT ?formatMapping
        |WHERE {
        |  ?dataIdElement dataid:sha256sum "$sha"^^xsd:string ;
        |  	dataid:file ?file ;
@@ -105,7 +105,7 @@ object DatabusQueries {
        |  FILTER (?from <= ?version && ?until >= ?version)
        |
        |
-       |  BIND( coalesce(?mapping1, ?mapping2, ?mapping3) as ?format.mapping)
+       |  BIND( coalesce(?mapping1, ?mapping2, ?mapping3) as ?formatMapping)
        |}
        |""".stripMargin
 
