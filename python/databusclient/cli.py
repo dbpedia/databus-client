@@ -2,6 +2,28 @@ from databusclient import databus_client
 import argparse_prompt
 
 
+def parse_cv_string(s: str, seperator: str="|"):
+
+    result_map = {}
+    for cv in s.split(seperator):
+        key, value = cv.split("=")
+        result_map[key] = value
+    return result_map
+        
+def generate_databus_file(arg):
+
+    uri = arg[:arg.find("|")]
+
+    print(uri)
+
+    file_ext = arg[arg.rfind(".")+1:]
+
+    cv_string = arg[arg.find("|")+1:arg.rfind("|")]
+
+    cv_map = parse_cv_string(cv_string)
+
+    return databus_client.DatabusFile(uri, cv_map, file_ext)
+
 def direct_group_deploy(args):
 
     group = databus_client.DatabusGroup(
@@ -44,8 +66,8 @@ def generate_version(args):
 
     dbfiles = []
 
-    for uri in args.URIs:
-        dbfiles.append(databus_client.DatabusFile(uri, {}, "file"))
+    for arg_string in args.URIs:
+        dbfiles.append(generate_databus_file(arg_string))
 
     version_metadata = databus_client.DatabusVersionMetadata(
         args.user,
@@ -79,8 +101,8 @@ def direct_version_deploy(args):
 
     dbfiles = []
 
-    for uri in args.URIs:
-        dbfiles.append(databus_client.DatabusFile(uri, {}, "file"))
+    for arg_string in args.URIs:
+        dbfiles.append(generate_databus_file(arg_string))
 
     version_metadata = databus_client.DatabusVersionMetadata(
         args.user,
@@ -160,6 +182,10 @@ def main():
         "--documentation", "-doc", help="The group documentation", type=str
     )
 
+    group_generate_parser.add_argument(
+        "--file", "-f", help="The file the result should be printed to.", type=str
+    )
+
     # parser for generating version
 
     version_generate_parser = generate_subparsers.add_parser(
@@ -194,6 +220,10 @@ def main():
 
     version_generate_parser.add_argument(
         "--license", help="The version license", type=str
+    )
+
+    version_generate_parser.add_argument(
+        "--file", "-f", help="The file the result should be printed to.", type=str
     )
 
     version_generate_parser.add_argument(
