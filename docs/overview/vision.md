@@ -13,4 +13,4 @@ Files published on the Databus do not need to be offered in several formats.
     1. convert all `RDF` files to `RDF-NTriple` files, and
     2. map the `.tsv` file from the second dataset to `RDF-NTriple` with this <databus-uri> `RML-Mapping`, and
     3. use this <databus-uri> `XSLT-Mapping` for the `.xml` file in the fifth dataset.
-3. Finally, load and deploy a Virtuoso SPARQL Endpoint via Docker.
+3. Load and deploy the processed data to a Virtuoso SPARQL Endpoint via Docker.

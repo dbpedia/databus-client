@@ -1,7 +1,7 @@
 # Download Queries
 
 The most important environment variable of the Download-Client is the download query. 
-With the query you can specify an accurate selection of datasets of the DBpedia-Databus, the Download-Client needs to process.
+With the query you can specify an accurate selection of datasets of the [DBpedia-Databus](https://databus.dbpedia.org/), the Download-Client needs to process.
 
 ### Possible queries
 * You can load any query that selects the object of the predicate `dcat:downloadURL`  
@@ -17,7 +17,7 @@ There are three different ways to pass a query to the download-client:
 3. Collection URIs are supported, too. The Client gets the related Query itself.
    * e.g. `https://databus.dbpedia.org/jfrey/collections/id-management_links`
 
-_________
+
 
 ## List of possible command line options
 

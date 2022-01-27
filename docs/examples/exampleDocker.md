@@ -2,10 +2,10 @@
 
 You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `target`), but you have to write the Environment Variables in Capital Letters.
 
-### Docker example
+### Docker Example 1
 
 * Deploy a small dataset to docker SPARQL endpoint
-* Loading geocoordinates extracted from DE Wikipedia into Virtuoso and host it locally
+  * Loading geocoordinates extracted from DE Wikipedia into Virtuoso and host it locally
 
 ```
 git clone https://github.com/dbpedia/databus-client.git

@@ -3,7 +3,7 @@
 ### Overview
 * [Vision](docs/overview/vision.md)
 * [Concept](docs/concept/concept.md)
-* [Current State](docs/overview/currentState.md)
+* [Roadmap](docs/overview/currentState.md)
 
 ### Usage
 * [General](docs/usage/generalUsage.md)

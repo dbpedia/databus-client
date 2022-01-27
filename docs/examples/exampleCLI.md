@@ -1,8 +1,10 @@
-# CLI Example: Download the DBpedia ontology as TTL
+# CLI Example
 
-This example downloads the latest ontology snapshot as `.ttl` without compression.
+Download the `DBpedia ontology` (latest ontology snapshot) as `.ttl` without compression.
 
 **Note**: Ontology snapshots are uploaded to the Databus under [Denis Account](https://databus.dbpedia.org/denis/ontology/dbo-snapshots) (moved to DBpedia soon)
+
+______
 
 ### Download and install DBpedia Databus Client
 ```

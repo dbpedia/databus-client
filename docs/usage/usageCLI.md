@@ -14,11 +14,11 @@ bin/DatabusClient -s ./src/resources/queries/example.sparql -f jsonld -c gz
 
 ____________________
 
-### Jar
+## Jar
 
 You can also use the released `.jar`, instead of cloning the whole repository
 
-#### Execution example
+### Execution example
 ```
 java -jar databus-client-1.0-SNAPSHOT.jar -s "https://databus.dbpedia.org/rogargon/collections/browsable_core"
 ```
