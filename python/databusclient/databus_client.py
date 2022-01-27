@@ -63,7 +63,7 @@ class DatabusFile:
         self.cvs = cvs
 
         if shasum is None or content_length is None:
-            self.__fetch_file_info(uri, **kwargs)
+            self.__fetch_file_info(self.uri)
         else:
             self.sha256sum = shasum
             self.content_length = content_length

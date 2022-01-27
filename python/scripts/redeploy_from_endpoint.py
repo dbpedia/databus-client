@@ -1,5 +1,6 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 from databusclient.databus_client import DatabusFile, DatabusGroup, DatabusVersionMetadata, DatabusVersion, deploy_to_dev_databus
+from databusclient.cli import parse_cv_string
 from datetime import datetime
 
 endpoint = "https://databus.dbpedia.org/repo/sparql"
@@ -58,7 +59,16 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT DISTINCT ?group ?art ?version ?title ?publisher ?comment ?description ?license ?file ?extension ?type ?bytes ?shasum WHERE { 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX databus: <https://databus.dbpedia.org/>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT ?group ?art ?version ?title ?publisher ?comment ?description ?license ?file ?extension ?type ?bytes ?shasum (group_concat(?kvstr; separator="|") as ?cvs) WHERE { 
+SELECT DISTINCT ?group ?art ?version ?title ?publisher ?comment ?description ?license ?file ?extension ?type ?bytes ?shasum ?kvstr WHERE { 
   ?dataset dataid:account databus:ontologies .
   ?dataset dataid:group ?group .
   ?dataset dataid:artifact ?art.
@@ -74,21 +84,30 @@ SELECT DISTINCT ?group ?art ?version ?title ?publisher ?comment ?description ?li
   ?distribution dcat:byteSize ?bytes .
   ?distribution dataid:sha256sum ?shasum .
   ?dataset dct:hasVersion ?version .
+  # get cvs as concat string
+  ?dataset dcat:distribution ?distribution .
+  ?distribution dataid:contentVariant ?value .
+  ?distribution ?key ?value .
+  ?key rdfs:subPropertyOf  dataid:contentVariant .
+  BIND(CONCAT(str(REPLACE (str(?key), "http://dataid.dbpedia.org/ns/cv#", "")), "=", str(?value)) as ?kvstr)
   # Excludes dev versions
   FILTER (!regex(?art, "--DEV"))
   # exclude some stuff since content variants are hard
   MINUS { ?distribution dataid:contentVariant 'sorted'^^xsd:string . }
-  MINUS { ?distribution dataid:contentVariant 'NONE'^^xsd:string}
-  MINUS { ?distribution dataid:contentVariant 'goodLicense'^^xsd:string}
-  MINUS { ?distribution dataid:contentVariant 'lodeMetadata'^^xsd:string}
-  MINUS { ?distribution dataid:contentVariant 'old'^^xsd:string}
-} ORDER BY ?version
+#  MINUS { ?distribution dataid:contentVariant 'NONE'^^xsd:string}
+#  MINUS { ?distribution dataid:contentVariant 'goodLicense'^^xsd:string}
+#  MINUS { ?distribution dataid:contentVariant 'lodeMetadata'^^xsd:string}
+#  MINUS { ?distribution dataid:contentVariant 'old'^^xsd:string}
+} 
+} GROUP BY ?group ?art ?version ?title ?publisher ?comment ?description ?license ?file ?extension ?type ?bytes ?shasum ORDER BY ?version
   """
 
   sparql_wrapper = SPARQLWrapper(endpoint)
   sparql_wrapper.setReturnFormat(JSON)
 
   sparql_wrapper.setQuery(query)
+
+  print("Start querying....")
 
   result = sparql_wrapper.queryAndConvert()
 
@@ -107,10 +126,11 @@ SELECT DISTINCT ?group ?art ?version ?title ?publisher ?comment ?description ?li
     file_ext = binding["extension"]["value"]
     # set fileext for unknown files
     if file_ext == "":
-      file_ext = "file"
+      file_ext = dl_url[dl_url.rfind(".")+1:]
     file_type = binding["type"]["value"]
     bytesize = binding["bytes"]["value"]
     shasum = binding["shasum"]["value"]
+    cvs_string = binding["cvs"]["value"]
 
     publisher = "http://localhost:3000/denis#this"
     title = binding["title"]["value"]
@@ -120,8 +140,9 @@ SELECT DISTINCT ?group ?art ?version ?title ?publisher ?comment ?description ?li
 
     version_metadata = DatabusVersionMetadata("denis", group, art, version, title, title, publisher, comment, description, description, version_license, issued=issued, DATABUS_BASE=db_base)
 
+    cv_map = parse_cv_string(cvs_string)
 
-    databus_files = result_map.get(version_metadata, []) + [DatabusFile(dl_url, {"type": file_type}, file_ext, shasum=shasum, content_length=bytesize)]
+    databus_files = result_map.get(version_metadata, []) + [DatabusFile(dl_url, cv_map, file_ext, shasum=shasum, content_length=bytesize)]
     result_map[version_metadata] = databus_files
 
   versions = []
@@ -129,8 +150,10 @@ SELECT DISTINCT ?group ?art ?version ?title ?publisher ?comment ?description ?li
   for metadata, dbfiles in result_map.items():
     versions.append(DatabusVersion(metadata, dbfiles))
 
-  # for version in versions:
-  #   print(version.metadata.group, version.metadata.artifact, version.metadata.version, len(version.databus_files))
+  for version in versions:
+    print(version.metadata.group, version.metadata.artifact, version.metadata.version, len(version.databus_files))
+
+  print(f"Going to deploy {len(versions)} versions...")
 
   deploy_to_dev_databus("ff7d6b48-86b8-4760-ad02-9ef5de2608d9", *versions)
 
