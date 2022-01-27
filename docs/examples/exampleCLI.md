@@ -4,8 +4,6 @@ Download the `DBpedia ontology` (latest ontology snapshot) as `.ttl` without com
 
 **Note**: Ontology snapshots are uploaded to the Databus under [Denis Account](https://databus.dbpedia.org/denis/ontology/dbo-snapshots) (moved to DBpedia soon)
 
----
-
 #### Download and install DBpedia Databus Client
 ```
 git clone https://github.com/dbpedia/databus-client.git

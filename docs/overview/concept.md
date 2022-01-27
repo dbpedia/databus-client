@@ -10,7 +10,7 @@ The Databus-Client is designed to unify and convert data on the client-side in s
 | 4 |  Transform with mappings | {nt, ttl, rdfxml} <--> {csv, tsv} <--> {nq, trig, trix, json-ld}
 
 
-### Roadmap for levels
+#### Roadmap for levels
 
 * Level 1: all features finished, testing required
 * Level 2: using Apache Compress library covers most of the compression formats, more testing required
