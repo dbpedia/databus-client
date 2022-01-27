@@ -4,5 +4,4 @@
 
 
 * **Do you want to learn more about the DBpedia Databus-Client?**
-  * Our [Gitbook](https://dbpedia.gitbook.io/databus) offers you all the information you need to get started.
-
+  * Our [Gitbook](https://dbpedia.gitbook.io/databus) offers all the needed information to get started.
