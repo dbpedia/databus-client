@@ -12,7 +12,6 @@ mvn clean install
 bin/DatabusClient -s ./src/resources/queries/example.sparql -f jsonld -c gz
 ```
 
-____________________
 
 ## Jar
 

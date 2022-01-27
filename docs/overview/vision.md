@@ -1,11 +1,11 @@
 # Vision
 Any data on the bus can be made interoperable with application requirements. 
 If an application can only read `RDF-NTriples` and `.gz`, but the desired data is only offered in `RDF-XML` and `.bz2`,
-the client provides a `Download-As` functionality and transforms the data client-side. 
+the client provides a **Download-As** functionality and transforms the data client-side. 
 Files published on the Databus do not need to be offered in several formats.
 
 
-### Example Application Deployment:
+#### Example Application Deployment:
 
 1. Download the files of 5 datasets as given in the SPARQL query
 2. Transform all files to `.bz2`
