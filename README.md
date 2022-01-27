@@ -2,7 +2,8 @@
 
 **Download and make data fit for applications using SPARQL on the [databus](https://databus.dbpedia.org).**
 
------------------
+---
+
 
 **Do you want to learn more about the DBpedia Databus-Client?**
 
