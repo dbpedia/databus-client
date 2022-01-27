@@ -6,14 +6,14 @@ Download the `DBpedia ontology` (latest ontology snapshot) as `.ttl` without com
 
 ______
 
-### Download and install DBpedia Databus Client
+#### Download and install DBpedia Databus Client
 ```
 git clone https://github.com/dbpedia/databus-client.git
 cd databus-client
 mvn clean install
 ```
 
-### Create Query file
+#### Create Query file
 ```
 echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
@@ -40,7 +40,7 @@ SELECT DISTINCT ?file WHERE {
 ```
 
 
-### Execute DBpedia Databus Client
+#### Execute DBpedia Databus Client
 ```
 bin/DatabusClient --source ./latest_ontology.query -f ttl -c ""
 ```

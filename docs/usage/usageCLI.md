@@ -1,4 +1,4 @@
-# Usage (CLI)
+## CLI
 
 ### Installation
 ```
@@ -16,7 +16,7 @@ ____________________
 
 ## Jar
 
-You can also use the released `.jar`, instead of cloning the whole repository
+You can also use the released [databus-client.jar](https://github.com/dbpedia/databus-client/releases/latest), instead of cloning the whole repository
 
 ### Execution example
 ```
