@@ -1,4 +1,4 @@
-# Download Queries
+## Download Queries
 
 The most important environment variable of the Download-Client is the download query. 
 With the query you can specify an accurate selection of datasets of the [DBpedia-Databus](https://databus.dbpedia.org/), the Download-Client needs to process.
