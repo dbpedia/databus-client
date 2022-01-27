@@ -1,4 +1,4 @@
-## CLI Example: Download the DBpedia ontology as TTL
+# CLI Example: Download the DBpedia ontology as TTL
 
 This example downloads the latest ontology snapshot as `.ttl` without compression.
 
