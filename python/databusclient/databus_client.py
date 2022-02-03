@@ -13,13 +13,11 @@ import logging
 class DatabusGroup:
     account_name: str
     id: str
-    label: str
     title: str
-    comment: str
     abstract: str
     description: str
     DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
-    context: str = "https://raw.githubusercontent.com/dbpedia/databus-git-mockup/main/dev/context.jsonld"
+    context: str = "http://downloads.dbpedia.org/databus/context.jsonld"
 
     def get_target_uri(self) -> str:
 
@@ -32,17 +30,11 @@ class DatabusGroup:
 
         group_data_dict = {
             "@context": self.context,
-            "@graph": [
-                {
-                    "@id": group_uri,
-                    "@type": "dataid:Group",
-                    "label": {"@value": self.label, "@language": "en"},
-                    "title": {"@value": self.title, "@language": "en"},
-                    "comment": {"@value": self.comment, "@language": "en"},
-                    "abstract": {"@value": self.abstract, "@language": "en"},
-                    "description": {"@value": self.description, "@language": "en"},
-                }
-            ],
+            "@id": group_uri,
+            "@type": "dataid:Group",
+            "title": {"@value": self.title, "@language": "en"},
+            "abstract": {"@value": self.abstract, "@language": "en"},
+            "description": {"@value": self.description, "@language": "en"},
         }
         return json.dumps(group_data_dict, **kwargs)
 
@@ -90,15 +82,12 @@ class DatabusVersionMetadata:
     artifact: str
     version: str
     title: str
-    label: str
-    publisher: str
-    comment: str
     abstract: str
     description: str
     license: str
-    issued: datetime = field(default_factory=datetime.now)
+    issued: datetime = None
     DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
-    context: str = "https://raw.githubusercontent.com/dbpedia/databus-git-mockup/main/dev/context.jsonld"
+    context: str = "http://downloads.dbpedia.org/databus/context.jsonld"
 
 
 class DatabusVersion:
@@ -119,7 +108,7 @@ class DatabusVersion:
                 if not key in distinct_cv_definitions:
                     distinct_cv_definitions[key] = {
                         "@type": "rdf:Property",
-                        "@id": f"dataid-cv:{key}",
+                        "@id": f"dcv:{key}",
                         "rdfs:subPropertyOf": {"@id": "dataid:contentVariant"},
                     }
         return distinct_cv_definitions
@@ -129,18 +118,21 @@ class DatabusVersion:
         for dbfile in self.databus_files:
             file_dst = {
                 "@id": self.version_uri + "#" + dbfile.id_string,
-                "file": self.version_uri + "/" + self.metadata.artifact + "_" + dbfile.id_string,
+                "file": self.version_uri
+                + "/"
+                + self.metadata.artifact
+                + "_"
+                + dbfile.id_string,
                 "@type": "dataid:SingleFile",
-                "formatExtension": dbfile.file_ext,
+                "format": dbfile.file_ext,
                 "compression": "none",
                 "downloadURL": dbfile.uri,
                 "byteSize": dbfile.content_length,
                 "sha256sum": dbfile.sha256sum,
-                "hasVersion": self.metadata.version,
             }
             for key, value in dbfile.cvs.items():
 
-                file_dst[f"dataid-cv:{key}"] = value
+                file_dst[f"dcv:{key}"] = value
 
             yield file_dst
 
@@ -150,51 +142,29 @@ class DatabusVersion:
 
         self.artifact_uri = f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}"
 
-        self.group_uri = (
-            f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}"
-        )
+        self.group_uri = f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}"
 
         self.timestamp = self.metadata.issued.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         data_id_dict = {
             "@context": self.metadata.context,
-            "@graph": [
-                {
-                    "@type": "dataid:Dataset",
-                    "@id": self.data_id_uri,
-                    "version": self.version_uri,
-                    "artifact": self.artifact_uri,
-                    "group": self.group_uri,
-                    "hasVersion": self.metadata.version,
-                    "issued": self.timestamp,
-                    "publisher": self.metadata.publisher,
-                    "label": {"@value": self.metadata.label, "@language": "en"},
-                    "title": {"@value": self.metadata.title, "@language": "en"},
-                    "comment": {"@value": self.metadata.comment, "@language": "en"},
-                    "abstract": {"@value": self.metadata.abstract, "@language": "en"},
-                    "description": {
-                        "@value": self.metadata.description,
-                        "@language": "en",
-                    },
-                    "license": {"@id": self.metadata.license},
-                    "distribution": [d for d in self.__dbfiles_to_dict()],
-                }
-            ],
+            "@type": "dataid:Dataset",
+            "@id": self.data_id_uri,
+            "hasVersion": self.metadata.version,
+            "title": {"@value": self.metadata.title, "@language": "en"},
+            "abstract": {"@value": self.metadata.abstract, "@language": "en"},
+            "description": {
+                "@value": self.metadata.description,
+                "@language": "en",
+            },
+            "license": {"@id": self.metadata.license},
+            "distribution": [d for d in self.__dbfiles_to_dict()],
         }
 
-        for _, named_cv_prop in self.__distinct_cvs().items():
-            data_id_dict["@graph"].append(named_cv_prop)
+        # permit setting issued explicitly
 
-        # add explicit artifact statement
-
-        data_id_dict["@graph"].append(
-            {"@id": self.get_target_uri().rsplit("/", 1)[0], "@type": "dataid:Artifact"}
-        )
-
-        # Explicit Version Statement
-        data_id_dict["@graph"].append(
-            {"@id": self.get_target_uri(), "@type": "dataid:Version"}
-        )
+        if self.metadata.issued is not None:
+            data_id_dict["issued"] = self.metadata.issued.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         return json.dumps(data_id_dict)
 

@@ -28,12 +28,10 @@ def direct_group_deploy(args):
 
     group = databus_client.DatabusGroup(
         args.user,
-        accountargs.group,
+        args.group,
         args.title,
-        args.title,
-        args.comment,
-        args.documentation,
-        args.documentation,
+        args.abstract,
+        args.description,
         DATABUS_BASE=args.base,
     )
 
@@ -46,10 +44,8 @@ def generate_group(args):
         args.user,
         args.group,
         args.title,
-        args.title,
-        args.comment,
-        args.documentation,
-        args.documentation,
+        args.abstract,
+        args.description,
         DATABUS_BASE=args.base,
     )
 
@@ -75,11 +71,8 @@ def generate_version(args):
         args.artifact,
         args.version,
         args.title,
-        args.title,
-        args.publisher,
-        args.comment,
-        args.documentation,
-        args.documentation,
+        args.abstract,
+        args.description,
         args.license,
         DATABUS_BASE=args.base,
     )
@@ -110,11 +103,8 @@ def direct_version_deploy(args):
         args.artifact,
         args.version,
         args.title,
-        args.title,
-        args.publisher,
-        args.comment,
-        args.documentation,
-        args.documentation,
+        args.abstract,
+        args.description,
         args.license,
         DATABUS_BASE=args.base,
     )
@@ -175,11 +165,11 @@ def main():
     )
 
     group_generate_parser.add_argument(
-        "--comment", "-c", help="The group comment", type=str
+        "--abstract", "-a", help="The group comment", type=str
     )
 
     group_generate_parser.add_argument(
-        "--documentation", "-doc", help="The group documentation", type=str
+        "--description", "-doc", help="The group description", type=str
     )
 
     group_generate_parser.add_argument(
@@ -207,15 +197,11 @@ def main():
     version_generate_parser.add_argument("--title", help="The version title", type=str)
 
     version_generate_parser.add_argument(
-        "--publisher", help="The version publisher", type=str
+        "--abstract", help="The version abstract", type=str
     )
 
     version_generate_parser.add_argument(
-        "--comment", help="The version comment", type=str
-    )
-
-    version_generate_parser.add_argument(
-        "--doc", help="The version documentation", type=str
+        "--description", "-d", help="The version description", type=str
     )
 
     version_generate_parser.add_argument(
@@ -253,11 +239,15 @@ def main():
     direct_group_deploy_parser.add_argument("--title", help="The group title", type=str)
 
     direct_group_deploy_parser.add_argument(
-        "--comment", help="The group comment", type=str
+        "--abstract", help="The group abstract", type=str
     )
 
     direct_group_deploy_parser.add_argument(
-        "--doc", help="The group documentation", type=str
+        "--description", help="The group description", type=str
+    )
+
+    direct_group_deploy_parser.add_argument(
+        "--apikey", help="Set the API key from your Databus Account", secure=True
     )
 
     # parsers for deploying the version directly
@@ -285,19 +275,19 @@ def main():
     )
 
     direct_version_deploy_parser.add_argument(
-        "--publisher", help="The version publisher", type=str
+        "--abstract", help="The version abstract", type=str
     )
 
     direct_version_deploy_parser.add_argument(
-        "--comment", help="The version comment", type=str
-    )
-
-    direct_version_deploy_parser.add_argument(
-        "--doc", help="The version documentation", type=str
+        "--description", help="The version description", type=str
     )
 
     direct_version_deploy_parser.add_argument(
         "--license", help="The version license", type=str
+    )
+
+    direct_version_deploy_parser.add_argument(
+        "--apikey", help="Set the API key from your Databus Account", secure=True
     )
 
     direct_version_deploy_parser.add_argument(
@@ -306,7 +296,7 @@ def main():
 
     print("DATABUS CLIENT v0.1")
     print("-------------------")
-    print("Please insert the missing metadata:")
+    # print("Please insert the missing metadata:")
 
     args = parser.parse_args()
 
