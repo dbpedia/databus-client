@@ -124,7 +124,7 @@ class DatabusVersion:
                 + "_"
                 + dbfile.id_string,
                 "@type": "dataid:SingleFile",
-                "format": dbfile.file_ext,
+                "formatExtension": dbfile.file_ext,
                 "compression": "none",
                 "downloadURL": dbfile.uri,
                 "byteSize": dbfile.content_length,
