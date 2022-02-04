@@ -9,12 +9,14 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <encoding>UTF-8</encoding>
-        <scala.version>2.11.12</scala.version>
-        <scala.compat.version>2.11</scala.compat.version>
-        <spark.version>2.4.0</spark.version>
+
+        <scala.version>2.12.15</scala.version>
+        <scala.compat.version>2.12</scala.compat.version>
+
+        <spark.version>2.4.5</spark.version>
     </properties>
 
     <distributionManagement>
@@ -46,11 +48,20 @@
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7</version>
+                <version>2.22.2</version>
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
@@ -78,13 +89,18 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>4.5.4</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>compile</goal>
                             <goal>testCompile</goal>
                         </goals>
+                        <configuration>
+                            <args>
+                                <arg>-nobootcp</arg>
+                            </args>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
@@ -95,6 +111,9 @@
                             <mainClass>org.dbpedia.databus.client.main.Main</mainClass>
                         </launcher>
                     </launchers>
+                    <args>
+                        <arg>-nobootcp</arg>
+                    </args>
                 </configuration>
             </plugin>
             <plugin>
@@ -171,14 +190,20 @@
         <!-- CLI -->
         <dependency>
             <groupId>org.rogach</groupId>
-            <artifactId>scallop_2.11</artifactId>
+            <artifactId>scallop_${scala.compat.version}</artifactId>
             <version>3.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.6.2</version>
         </dependency>
         <!-- CLI -->
 
         <dependency>
             <groupId>com.github.pathikrit</groupId>
-            <artifactId>better-files_2.11</artifactId>
+            <artifactId>better-files_${scala.compat.version}</artifactId>
             <version>3.7.1</version>
         </dependency>
 
@@ -219,13 +244,13 @@
         <!-- SPARK -->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.11</artifactId>
-            <version>2.4.0</version>
+            <artifactId>spark-core_${scala.compat.version}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.11</artifactId>
-            <version>2.4.0</version>
+            <artifactId>spark-sql_${scala.compat.version}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -331,14 +356,14 @@
         <!-- TEST -->
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.11</artifactId>
+            <artifactId>scalatest_${scala.compat.version}</artifactId>
             <version>3.1.0-RC1</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.scalactic/scalactic -->
         <dependency>
             <groupId>org.scalactic</groupId>
-            <artifactId>scalactic_2.11</artifactId>
+            <artifactId>scalactic_${scala.compat.version}</artifactId>
             <version>3.1.0-RC1</version>
         </dependency>
         <!-- TEST -->
