@@ -17,7 +17,7 @@ class DatabusGroup:
     abstract: str
     description: str
     DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
-    context: str = "http://downloads.dbpedia.org/databus/context.jsonld"
+    context: str = "https://downloads.dbpedia.org/databus/context.jsonld"
 
     def get_target_uri(self) -> str:
 
@@ -87,7 +87,7 @@ class DatabusVersionMetadata:
     license: str
     issued: datetime = None
     DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
-    context: str = "http://downloads.dbpedia.org/databus/context.jsonld"
+    context: str = "https://downloads.dbpedia.org/databus/context.jsonld"
 
 
 class DatabusVersion:
