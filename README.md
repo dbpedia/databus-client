@@ -1,4 +1,4 @@
-## DBpedia Databus Client [![Build Status](https://travis-ci.org/dbpedia/databus-client.svg?branch=master)](https://travis-ci.org/dbpedia/databus-client)
+## DBpedia Databus Client [![Build & Test Status](https://github.com/dbpedia/databus-client/actions/workflows/maven.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven.yml)
 
 **Download and make data fit for applications using SPARQL on the [databus](https://databus.dbpedia.org).**
 
