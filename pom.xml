@@ -3,19 +3,28 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.dbpedia</groupId>
     <artifactId>databus-client</artifactId>
+
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <encoding>UTF-8</encoding>
-        <scala.version>2.11.12</scala.version>
-        <scala.compat.version>2.11</scala.compat.version>
-        <spark.version>2.4.0</spark.version>
+
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <scala.version>2.12.15</scala.version>
+        <scala.compat.version>2.12</scala.compat.version>
+        <scalatest.version>3.2.11</scalatest.version>
+
+        <slf4j.version>1.7.35</slf4j.version>
+        <log4j.version>2.17.1</log4j.version>
+
+        <spark.version>3.2.1</spark.version>
+        <jena.version>4.3.2</jena.version>
     </properties>
+
 
     <distributionManagement>
         <repository>
@@ -32,9 +41,9 @@
 
 
     <repositories>
-	<repository>
-	    <id>maven.repo</id>
-	    <url>https://repo1.maven.org/maven2</url>
+        <repository>
+            <id>maven.repo</id>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
@@ -78,7 +87,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>4.5.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -128,35 +137,36 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <artifactId>maven-assembly-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <appendAssemblyId>false</appendAssemblyId>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <mainClass>org.dbpedia.databus.client.main.Main</mainClass>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                    <descriptorRefs>-->
-<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
-<!--                    </descriptorRefs>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>make-assembly</id> &lt;!&ndash; this is used for inheritance merges &ndash;&gt;-->
-<!--                        <phase>package</phase> &lt;!&ndash; bind to the packaging phase &ndash;&gt;-->
-<!--                        <goals>-->
-<!--                            <goal>single</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <artifactId>maven-assembly-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <appendAssemblyId>false</appendAssemblyId>-->
+            <!--                    <archive>-->
+            <!--                        <manifest>-->
+            <!--                            <mainClass>org.dbpedia.databus.client.main.Main</mainClass>-->
+            <!--                        </manifest>-->
+            <!--                    </archive>-->
+            <!--                    <descriptorRefs>-->
+            <!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+            <!--                    </descriptorRefs>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>make-assembly</id> &lt;!&ndash; this is used for inheritance merges &ndash;&gt;-->
+            <!--                        <phase>package</phase> &lt;!&ndash; bind to the packaging phase &ndash;&gt;-->
+            <!--                        <goals>-->
+            <!--                            <goal>single</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
         </plugins>
     </build>
 
-
     <dependencies>
+
+        <!-- SCALA -->
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
@@ -168,27 +178,53 @@
             <version>${scala.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.12</artifactId>
+            <version>${scalatest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalactic</groupId>
+            <artifactId>scalactic_2.12</artifactId>
+            <version>${scalatest.version}</version>
+        </dependency>
+        <!-- SCALA -->
+
+        <!-- LOGGER -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!-- LOGGER -->
+
         <!-- CLI -->
+        <!-- https://mvnrepository.com/artifact/org.rogach/scallop -->
         <dependency>
             <groupId>org.rogach</groupId>
-            <artifactId>scallop_2.11</artifactId>
-            <version>3.2.0</version>
+            <artifactId>scallop_2.12</artifactId>
+            <version>4.1.0</version>
         </dependency>
         <!-- CLI -->
 
+        <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
         <dependency>
             <groupId>com.github.pathikrit</groupId>
-            <artifactId>better-files_2.11</artifactId>
-            <version>3.7.1</version>
+            <artifactId>better-files_2.12</artifactId>
+            <version>3.9.1</version>
         </dependency>
-
-        <!-- MAPPING -->
-        <dependency>
-            <groupId>com.github.tarql</groupId>
-            <artifactId>tarql</artifactId>
-            <version>v1.2</version>
-        </dependency>
-        <!-- MAPPING -->
 
         <!-- COMPRESSION -->
         <dependency>
@@ -196,12 +232,12 @@
             <artifactId>commons-compress</artifactId>
             <version>1.21</version>
         </dependency>
-<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-<dependency>
-    <groupId>commons-codec</groupId>
-    <artifactId>commons-codec</artifactId>
-    <version>1.15</version>
-</dependency>
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
         <!-- for lzma compression-->
         <dependency>
             <groupId>org.tukaani</groupId>
@@ -216,16 +252,24 @@
         </dependency>
         <!-- COMPRESSION -->
 
+        <!-- COMPRESSION -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <!-- COMPRESSION -->
+
         <!-- SPARK -->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.11</artifactId>
-            <version>2.4.0</version>
+            <artifactId>spark-core_2.12</artifactId>
+            <version>${spark.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.11</artifactId>
-            <version>2.4.0</version>
+            <artifactId>spark-sql_2.12</artifactId>
+            <version>${spark.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -234,55 +278,32 @@
         </dependency>
         <!-- SPARK -->
 
-        <!-- COMPRESSION -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <!-- COMPRESSION -->
+
 
 
         <!-- FORMAT-CONVERSION -->
 
         <!-- JENA (Ntriple,Turtle,RDFXML,JsonLd,Nquads,Trix,Trig) -->
-
-<!--        <dependency>-->
-<!--            <groupId>com.github.jsonld-java</groupId>-->
-<!--            <artifactId>jsonld-java</artifactId>-->
-<!--            <version>0.13.3</version>-->
-<!--&lt;!&ndash;            <type>bundle</type>&ndash;&gt;-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
-            <version>3.11.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.jsonld-java.jsonld-java</groupId>
-                    <artifactId>jsonld-java</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>${jena.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>3.11.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.jsonld-java.jsonld-java</groupId>
-                    <artifactId>jsonld-java</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>${jena.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.13.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.5</version>
+            <version>4.5.13</version>
         </dependency>
         <!-- JENA -->
 
@@ -309,40 +330,13 @@
 
         <!-- FORMAT-CONVERSION -->
 
-
-        <!-- LOGGER -->
+        <!-- MAPPING -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <groupId>com.github.tarql</groupId>
+            <artifactId>tarql</artifactId>
+            <version>v1.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-        <!-- LOGGER -->
-
-        <!-- TEST -->
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.11</artifactId>
-            <version>3.1.0-RC1</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.scalactic/scalactic -->
-        <dependency>
-            <groupId>org.scalactic</groupId>
-            <artifactId>scalactic_2.11</artifactId>
-            <version>3.1.0-RC1</version>
-        </dependency>
-        <!-- TEST -->
-
+        <!-- MAPPING -->
     </dependencies>
 
 </project>

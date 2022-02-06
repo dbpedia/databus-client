@@ -1,7 +1,7 @@
 package org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.format
 
 import better.files.File
-import org.apache.jena.atlas.iterator.IteratorResourceClosing
+
 import org.apache.jena.graph.compose.Union
 import org.apache.jena.graph.{Graph, NodeFactory, Triple}
 import org.apache.jena.query.{Dataset, DatasetFactory}

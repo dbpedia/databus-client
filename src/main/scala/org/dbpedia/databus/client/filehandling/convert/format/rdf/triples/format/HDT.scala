@@ -30,7 +30,7 @@ class HDT(baseURI:String) extends Format[RDD[Triple]]{
     val model:Model = ModelFactory.createModelForGraph(graph)
 
 
-    val stmtsSeq:Seq[Triple] = model.listStatements().toList.asScala.map(stmt=>stmt.asTriple())
+    val stmtsSeq:Seq[Triple] = model.listStatements().toList.asScala.map(stmt=>stmt.asTriple()).toSeq
     Spark.context.parallelize(stmtsSeq)
   }
 

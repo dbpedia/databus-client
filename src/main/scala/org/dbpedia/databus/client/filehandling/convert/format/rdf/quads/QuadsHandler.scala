@@ -18,7 +18,6 @@ class QuadsHandler extends EquivalenceClassHandler[RDD[Quad]]{
    * @return rdf data as RDD[Triples]
    */
   override def read(source: String, inputFormat: String, baseURI:String=""): RDD[Quad] = {
-
     inputFormat match {
       case "nq" =>    new NQuads().read(source)
       case "trig" =>  new Trix().read(source)

@@ -2,7 +2,6 @@ package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.forma
 
 import better.files.File
 import org.apache.commons.io.output.WriterOutputStream
-import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.graph.Triple
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.RiotParsers
