@@ -6,7 +6,7 @@ from setuptools import setup
 setup(name='databusclient',
       version='0.1',
       description='A simple client for submitting data to the databus',
-      url='http://github.com/dbpedia/databus-client/python',
+      url='https://github.com/dbpedia/databus-client/python',
       author='DBpedia Association',
       author_email='',
       license='Apache-2.0 License',
