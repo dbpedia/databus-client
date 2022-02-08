@@ -86,6 +86,7 @@ class FormatRoundTripTests extends AnyFlatSpec {
       if (!compare.isEmpty()) errorList += inputFile.pathAsString
     }
 
+
     //Result
     val success = {
       if (errorList.isEmpty) true
@@ -186,7 +187,7 @@ class FormatRoundTripTests extends AnyFlatSpec {
 
   /**TODO check if arrays are equal anytime**/
   def checkDFEquality(df1:DataFrame, df2:DataFrame):Boolean ={
-    if (df1.columns.size == df2.columns.size) {
+    if (df1.columns.deep == df2.columns.deep) {
       val rowsExist:ListBuffer[Boolean] = ListBuffer()
       val array1 = df1.collect()
       val array2 = df2.collect()
@@ -208,4 +209,74 @@ class FormatRoundTripTests extends AnyFlatSpec {
     }
     else false
   }
+
+//  "roundtriptest" should "succeed for all RDF Triple formats" in {
+//
+//    //    println("Test Files:")
+//    val rdfFiles = (testFileDir / "rdfTriples").listRecursively
+//    val errorList: ListBuffer[String] = ListBuffer()
+//
+//    while (rdfFiles.hasNext) {
+//      val inputFile = rdfFiles.next()
+//      //      println(inputFile.pathAsString)
+//
+//      //read and write process
+//      val format = FileUtil.getFormatType(inputFile,"")
+//      val triples = new TripleHandler().read(inputFile.pathAsString, format)
+//      val outputFile =  new TripleHandler()
+//        .write(triples, format)
+//        .moveTo(outDir / inputFile.name)
+//
+//
+//      import collection.JavaConverters._
+//
+//      //read in input and output
+//      val in = new TripleHandler()
+//        .read(inputFile.pathAsString, format)
+//        .map(triple => {
+//          if(triple.getSubject.isBlank) {
+//            new Triple(
+//              NodeFactory.createURI("blanknode"),
+//              triple.getPredicate,
+//              triple.getObject
+//            )
+//          }
+//          else triple
+//        })
+//
+//      val out = new TripleHandler()
+//        .read(outputFile.pathAsString, format)
+//        .map(triple => {
+//          if(triple.getSubject.isBlank) {
+//            new Triple(
+//              NodeFactory.createURI("blanknode"),
+//              triple.getPredicate,
+//              triple.getObject
+//            )
+//          }
+//          else triple
+//        })
+//
+//      val compare = in.subtract(out).union(out.subtract(in))
+//
+//      compare.foreach(println(_))
+//
+//      if (!compare.isEmpty()) errorList += inputFile.pathAsString
+//    }
+//
+//
+//    //Result
+//    val success = {
+//      if (errorList.isEmpty) true
+//      else {
+//        println("ERRORS:")
+//        errorList.foreach(file => {
+//          println(s"$file did not convert properly")
+//        })
+//        false
+//      }
+//    }
+//
+//    success shouldBe true
+//  }
 }

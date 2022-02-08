@@ -22,7 +22,7 @@
         <log4j.version>2.17.1</log4j.version>
 
         <spark.version>3.2.1</spark.version>
-        <jena.version>4.3.2</jena.version>
+        <jena.version>3.11.0</jena.version>
     </properties>
 
 
@@ -227,8 +227,15 @@
         </dependency>
         <!-- LOGGER -->
 
+        <!-- File Management -->
+        <dependency>
+            <groupId>com.github.pathikrit</groupId>
+            <artifactId>better-files_${scala.compat.version}</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+        <!-- File Management -->
+
         <!-- CLI -->
-        <!-- https://mvnrepository.com/artifact/org.rogach/scallop -->
         <dependency>
             <groupId>org.rogach</groupId>
             <artifactId>scallop_${scala.compat.version}</artifactId>
@@ -242,12 +249,29 @@
         </dependency>
         <!-- CLI -->
 
-        <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
+        <!-- SPARK -->
         <dependency>
-            <groupId>com.github.pathikrit</groupId>
-            <artifactId>better-files_${scala.compat.version}</artifactId>
-            <version>3.7.1</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_${scala.compat.version}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.compat.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>[24.1.1,)</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.5</version>
+        </dependency>
+
+        <!-- SPARK -->
 
         <!-- COMPRESSION -->
         <dependency>
@@ -283,44 +307,35 @@
         </dependency>
         <!-- COMPRESSION -->
 
-        <!-- SPARK -->
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_${scala.compat.version}</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_${scala.compat.version}</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>[24.1.1,)</version>
-        </dependency>
-        <!-- SPARK -->
-
-
-
-
         <!-- FORMAT-CONVERSION -->
-
         <!-- JENA (Ntriple,Turtle,RDFXML,JsonLd,Nquads,Trix,Trig) -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
             <version>${jena.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsonld-java.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
             <version>${jena.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsonld-java.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.jsonld-java/jsonld-java -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.13.0</version>
+            <groupId>com.github.jsonld-java</groupId>
+            <artifactId>jsonld-java</artifactId>
+            <version>0.13.3</version>
         </dependency>
 
         <dependency>
@@ -350,7 +365,6 @@
             <version>2.1.2</version>
         </dependency>
         <!-- HDT -->
-
         <!-- FORMAT-CONVERSION -->
 
         <!-- MAPPING -->
@@ -360,6 +374,7 @@
             <version>v1.2</version>
         </dependency>
         <!-- MAPPING -->
+
     </dependencies>
 
 </project>

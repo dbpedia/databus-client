@@ -1,7 +1,7 @@
 package org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.format
 
 import better.files.File
-import org.apache.jena.atlas.iterator.{Iter}
+import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.graph.Triple
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.RiotParsers
@@ -28,8 +28,8 @@ class NTriples extends Format[RDD[Triple]]{
           i.asJavaEnumeration
         })
 
-        val it = RiotParsers.createIteratorNTriples(input)
-        Iter.onCloseIO(it, input).asScala
+        val it = RiotParsers.createIteratorNTriples(input, null)
+        new IteratorResourceClosing[Triple](it, input).asScala
       }
     )
 

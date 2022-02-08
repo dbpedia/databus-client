@@ -1,7 +1,7 @@
 package org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.format
 
 import better.files.File
-import org.apache.jena.atlas.iterator.{Iter}
+import org.apache.jena.atlas.iterator.IteratorResourceClosing
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.RiotParsers
 import org.apache.jena.sparql.core.Quad
@@ -26,9 +26,9 @@ class NQuads extends Format[RDD[Quad]]{
           i.asJavaEnumeration
         })
 
-        val it = RiotParsers.createIteratorNQuads(input)
-
-        Iter.onCloseIO(it, input).asScala
+        val it = RiotParsers.createIteratorNQuads(input, null)
+        new IteratorResourceClosing[Quad](it, input).asScala
+//        for Jena 4 -> Iter.onCloseIO(it, input).asScala
       }
     )
 

@@ -1,6 +1,11 @@
 .idea/
 *.iml
 target/
+
+src/test/resources/conversion/output/
+errorLog.log
+files/
+
 #/home/eisenbahnplatte/git/databus-client/src/resources/databus-client_testbed/*/*/*
 
 build/
