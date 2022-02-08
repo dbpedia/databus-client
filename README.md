@@ -1,4 +1,4 @@
-## DBpedia Databus Client [![Build Status](https://travis-ci.org/dbpedia/databus-client.svg?branch=master)](https://travis-ci.org/dbpedia/databus-client)
+## DBpedia Databus Client [![Java 11 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml) [![Java 8 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml)
 
 **Download and make data fit for applications using SPARQL on the [databus](https://databus.dbpedia.org).**
 
