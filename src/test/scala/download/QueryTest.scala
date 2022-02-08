@@ -3,8 +3,9 @@ package download
 import org.apache.jena.query._
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.dbpedia.databus.client.sparql.queries.DatabusQueries
+import org.scalatest.flatspec.AnyFlatSpec
 
-class QueryTest extends org.scalatest.FlatSpec {
+class QueryTest extends AnyFlatSpec {
 
   "" should "" in {
     def executeDownloadQuery(queryString: String): Seq[String] = {

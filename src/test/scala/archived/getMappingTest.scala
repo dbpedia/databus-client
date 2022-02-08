@@ -4,9 +4,12 @@ import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.RDFDataMgr
 import org.dbpedia.databus.client.sparql.QueryHandler
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.Matcher._
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
-class getMappingTest extends FlatSpec {
+class getMappingTest extends AnyFlatSpec {
+
   "mappingInfo" should "be interpreted right to convert related csv" in {
 
    val mapInfo = "/home/eisenbahnplatte/git/format-mappings/tarql/1.ttl"

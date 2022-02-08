@@ -2,9 +2,9 @@ package apitest
 
 import org.dbpedia.databus.client.api.DatabusClient
 import org.dbpedia.databus.client.api.DatabusClient.{Compression, Format}
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class apitest extends FlatSpec {
+class apitest extends AnyFlatSpec {
 
   "DatabusObject" should "execute the Databus Main_DownloadConvert function in the right way" in {
     DatabusClient

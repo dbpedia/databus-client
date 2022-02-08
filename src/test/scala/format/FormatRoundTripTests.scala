@@ -2,19 +2,26 @@ package format
 
 import better.files.File
 import org.apache.jena.riot.RDFDataMgr
+import org.apache.jena.graph.{NodeFactory, Triple}
+import org.apache.jena.rdf.model.ResourceFactory
+import org.apache.jena.sparql.core.Quad
 import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.convert.Spark
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
-import org.scalatest.FlatSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.must.Matchers._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
+import java.util
 import scala.collection.mutable.ListBuffer
 
-class FormatRoundTripTests extends FlatSpec {
+
+class FormatRoundTripTests extends AnyFlatSpec {
 
   val spark: SparkSession = Spark.session
   val sparkContext: SparkContext = Spark.context
@@ -25,15 +32,15 @@ class FormatRoundTripTests extends FlatSpec {
 
   outDir.createDirectoryIfNotExists().clear()
 
-  "roundtriptest" should "succeed for all RDF formats" in {
+  "roundtriptest" should "succeed for all RDF Triple formats" in {
 
-    println("Test Files:")
+//    println("Test Files:")
     val rdfFiles = (testFileDir / "rdfTriples").listRecursively
     val errorList: ListBuffer[String] = ListBuffer()
 
     while (rdfFiles.hasNext) {
       val inputFile = rdfFiles.next()
-      println(inputFile.pathAsString)
+//      println(inputFile.pathAsString)
 
       //read and write process
       val format = FileUtil.getFormatType(inputFile,"")
@@ -42,12 +49,41 @@ class FormatRoundTripTests extends FlatSpec {
         .write(triples, format)
         .moveTo(outDir / inputFile.name)
 
-      //read in input and output
-      val statementsInput = RDFDataMgr.loadModel(inputFile.pathAsString).listStatements().toList
-      val statementsOutput = RDFDataMgr.loadModel(outputFile.pathAsString).listStatements().toList
 
-      //compare both
-      if (!statementsInput.containsAll(statementsOutput) || !statementsOutput.containsAll(statementsInput)) errorList += inputFile.pathAsString
+      import collection.JavaConverters._
+
+      //read in input and output
+      val in = new TripleHandler()
+        .read(inputFile.pathAsString, format)
+        .map(triple => {
+          if(triple.getSubject.isBlank) {
+            new Triple(
+              NodeFactory.createURI("blanknode"),
+              triple.getPredicate,
+              triple.getObject
+            )
+          }
+          else triple
+        })
+        .map(triple => triple.toString)
+
+      val out = new TripleHandler()
+        .read(outputFile.pathAsString, format)
+        .map(triple => {
+          if(triple.getSubject.isBlank) {
+            new Triple(
+              NodeFactory.createURI("blanknode"),
+              triple.getPredicate,
+              triple.getObject
+            )
+          }
+          else triple
+        })
+        .map(triple => triple.toString)
+
+      val compare = in.subtract(out).union(out.subtract(in))
+
+      if (!compare.isEmpty()) errorList += inputFile.pathAsString
     }
 
     //Result
@@ -67,7 +103,7 @@ class FormatRoundTripTests extends FlatSpec {
 
   "roundtriptest" should "succeed for all RDF Quad formats" in {
 
-    println("Test Files:")
+//    println("Test Files:")
     val quadFiles = (testFileDir / "rdfQuads").listRecursively
 
     val quadsHandler = new QuadsHandler()
@@ -75,11 +111,14 @@ class FormatRoundTripTests extends FlatSpec {
 
     while (quadFiles.hasNext) {
       val inputFile = quadFiles.next()
-      println(inputFile.pathAsString)
+//      println(inputFile.pathAsString)
 
       //read in and write out to tsd file
       val format = FileUtil.getFormatType(inputFile,"")
-      val quads = quadsHandler.read(inputFile.pathAsString, format)
+      val quads:RDD[Quad] = quadsHandler.read(inputFile.pathAsString, format)
+
+//      quads.foreach(quad => println(quad))
+
       val outputFile = quadsHandler.write(quads, format).moveTo(outDir / inputFile.name)
 
       //read in input and output
@@ -106,7 +145,7 @@ class FormatRoundTripTests extends FlatSpec {
   }
 
   "roundtriptest" should "succeed for all TSD formats" in {
-    println("Test Files:")
+//    println("Test Files:")
     val tsdFiles = (testFileDir / "tsd").listRecursively
 
     val errorList: ListBuffer[String] = ListBuffer()
@@ -115,7 +154,7 @@ class FormatRoundTripTests extends FlatSpec {
 
     while (tsdFiles.hasNext) {
       val inputFile = tsdFiles.next()
-      println(inputFile.pathAsString)
+//      println(inputFile.pathAsString)
 
       //read in and write out to tsd file
       val format = FileUtil.getFormatType(inputFile,"")
@@ -145,8 +184,9 @@ class FormatRoundTripTests extends FlatSpec {
     success shouldBe true
   }
 
+  /**TODO check if arrays are equal anytime**/
   def checkDFEquality(df1:DataFrame, df2:DataFrame):Boolean ={
-    if (df1.columns.deep == df2.columns.deep) {
+    if (df1.columns.size == df2.columns.size) {
       val rowsExist:ListBuffer[Boolean] = ListBuffer()
       val array1 = df1.collect()
       val array2 = df2.collect()
@@ -169,35 +209,3 @@ class FormatRoundTripTests extends FlatSpec {
     else false
   }
 }
-
-
-//  def downloadFiles(testFileDir:File): File ={
-//
-//    val queryTestFiles=
-//      """
-//        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-//        |PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
-//        |PREFIX dct: <http://purl.org/dc/terms/>
-//        |PREFIX dcat:  <http://www.w3.org/ns/dcat#>
-//        |
-//        |# Get all files
-//        |SELECT DISTINCT ?file WHERE {
-//        | 	?dataset dataid:artifact <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed> .
-//        |	?dataset dcat:distribution ?distribution .
-//        |	{
-//        |		?distribution dct:hasVersion ?latestVersion
-//        |		{
-//        |			SELECT (?version as ?latestVersion) WHERE {
-//        |				?dataset dataid:artifact <https://databus.dbpedia.org/fabian/databus-client-testbed/format-testbed> .
-//        |				?dataset dct:hasVersion ?version .
-//        |			} ORDER BY DESC (?version) LIMIT 1
-//        |		}
-//        |	}
-//        |	?distribution dcat:downloadURL ?file .
-//        |}
-//        |""".stripMargin
-//
-//    Downloader.downloadWithQuery(queryTestFiles, testFileDir)
-//
-//    testFileDir
-//  }

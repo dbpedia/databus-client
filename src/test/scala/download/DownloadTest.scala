@@ -3,9 +3,9 @@ package download
 import better.files.File
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.filehandling.download.Downloader
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class DownloadTest extends FlatSpec {
+class DownloadTest extends AnyFlatSpec {
 
   val testDir: File = File("./src/test/resources/queries")
   val outDir: File = testDir.parent / "output"
