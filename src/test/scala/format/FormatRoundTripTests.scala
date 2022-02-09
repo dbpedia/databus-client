@@ -210,7 +210,7 @@ class FormatRoundTripTests extends AnyFlatSpec {
     else false
   }
 
-//  "roundtriptest" should "succeed for all RDF Triple formats" in {
+//  "roundtriptest" should "succeed for all RDF Triple formats2" in {
 //
 //    //    println("Test Files:")
 //    val rdfFiles = (testFileDir / "rdfTriples").listRecursively
@@ -218,7 +218,7 @@ class FormatRoundTripTests extends AnyFlatSpec {
 //
 //    while (rdfFiles.hasNext) {
 //      val inputFile = rdfFiles.next()
-//      //      println(inputFile.pathAsString)
+//      println(inputFile.pathAsString)
 //
 //      //read and write process
 //      val format = FileUtil.getFormatType(inputFile,"")
@@ -242,7 +242,7 @@ class FormatRoundTripTests extends AnyFlatSpec {
 //            )
 //          }
 //          else triple
-//        })
+//        }).collect()
 //
 //      val out = new TripleHandler()
 //        .read(outputFile.pathAsString, format)
@@ -255,13 +255,21 @@ class FormatRoundTripTests extends AnyFlatSpec {
 //            )
 //          }
 //          else triple
-//        })
+//        }).collect()
 //
-//      val compare = in.subtract(out).union(out.subtract(in))
+//      val compare: ListBuffer[Triple] = new ListBuffer()
+//
+//      in.foreach(triple => {
+//        var exists = false
+//        out.foreach(triple2 => {
+//          if (triple.equals(triple2)) exists = true
+//        })
+//        if (!exists) compare += triple
+//      })
 //
 //      compare.foreach(println(_))
 //
-//      if (!compare.isEmpty()) errorList += inputFile.pathAsString
+//      if (!compare.isEmpty) errorList += inputFile.pathAsString
 //    }
 //
 //
