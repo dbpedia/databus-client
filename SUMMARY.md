@@ -2,7 +2,7 @@
 
 ## Overview
 
-* [Databus Client](README.md)
+* [Databus Client](docs/overview/databus-client.md)
 * [Concept](docs/overview/concept.md)
 * [Vision](docs/overview/vision.md)
 * [Roadmap](docs/overview/roadmap.md)
