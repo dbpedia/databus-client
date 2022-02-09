@@ -1,4 +1,4 @@
-# Dockerized Databus-Client
+# Docker
 
 You can pass all the variables as Environment Variables (**-e**), that are shown in [General#CommandLineOptions](../usage/generalUsage.md#list-of-possible-command-line-options) (except `target`), but you have to write the Environment Variables in Capital Letters.
 
@@ -35,7 +35,7 @@ docker run --name vosdc \
     -e SOURCE="/opt/databus-client/query.sparql" \
     -p 8890:8890 \
     vosdc
-```    
+```
 
 Container needs some startup time and endpoint is not immediately reachable, if it is done you can query it with e.g.
 
@@ -87,6 +87,4 @@ Delete pulled image
 docker rmi -f dbpedia/databus-client
 ```
 
-&nbsp;
-
-
+&#x20;
