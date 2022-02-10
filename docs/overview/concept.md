@@ -5,7 +5,7 @@ The Databus Client is designed in a modular way to achieve high reusability, whi
 <img src="../img/concept.png" alt="Databus Client Concept"/>
 
 ## Download-Layer
-The fundamental **Download-Layer** is supposed to download exact copies of data assets via the DBpedia Databus in a flexible way.
+The fundamental **Download-Layer** is supposed to download exact copies of data assets via the [DBpedia Databus](https://github.com/dbpedia/databus) in a flexible way.
 It can be understood as a simple extraction phase of the ETL (Extract-Transform-Load) process.
 Moreover, it is supposed to persist the input data provenance by recording stable file identifiers and additional metadata.
 The data assets to be downloaded can be selected in a fine-grained way via an interoperable data dependency specification. and optional compiling configurations tailored to the needs of a consuming app or workflow.
@@ -23,7 +23,7 @@ Subsequently, the Format-Layer serializes the internal data structure to the des
 It passes the serialized data back to the Compression-Layer.
 
 ## Mapping-Layer
-Whenever the input file format and the requested output file format are in different equivalence classes (e.g. Turtle/RDF triples and TSV/tabular-structured data), the \textbf{Mapping-Layer} is additionally used.
+Whenever the input file format and the requested output file format are in different equivalence classes (e.g. Turtle/RDF triples and TSV/tabular-structured data), the **Mapping-Layer** is additionally used.
 However, it could also be used to manipulate the data of the same equivalence class (e.g. ontology mapping).
 With the aid of mapping configurations, the Mapping-Layer transforms the data represented using the internal data structure of the input equivalence class, to data of the internal data structure of the equivalence class of the target file format.
 After that process has finished, the data is passed back to the Format layer.
