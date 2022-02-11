@@ -1,12 +1,16 @@
+# General
+
 ## Download Queries
 
 The download query is one of, if not the most important parameter of the Databus Client.
-It specifies a precise selection of the records of the [DBpedia databus](https://databus.dbpedia.org/) that the download client should process.
+It specifies a precise selection of the records of the [DBpedia Databus](https://databus.dbpedia.org/) that the download client should process.
 
 ### Possible queries
-* Any query that selects the object of the predicate `dcat:downloadURL`
-* Name of the variable doesn't matter
-    * Query should look like: `SELECT ?o WHERE { ?s dcat:downloadURL ?o}`
+
+You can pass any query that selects the object of the predicate `dcat:downloadURL`, the variable's name doesn't matter.
+The query should look like.  
+```SELECT ?o WHERE { ?s dcat:downloadURL ?o}```  
+
 
 ### How to pass queries
 
