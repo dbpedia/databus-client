@@ -10,14 +10,13 @@
 
 ## Usage
 
-* [General](docs/usage/generalUsage.md)
-* Quickstart
-  * [CLI](docs/usage/usageCLI.md)
-    * [Separate Downloader or Converter](docs/usage/singleModules.md)
-  * [JAR](docs/usage/usageJar.md)
-  * [Scala/Java API](docs/usage/usageAPI.md)
+* [Quickstart](docs/usage/quickstart.md)
+* [CLI](docs/usage/cli.md)
+* [JAR](docs/usage/jar.md)
+* [Scala/Java API](docs/usage/api.md)
+* [Docker](docs/usage/docker.md)
 
 ## Examples
 
-* [CLI](docs/examples/exampleCLI.md)
-* [Docker](docs/examples/exampleDocker.md)
+* [Download DBpedia Ontology (CLI)](docs/examples/exampleCLI.md)
+* [Loading geocoordinates from Wikipedia into Virtuoso (Docker)](docs/examples/exampleDocker.md)

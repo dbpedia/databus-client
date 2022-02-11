@@ -1,8 +1,8 @@
-# Quickstart (API)
+# Quickstart - API
 
 The Databus Client also offers an API for easy integration into your project.
 
-## Example-Code
+## Example 
 ```
 DatabusClient
     .source("./src/query/query1")
@@ -14,4 +14,4 @@ DatabusClient
 
 ## Sample project
 
-We have also created a [sample project](https://github.com/dbpedia/databus-client/tree/master/example) that shows how the Databus Client can be integrated into a project.
+We have also created a [sample project](https://github.com/dbpedia/databus-client/tree/master/examples/sample_project) that shows how the Databus Client can be integrated into a project.

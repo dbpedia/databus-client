@@ -9,4 +9,4 @@ You can also download `databus-client.jar` of the latest [Databus Client release
 java -jar databus-client-1.0-SNAPSHOT.jar -s "https://databus.dbpedia.org/rogargon/collections/browsable_core"
 ```
 
-The parameter options are similar to these ones shown in [CLI options](usageCLI.md#cli-options).
+The parameter options are similar to these ones shown in [CLI options](cli.md#cli-options).
