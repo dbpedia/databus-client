@@ -1,3 +1,5 @@
+# CLI
+
 ## CLI options
 
 | Option                   | Description                                                                                                                                                                                                                                                                      | Default |
