@@ -11,10 +11,11 @@
 ## Usage
 
 * [General](docs/usage/generalUsage.md)
-* [Quickstart (CLI)](docs/usage/usageCLI.md)
-  * [Single Modules](docs/usage/singleModules.md)
-* [JAR](docs/usage/usageJar.md)
-* [API](docs/usage/usageAPI.md)
+* Quickstart
+  * [CLI](docs/usage/usageCLI.md)
+    * [Separate Downloader or Converter](docs/usage/singleModules.md)
+  * [JAR](docs/usage/usageJar.md)
+  * [Scala/Java API](docs/usage/usageAPI.md)
 
 ## Examples
 

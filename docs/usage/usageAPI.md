@@ -1,8 +1,8 @@
-# Usage (API)
+# Quickstart (API)
 
-The DBpedia Databus-Client offers an API for easy integration into your project.
+The Databus Client also offers an API for easy integration into your project.
 
-### Example-Code
+## Example-Code
 ```
 DatabusClient
     .source("./src/query/query1")
@@ -12,5 +12,6 @@ DatabusClient
     .execute()
 ```
 
-### Example-Project
-We have also created a [Sample-Project](https://github.com/Eisenbahnplatte/Databus-Client-Example) that shows how the Databus-Client can be integrated into a project.
+## Sample project
+
+We have also created a [sample project](https://github.com/dbpedia/databus-client/tree/master/example) that shows how the Databus Client can be integrated into a project.

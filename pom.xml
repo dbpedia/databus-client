@@ -6,7 +6,7 @@
     <groupId>org.dbpedia</groupId>
     <artifactId>databus-client</artifactId>
 
-    <version>1.0-SNAPSHOT</version>
+    <version>v2.0-beta</version>
 
     <properties>
         <encoding>UTF-8</encoding>
