@@ -13,7 +13,7 @@ mvn clean install
 ```
 bin/DatabusClient -s ./src/resources/queries/example.sparql -f jsonld -c gz
 ```
-You will find more information in [CLI usage](cli.md) or if you set the flag`-h`.
+You will find more information if you set the flag`-h` or in [CLI usage](cli.md).
 
 ## Separate downloader or converter
 

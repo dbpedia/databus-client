@@ -1,1 +1,0 @@
-You can pass all the variables as Environment Variables (**-e**), that are shown in [CLI options](../usage/quickstart.md) (except `target`), but you have to write the Environment Variables in Capital Letters.

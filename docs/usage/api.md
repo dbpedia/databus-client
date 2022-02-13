@@ -1,6 +1,6 @@
 # Quickstart - API
 
-The Databus Client also offers an API for easy integration into your project.
+The Databus Client also offers an [API](https://github.com/dbpedia/databus-client/blob/master/src/main/scala/org/dbpedia/databus/client/api/DatabusClient.scala) for easy integration into your project.
 
 ## Example 
 ```

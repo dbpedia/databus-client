@@ -3,9 +3,8 @@
 ## Overview
 
 * [Databus Client](README.md)
-* [Concept](docs/overview/concept.md)
-  * [Supported formats](docs/overview/supportedFormats.md)
 * [Vision](docs/overview/vision.md)
+* [Concept](docs/overview/concept.md)
 * [Roadmap](docs/overview/roadmap.md)
 
 ## Usage
@@ -14,7 +13,7 @@
 * [CLI](docs/usage/cli.md)
 * [JAR](docs/usage/jar.md)
 * [Scala/Java API](docs/usage/api.md)
-* [Docker](docs/usage/docker.md)
+* [Docker](docs/usage/docker2.md)
 
 ## Examples
 
