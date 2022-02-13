@@ -4,7 +4,7 @@ import org.rogach.scallop._
 
 class CLI_Config(arguments: Seq[String]) extends ScallopConf(arguments) {
 
-  version("Databus-Client 1.0-SNAPSHOT (c) DBpedia")
+  version("Databus Client v2.0-beta (c) DBpedia")
 
   banner(
     """
@@ -14,7 +14,7 @@ Convert only:         bin/DatabusClient --source ./downloaded_files/ --target ./
 Download only:        bin/DatabusClient -s ./src/query/query1.sparql -t ./downloaded_files/
 Download and convert: bin/DatabusClient -s ./src/query/query1.sparql -t converted_files/ -c gz -f ttl
 
-You can do the same with 'mvn scala:run':
+You can also execute the Databus Client with 'mvn scala:run':
 mvn scala:run -e -Dlauncher="databusclient" -DaddArgs="-s|https://databus.dbpedia.org/jfrey/collections/id-management_links|-f|ttl|-c|gz"
 ==============================================
 

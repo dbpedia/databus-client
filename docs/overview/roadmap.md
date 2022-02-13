@@ -1,14 +1,5 @@
 # Roadmap
 
-## Current State
-
-**Beta**:
-The Databus Client should produce expected results for compression conversion and file format conversion. Errors could occure for the mapping process. Please expect some code refactoring and fluctuation.
-
-### Limitations of mappings
-**TSD -> RDF Quads**: Due to the limitations of Tarql, there is no mapping from TSD to RDF Quads possible at the moment.    
-**RDF Triples -> TSD**: The resul
-
 ## Supported formats
 
 | Level | Layer             | Implemented formats                                                                       |
@@ -24,8 +15,8 @@ The Databus Client should produce expected results for compression conversion an
  * All features finished
 
 ### Compression-Layer
- * Using Apache Compress library covers most of the compression formats
- * Additional frameworks will be included upon demand
+ * [Apache Compress library](https://commons.apache.org/proper/commons-compress/) covers most of the compression formats.
+ * Additional frameworks will be included upon demand.
 
 ### File-Format-Layer
 
@@ -41,9 +32,18 @@ The Databus Client should produce expected results for compression conversion an
 ### Mapping-Layer
 
 #### Implemented features
- * Tarql has been implemented for mapping from TSD to RDF
- * 
+ * [Tarql](https://tarql.github.io/) has been implemented for mapping from TSD to RDF Triples.
+ * Apache Jena and Apache Spark are used to achieve the RDF Triples to TSD mapping. 
+ * Apache Jena is used for RDF Triples <-> RDF Quads mappings.
 
 #### Future Work
- * We plan to provide a plugin mechanism to incorporate more sophisticated format.mapping engines as [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT.
- 
+ * Provide a plugin mechanism to incorporate more sophisticated format.mapping engines as [RML](http://rml.io), R2RML, [R2R](http://wifo5-03.informatik.uni-mannheim.de/bizer/r2r/) (for owl:equivalence translation) and XSLT.
+
+## Current State
+
+**Beta**:
+The Databus Client should produce expected results for compression conversion and file format conversion. Errors could occure for the mapping process. Please expect some code refactoring and fluctuation.
+
+### Limitations of mappings
+**TSD -> RDF Quads**: Due to the limitations of Tarql, there is no mapping from TSD to RDF Quads possible at the moment.    
+**RDF Triples -> TSD**: The mapping results in a wide table, no more precise mapping is possible yet.
