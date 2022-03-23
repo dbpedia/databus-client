@@ -7,7 +7,8 @@ from dataclasses import dataclass, field
 from typing import List
 import argparse_prompt
 import logging
-
+from urllib.parse import urlparse
+import re
 
 @dataclass
 class DatabusGroup:
@@ -61,23 +62,34 @@ class DatabusFile:
         """Fetches the necessary information of a file URI for the deploy to the databus."""
         self.uri = uri
         self.cvs = cvs
+        self.file_ext = file_ext
 
         if shasum is None or content_length is None:
-            self.__fetch_file_info(self.uri)
+            self.__fetch_file_info()
         else:
             self.sha256sum = shasum
             self.content_length = content_length
 
-        self.file_ext = file_ext
-        self.id_string = "_".join([f"{k}={v}" for k, v in cvs.items()]) + "." + file_ext
+        self.id_string = "_".join([f"{k}={v}" for k, v in cvs.items()]) + "." + self.file_ext
 
-    def __fetch_file_info(uri, **kwargs):
-        resp = requests.get(uri, **kwargs)
+    def __fetch_file_info(self, **kwargs):
+        resp = requests.get(self.uri, **kwargs)
 
-        if verbose:
-            print(f"")
         if resp.status_code > 400:
             print(f"ERROR for {uri} -> Status {str(resp.status_code)}")
+        if self.file_ext is None:
+
+            parsed_url = urlparse(resp.url)
+
+            match_path = re.match(r"^(.*?/)+.*\.(.+)$", parsed_url.path)
+
+            if match_path is not None:
+                
+                _, file_ext = match_path.groups()
+                self.file_ext = file_ext
+            else:
+                self.file_ext = "file"
+            
 
         self.sha256sum = hashlib.sha256(bytes(resp.content)).hexdigest()
         self.content_length = str(len(resp.content))

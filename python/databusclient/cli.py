@@ -1,6 +1,7 @@
 from databusclient import databus_client
 import argparse_prompt
-
+from urllib.parse import urlparse
+import re
 
 def parse_cv_string(s: str, seperator: str="|"):
 
@@ -12,13 +13,11 @@ def parse_cv_string(s: str, seperator: str="|"):
         
 def generate_databus_file(arg):
 
-    uri = arg[:arg.find("|")]
+    uri = str(arg[:arg.find("|")])
 
-    print(uri)
+    file_ext = None
 
-    file_ext = arg[arg.rfind(".")+1:]
-
-    cv_string = arg[arg.find("|")+1:arg.rfind("|")]
+    cv_string = arg[arg.find("|")+1:]
 
     cv_map = parse_cv_string(cv_string)
 
@@ -32,8 +31,8 @@ def direct_group_deploy(args):
         args.title,
         args.title,
         args.comment,
-        args.documentation,
-        args.documentation,
+        args.doc,
+        args.doc,
         DATABUS_BASE=args.base,
     )
 
@@ -48,8 +47,8 @@ def generate_group(args):
         args.title,
         args.title,
         args.comment,
-        args.documentation,
-        args.documentation,
+        args.doc,
+        args.doc,
         DATABUS_BASE=args.base,
     )
 
@@ -78,13 +77,13 @@ def generate_version(args):
         args.title,
         args.publisher,
         args.comment,
-        args.documentation,
-        args.documentation,
+        args.doc,
+        args.doc,
         args.license,
         DATABUS_BASE=args.base,
     )
 
-    version = databus_client.DataVersion(
+    version = databus_client.DatabusVersion(
         version_metadata,
         dbfiles,
     )
@@ -113,13 +112,13 @@ def direct_version_deploy(args):
         args.title,
         args.publisher,
         args.comment,
-        args.documentation,
-        args.documentation,
+        args.doc,
+        args.doc,
         args.license,
         DATABUS_BASE=args.base,
     )
 
-    version = databus_client.DataVersion(
+    version = databus_client.DatabusVersion(
         version_metadata,
         dbfiles,
     )
@@ -179,7 +178,7 @@ def main():
     )
 
     group_generate_parser.add_argument(
-        "--documentation", "-doc", help="The group documentation", type=str
+        "--doc", "-doc", help="The group documentation", type=str
     )
 
     group_generate_parser.add_argument(
@@ -227,7 +226,7 @@ def main():
     )
 
     version_generate_parser.add_argument(
-        "URIs", nargs="+", help="The version license", type=str
+        "URIs", nargs="+", help="All the uris to be deployed to the Databus", type=str
     )
 
     # The parsers for direct deploy
