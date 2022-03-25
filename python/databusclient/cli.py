@@ -15,6 +15,7 @@ def generate_databus_file(arg):
 
     uri = arg.split("|")[0]
 
+    # TODO make it possible to pass file extension instead of autofetching
     file_ext = None
 
     cv_string = arg[arg.find("|")+1:]
@@ -26,13 +27,11 @@ def generate_databus_file(arg):
 def direct_group_deploy(args):
 
     group = databus_client.DatabusGroup(
-        args.user,
-        accountargs.group,
-        args.title,
-        args.title,
-        args.comment,
-        args.doc,
-        args.doc,
+        account_name=args.user,
+        id=args.group,
+        title=args.title,
+        abstract=args.abstract,
+        description=args.doc,
         DATABUS_BASE=args.base,
     )
 
@@ -42,13 +41,11 @@ def direct_group_deploy(args):
 def generate_group(args):
 
     group = databus_client.DatabusGroup(
-        args.user,
-        args.group,
-        args.title,
-        args.title,
-        args.comment,
-        args.doc,
-        args.doc,
+        account_name=args.user,
+        id=args.group,
+        title=args.title,
+        abstract=args.abstract,
+        description=args.doc,
         DATABUS_BASE=args.base,
     )
 
@@ -69,17 +66,15 @@ def generate_version(args):
         dbfiles.append(generate_databus_file(arg_string))
 
     version_metadata = databus_client.DatabusVersionMetadata(
-        args.user,
-        args.group,
-        args.artifact,
-        args.versionid,
-        args.title,
-        args.title,
-        args.publisher,
-        args.comment,
-        args.doc,
-        args.doc,
-        args.license,
+        account_name=args.user,
+        group=args.group,
+        artifact=args.artifact,
+        version=args.versionid,
+        title=args.title,
+        publisher=args.publisher,
+        abstract=args.abstract,
+        description=args.doc,
+        license=args.license,
         DATABUS_BASE=args.base,
     )
 
@@ -104,17 +99,15 @@ def direct_version_deploy(args):
         dbfiles.append(generate_databus_file(arg_string))
 
     version_metadata = databus_client.DatabusVersionMetadata(
-        args.user,
-        args.group,
-        args.artifact,
-        args.version,
-        args.title,
-        args.title,
-        args.publisher,
-        args.comment,
-        args.doc,
-        args.doc,
-        args.license,
+        account_name=args.user,
+        group=args.group,
+        artifact=args.artifact,
+        version=args.versionid,
+        title=args.title,
+        publisher=args.publisher,
+        abstract=args.abstract,
+        description=args.doc,
+        license=args.license,
         DATABUS_BASE=args.base,
     )
 
@@ -174,7 +167,7 @@ def main():
     )
 
     group_generate_parser.add_argument(
-        "--comment", "-c", help="The group comment", type=str
+        "--abstract", "-a", help="The group abstract", type=str
     )
 
     group_generate_parser.add_argument(
@@ -210,7 +203,7 @@ def main():
     )
 
     version_generate_parser.add_argument(
-        "--comment", help="The version comment", type=str
+        "--abstract", "-a", help="The abstract of the artifact", type=str
     )
 
     version_generate_parser.add_argument(
@@ -252,7 +245,7 @@ def main():
     direct_group_deploy_parser.add_argument("--title", help="The group title", type=str)
 
     direct_group_deploy_parser.add_argument(
-        "--comment", help="The group comment", type=str
+        "--abstract", "-a", help="The group abstract", type=str
     )
 
     direct_group_deploy_parser.add_argument(
@@ -288,7 +281,7 @@ def main():
     )
 
     direct_version_deploy_parser.add_argument(
-        "--comment", help="The version comment", type=str
+        "--abstract", help="The artifacts abstract", type=str
     )
 
     direct_version_deploy_parser.add_argument(
