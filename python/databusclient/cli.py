@@ -13,7 +13,7 @@ def parse_cv_string(s: str, seperator: str="|"):
         
 def generate_databus_file(arg):
 
-    uri = str(arg[:arg.find("|")])
+    uri = arg.split("|")[0]
 
     file_ext = None
 
@@ -72,7 +72,7 @@ def generate_version(args):
         args.user,
         args.group,
         args.artifact,
-        args.version,
+        args.versionid,
         args.title,
         args.title,
         args.publisher,
