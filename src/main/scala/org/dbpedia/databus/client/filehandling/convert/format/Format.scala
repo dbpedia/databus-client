@@ -1,12 +1,14 @@
 package org.dbpedia.databus.client.filehandling.convert.format
 
 import better.files.File
-import org.apache.spark.SparkContext
+import org.dbpedia.databus.client.sparql.QueryHandler.getClass
+import org.slf4j.{Logger, LoggerFactory}
 
 trait Format[T] {
 
-  val tempDir: File = File("./target/databus.tmp/temp/")
-  if (tempDir.exists) tempDir.delete()
+  val tempDir: File = File("./target/databus.tmp/temp_partialResults/")
+  tempDir.delete(swallowIOExceptions = true)
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def read(source: String): T
 

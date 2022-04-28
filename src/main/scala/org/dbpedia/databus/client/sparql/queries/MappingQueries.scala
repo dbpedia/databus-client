@@ -6,10 +6,10 @@ object MappingQueries {
     s"""
        |PREFIX map: <http://databus-client.tools.dbpedia.org/vocab/mapping/>
        |
-       |SELECT DISTINCT ?mapping
+       |SELECT DISTINCT ?format.mapping
        |WHERE {
-       |?mapping a map:MappingFile .
-       |<$mappingInfoFile> map:hasMappingFile ?mapping .
+       |?format.mapping a map:MappingFile .
+       |<$mappingInfoFile> map:hasMappingFile ?format.mapping .
        |}
        |""".stripMargin
 
@@ -19,11 +19,11 @@ object MappingQueries {
        |
        |SELECT DISTINCT *
        |WHERE {
-       |?mapping a map:MappingFile .
+       |?format.mapping a map:MappingFile .
        |
        |<$mappingInfoFile> map:hasDelimiter ?delimiter ;
        |	  map:hasQuotation ?quotation ;
-       |    map:hasMappingFile ?mapping .
+       |    map:hasMappingFile ?format.mapping .
        |}
        |""".stripMargin
 }

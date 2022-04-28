@@ -8,8 +8,8 @@ object Tarql_Writer {
   def createTarqlMapFile(tarqlDF: DataFrame, mappingFilePath: String): Unit = {
     val cols = tarqlDF.columns
 
-    println("TARQL DATAFRAME")
-    tarqlDF.show(false)
+    //    println("TARQL DATAFRAME")
+    //    tarqlDF.show(false)
 
     val prefixesSeq =
       tarqlDF.select(cols(0))
@@ -53,7 +53,7 @@ object Tarql_Writer {
       .distinct()
       .collect()
       .map(row => row.mkString(""))
-      .filter(str => !str.isEmpty)
+      .filter(str => str.nonEmpty)
 
     val bindingStr = bindingsSeq.mkString("\t", "\n\t", "")
 

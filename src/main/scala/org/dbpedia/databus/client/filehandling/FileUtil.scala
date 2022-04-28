@@ -191,7 +191,7 @@ object FileUtil {
    * @return format
    */
   def getFormatType(inputFile: File, compressionInputFile: String): String = {
-    {
+    val format ={
       try {
         if (!(getFormatTypeWithDataID(inputFile) == "")) {
           getFormatTypeWithDataID(inputFile)
@@ -202,6 +202,23 @@ object FileUtil {
         case _: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
       }
     }
+
+    if (format == "rdf") "rdfxml"
+    else format
+  }
+
+  /**
+   * read a query file as string
+   *
+   * @param file query file
+   * @return query string
+   */
+  def readQueryFile(file: File): String = {
+    var queryString: String = ""
+    for (line <- file.lineIterator) {
+      queryString = queryString.concat(line).concat("\n")
+    }
+    queryString
   }
 
   /**

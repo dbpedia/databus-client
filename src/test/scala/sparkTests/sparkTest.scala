@@ -4,45 +4,45 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.catalyst.ScalaReflection
 import org.apache.spark.sql.{Row, SparkSession, types}
 import org.apache.spark.sql.types.{DataType, IntegerType, StringType, StructField, StructType}
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class sparkTest extends FlatSpec{
-
-
-  "Apache Spark" should "convert rdd to dataFrame" in {
-    val spark: SparkSession =
-      SparkSession
-        .builder()
-        .appName("AppName")
-        .config("spark.master", "local")
-        .getOrCreate()
-
-    import spark.implicits._
-
-    def dfSchema(columnNames: List[String]): StructType =
-      StructType(
-        Seq(
-          StructField(name = "name", dataType = StringType, nullable = false),
-          StructField(name = "age", dataType = IntegerType, nullable = false)
-        )
-      )
-
-    def row(line: List[String]): Row = Row(line(0), line(1).toInt)
-
-    val simpleData = Seq("Fabi","23","Jakob", "26")
+class sparkTest extends AnyFlatSpec{
 
 
-    val rdd: RDD[String] = spark.sparkContext.parallelize(simpleData)
-
-    val dataFrame2 = rdd.toDF()
-    dataFrame2.show(false)
-    val schema = dfSchema(List("name", "age"))
-    val data = rdd.map(_.split(",").to[List]).map(row)
-    val dataFrame = spark.createDataFrame(data, schema)
-
-
-    dataFrame.show(false)
-  }
+//  "Apache Spark" should "convert rdd to dataFrame" in {
+//    val spark: SparkSession =
+//      SparkSession
+//        .builder()
+//        .appName("AppName")
+//        .config("spark.master", "local")
+//        .getOrCreate()
+//
+//    import spark.implicits._
+//
+//    def dfSchema(columnNames: List[String]): StructType =
+//      StructType(
+//        Seq(
+//          StructField(name = "name", dataType = StringType, nullable = false),
+//          StructField(name = "age", dataType = IntegerType, nullable = false)
+//        )
+//      )
+//
+//    def row(line: List[String]): Row = Row(line(0), line(1).toInt)
+//
+//    val simpleData = Seq("Fabi","23","Jakob", "26")
+//
+//
+//    val rdd: RDD[String] = spark.sparkContext.parallelize(simpleData)
+//
+//    val dataFrame2 = rdd.toDF()
+//    dataFrame2.show(false)
+//    val schema = dfSchema(List("name", "age"))
+//    val data = rdd.map(_.split(",").map(row)
+//    val dataFrame = spark.createDataFrame(data, schema)
+//
+//
+//    dataFrame.show(false)
+//  }
 
   "Apache Spark" should "create DataFrame" in {
 //    case class StructType(fields: Array[StructField])

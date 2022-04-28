@@ -1,23 +1,40 @@
 package org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.format
 
 import better.files.File
-import org.apache.jena.graph.{NodeFactory, Triple}
-import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}
-import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
+import org.apache.jena.riot.Lang
 import org.apache.jena.sparql.core.Quad
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
 import org.dbpedia.databus.client.filehandling.convert.format.Format
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
-import scala.io.{Codec, Source}
+class JsonLD extends Format[RDD[Quad]] {
+
+  override def read(source: String): RDD[Quad] = {
+    new Trix(Lang.JSONLD).read(source)
+  }
+
+  override def write(t: RDD[Quad]): File = {
+    new Trix(Lang.JSONLD).write(t)
+  }
+}
+//
+//import better.files.File
+//import org.apache.jena.graph.{NodeFactory, Triple}
+//import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}
+//import org.apache.jena.riot.{RDFDataMgr, RDFFormat}
+//import org.apache.jena.sparql.core.Quad
+//import org.apache.spark.SparkContext
+//import org.apache.spark.rdd.RDD
+//import org.apache.spark.sql.SparkSession
+//import org.dbpedia.databus.client.filehandling.convert.format.Format
+//
+//import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+//import scala.io.{Codec, Source}
 
 //class JsonLD extends Format[RDD[Quad]] {
 //
 ////  def readJSONL(spark: SparkSession, inputFile: File): RDD[Triple] = {
-////    val sc = spark.sparkContext
-////    val data = sc.textFile(inputFile.pathAsString)
+//    val sc = spark.sparkContext
+//    val data = sc.textFile(inputFile.pathAsString)
 ////    var tripleRDD = sc.emptyRDD[Triple]
 ////
 ////    //    data.foreach(println(_))

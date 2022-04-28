@@ -19,6 +19,18 @@ import scala.io.{Codec, Source}
 class Turtle extends Format[RDD[Triple]]{
 
   override def read(source: String):RDD[Triple] = {
+    try {
+//      Try Ntriple read first.
+      val data = new NTriples().read(source)
+      data.isEmpty()
+      data
+    }
+    catch {
+      case _: org.apache.spark.SparkException => turtleRead(source)
+    }
+  }
+
+  def turtleRead(source:String)={
     // Create a PipedRDFStream to accept input and a PipedRDFIterator to consume it
     // You can optionally supply a buffer size here for the
     // PipedRDFIterator, see the documentation for details about recommended buffer sizes
@@ -57,7 +69,6 @@ class Turtle extends Format[RDD[Triple]]{
   }
 
   override def write(data: RDD[Triple]): File = {
-
     new RDFXML().convertToRDF(data, Lang.TURTLE)
   }
 

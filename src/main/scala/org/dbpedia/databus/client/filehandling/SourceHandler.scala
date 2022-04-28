@@ -16,17 +16,18 @@ import org.slf4j.LoggerFactory
 class SourceHandler(conf:CLI_Config) {
 
   //supported formats
-  val fileFormats:String = "rdfxml|ttl|nt|jsonld|tsv|csv|nq|trix|trig|same"
-  val compressionFormats:String = "bz2|gz|deflate|lzma|sz|xz|zstd||same"
+  val fileFormats:String = Config.fileFormats
+  val compressionFormats:String = Config.compressionFormats
 
-  val cache: File = File("./target/databus.tmp/cache_dir/")
+  val cache: File = Config.cache
+  val fileHandler = new FileHandler(conf)
 
   def execute(): Unit={
     if (File(conf.source()).exists()) {
       val sourceFile: File = File(conf.source())
 
       if (sourceFile.hasExtension && sourceFile.extension.get.matches(".sparql|.query")) { // conf.source() is a query file
-        val queryString = readQueryFile(sourceFile)
+        val queryString = FileUtil.readQueryFile(sourceFile)
         handleQuery(queryString)
       }
       else { // conf.source() is an already existing file or directory
@@ -48,7 +49,7 @@ class SourceHandler(conf:CLI_Config) {
     println(s"CONVERSION TOOL:\n")
 
     val dataId_string = "dataid.ttl"
-    val fileHandler = new FileHandler(conf)
+
 
     if (source.isDirectory) {
       val files = source.listRecursively.toSeq
@@ -89,8 +90,6 @@ class SourceHandler(conf:CLI_Config) {
     println("\n========================================================\n")
     println(s"CONVERSION TOOL:\n")
 
-    val fileHandler = new FileHandler(conf)
-
     allSHAs.foreach(
       sha => fileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")))
     )
@@ -113,6 +112,9 @@ class SourceHandler(conf:CLI_Config) {
 
     val target = File(conf.target())
     target.createDirectoryIfNotExists()
+
+    val temp = File("./target/databus.tmp/temp/")
+    temp.createDirectoryIfNotExists()
   }
 
   /**
@@ -171,20 +173,6 @@ class SourceHandler(conf:CLI_Config) {
     val handler: ResponseHandler[String] = new BasicResponseHandler()
 
     handler.handleResponse(response)
-  }
-
-  /**
-   * read a query file as string
-   *
-   * @param file query file
-   * @return query string
-   */
-  def readQueryFile(file: File): String = {
-    var queryString: String = ""
-    for (line <- file.lineIterator) {
-      queryString = queryString.concat(line).concat("\n")
-    }
-    queryString
   }
 
   def printTask(sourceType: String, source: String, target: String):Unit = {
