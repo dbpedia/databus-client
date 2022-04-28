@@ -219,3 +219,5 @@ docker rmi -f dbpedia/databus-client
 You can pass all the variables as Environment Variables (**-e**), that are shown in the list above (except `target`), but you have to write the Environment Variables in Capital Letters.
 
 
+test
+
