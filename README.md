@@ -18,5 +18,3 @@ If you use the DBpedia Databus Client in your research, please cite the followin
 
 ## Documentation
 More documentation is available in our [Gitbook](https://dbpedia.gitbook.io/databus/v/download-client/).
-
-test
