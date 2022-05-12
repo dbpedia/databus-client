@@ -15,6 +15,12 @@ setup(name='databusclient',
             "argparse-prompt==0.0.5",
             "requests==2.27.1",
             "urllib3==1.26.8",
+            "typer==0.4.1"
       ],
-      zip_safe=False)
-#      scripts=["bin/mygizmo"])
+      zip_safe=False,
+      entry_points={
+        "console_scripts": [
+            "databusclient" "=databusclient.__main__:main"
+        ]
+      }
+    )
