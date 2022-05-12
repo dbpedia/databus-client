@@ -9,12 +9,12 @@ python3 ./setup.py install --user
 # Run
 
 ```
-python3 -m databusclient
+databusclient --help
 ```
 
-# Usage
+---
 
-Run `python3 -m databusclient -h`
+# DEPRECATED (below)
 
 ## Optional Parameters
 
