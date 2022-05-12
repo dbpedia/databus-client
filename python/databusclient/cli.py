@@ -1,6 +1,7 @@
 from databusclient import databus_client
 import argparse_prompt
-
+from urllib.parse import urlparse
+import re
 
 def parse_cv_string(s: str, seperator: str="|"):
 
@@ -12,13 +13,12 @@ def parse_cv_string(s: str, seperator: str="|"):
         
 def generate_databus_file(arg):
 
-    uri = arg[:arg.find("|")]
+    uri = arg.split("|")[0]
 
-    print(uri)
+    # TODO make it possible to pass file extension instead of autofetching
+    file_ext = None
 
-    file_ext = arg[arg.rfind(".")+1:]
-
-    cv_string = arg[arg.find("|")+1:arg.rfind("|")]
+    cv_string = arg[arg.find("|")+1:]
 
     cv_map = parse_cv_string(cv_string)
 
@@ -27,13 +27,11 @@ def generate_databus_file(arg):
 def direct_group_deploy(args):
 
     group = databus_client.DatabusGroup(
-        args.user,
-        accountargs.group,
-        args.title,
-        args.title,
-        args.comment,
-        args.documentation,
-        args.documentation,
+        account_name=args.user,
+        id=args.group,
+        title=args.title,
+        abstract=args.abstract,
+        description=args.doc,
         DATABUS_BASE=args.base,
     )
 
@@ -43,13 +41,11 @@ def direct_group_deploy(args):
 def generate_group(args):
 
     group = databus_client.DatabusGroup(
-        args.user,
-        args.group,
-        args.title,
-        args.title,
-        args.comment,
-        args.documentation,
-        args.documentation,
+        account_name=args.user,
+        id=args.group,
+        title=args.title,
+        abstract=args.abstract,
+        description=args.doc,
         DATABUS_BASE=args.base,
     )
 
@@ -70,21 +66,19 @@ def generate_version(args):
         dbfiles.append(generate_databus_file(arg_string))
 
     version_metadata = databus_client.DatabusVersionMetadata(
-        args.user,
-        args.group,
-        args.artifact,
-        args.version,
-        args.title,
-        args.title,
-        args.publisher,
-        args.comment,
-        args.documentation,
-        args.documentation,
-        args.license,
+        account_name=args.user,
+        group=args.group,
+        artifact=args.artifact,
+        version=args.versionid,
+        title=args.title,
+        publisher=args.publisher,
+        abstract=args.abstract,
+        description=args.doc,
+        license=args.license,
         DATABUS_BASE=args.base,
     )
 
-    version = databus_client.DataVersion(
+    version = databus_client.DatabusVersion(
         version_metadata,
         dbfiles,
     )
@@ -105,21 +99,19 @@ def direct_version_deploy(args):
         dbfiles.append(generate_databus_file(arg_string))
 
     version_metadata = databus_client.DatabusVersionMetadata(
-        args.user,
-        args.group,
-        args.artifact,
-        args.version,
-        args.title,
-        args.title,
-        args.publisher,
-        args.comment,
-        args.documentation,
-        args.documentation,
-        args.license,
+        account_name=args.user,
+        group=args.group,
+        artifact=args.artifact,
+        version=args.versionid,
+        title=args.title,
+        publisher=args.publisher,
+        abstract=args.abstract,
+        description=args.doc,
+        license=args.license,
         DATABUS_BASE=args.base,
     )
 
-    version = databus_client.DataVersion(
+    version = databus_client.DatabusVersion(
         version_metadata,
         dbfiles,
     )
@@ -175,11 +167,11 @@ def main():
     )
 
     group_generate_parser.add_argument(
-        "--comment", "-c", help="The group comment", type=str
+        "--abstract", "-a", help="The group abstract", type=str
     )
 
     group_generate_parser.add_argument(
-        "--documentation", "-doc", help="The group documentation", type=str
+        "--doc", "-doc", help="The group documentation", type=str
     )
 
     group_generate_parser.add_argument(
@@ -211,7 +203,7 @@ def main():
     )
 
     version_generate_parser.add_argument(
-        "--comment", help="The version comment", type=str
+        "--abstract", "-a", help="The abstract of the artifact", type=str
     )
 
     version_generate_parser.add_argument(
@@ -227,7 +219,7 @@ def main():
     )
 
     version_generate_parser.add_argument(
-        "URIs", nargs="+", help="The version license", type=str
+        "URIs", nargs="+", help="All the uris to be deployed to the Databus", type=str
     )
 
     # The parsers for direct deploy
@@ -253,7 +245,7 @@ def main():
     direct_group_deploy_parser.add_argument("--title", help="The group title", type=str)
 
     direct_group_deploy_parser.add_argument(
-        "--comment", help="The group comment", type=str
+        "--abstract", "-a", help="The group abstract", type=str
     )
 
     direct_group_deploy_parser.add_argument(
@@ -289,7 +281,7 @@ def main():
     )
 
     direct_version_deploy_parser.add_argument(
-        "--comment", help="The version comment", type=str
+        "--abstract", help="The artifacts abstract", type=str
     )
 
     direct_version_deploy_parser.add_argument(

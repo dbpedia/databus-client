@@ -7,19 +7,19 @@ from dataclasses import dataclass, field
 from typing import List
 import argparse_prompt
 import logging
+from urllib.parse import urlparse
+import re
 
 
 @dataclass
 class DatabusGroup:
     account_name: str
     id: str
-    label: str
     title: str
-    comment: str
     abstract: str
     description: str
     DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
-    context: str = "https://raw.githubusercontent.com/dbpedia/databus-git-mockup/main/dev/context.jsonld"
+    context: str = "https://downloads.dbpedia.org/databus/context.jsonld"
 
     def get_target_uri(self) -> str:
 
@@ -36,11 +36,9 @@ class DatabusGroup:
                 {
                     "@id": group_uri,
                     "@type": "dataid:Group",
-                    "label": {"@value": self.label, "@language": "en"},
-                    "title": {"@value": self.title, "@language": "en"},
-                    "comment": {"@value": self.comment, "@language": "en"},
-                    "abstract": {"@value": self.abstract, "@language": "en"},
-                    "description": {"@value": self.description, "@language": "en"},
+                    "title": self.title,
+                    "abstract": self.abstract,
+                    "description": self.description,
                 }
             ],
         }
@@ -52,7 +50,8 @@ class DatabusFile:
         self,
         uri: str,
         cvs: dict,
-        file_ext: str,
+        file_ext: str = None,
+        compression: str = "none",
         verbose=False,
         shasum=None,
         content_length=None,
@@ -61,23 +60,36 @@ class DatabusFile:
         """Fetches the necessary information of a file URI for the deploy to the databus."""
         self.uri = uri
         self.cvs = cvs
+        self.compression = compression
+        self.file_ext = file_ext
 
         if shasum is None or content_length is None:
-            self.__fetch_file_info(self.uri)
+            self.__fetch_file_info()
         else:
             self.sha256sum = shasum
             self.content_length = content_length
 
-        self.file_ext = file_ext
-        self.id_string = "_".join([f"{k}={v}" for k, v in cvs.items()]) + "." + file_ext
+        self.id_string = (
+            "_".join([f"{k}={v}" for k, v in cvs.items()]) + "." + self.file_ext
+        )
 
-    def __fetch_file_info(uri, **kwargs):
-        resp = requests.get(uri, **kwargs)
+    def __fetch_file_info(self, **kwargs):
+        resp = requests.get(self.uri, **kwargs)
 
-        if verbose:
-            print(f"")
         if resp.status_code > 400:
             print(f"ERROR for {uri} -> Status {str(resp.status_code)}")
+        if self.file_ext is None:
+
+            parsed_url = urlparse(resp.url)
+
+            match_path = re.match(r"^(.*?/)+.*\.(.+)$", parsed_url.path)
+
+            if match_path is not None:
+
+                _, file_ext = match_path.groups()
+                self.file_ext = file_ext
+            else:
+                self.file_ext = "file"
 
         self.sha256sum = hashlib.sha256(bytes(resp.content)).hexdigest()
         self.content_length = str(len(resp.content))
@@ -90,15 +102,13 @@ class DatabusVersionMetadata:
     artifact: str
     version: str
     title: str
-    label: str
-    publisher: str
-    comment: str
     abstract: str
     description: str
     license: str
+    publisher: str = (None,)
     issued: datetime = field(default_factory=datetime.now)
     DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
-    context: str = "https://raw.githubusercontent.com/dbpedia/databus-git-mockup/main/dev/context.jsonld"
+    context: str = "https://downloads.dbpedia.org/databus/context.jsonld"
 
 
 class DatabusVersion:
@@ -110,29 +120,19 @@ class DatabusVersion:
 
         return f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}/{self.metadata.version}"
 
-    def __distinct_cvs(self) -> dict:
-
-        distinct_cv_definitions = {}
-        for dbfile in self.databus_files:
-            for key, value in dbfile.cvs.items():
-
-                if not key in distinct_cv_definitions:
-                    distinct_cv_definitions[key] = {
-                        "@type": "rdf:Property",
-                        "@id": f"dataid-cv:{key}",
-                        "rdfs:subPropertyOf": {"@id": "dataid:contentVariant"},
-                    }
-        return distinct_cv_definitions
-
     def __dbfiles_to_dict(self):
 
         for dbfile in self.databus_files:
             file_dst = {
                 "@id": self.version_uri + "#" + dbfile.id_string,
-                "file": self.version_uri + "/" + self.metadata.artifact + "_" + dbfile.id_string,
+                "file": self.version_uri
+                + "/"
+                + self.metadata.artifact
+                + "_"
+                + dbfile.id_string,
                 "@type": "dataid:SingleFile",
                 "formatExtension": dbfile.file_ext,
-                "compression": "none",
+                "compression": dbfile.compression,
                 "downloadURL": dbfile.uri,
                 "byteSize": dbfile.content_length,
                 "sha256sum": dbfile.sha256sum,
@@ -150,9 +150,7 @@ class DatabusVersion:
 
         self.artifact_uri = f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}/{self.metadata.artifact}"
 
-        self.group_uri = (
-            f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}"
-        )
+        self.group_uri = f"{self.metadata.DATABUS_BASE}/{self.metadata.account_name}/{self.metadata.group}"
 
         self.timestamp = self.metadata.issued.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -160,43 +158,24 @@ class DatabusVersion:
             "@context": self.metadata.context,
             "@graph": [
                 {
-                    "@type": "dataid:Dataset",
+                    "@type": "Dataset",
                     "@id": self.data_id_uri,
-                    "version": self.version_uri,
-                    "artifact": self.artifact_uri,
-                    "group": self.group_uri,
                     "hasVersion": self.metadata.version,
                     "issued": self.timestamp,
-                    "publisher": self.metadata.publisher,
-                    "label": {"@value": self.metadata.label, "@language": "en"},
-                    "title": {"@value": self.metadata.title, "@language": "en"},
-                    "comment": {"@value": self.metadata.comment, "@language": "en"},
-                    "abstract": {"@value": self.metadata.abstract, "@language": "en"},
-                    "description": {
-                        "@value": self.metadata.description,
-                        "@language": "en",
-                    },
-                    "license": {"@id": self.metadata.license},
+                    "title": self.metadata.title,
+                    "abstract": self.metadata.abstract,
+                    "description": self.metadata.description,
+                    "license": self.metadata.license,
                     "distribution": [d for d in self.__dbfiles_to_dict()],
                 }
             ],
         }
 
-        for _, named_cv_prop in self.__distinct_cvs().items():
-            data_id_dict["@graph"].append(named_cv_prop)
+        # publisher can be inferred by the databus, so only set it when necessary
+        if self.metadata.publisher is not None:
+            data_id_dict["@graph"][0]["publisher"] = self.metadata.publisher
 
-        # add explicit artifact statement
-
-        data_id_dict["@graph"].append(
-            {"@id": self.get_target_uri().rsplit("/", 1)[0], "@type": "dataid:Artifact"}
-        )
-
-        # Explicit Version Statement
-        data_id_dict["@graph"].append(
-            {"@id": self.get_target_uri(), "@type": "dataid:Version"}
-        )
-
-        return json.dumps(data_id_dict)
+        return json.dumps(data_id_dict, **kwargs)
 
 
 def deploy_to_dev_databus(api_key: str, *databus_objects):
