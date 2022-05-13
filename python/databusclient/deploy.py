@@ -134,12 +134,18 @@ def deploy(dataid, api_key):
     }
     data = json.dumps(dataid)
 
-    resp = requests.post('https://d8lr.tools.dbpedia.org/api/publish', data = data, headers = headers)
+    base = "/".join(dataid['@graph'][0]['@id'].split('/')[0:3])+"/api/publish"
+
+    resp = requests.post(base, data = data, headers = headers)
     print(resp.status_code)
     if debug:
         print("---")
         print(resp.content)
 
+
+if __name__ == "__main__":
+    print("empty)")
+    
 
 # dataset = createDataset(
 #     "https://d8lr.tools.dbpedia.org/hopver/testGroup/testArtifact/1.0-alpha/", 
