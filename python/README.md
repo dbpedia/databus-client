@@ -1,34 +1,30 @@
-# Install
+# Databus Client Python
 
-use `make` or if not installed use
-
+## Install
+```bash
+pip3 install databusclient
 ```
-python3 ./setup.py install --user
-```
 
-# Run
-
-```
+# CLI Usage
+```bash
 databusclient --help
 ```
 
----
+```man
+Usage: databusclient [OPTIONS] COMMAND [ARGS]...
 
-# DEPRECATED (below)
+Options:
+  --install-completion [bash|zsh|fish|powershell|pwsh]
+                                  Install completion for the specified shell.
+  --show-completion [bash|zsh|fish|powershell|pwsh]
+                                  Show completion for the specified shell, to
+                                  copy it or customize the installation.
+  --help                          Show this message and exit.
 
-## Optional Parameters
-
-Set base of databus:
-```
-python3 -m databusclient --base http://localhost:3000/
+Commands:
+  deploy
+  downoad
 ```
 
-Verbose output:
-```
-python3 -m databusclient --verbose
-```
-
-## Examples
-```
-python3 -m databusclient deploy group --user denis --group test --title "Some Title" --comment "Some comment" --documentation "Some docstring" --file group.jsonld
-```
+# API Usage
+`TODO`
