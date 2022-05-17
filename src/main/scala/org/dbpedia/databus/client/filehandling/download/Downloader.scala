@@ -29,16 +29,18 @@ object Downloader {
     results.foreach(fileIRI => {
       val fileSHA = QueryHandler.getSHA256Sum(fileIRI)
 
+      val file = getOutputFile(fileIRI)
+
       if (fileSHA != "") {
         if (overwrite) {
-          downloadFile(fileIRI, fileSHA, targetdir) match {
+          downloadFile(fileIRI, fileSHA, targetdir, file) match {
             case Some(file: File) => allSHAs = allSHAs :+ fileSHA
             case None => ""
           }
         }
         else {
           if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) {
-            downloadFile(fileIRI, fileSHA, targetdir) match {
+            downloadFile(fileIRI, fileSHA, targetdir, file) match {
                 case Some(file: File) => allSHAs = allSHAs :+ fileSHA
                 case None => ""
             }
@@ -54,6 +56,10 @@ object Downloader {
     allSHAs
   }
 
+  def getOutputFile(iri:String):File={
+    QueryHandler.executeQuery()
+
+  }
   /**
     * Download a file and its dataID-file and record it in the cache(shas.txt)
     *
@@ -62,8 +68,7 @@ object Downloader {
     * @param targetDir target directory
     * @return Boolean, return true if download succeeded
     */
-  def downloadFile(url: String, sha: String, targetDir: File): Option[File] = {
-    val file = targetDir / url.split("http[s]?://").map(_.trim).last //filepath from url without http://
+  def downloadFile(url: String, sha: String, targetDir: File, file: File): Option[File] = {
 
     var correctFileTransfer = false
 
@@ -91,7 +96,7 @@ object Downloader {
     fw.close()
 
 
-    val dataIdFile = file.parent / "dataid.ttl"
+    val dataIdFile = file.parent / "dataid.jsonld"
 
     if (!dataIdFile.exists()) { //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
       if(!QueryHandler.downloadDataIdFile(url, dataIdFile)) {

@@ -53,7 +53,7 @@ class SourceHandler(conf:CLI_Config) {
     printTask("source", source.pathAsString, File(conf.target()).pathAsString)
     println(s"CONVERSION TOOL:\n")
 
-    val dataId_string = "dataid.ttl"
+    val dataId_string = "dataid.jsonld"
 
 
     if (source.isDirectory) {

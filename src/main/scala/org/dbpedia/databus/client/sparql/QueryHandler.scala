@@ -83,6 +83,19 @@ object QueryHandler {
 
   }
 
+  def getOutputFile(url:String): File ={
+    val results = executeQuery(DatabusQueries.querySha256(url))
+
+    try{
+      val sparqlVar = results.head.varNames().next()
+      results.head.getLiteral(sparqlVar).getString
+    } catch {
+      case noSuchElementException: NoSuchElementException =>
+        logger.error(s"No Sha Sum found for $url")
+        File("")
+    }
+  }
+
 
   def downloadDataIdFile(url: String, dataIdFile: File): Boolean = {
 
@@ -108,8 +121,10 @@ object QueryHandler {
   }
 
   def getTargetDir(dataIdFile: File): String = {
-    val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
+    val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.JSONLD)
 
+    val stmts = dataIdModel.listStatements()
+    while (stmts.hasNext) println(stmts.next())
     val results = QueryHandler.executeQuery(DataIdQueries.queryDirStructure(), dataIdModel)
     val result = results.head
 
@@ -125,7 +140,7 @@ object QueryHandler {
   def getFileExtension(fileURL: String, dataIdFile: File): String = {
 
     val query = DataIdQueries.queryFileExtension(fileURL)
-    val model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.TURTLE)
+    val model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.JSONLD)
     val result = executeQuery(query, model)
 
     if (result.nonEmpty) {

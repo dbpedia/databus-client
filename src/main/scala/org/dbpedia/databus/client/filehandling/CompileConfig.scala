@@ -52,7 +52,7 @@ class CompileConfig(inputFile:File, cliConfig: CLI_Config) {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
 
-    val dataIdFile = inputFile.parent / "dataid.ttl"
+    val dataIdFile = inputFile.parent / "dataid.jsonld"
 
     val target_dir = File(cliConfig.target())
 

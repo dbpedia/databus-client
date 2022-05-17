@@ -8,21 +8,39 @@ object DatabusQueries {
        |
        |SELECT ?sha256
        |WHERE {
+       |GRAPH ?g {
        |  ?s dcat:downloadURL <$url>  .
        |  ?s dataid:sha256sum ?sha256 .
+       |  }
        |}
        """.stripMargin
 
-  def queryDataId (url: String): String =
+  def queryOutFile (url:String):String =
+    s"""
+       |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+       |PREFIX dct: <http://purl.org/dc/terms/>
+       |
+       |SELECT ?publisher ?group ?artifact ?version {
+       |GRAPH ?g {
+       |  ?dataset  dct:publisher ?publisher .
+       |  ?group a dataid:Group .
+       |  ?artifact a dataid:Artifact .
+       |  ?version a dataid:Version .
+       |  }
+       |}"""
+
+def queryDataId (url: String): String =
     s"""
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
        |PREFIX dcat: <http://www.w3.org/ns/dcat#>
        |
-       |SELECT DISTINCT ?dataset
+       |SELECT DISTINCT ?g
        |WHERE {
+       |GRAPH ?g {
        |  ?dataset dataid:version ?version .
        |  ?dataset dcat:distribution ?distribution .
        |  ?distribution dcat:downloadURL <$url>
+       |  }
        |}
        """.stripMargin
 
@@ -115,11 +133,12 @@ object DatabusQueries {
        |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
        |
        |SELECT DISTINCT ?file WHERE {
-       |GRAPH <http://localhost:3002/g/janni/newnew/newnew/2022-05-12/dataid.jsonld> {
+       |GRAPH ?g {
        |  	VALUES (?databusfile) {$databusFilesString}
        |  	?distribution ?o ?databusfile .
        |	  ?distribution dcat:downloadURL ?file .
-       |}}
+       |}
+       |}
        |""".stripMargin
   }
 }
