@@ -7,8 +7,9 @@ import org.apache.http.HttpHeaders
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.{BasicResponseHandler, HttpClientBuilder}
+import org.dbpedia.databus.client.Config
 import org.dbpedia.databus.client.filehandling.download.Downloader
-import org.dbpedia.databus.client.main.{CLI_Config}
+import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.dbpedia.databus.client.sparql.queries.DatabusQueries
 import org.slf4j.LoggerFactory
@@ -39,8 +40,12 @@ class SourceHandler(conf:CLI_Config) {
         handleSource(sourceFile)
       }
     }
-    else { // conf.source() is a query string
-      handleQuery(conf.source())
+    else { // conf.source() is a query string or a collection uri
+      val queryStr = {
+        if (isCollection(conf.source())) getQueryOfCollection(conf.source())
+        else conf.source()
+      }
+      handleQuery(queryStr)
     }
   }
 
@@ -76,17 +81,9 @@ class SourceHandler(conf:CLI_Config) {
    *
    * @param query sparql query
    */
-  def handleQuery(query: String):Unit = {
-
-    var queryStr = {
-      if (isCollection(query)) getQueryOfCollection(query)
-      else query
-    }
+  def handleQuery(queryStr: String):Unit = {
 
     printTask("query", queryStr, File(conf.target()).pathAsString)
-
-    //necessary due collection queries query the permament DBpedia URIs not the actual download links
-    if(isCollection(query)) queryStr = DatabusQueries.queryDownloadURLOfDatabusFiles(QueryHandler.executeDownloadQuery(queryStr))
 
     println("DOWNLOAD TOOL:")
 

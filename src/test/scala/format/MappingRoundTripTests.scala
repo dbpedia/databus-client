@@ -5,8 +5,7 @@ import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory, Statemen
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
-import org.dbpedia.databus.client.filehandling.CompileConfig
-import org.dbpedia.databus.client.filehandling.convert.Spark
+import org.dbpedia.databus.client.filehandling.convert.{ConvertConfig, Spark}
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler

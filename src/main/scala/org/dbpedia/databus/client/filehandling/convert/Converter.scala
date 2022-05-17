@@ -4,7 +4,7 @@ import better.files.File
 import org.apache.jena.graph.Triple
 import org.apache.jena.sparql.core.Quad
 import org.apache.spark.rdd.RDD
-import org.dbpedia.databus.client.filehandling.{CompileConfig, Config}
+import org.dbpedia.databus.client.Config
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.quads.QuadsHandler
 import org.dbpedia.databus.client.filehandling.convert.format.rdf.triples.TripleHandler
 import org.dbpedia.databus.client.filehandling.convert.format.tsd.TSDHandler
@@ -27,7 +27,7 @@ object Converter {
    * @param file    input file
    * @return converted file
    */
-  def convert(file: File, conf:CompileConfig): File = {
+  def convert(file: File, conf:ConvertConfig): File = {
 
     if (RDF_TRIPLES.contains(conf.outFormat)) { // convert to RDF_Triples
       val tripleHandler = new TripleHandler()

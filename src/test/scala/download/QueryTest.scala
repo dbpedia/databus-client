@@ -1,8 +1,10 @@
 package download
 
 import org.apache.jena.query._
+import org.apache.jena.rdf.model.Model
+import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
 import org.dbpedia.databus.client.sparql.QueryHandler
-import org.dbpedia.databus.client.sparql.queries.DatabusQueries
+import org.dbpedia.databus.client.sparql.queries.{DataIdQueries, DatabusQueries}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class QueryTest extends AnyFlatSpec {
@@ -78,5 +80,27 @@ class QueryTest extends AnyFlatSpec {
 //  "mappings" should "be queried" in {
 //    QueryHandler.getMapping("https://databus.dbpedia.org/kurzum/mastr/bnetza-mastr/01.04.00/bnetza-mastr_rli_type=hydro.csv.bz2").foreach(println(_))
 //  }
+
+  "query" should "work for dataid" in {
+
+    val dataIdModel: Model = RDFDataMgr.loadModel("./target/databus.tmp/cache_dir/janni/newnew/newnew/2022-05-12/dataid.jsonld", RDFLanguages.JSONLD)
+
+    var query = s"""
+                   |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+                   |PREFIX dct: <http://purl.org/dc/terms/>
+                   |
+                   |SELECT ?publisher ?group ?artifact ?version {
+                   |  ?dataset  dct:publisher ?publisher .
+                   |  ?group a dataid:Group .
+                   |  ?artifact a dataid:Artifact .
+                   |  ?version a dataid:Version .
+       |}
+    """.stripMargin
+
+    val results = QueryHandler.executeQuery(query, dataIdModel)
+    val result = results.head
+
+    println(result)
+  }
 
 }

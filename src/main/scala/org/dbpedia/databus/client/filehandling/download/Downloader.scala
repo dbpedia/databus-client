@@ -2,9 +2,9 @@ package org.dbpedia.databus.client.filehandling.download
 
 import java.io.{FileNotFoundException, FileOutputStream, FileWriter, IOException}
 import java.net.URL
-
 import better.files.File
 import org.apache.commons.io.IOUtils
+import org.dbpedia.databus.client.Config
 import org.dbpedia.databus.client.filehandling.FileUtil
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
@@ -15,51 +15,63 @@ object Downloader {
     * Download all files of Download-Query
     *
     * @param queryString downloadQuery
-    * @param targetdir directory for downloaded files
+    * @param targetDir directory for downloaded files
     * @param overwrite overwrite already downloaded files
     * @return Seq of shas of downloaded files
     */
-  def downloadWithQuery(queryString: String, targetdir: File, overwrite: Boolean = false): Seq[String] = {
-    val results = QueryHandler.executeDownloadQuery(queryString)
+  def downloadWithQuery(queryString: String, targetDir: File, overwrite: Boolean = false): Seq[String] = {
+    val fileIRIs = QueryHandler.executeSingleVarQuery(queryString)
     var allSHAs = Seq.empty[String]
 
     println("--------------------------------------------------------")
     println("Files to download:")
 
-    results.foreach(fileIRI => {
-      val fileSHA = QueryHandler.getSHA256Sum(fileIRI)
+    fileIRIs.foreach(fileIRI => {
+      val fileInfoOption = QueryHandler.getFileInfo(fileIRI)
 
-      val file = getOutputFile(fileIRI)
+        if (fileInfoOption.isDefined) {
+          val fileInfo: DownloadConfig = fileInfoOption.get
+          val outputFile = fileInfo.getOutputFile(targetDir)
 
-      if (fileSHA != "") {
-        if (overwrite) {
-          downloadFile(fileIRI, fileSHA, targetdir, file) match {
-            case Some(file: File) => allSHAs = allSHAs :+ fileSHA
-            case None => ""
-          }
-        }
-        else {
-          if (!FileUtil.checkIfFileInCache(targetdir, fileSHA)) {
-            downloadFile(fileIRI, fileSHA, targetdir, file) match {
-                case Some(file: File) => allSHAs = allSHAs :+ fileSHA
-                case None => ""
+          def downloadFileWithShaLog(): Unit ={
+            downloadFile(fileInfo.downloadURL, fileInfo.sha, outputFile) match {
+              case Some(downloadedFile: File) =>
+                allSHAs = allSHAs :+ fileInfo.sha
+                //log sha of file and link to file in cache
+                val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
+                fw.append(s"${fileInfo.sha}\t${outputFile.pathAsString}\n")
+                fw.close()
+              case None => ""
             }
           }
-          else {
-            println(s"$fileIRI --> already exists in Cache")
-            allSHAs = allSHAs :+ fileSHA
+
+          if (overwrite) {
+            downloadFileWithShaLog
           }
+          else {
+            if (!FileUtil.checkIfFileInCache(targetDir, fileInfo.sha)) {
+              downloadFileWithShaLog
+            }
+            else {
+              println(s"$fileIRI --> already exists in Cache")
+              allSHAs = allSHAs :+ fileInfo.sha
+            }
+          }
+        } else {
+          ""
         }
-      }
     })
+
 
     allSHAs
   }
 
-  def getOutputFile(iri:String):File={
-    QueryHandler.executeQuery()
 
-  }
+
+//  def getOutputFile(iri:String):File={
+//    QueryHandler.executeQuery()
+//
+//  }
   /**
     * Download a file and its dataID-file and record it in the cache(shas.txt)
     *
@@ -68,17 +80,18 @@ object Downloader {
     * @param targetDir target directory
     * @return Boolean, return true if download succeeded
     */
-  def downloadFile(url: String, sha: String, targetDir: File, file: File): Option[File] = {
+  def downloadFile(url: String, sha: String, file: File): Option[File] = {
 
+    val tempFile = Config.cache / (url.splitAt(url.lastIndexOf("/")+1)._2)
     var correctFileTransfer = false
 
-    //repeat download 5 times if file transfer errors occure
+    //try to download file 3 times if file transfer errors occure
     (0 to 4).iterator
       .takeWhile(_ => !correctFileTransfer)
       .foreach(_ => {
-        Downloader.downloadUrlToFile(new URL(url), file, createParentDirectory = true)
+        Downloader.downloadUrlToFile(new URL(url), tempFile, createParentDirectory = true)
         try {
-          correctFileTransfer = FileUtil.checkSum(file, sha)
+          correctFileTransfer = FileUtil.checkSum(tempFile, sha)
         } catch {
           case fileNotFoundException: FileNotFoundException => ""
         }
@@ -91,11 +104,10 @@ object Downloader {
       return None
     }
 
-    val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
-    fw.append(s"$sha\t${file.pathAsString}\n")
-    fw.close()
+    file.parent.createDirectoryIfNotExists()
+    tempFile.moveTo(file)
 
-
+    //
     val dataIdFile = file.parent / "dataid.jsonld"
 
     if (!dataIdFile.exists()) { //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
@@ -108,20 +120,7 @@ object Downloader {
     Some(file)
   }
 
-  /**
-    * Download URL to a directory (and create subdirectories depending on slashes of url)
-    *
-    * @param url downloadURL
-    * @param directory target
-    * @param createDirectory create directory
-    * @param skipIfExists skip download if file already exists
-    */
-  def downloadUrlToDirectory(url: URL, directory: File,
-                             createDirectory: Boolean = false, skipIfExists: Boolean = false): Unit = {
 
-    val file = directory / url.getFile.split("/").last
-    if (!(skipIfExists && file.exists)) downloadUrlToFile(url, file, createDirectory)
-  }
 
   /**
     * Download URL to a file
@@ -153,6 +152,21 @@ object Downloader {
     }
 
   }
+
+//  /**
+//   * Download URL to a directory (and create subdirectories depending on slashes of url)
+//   *
+//   * @param url downloadURL
+//   * @param directory target
+//   * @param createDirectory create directory
+//   * @param skipIfExists skip download if file already exists
+//   */
+//  def downloadUrlToDirectory(url: URL, directory: File,
+//                             createDirectory: Boolean = false, skipIfExists: Boolean = false): Unit = {
+//
+//    val file = directory / url.getFile.split("/").last
+//    if (!(skipIfExists && file.exists)) downloadUrlToFile(url, file, createDirectory)
+//  }
 
 
 }

@@ -8,7 +8,9 @@ import org.apache.jena.JenaRuntime
 import org.apache.jena.query._
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
+import org.dbpedia.databus.client.Config
 import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
+import org.dbpedia.databus.client.filehandling.download.DownloadConfig
 import org.dbpedia.databus.client.sparql.queries.{DataIdQueries, DatabusQueries, MappingQueries}
 import org.slf4j.{Logger, LoggerFactory}
 import org.yaml.snakeyaml.Yaml
@@ -16,19 +18,20 @@ import org.yaml.snakeyaml.constructor.Constructor
 
 import scala.beans.BeanProperty
 
-class ClientConfig {
-  @BeanProperty var endpoint = ""
-}
+//class ClientConfig {
+//  @BeanProperty var endpoint = ""
+//}
 
 object QueryHandler {
 
 
-  val service:String = readYamlConfig(File("config.yml")).endpoint
-
-  def readYamlConfig(file: File): ClientConfig = {
-    val yaml = new Yaml(new Constructor(classOf[ClientConfig]))
-    yaml.load(file.newFileInputStream).asInstanceOf[ClientConfig]
-  }
+    val service:String = Config.endpoint
+//  val service:String = readYamlConfig(File("config.yml")).endpoint
+//
+//  def readYamlConfig(file: File): ClientConfig = {
+//    val yaml = new Yaml(new Constructor(classOf[ClientConfig]))
+//    yaml.load(file.newFileInputStream).asInstanceOf[ClientConfig]
+//  }
 
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
@@ -57,42 +60,48 @@ object QueryHandler {
     resultSeq
   }
 
-  def executeDownloadQuery(queryString: String): Seq[String] = {
+  def executeSingleVarQuery(queryString: String): Seq[String] = {
 
-    val result = executeQuery(queryString)
-
-    println(result)
-    val sparqlVar = result.head.varNames().next()
-
-    result.map(querySolution => querySolution.getResource(sparqlVar).toString)
-
+    val results = executeQuery(queryString)
+    val sparqlVar = results.head.varNames().next()
+    results.map(querySolution => querySolution.getResource(sparqlVar).toString)
   }
 
-  def getSHA256Sum(url: String): String = {
+//  def getSHA256Sum(url: String): String = {
+//
+//    val results = executeQuery(DatabusQueries.querySha256(url))
+//
+//    try{
+//      val sparqlVar = results.head.varNames().next()
+//      results.head.getLiteral(sparqlVar).getString
+//    } catch {
+//      case noSuchElementException: NoSuchElementException =>
+//        logger.error(s"No Sha Sum found for $url")
+//        ""
+//    }
+//
+//  }
 
-    val results = executeQuery(DatabusQueries.querySha256(url))
+  def getFileInfo(url:String): Option[DownloadConfig] ={
+    val results = executeQuery(DatabusQueries.queryFileInfo(url))
 
     try{
-      val sparqlVar = results.head.varNames().next()
-      results.head.getLiteral(sparqlVar).getString
+      val result = results.head
+
+      val publisher = result.getResource("?publisher").toString.split("/").last.split("#").head.trim
+      val group = result.getResource("?group").toString.split("/").last.trim
+      val artifact = result.getResource("?artifact").toString.split("/").last.trim
+      val version = result.getResource("?version").toString.split("/").last.trim
+      val fileName = result.getResource("?distribution").toString.split("#").last.trim
+      val downloadURL = result.getResource("?downloadURL").toString
+      val sha256 = result.getLiteral("?sha256").getLexicalForm
+      val dataid = result.getResource("?dataid").getURI
+
+      Option(new DownloadConfig(downloadURL = downloadURL, dataidURL = dataid, sha = sha256, publisher = publisher, group = group, artifact = artifact, version = version, fileName = fileName))
     } catch {
       case noSuchElementException: NoSuchElementException =>
-        logger.error(s"No Sha Sum found for $url")
-        ""
-    }
-
-  }
-
-  def getOutputFile(url:String): File ={
-    val results = executeQuery(DatabusQueries.querySha256(url))
-
-    try{
-      val sparqlVar = results.head.varNames().next()
-      results.head.getLiteral(sparqlVar).getString
-    } catch {
-      case noSuchElementException: NoSuchElementException =>
-        logger.error(s"No Sha Sum found for $url")
-        File("")
+        logger.error(s"No File Info found for $url")
+        None
     }
   }
 
@@ -123,13 +132,11 @@ object QueryHandler {
   def getTargetDir(dataIdFile: File): String = {
     val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.JSONLD)
 
-    val stmts = dataIdModel.listStatements()
-    while (stmts.hasNext) println(stmts.next())
     val results = QueryHandler.executeQuery(DataIdQueries.queryDirStructure(), dataIdModel)
     val result = results.head
 
     //split the URI at the slashes and take the last cell
-    val publisher = result.getResource("?publisher").toString.split("/").last.trim
+    val publisher = result.getResource("?publisher").toString.split("/").last.split("#").head.trim
     val group = result.getResource("?group").toString.split("/").last.trim
     val artifact = result.getResource("?artifact").toString.split("/").last.trim
     val version = result.getResource("?version").toString.split("/").last.trim

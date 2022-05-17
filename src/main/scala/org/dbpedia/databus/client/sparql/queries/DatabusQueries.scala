@@ -15,6 +15,31 @@ object DatabusQueries {
        |}
        """.stripMargin
 
+  def queryFileInfo (fileURL:String):String =
+    s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+       |PREFIX dcat: <http://www.w3.org/ns/dcat#>
+       |PREFIX dct: <http://purl.org/dc/terms/>
+       |
+       |SELECT ?downloadURL ?sha256 ?publisher ?group ?artifact ?version ?distribution ?dataid {
+       |GRAPH ?dataid {
+       |  ?distribution dataid:file <$fileURL> .
+       |  ?distribution dcat:downloadURL ?downloadURL .
+       |  ?distribution dataid:sha256sum ?sha256 .
+       |
+       |  ?dataset dcat:distribution ?distribution .
+       |  ?dataset dct:publisher ?publisher .
+       |  ?dataset dataid:artifact ?artifact .
+       |  ?dataset dataid:group ?group .
+       |  ?dataset dataid:version ?version .
+       |
+       |  ?group a dataid:Group .
+       |
+       |  ?artifact a dataid:Artifact .
+       |
+       |  ?version a dataid:Version .
+       |  }
+       |}""".stripMargin
+
   def queryOutFile (url:String):String =
     s"""
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
@@ -27,7 +52,7 @@ object DatabusQueries {
        |  ?artifact a dataid:Artifact .
        |  ?version a dataid:Version .
        |  }
-       |}"""
+       |}""".stripMargin
 
 def queryDataId (url: String): String =
     s"""
