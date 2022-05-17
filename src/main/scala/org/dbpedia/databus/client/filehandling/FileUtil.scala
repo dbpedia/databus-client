@@ -246,25 +246,25 @@ object FileUtil {
    */
   def getFormatTypeWithDataID(inputFile: File): String = {
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
-    val source = Source.fromFile((inputFile.parent / "dataid.jsonld").toJava, "UTF-8")
-    val lines = source.getLines().filter(_ contains s"${inputFile.name}")
-
-    val regex = s"<\\S*#${inputFile.name}\\S*>".r
-    var fileURL = ""
-
-    import scala.util.control.Breaks.{break, breakable}
-
-    for (line <- lines) {
-      breakable {
-        for (x <- regex.findAllMatchIn(line)) {
-          fileURL = x.toString().replace(">", "").replace("<", "")
-          break
-        }
-      }
-    }
-
-    source.close()
-    QueryHandler.getFileExtension(fileURL, inputFile.parent / "dataid.jsonld")
+//    val source = Source.fromFile((inputFile.parent / "dataid.jsonld").toJava, "UTF-8")
+//    val lines = source.getLines().filter(_ contains s"${inputFile.name}")
+//
+//    val regex = s"<\\S*#${inputFile.name}\\S*>".r
+//    var fileURL = ""
+//
+//    import scala.util.control.Breaks.{break, breakable}
+//
+//    for (line <- lines) {
+//      breakable {
+//        for (x <- regex.findAllMatchIn(line)) {
+//          fileURL = x.toString().replace(">", "").replace("<", "")
+//          break
+//        }
+//      }
+//    }
+//
+//    source.close()
+    QueryHandler.getFileExtension(inputFile)
   }
 
 

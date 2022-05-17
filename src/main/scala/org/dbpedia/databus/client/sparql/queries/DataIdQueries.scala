@@ -16,11 +16,12 @@ object DataIdQueries {
     """.stripMargin
   }
 
-  def queryFileExtension(fileURL: String): String = {
+  def queryFileExtension(fileName: String): String = {
     s"""
        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
        |SELECT ?type {
-       |  <$fileURL> dataid:formatExtension ?type .
+       |  ?distribution dataid:formatExtension ?type .
+       |  FILTER regex(str(?distribution), "#$fileName") .
        |}
     """.stripMargin
   }

@@ -144,10 +144,11 @@ object QueryHandler {
     s"$publisher/$group/$artifact/$version"
   }
 
-  def getFileExtension(fileURL: String, dataIdFile: File): String = {
+  def getFileExtension(file:File): String = {
 
-    val query = DataIdQueries.queryFileExtension(fileURL)
-    val model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.JSONLD)
+    val query = DataIdQueries.queryFileExtension(file.name)
+
+    val model = RDFDataMgr.loadModel((file.parent / "dataid.jsonld").pathAsString, RDFLanguages.JSONLD)
     val result = executeQuery(query, model)
 
     if (result.nonEmpty) {
