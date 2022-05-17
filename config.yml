@@ -1,0 +1,2 @@
+endpoint: http://localhost:3000/sparql
+  #https://databus.dbpedia.org/repo/sparql

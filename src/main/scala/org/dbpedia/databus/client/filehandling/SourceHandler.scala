@@ -2,15 +2,18 @@ package org.dbpedia.databus.client.filehandling
 
 import better.files.File
 import org.apache.commons.io.FileUtils
+import org.apache.hadoop.shaded.com.fasterxml.jackson.databind.BeanProperty
 import org.apache.http.HttpHeaders
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.{BasicResponseHandler, HttpClientBuilder}
 import org.dbpedia.databus.client.filehandling.download.Downloader
-import org.dbpedia.databus.client.main.CLI_Config
+import org.dbpedia.databus.client.main.{CLI_Config}
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.dbpedia.databus.client.sparql.queries.DatabusQueries
 import org.slf4j.LoggerFactory
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.Constructor
 
 
 class SourceHandler(conf:CLI_Config) {
@@ -21,6 +24,8 @@ class SourceHandler(conf:CLI_Config) {
 
   val cache: File = Config.cache
   val fileHandler = new FileHandler(conf)
+
+
 
   def execute(): Unit={
     if (File(conf.source()).exists()) {
@@ -151,7 +156,7 @@ class SourceHandler(conf:CLI_Config) {
    * @return
    */
   def isCollection(str: String): Boolean = {
-    val collection = """http[s]?://databus.dbpedia.org/.*/collections/.*""".r
+    val collection = """http[s]?://.*/collections/.*""".r
     str match {
       case collection(_*) => true
       case _ => false

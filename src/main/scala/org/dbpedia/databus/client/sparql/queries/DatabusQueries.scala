@@ -115,10 +115,11 @@ object DatabusQueries {
        |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
        |
        |SELECT DISTINCT ?file WHERE {
+       |GRAPH <http://localhost:3002/g/janni/newnew/newnew/2022-05-12/dataid.jsonld> {
        |  	VALUES (?databusfile) {$databusFilesString}
        |  	?distribution ?o ?databusfile .
        |	  ?distribution dcat:downloadURL ?file .
-       |}
+       |}}
        |""".stripMargin
   }
 }

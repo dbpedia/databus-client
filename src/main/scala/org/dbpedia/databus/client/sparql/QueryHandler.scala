@@ -11,10 +11,25 @@ import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
 import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
 import org.dbpedia.databus.client.sparql.queries.{DataIdQueries, DatabusQueries, MappingQueries}
 import org.slf4j.{Logger, LoggerFactory}
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.Constructor
+
+import scala.beans.BeanProperty
+
+class ClientConfig {
+  @BeanProperty var endpoint = ""
+}
 
 object QueryHandler {
 
-  val service = "https://databus.dbpedia.org/repo/sparql"
+
+  val service:String = readYamlConfig(File("config.yml")).endpoint
+
+  def readYamlConfig(file: File): ClientConfig = {
+    val yaml = new Yaml(new Constructor(classOf[ClientConfig]))
+    yaml.load(file.newFileInputStream).asInstanceOf[ClientConfig]
+  }
+
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def executeQuery(queryString: String, model:Model = ModelFactory.createDefaultModel()): Seq[QuerySolution] = {
@@ -45,6 +60,8 @@ object QueryHandler {
   def executeDownloadQuery(queryString: String): Seq[String] = {
 
     val result = executeQuery(queryString)
+
+    println(result)
     val sparqlVar = result.head.varNames().next()
 
     result.map(querySolution => querySolution.getResource(sparqlVar).toString)
