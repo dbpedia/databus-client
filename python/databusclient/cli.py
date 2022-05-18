@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import typer
 from typing import List
-from databusclient.deploy import createDataset
-from databusclient.deploy import deploy as dep
+from databusclient.client import createDataset, deploy
 
 
 app = typer.Typer()
@@ -20,7 +19,7 @@ def deploy(
 ):
     typer.echo(versionId)
     dataid = createDataset(versionId,title,abstract,description,license,distributions)
-    dep(dataid=dataid,api_key=apikey)
+    deploy(dataid=dataid,api_key=apikey)
 
 
 @app.command()
