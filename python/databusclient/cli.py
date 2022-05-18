@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import typer
 from typing import List
-from databusclient.client import createDataset, deploy
-
+from databusclient import client
 
 app = typer.Typer()
 
@@ -18,12 +17,12 @@ def deploy(
     distributions: List[str] = typer.Argument(..., help="distributions in the form of List[URL|CV] where URL is the download URL and CV the key=value pairs (_ separted) content variants of a distribution")
 ):
     typer.echo(versionId)
-    dataid = createDataset(versionId,title,abstract,description,license,distributions)
-    deploy(dataid=dataid,api_key=apikey)
+    dataid = client.createDataset(versionId,title,abstract,description,license,distributions)
+    client.deploy(dataid=dataid,api_key=apikey)
 
 
 @app.command()
-def downoad(collection: str):
+def download(collection: str):
     typer.echo(f"TODO")
 
 app()
