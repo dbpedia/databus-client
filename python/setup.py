@@ -18,9 +18,7 @@ setup(name='databusclient',
       license='Apache-2.0 License',
       packages=['databusclient'],
       install_requires=[
-            "argparse-prompt==0.0.5",
             "requests==2.27.1",
-            "urllib3==1.26.8",
             "typer==0.4.1"
       ],
       zip_safe=False,

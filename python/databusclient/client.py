@@ -1,20 +1,5 @@
-from dataclasses import dataclass
-from distutils import extension
-from distutils.log import debug
-from html.entities import name2codepoint
-from tokenize import group
 from typing import List
-import requests
-import hashlib
-import json
-
-# @dataclass
-# class Dataset:
-#     id: str
-#     title: str
-#     abstract: str
-#     documentation: str
-#     distributions: List[]
+import requests, hashlib, json
 
 __debug = True
 
@@ -58,7 +43,7 @@ def __getFileInfo(artifactName, url):
     contentVariantPart = __getCV(url)
     extensionPart, formatExtension, compression = __getExtensions(url)
 
-    if debug:
+    if __debug:
         print("DEBUG",url, extensionPart)
 
     name =f"{artifactName}{contentVariantPart}{extensionPart}"
@@ -138,7 +123,7 @@ def deploy(dataid, api_key):
 
     resp = requests.post(base, data = data, headers = headers)
     print(resp.status_code)
-    if debug:
+    if __debug:
         print("---")
         print(resp.content)
 

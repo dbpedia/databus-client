@@ -1,3 +1,3 @@
-from databusclient import cli2
+from databusclient import cli
 
-cli2.main()
+cli.main()
