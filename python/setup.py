@@ -8,7 +8,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(name='databusclient',
-      version='0.2',
+      version='0.3',
       description='A simple client for submitting data to the databus',
       long_description=README,
       long_description_content_type="text/markdown",
