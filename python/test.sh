@@ -7,4 +7,4 @@ databusclient deploy \
 	--description "Test Description" \
 	--license "http://dalicc.net/licenselibrary/AdaptivePublicLicense10" \
 	--apikey "$1" \
-	"https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml"
+	"https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml|type=swagger"

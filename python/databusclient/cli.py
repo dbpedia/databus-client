@@ -14,7 +14,7 @@ def deploy(
     description: str = typer.Option(..., help="dataset description"), 
     license: str = typer.Option(..., help="license (see dalicc.net)"),
     apikey: str = typer.Option(..., help="apikey"),
-    distributions: List[str] = typer.Argument(..., help="distributions in the form of List[URL|CV] where URL is the download URL and CV the key=value pairs (_ separted) content variants of a distribution")
+    distributions: List[str] = typer.Argument(..., help="distributions in the form of List[URL|CV|fileext|compression] where URL is the download URL and CV the key=value pairs (_ separted) content variants of a distribution. filext and compression are optional and if left out inferred from the path.")
 ):
     typer.echo(versionId)
     dataid = client.createDataset(versionId,title,abstract,description,license,distributions)
