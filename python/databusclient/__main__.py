@@ -1,3 +1,3 @@
 from databusclient import cli
 
-cli.main()
+cli.app()

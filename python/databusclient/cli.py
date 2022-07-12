@@ -24,5 +24,3 @@ def deploy(
 @app.command()
 def download(collection: str):
     typer.echo(f"TODO")
-
-app()
