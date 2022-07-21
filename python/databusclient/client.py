@@ -94,7 +94,7 @@ def __getFileInfo(artifactName: str, distribution_str: str) -> Tuple[str, Dict[s
     if __debug:
         print("DEBUG", distribution_str, extensionPart)
 
-    name = f"{artifactName}{contentVariantPart}{extensionPart}"
+    name = f"{artifactName}_{contentVariantPart}{extensionPart}"
 
     __url = str(distribution_str).split("|")[0]
     resp = requests.get(__url)
