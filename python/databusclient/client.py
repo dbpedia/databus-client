@@ -5,24 +5,28 @@ import json
 
 __debug = False
 
-def __getCV(distribution_str: str) -> str:
-    
-    url_arguments = distribution_str.split("|")
+
+def __getCVs(distribution_str: str) -> Dict[str, str]:
+    args = distribution_str.split("|")
 
     # cv string is ALWAYS at position 1 after the URL
-    cv_str = url_arguments[1].strip("_")
+    cv_str = args[1].strip("_")
 
-    return f"_{cv_str}"
+    cvs = {}
+    for kv in cv_str.split(","):
+        key, value = kv.split("=")
+        cvs[key] = value
+
+    return cvs
+
 
 def __getFiletypeDefinition(distribution_str: str) -> Tuple[Optional[str], Optional[str]]:
-
     file_ext = None
     compression = None
 
     # take everything except URL
     metadata_list = distribution_str.split("|")[1:]
 
-    
     if len(metadata_list) == 3:
         # compression and format
         file_ext = metadata_list[-2]
@@ -36,13 +40,13 @@ def __getFiletypeDefinition(distribution_str: str) -> Tuple[Optional[str], Optio
         pass
     else:
         # in any other case: unreadable arguments
-        raise ValueError(f"Cant read the arguments {metadata_list}: Only takes 1-3 elements in arguments after the URL [CVs, format, compression]")
-    
+        raise ValueError(
+            f"Cant read the arguments {metadata_list}: Only takes 1-3 elements in arguments after the URL [CVs, format, compression]")
+
     return file_ext, compression
 
 
 def __getExtensions(distribution_str: str) -> Tuple[str, str, str]:
-
     extensionPart = ""
     formatExtension, compression = __getFiletypeDefinition(distribution_str)
 
@@ -65,31 +69,32 @@ def __getExtensions(distribution_str: str) -> Tuple[str, str, str]:
     lastSegment = str(distribution_str).split("|")[0].split("/")[-1]
 
     # cut of fragments and split by dots
-    dotSplits = lastSegment.split("#")[0].rsplit(".",2)
-    
+    dotSplits = lastSegment.split("#")[0].rsplit(".", 2)
+
     if len(dotSplits) > 1:
         # if only format is given (no compression)
         formatExtension = dotSplits[-1]
         extensionPart = f".{formatExtension}"
-    
+
     if len(dotSplits) > 2:
         # if format and compression is in the filename
         compression = dotSplits[-1]
-        formatExtension = dotSplits[-2]  
+        formatExtension = dotSplits[-2]
         extensionPart = f".{formatExtension}.{compression}"
-    
+
     return (extensionPart, formatExtension, compression)
 
 
-def __getFileInfo(artifactName: str, distribution_str: str) -> Tuple[str, str, str, int, str]:
-
-    contentVariantPart = __getCV(distribution_str)
+def __getFileInfo(artifactName: str, distribution_str: str) -> Tuple[str, Dict[str, str], str, str, int, str]:
+    cvs = __getCVs(distribution_str)
     extensionPart, formatExtension, compression = __getExtensions(distribution_str)
+
+    contentVariantPart = "_".join([f"{key}={value}" for key, value in cvs.items()])
 
     if __debug:
         print("DEBUG", distribution_str, extensionPart)
 
-    name =f"{artifactName}{contentVariantPart}{extensionPart}"
+    name = f"{artifactName}{contentVariantPart}{extensionPart}"
 
     __url = str(distribution_str).split("|")[0]
     resp = requests.get(__url)
@@ -99,10 +104,10 @@ def __getFileInfo(artifactName: str, distribution_str: str) -> Tuple[str, str, s
     sha256sum = hashlib.sha256(bytes(resp.content)).hexdigest()
     contentLength = len(resp.content)
 
-    return (name, formatExtension, compression, contentLength, sha256sum)
+    return (name, cvs, formatExtension, compression, contentLength, sha256sum)
 
 
-def create_distribution(url: str, cvs: Dict[str, str], file_format: str=None, compression: str=None) -> str:
+def create_distribution(url: str, cvs: Dict[str, str], file_format: str = None, compression: str = None) -> str:
     """Creates the the identifier-string for a distribution used as downloadURLs in the createDataset function.
     url: is the URL of the dataset
     cvs: dict of content variants identifying a certain distribution (needs to be unique for each distribution in the dataset)
@@ -113,29 +118,29 @@ def create_distribution(url: str, cvs: Dict[str, str], file_format: str=None, co
     meta_string = "_".join([f"{key}={value}" for key, value in cvs.items()])
 
     # check wether to add the custom file format
-    if file_format is not None: 
+    if file_format is not None:
         meta_string += f"|{file_format}"
 
-    # check wether to addd the custom compression string
-    if compression is not None: 
+    # check wether to add the custom compression string
+    if compression is not None:
         meta_string += f"|{compression}"
 
     return f"{url}|{meta_string}"
 
-def createDataset(versionId: str, title: str, abstract: str, description: str, license: str, distributions: List[str], group_title: str=None, group_abstract: str=None, group_description: str=None) -> Dict:
 
+def createDataset(versionId: str, title: str, abstract: str, description: str, license: str, distributions: List[str],
+                  group_title: str = None, group_abstract: str = None, group_description: str = None) -> Dict:
     _versionId = str(versionId).strip("/")
-    _, accountName, groupName, artifactName, version = _versionId.rsplit("/",4)
+    _, accountName, groupName, artifactName, version = _versionId.rsplit("/", 4)
 
     # could be build from stuff above, 
     # was not sure if there are edge cases BASE=http://databus.example.org/"base"/...
-    groupId = _versionId.rsplit("/",2)[0]
+    groupId = _versionId.rsplit("/", 2)[0]
 
     distribution = []
     for dst_string in distributions:
-
         __url = str(dst_string).split("|")[0]
-        (name, formatExtension, compression, contentLength, sha256sum) = __getFileInfo(artifactName,dst_string)
+        (name, cvs, formatExtension, compression, contentLength, sha256sum) = __getFileInfo(artifactName, dst_string)
 
         entity = {
             "@id": f"{_versionId}#{name}",
@@ -147,10 +152,14 @@ def createDataset(versionId: str, title: str, abstract: str, description: str, l
             "byteSize": contentLength,
             "sha256sum": sha256sum
         }
+        # set content variants
+        for key, value in cvs.items():
+            entity[f"dcv:{key}"] = value
+
         distribution.append(entity)
 
     group_dict = {
-        "@id" : groupId,
+        "@id": groupId,
         "@type": "Group",
     }
 
@@ -160,18 +169,18 @@ def createDataset(versionId: str, title: str, abstract: str, description: str, l
             group_dict[k] = val
 
     dataset = {
-        "@context" : "https://downloads.dbpedia.org/databus/context.jsonld",
-        "@graph" : [
+        "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+        "@graph": [
             group_dict,
             {
-            "@type": "Dataset",
-            "@id": f"{_versionId}#Dataset",
-            "hasVersion": version,
-            "title": title,
-            "abstract": abstract,
-            "description": description,
-            "license": license,
-            "distribution": distribution
+                "@type": "Dataset",
+                "@id": f"{_versionId}#Dataset",
+                "hasVersion": version,
+                "title": title,
+                "abstract": abstract,
+                "description": description,
+                "license": license,
+                "distribution": distribution
             }
         ]
     }
@@ -179,16 +188,16 @@ def createDataset(versionId: str, title: str, abstract: str, description: str, l
 
 
 def deploy(dataid, api_key):
-    print(dataid)
+    print(json.dumps(dataid))
     headers = {
-      "X-API-KEY": f"{api_key}",
-      "Content-Type": "application/json"
+        "X-API-KEY": f"{api_key}",
+        "Content-Type": "application/json"
     }
     data = json.dumps(dataid)
 
-    base = "/".join(dataid['@graph'][0]['@id'].split('/')[0:3])+"/api/publish"
+    base = "/".join(dataid['@graph'][0]['@id'].split('/')[0:3]) + "/api/publish"
 
-    resp = requests.post(base, data = data, headers = headers)
+    resp = requests.post(base, data=data, headers=headers)
     print(resp.status_code)
     if __debug:
         print("---")
@@ -197,4 +206,3 @@ def deploy(dataid, api_key):
 
 if __name__ == "__main__":
     print("empty)")
-    
