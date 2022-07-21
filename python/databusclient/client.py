@@ -13,7 +13,7 @@ def __getCVs(distribution_str: str) -> Dict[str, str]:
     cv_str = args[1].strip("_")
 
     cvs = {}
-    for kv in cv_str.split(","):
+    for kv in cv_str.split("_"):
         key, value = kv.split("=")
         cvs[key] = value
 
