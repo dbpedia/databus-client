@@ -6,7 +6,7 @@ import json
 __debug = False
 
 
-def __getCVs(distribution_str: str) -> Dict[str, str]:
+def __get_content_variants(distribution_str: str) -> Dict[str, str]:
     args = distribution_str.split("|")
 
     # cv string is ALWAYS at position 1 after the URL
@@ -20,14 +20,17 @@ def __getCVs(distribution_str: str) -> Dict[str, str]:
     return cvs
 
 
-def __getFiletypeDefinition(distribution_str: str) -> Tuple[Optional[str], Optional[str]]:
+def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], Optional[str]]:
     file_ext = None
     compression = None
 
     # take everything except URL
     metadata_list = distribution_str.split("|")[1:]
 
-    if len(metadata_list) == 3:
+    if len(metadata_list) == 4:
+        file_ext = metadata_list[-3]
+        compression = metadata_list[-2]
+    elif len(metadata_list) == 3:
         # compression and format
         file_ext = metadata_list[-2]
         compression = metadata_list[-1]
@@ -41,106 +44,161 @@ def __getFiletypeDefinition(distribution_str: str) -> Tuple[Optional[str], Optio
     else:
         # in any other case: unreadable arguments
         raise ValueError(
-            f"Cant read the arguments {metadata_list}: Only takes 1-3 elements in arguments after the URL [CVs, format, compression]")
+            f"Cant read the arguments {metadata_list}: Only takes 1-3 elements in arguments after the URL [CVs, format, compression]"
+        )
 
     return file_ext, compression
 
 
-def __getExtensions(distribution_str: str) -> Tuple[str, str, str]:
-    extensionPart = ""
-    formatExtension, compression = __getFiletypeDefinition(distribution_str)
+def __get_extensions(distribution_str: str) -> Tuple[str, str, str]:
+    extension_part = ""
+    format_extension, compression = __get_filetype_definition(distribution_str)
 
-    if formatExtension is not None:
+    if format_extension is not None:
         # build the format extension (only append compression if not none)
-        extensionPart = f".{formatExtension}"
+        extension_part = f".{format_extension}"
         if compression is not None:
-            extensionPart += f".{compression}"
+            extension_part += f".{compression}"
         else:
             compression = "none"
-        return (extensionPart, formatExtension, compression)
+        return extension_part, format_extension, compression
 
     # here we go if format not explicitly set: infer it from the path
 
     # first set default values
-    formatExtension = "file"
+    format_extension = "file"
     compression = "none"
 
     # get the last segment of the URL
-    lastSegment = str(distribution_str).split("|")[0].split("/")[-1]
+    last_segment = str(distribution_str).split("|")[0].split("/")[-1]
 
     # cut of fragments and split by dots
-    dotSplits = lastSegment.split("#")[0].rsplit(".", 2)
+    dot_splits = last_segment.split("#")[0].rsplit(".", 2)
 
-    if len(dotSplits) > 1:
+    if len(dot_splits) > 1:
         # if only format is given (no compression)
-        formatExtension = dotSplits[-1]
-        extensionPart = f".{formatExtension}"
+        format_extension = dot_splits[-1]
+        extension_part = f".{format_extension}"
 
-    if len(dotSplits) > 2:
+    if len(dot_splits) > 2:
         # if format and compression is in the filename
-        compression = dotSplits[-1]
-        formatExtension = dotSplits[-2]
-        extensionPart = f".{formatExtension}.{compression}"
+        compression = dot_splits[-1]
+        format_extension = dot_splits[-2]
+        extension_part = f".{format_extension}.{compression}"
 
-    return (extensionPart, formatExtension, compression)
+    return extension_part, format_extension, compression
 
 
-def __getFileInfo(artifactName: str, distribution_str: str) -> Tuple[str, Dict[str, str], str, str, int, str]:
-    cvs = __getCVs(distribution_str)
-    extensionPart, formatExtension, compression = __getExtensions(distribution_str)
+def __get_file_stats(distribution_str: str) -> Tuple[Optional[str], Optional[int]]:
+    metadata_list = distribution_str.split("|")[1:]
+    # check whether there is the shasum:length tuple seperated by :
+    if ":" not in metadata_list[-1]:
+        return None, None
 
-    contentVariantPart = "_".join([f"{key}={value}" for key, value in cvs.items()])
+    last_arg_split = metadata_list[-1].split(":")
 
-    if __debug:
-        print("DEBUG", distribution_str, extensionPart)
+    if len(last_arg_split) != 2:
+        raise ValueError(f"Can't parse Argument {metadata_list[-1]}. Too many values, submit shasum and "
+                         f"content_length in the form of shasum:length")
 
-    name = f"{artifactName}_{contentVariantPart}{extensionPart}"
+    sha256sum = last_arg_split[0]
+    content_length = int(last_arg_split[1])
 
-    __url = str(distribution_str).split("|")[0]
-    resp = requests.get(__url)
+    return sha256sum, content_length
+
+
+def __load_file_stats(url: str) -> Tuple[str, int]:
+    resp = requests.get(url)
     if resp.status_code > 400:
-        print(f"ERROR for {__url} -> Status {str(resp.status_code)}")
+        raise requests.exceptions.RequestException(response=resp)
 
     sha256sum = hashlib.sha256(bytes(resp.content)).hexdigest()
-    contentLength = len(resp.content)
+    content_length = len(resp.content)
+    return sha256sum, content_length
 
-    return (name, cvs, formatExtension, compression, contentLength, sha256sum)
+
+def __get_file_info(
+        artifact_name: str, distribution_str: str
+) -> Tuple[str, Dict[str, str], str, str, str, int]:
+    cvs = __get_content_variants(distribution_str)
+    extension_part, format_extension, compression = __get_extensions(distribution_str)
+
+    content_variant_part = "_".join([f"{key}={value}" for key, value in cvs.items()])
+
+    if __debug:
+        print("DEBUG", distribution_str, extension_part)
+
+    name = f"{artifact_name}_{content_variant_part}{extension_part}"
+
+    sha256sum, content_length = __get_file_stats(distribution_str)
+
+    if sha256sum is None or content_length is None:
+        __url = str(distribution_str).split("|")[0]
+        sha256sum, content_length = __load_file_stats(__url)
+
+    return name, cvs, format_extension, compression, sha256sum, content_length
 
 
-def create_distribution(url: str, cvs: Dict[str, str], file_format: str = None, compression: str = None) -> str:
-    """Creates the the identifier-string for a distribution used as downloadURLs in the createDataset function.
+def create_distribution(
+        url: str, cvs: Dict[str, str], file_format: str = None, compression: str = None,
+        sha256_length_tuple: Tuple[str, int] = None
+) -> str:
+    """Creates the identifier-string for a distribution used as downloadURLs in the createDataset function.
     url: is the URL of the dataset
     cvs: dict of content variants identifying a certain distribution (needs to be unique for each distribution in the dataset)
     file_format: identifier for the file format (e.g. json). If set to None client tries to infer it from the path
-    compression: identifier for the compression format (e.g. gzip). If set to None client tries to infer it from the path   
+    compression: identifier for the compression format (e.g. gzip). If set to None client tries to infer it from the path
+    sha256_length_tuple: sha256sum and content_length of the file in the form of Tuple[shasum, length].
+    If left out file will be downloaded extra and calculated.
     """
 
     meta_string = "_".join([f"{key}={value}" for key, value in cvs.items()])
 
-    # check wether to add the custom file format
+    # check whether to add the custom file format
     if file_format is not None:
         meta_string += f"|{file_format}"
 
-    # check wether to add the custom compression string
+    # check whether to add the custom compression string
     if compression is not None:
         meta_string += f"|{compression}"
+
+    # add shasum and length if present
+    if sha256_length_tuple is not None:
+        sha256sum, content_length = sha256_length_tuple
+        meta_string += f"|{sha256sum}:{content_length}"
 
     return f"{url}|{meta_string}"
 
 
-def createDataset(versionId: str, title: str, abstract: str, description: str, license: str, distributions: List[str],
-                  group_title: str = None, group_abstract: str = None, group_description: str = None) -> Dict:
+def createDataset(
+        versionId: str,
+        title: str,
+        abstract: str,
+        description: str,
+        license: str,
+        distributions: List[str],
+        group_title: str = None,
+        group_abstract: str = None,
+        group_description: str = None,
+) -> Dict:
     _versionId = str(versionId).strip("/")
     _, accountName, groupName, artifactName, version = _versionId.rsplit("/", 4)
 
-    # could be build from stuff above, 
+    # could be build from stuff above,
     # was not sure if there are edge cases BASE=http://databus.example.org/"base"/...
     groupId = _versionId.rsplit("/", 2)[0]
 
     distribution = []
     for dst_string in distributions:
         __url = str(dst_string).split("|")[0]
-        (name, cvs, formatExtension, compression, contentLength, sha256sum) = __getFileInfo(artifactName, dst_string)
+        (
+            name,
+            cvs,
+            formatExtension,
+            compression,
+            sha256sum,
+            content_length,
+        ) = __get_file_info(artifactName, dst_string)
 
         entity = {
             "@id": f"{_versionId}#{name}",
@@ -149,8 +207,8 @@ def createDataset(versionId: str, title: str, abstract: str, description: str, l
             "formatExtension": formatExtension,
             "compression": compression,
             "downloadURL": __url,
-            "byteSize": contentLength,
-            "sha256sum": sha256sum
+            "byteSize": content_length,
+            "sha256sum": sha256sum,
         }
         # set content variants
         for key, value in cvs.items():
@@ -164,7 +222,11 @@ def createDataset(versionId: str, title: str, abstract: str, description: str, l
     }
 
     # add group metadata if set, else it can be left out
-    for k, val in [("title", group_title), ("abstract", group_abstract), ("description", group_description)]:
+    for k, val in [
+        ("title", group_title),
+        ("abstract", group_abstract),
+        ("description", group_description),
+    ]:
         if val is not None:
             group_dict[k] = val
 
@@ -180,22 +242,19 @@ def createDataset(versionId: str, title: str, abstract: str, description: str, l
                 "abstract": abstract,
                 "description": description,
                 "license": license,
-                "distribution": distribution
-            }
-        ]
+                "distribution": distribution,
+            },
+        ],
     }
     return dataset
 
 
 def deploy(dataid, api_key):
     print(json.dumps(dataid))
-    headers = {
-        "X-API-KEY": f"{api_key}",
-        "Content-Type": "application/json"
-    }
+    headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
 
-    base = "/".join(dataid['@graph'][0]['@id'].split('/')[0:3]) + "/api/publish"
+    base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3]) + "/api/publish"
 
     resp = requests.post(base, data=data, headers=headers)
     print(resp.status_code)
