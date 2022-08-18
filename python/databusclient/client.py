@@ -31,13 +31,22 @@ def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], O
         file_ext = metadata_list[-3]
         compression = metadata_list[-2]
     elif len(metadata_list) == 3:
-        # compression and format
-        file_ext = metadata_list[-2]
-        compression = metadata_list[-1]
+        # when last item is shasum:length -> only file_ext set
+        if ":" in metadata_list[-1]:
+            file_ext = metadata_list[-2]
+        else:
+            # compression and format
+            file_ext = metadata_list[-2]
+            compression = metadata_list[-1]
     elif len(metadata_list) == 2:
-        # only format -> compression is None
-        file_ext = metadata_list[-1]
-        compression = None
+        # if last argument is shasum:length -> both none
+        if ":" in metadata_list[-1]:
+            pass
+        else:
+            # only format -> compression is None
+            file_ext = metadata_list[-1]
+            compression = None
+
     elif len(metadata_list) == 1:
         # let them be None to be later inferred from URL path
         pass
