@@ -53,7 +53,8 @@ def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], O
     else:
         # in any other case: unreadable arguments
         raise ValueError(
-            f"Cant read the arguments {metadata_list}: Only takes 1-3 elements in arguments after the URL [CVs, format, compression]"
+            f"Cant read the arguments {metadata_list}: Only takes 1-4 elements in arguments after the URL [CVs, "
+            f"format, compression, shasum:length]"
         )
 
     return file_ext, compression
