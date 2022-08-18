@@ -34,19 +34,32 @@ class SourceHandler(conf:CLI_Config) {
 
       if (sourceFile.hasExtension && sourceFile.extension.get.matches(".sparql|.query")) { // conf.source() is a query file
         val queryString = FileUtil.readQueryFile(sourceFile)
-        handleQuery(queryString)
+        handleQuery(queryString, conf.endpoint())
       }
       else { // conf.source() is an already existing file or directory
         handleSource(sourceFile)
       }
     }
     else { // conf.source() is a query string or a collection uri
-      val queryStr = {
-        if (isCollection(conf.source())) getQueryOfCollection(conf.source())
-        else conf.source()
+
+      if (isCollection(conf.source())) { // conf.source() is a collection uri
+        val queryStr = getQueryOfCollection(conf.source())
+        val endpoint = { // try to guess sparql endpoint if it is not set in program variables
+          if (conf.endpoint.isDefined) conf.endpoint()
+          else conf.source().split("/").take(3).mkString("/").concat("/sparql")
+        }
+
+        println("JETZT")
+        println(endpoint)
+
+        handleQuery(queryStr, endpoint)
+      } else { // conf.source() is a query string
+        handleQuery(conf.source(), conf.endpoint())
       }
-      handleQuery(queryStr)
     }
+
+
+
   }
 
   /**
@@ -81,13 +94,13 @@ class SourceHandler(conf:CLI_Config) {
    *
    * @param query sparql query
    */
-  def handleQuery(queryStr: String):Unit = {
+  def handleQuery(queryStr: String, endpoint:String):Unit = {
 
     printTask("query", queryStr, File(conf.target()).pathAsString)
 
     println("DOWNLOAD TOOL:")
 
-    val allSHAs = Downloader.downloadWithQuery(queryStr, cache, conf.overwrite())
+    val allSHAs = Downloader.downloadWithQuery(queryStr, endpoint, cache, conf.overwrite())
 
     println("\n========================================================\n")
     println(s"CONVERSION TOOL:\n")

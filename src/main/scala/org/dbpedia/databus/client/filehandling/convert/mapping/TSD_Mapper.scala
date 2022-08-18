@@ -21,7 +21,7 @@ object TSD_Mapper {
       triples = readAsTriples(inputFile, conf.inFormat, mappingInfo)
     }
     else {
-      val possibleMappings = QueryHandler.getPossibleMappings(conf.sha)
+      val possibleMappings = QueryHandler.getPossibleMappings(conf.sha, conf.endpoint)
       breakable {
         possibleMappings.foreach(mapping => {
           val mappingInfo = QueryHandler.getMappingFileAndInfo(mapping)

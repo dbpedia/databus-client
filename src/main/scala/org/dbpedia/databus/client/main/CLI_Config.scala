@@ -25,6 +25,7 @@ For usage of parameters see below:
   footer("\nFor all other tricks, consult the documentation!")
 
   val source: ScallopOption[String] = opt[String](descr = "Set the source you want to convert. A source can either be a [file|directory] to convert already existing files, or a [query file|query string|collection URI] to convert queried files. Notice that query files must have .sparql or .query as extension to be recognized.") //default = Some("./src/resources/databus-client-testbed/format-testbed/2019.08.30/"),
+  val endpoint: ScallopOption[String] = opt[String](descr = "Set the sparql endpoint of the databus you want the data from. Note: If you are downloading data using a Collection URI, and you don't set the endpoint parameter, then the Client will guess the corresponding sparql endpoint based on the CollectionURI") //default = Some("./src/resources/databus-client-testbed/format-testbed/2019.08.30/"),
 
   val format: ScallopOption[String] = opt[String](default = Some("same"), descr = "set the file format of the output file")
   val compression: ScallopOption[String] = opt[String](default = Some("same"), descr = "set the compression format of the output file")

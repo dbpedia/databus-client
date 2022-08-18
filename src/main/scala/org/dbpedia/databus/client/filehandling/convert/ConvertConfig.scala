@@ -11,9 +11,11 @@ import java.io.FileWriter
 class ConvertConfig(inputFile:File, cliConfig: CLI_Config) {
 
   val inFile: File = inputFile
+  val target:File = File(cliConfig.target())
+  var endpoint:String = _
   var outFormat: String = cliConfig.format()
   var outCompression: String = cliConfig.compression()
-  val target:File = File(cliConfig.target())
+
   val mapping: String = cliConfig.mapping()
   val delimiter:Char = cliConfig.delimiter().toCharArray.head
   val quotation:Char = cliConfig.quotation().toCharArray.head
@@ -37,6 +39,11 @@ class ConvertConfig(inputFile:File, cliConfig: CLI_Config) {
     if (outFormat=="same") outFormat = inFormat
     if (outCompression=="same") outCompression = inCompression
     outFile = getOutputFile(inputFile, inCompression)
+
+    endpoint = {
+      if(cliConfig.endpoint.isDefined) cliConfig.endpoint()
+      else Config.endpoint
+    }
 
     this
   }

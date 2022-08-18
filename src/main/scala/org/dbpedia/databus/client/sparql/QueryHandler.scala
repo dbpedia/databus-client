@@ -1,7 +1,7 @@
 package org.dbpedia.databus.client.sparql
 
 import java.io.FileNotFoundException
-import java.net.URL
+import java.net.{URL, UnknownHostException}
 import better.files.File
 import org.apache.commons.io.FileUtils
 import org.apache.jena.JenaRuntime
@@ -24,8 +24,7 @@ import scala.beans.BeanProperty
 
 object QueryHandler {
 
-
-    val service:String = Config.endpoint
+//    val service:String = Config.endpoint
 //  val service:String = readYamlConfig(File("config.yml")).endpoint
 //
 //  def readYamlConfig(file: File): ClientConfig = {
@@ -35,14 +34,14 @@ object QueryHandler {
 
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  def executeQuery(queryString: String, model:Model = ModelFactory.createDefaultModel()): Seq[QuerySolution] = {
+  def executeQuery(queryString: String, source:Either[String, Model]): Seq[QuerySolution] = {
 
     JenaRuntime.isRDF11 = false
 
     val query: Query = QueryFactory.create(queryString)
     val qexec: QueryExecution = {
-      if(model.isEmpty) QueryExecutionFactory.sparqlService(service,query)
-      else QueryExecutionFactory.create(query,model)
+      if(source.isLeft) QueryExecutionFactory.sparqlService(source.left.get,query)
+      else QueryExecutionFactory.create(query,source.right.get)
     }
 
 //    println(query)
@@ -60,9 +59,9 @@ object QueryHandler {
     resultSeq
   }
 
-  def executeSingleVarQuery(queryString: String): Seq[String] = {
+  def executeSingleVarQuery(queryString: String, source:Either[String, Model]): Seq[String] = {
 
-    val results = executeQuery(queryString)
+    val results = executeQuery(queryString, source)
     val sparqlVar = results.head.varNames().next()
     results.map(querySolution => querySolution.getResource(sparqlVar).toString)
   }
@@ -82,8 +81,8 @@ object QueryHandler {
 //
 //  }
 
-  def getFileInfo(url:String): Option[DownloadConfig] ={
-    val results = executeQuery(DatabusQueries.queryFileInfo(url))
+  def getFileInfo(url:String, endpoint:String): Option[DownloadConfig] ={
+    val results = executeQuery(DatabusQueries.queryFileInfo(url), Left(endpoint))
 
     try{
       val result = results.head
@@ -106,9 +105,9 @@ object QueryHandler {
   }
 
 
-  def downloadDataIdFile(url: String, dataIdFile: File): Boolean = {
+  def downloadDataIdFile(url: String, dataIdFile: File, endpoint: String): Boolean = {
 
-    val result = executeQuery(DatabusQueries.queryDataId(url))
+    val result = executeQuery(DatabusQueries.queryDataId(url), Left(endpoint))
 
     if (result.nonEmpty) {
       val sparqlVar = result.head.varNames().next()
@@ -119,7 +118,10 @@ object QueryHandler {
         true
       } catch {
         case fileNotFoundException: FileNotFoundException =>
-          LoggerFactory.getLogger("DownloadLogger").error(s"dataID URL: $dataIdURL not found.")
+          LoggerFactory.getLogger("DownloadLogger").error(s"$dataIdURL not found.")
+          false
+        case unknownHostException: UnknownHostException =>
+          LoggerFactory.getLogger("DownloadLogger").error(s"$dataIdURL: Host not reachable.")
           false
       }
 
@@ -132,7 +134,7 @@ object QueryHandler {
   def getTargetDir(dataIdFile: File): String = {
     val dataIdModel: Model = RDFDataMgr.loadModel(dataIdFile.pathAsString, RDFLanguages.JSONLD)
 
-    val results = QueryHandler.executeQuery(DataIdQueries.queryDirStructure(), dataIdModel)
+    val results = executeQuery(DataIdQueries.queryDirStructure(), Right(dataIdModel))
     val result = results.head
 
     //split the URI at the slashes and take the last cell
@@ -149,7 +151,7 @@ object QueryHandler {
     val query = DataIdQueries.queryFileExtension(file.name)
 
     val model = RDFDataMgr.loadModel((file.parent / "dataid.jsonld").pathAsString, RDFLanguages.JSONLD)
-    val result = executeQuery(query, model)
+    val result = executeQuery(query, Right(model))
 
     if (result.nonEmpty) {
       val sparqlVar = result.head.varNames().next()
@@ -160,22 +162,23 @@ object QueryHandler {
     }
 
   }
+//
+//  def getMediaTypes(list: Seq[String]): Seq[String] = {
+//    val files = list.mkString("> , <")
+//
+//    val queryStr = DatabusQueries.queryMediaType(files)
+//    val result = executeQuery(queryStr)
+//
+//    val sparqlVar = result.head.varNames().next()
+//
+//    result.map(querySolution => querySolution.getResource(sparqlVar).toString)
+//  }
 
-  def getMediaTypes(list: Seq[String]): Seq[String] = {
-    val files = list.mkString("> , <")
-
-    val queryStr = DatabusQueries.queryMediaType(files)
-    val result = executeQuery(queryStr)
-
-    val sparqlVar = result.head.varNames().next()
-
-    result.map(querySolution => querySolution.getResource(sparqlVar).toString)
-  }
-
-  def getPossibleMappings(sha: String): Seq[String] = {
+  def getPossibleMappings(sha: String, service:String): Seq[String] = {
 
     val results = executeQuery(
-      DatabusQueries.queryMappingInfoFile(sha)
+      DatabusQueries.queryMappingInfoFile(sha),
+      Left(service)
     )
 
     if (results.nonEmpty) {
@@ -206,7 +209,7 @@ object QueryHandler {
 
     val result = executeQuery(
       MappingQueries.queryMappingFileAndInfo(mappingInfoFile),
-      mappingModel
+      Right(mappingModel)
     )
 
     if (result.nonEmpty) {
@@ -219,7 +222,7 @@ object QueryHandler {
     else {
       val result = executeQuery(
         MappingQueries.queryMappingFile(mappingInfoFile),
-        mappingModel
+        Right(mappingModel)
       ).head
 
       val sparqlVar = result.varNames().next()

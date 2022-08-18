@@ -19,15 +19,15 @@ object Downloader {
     * @param overwrite overwrite already downloaded files
     * @return Seq of shas of downloaded files
     */
-  def downloadWithQuery(queryString: String, targetDir: File, overwrite: Boolean = false): Seq[String] = {
-    val fileIRIs = QueryHandler.executeSingleVarQuery(queryString)
+  def downloadWithQuery(queryString: String, endpoint: String, targetDir: File, overwrite: Boolean = false): Seq[String] = {
+    val fileIRIs = QueryHandler.executeSingleVarQuery(queryString, Left(endpoint))
     var allSHAs = Seq.empty[String]
 
     println("--------------------------------------------------------")
     println("Files to download:")
 
     fileIRIs.foreach(fileIRI => {
-      val fileInfoOption = QueryHandler.getFileInfo(fileIRI)
+      val fileInfoOption = QueryHandler.getFileInfo(fileIRI, endpoint)
 
         if (fileInfoOption.isDefined) {
           val fileInfo: DownloadConfig = fileInfoOption.get
@@ -41,6 +41,12 @@ object Downloader {
                 val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
                 fw.append(s"${fileInfo.sha}\t${outputFile.pathAsString}\n")
                 fw.close()
+
+                //check if belonging dataid.ttl exists. If not, download it.
+                val dataIdFile = downloadedFile.parent / "dataid.jsonld"
+                if (!dataIdFile.exists()) {
+                  QueryHandler.downloadDataIdFile(fileInfo.downloadURL, dataIdFile, endpoint)
+                }
               case None => ""
             }
           }
@@ -105,17 +111,7 @@ object Downloader {
     }
 
     file.parent.createDirectoryIfNotExists()
-    tempFile.moveTo(file)
-
-    //
-    val dataIdFile = file.parent / "dataid.jsonld"
-
-    if (!dataIdFile.exists()) { //if no dataid.ttl File in directory of downloaded file, then download the belongig dataid.ttl
-      if(!QueryHandler.downloadDataIdFile(url, dataIdFile)) {
-        println("couldn't query dataidfile")
-        LoggerFactory.getLogger("DataID-Logger").error("couldn't query dataidfile")
-      }
-    }
+    tempFile.moveTo(file, true)
 
     Some(file)
   }

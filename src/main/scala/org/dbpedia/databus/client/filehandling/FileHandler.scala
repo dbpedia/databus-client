@@ -6,7 +6,6 @@ import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
 import org.dbpedia.databus.client.filehandling.convert.{ConvertConfig, Converter}
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.client.main.CLI_Config
-import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
 import java.io._

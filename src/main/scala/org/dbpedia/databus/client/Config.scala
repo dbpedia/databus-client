@@ -4,9 +4,7 @@ import better.files.File
 
 object Config {
 
-  val endpoint = "http://localhost:3000/sparql"
-  val graphsURI = "http://localhost:3002/g/"
-
+  val endpoint = "https://dev.databus.dbpedia.org/sparql"
   val cache: File = File("./target/databus.tmp/cache_dir/")
 
   //supported file formats in its equivalence classes
