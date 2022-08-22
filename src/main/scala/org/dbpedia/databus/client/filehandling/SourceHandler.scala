@@ -49,9 +49,6 @@ class SourceHandler(conf:CLI_Config) {
           else conf.source().split("/").take(3).mkString("/").concat("/sparql")
         }
 
-        println("JETZT")
-        println(endpoint)
-
         handleQuery(queryStr, endpoint)
       } else { // conf.source() is a query string
         handleQuery(conf.source(), conf.endpoint())
