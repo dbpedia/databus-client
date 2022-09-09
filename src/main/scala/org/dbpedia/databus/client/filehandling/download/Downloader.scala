@@ -27,7 +27,8 @@ object Downloader {
     println("Files to download:")
 
     fileIRIs.foreach(fileIRI => {
-      val fileInfoOption = QueryHandler.getFileInfo(fileIRI, endpoint)
+      val fileEndpoint = fileIRI.split("/").take(3).mkString("/").concat("/sparql")
+      val fileInfoOption = QueryHandler.getFileInfo(fileIRI, fileEndpoint)
 
         if (fileInfoOption.isDefined) {
           val fileInfo: DownloadConfig = fileInfoOption.get
@@ -45,7 +46,7 @@ object Downloader {
                 //check if belonging dataid.ttl exists. If not, download it.
                 val dataIdFile = downloadedFile.parent / "dataid.jsonld"
                 if (!dataIdFile.exists()) {
-                  QueryHandler.downloadDataIdFile(fileInfo.downloadURL, dataIdFile, endpoint)
+                  QueryHandler.downloadDataIdFile(fileInfo.downloadURL, dataIdFile, fileEndpoint)
                 }
               case None => ""
             }

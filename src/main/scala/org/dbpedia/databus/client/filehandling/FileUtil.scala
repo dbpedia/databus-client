@@ -5,6 +5,7 @@ import java.security.{DigestInputStream, MessageDigest}
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.apache.commons.io.IOUtils
+import org.apache.jena.riot.RiotNotFoundException
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
@@ -195,13 +196,10 @@ object FileUtil {
   def getFormatType(inputFile: File, compressionInputFile: String): String = {
     val format ={
       try {
-        if (!(getFormatTypeWithDataID(inputFile) == "")) {
-          getFormatTypeWithDataID(inputFile)
-        } else {
-          getFormatTypeWithoutDataID(inputFile, compressionInputFile)
-        }
+        getFormatTypeWithDataID(inputFile)
       } catch {
         case _: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+        case _: RiotNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
       }
     }
 

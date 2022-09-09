@@ -82,6 +82,7 @@ object QueryHandler {
 //  }
 
   def getFileInfo(url:String, endpoint:String): Option[DownloadConfig] ={
+
     val results = executeQuery(DatabusQueries.queryFileInfo(url), Left(endpoint))
 
     try{

@@ -117,10 +117,20 @@ class SourceHandler(conf:CLI_Config) {
       LoggerFactory.getLogger("Source Logger").error(s"No source found.")
       println(s"No source set.")
       System.exit(1)
+    } else {
+      if (!isCollection(conf.source())) {
+        if (!conf.endpoint.isDefined) {
+          LoggerFactory.getLogger("Source Logger").error(s"Source is no collection, but there is no endpoint set. The client doesn't know where to get the data from")
+          println(s"Source is no collection, but there is no endpoint set. The client doesn't know where to get the data from")
+          System.exit(1)
+        }
+      }
     }
 
     if (conf.clear()) FileUtils.deleteDirectory(cache.toJava)
     cache.createDirectoryIfNotExists()
+
+
 
     val target = File(conf.target())
     target.createDirectoryIfNotExists()
