@@ -270,7 +270,7 @@ def deploy(dataid, api_key):
     resp = requests.post(base, data=data, headers=headers)
 
     if resp.status_code != 200:
-        raise DeployError(f"Could not deploy dataset with base '{base}'.")
+        raise DeployError(f"Could not deploy dataset to databus. Reason: '{resp.text}'")
     if __debug:
         print("---")
         print(resp.content)
