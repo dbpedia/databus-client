@@ -6,6 +6,10 @@ import json
 __debug = False
 
 
+class DeployError(Exception):
+    """Raised if deploy fails"""
+
+
 def __get_content_variants(distribution_str: str) -> Dict[str, str]:
     args = distribution_str.split("|")
 
@@ -260,14 +264,13 @@ def createDataset(
 
 
 def deploy(dataid, api_key):
-    print(json.dumps(dataid))
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
-
     base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3]) + "/api/publish"
-
     resp = requests.post(base, data=data, headers=headers)
-    print(resp.status_code)
+
+    if resp.status_code != 200:
+        raise DeployError(f"Could not deploy dataset to databus. Reason: '{resp.text}'")
     if __debug:
         print("---")
         print(resp.content)
