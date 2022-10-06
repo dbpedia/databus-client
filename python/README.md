@@ -35,7 +35,7 @@ databusclient deploy --help
 Usage: databusclient deploy [OPTIONS] DISTRIBUTIONS...
 
 Arguments:
-  DISTRIBUTIONS...  distributions in the form of List[URL|CV|fileExt|Compression] where URL is the
+  DISTRIBUTIONS...  distributions in the form of List[URL|CV|fileext|compression|sha256sum:contentlength] where URL is the
                     download URL and CV the key=value pairs (_ separted)
                     content variants of a distribution, fileExt and Compression can be set, if not they are inferred from the path  [required]
 
@@ -52,7 +52,11 @@ Options:
 ```
 Example of using deploy command
 ```
-databusclient deploy --versionid https://databus.dbpedia.org/user1/group1/artifact1/2022-05-18 --title title1 --abstract abstract1 --description description1 --license http://dalicc.net/licenselibrary/AdaptivePublicLicense10 --apikey 2f601r5c-990b-63b4-b94a-as2699e2f5a3 'https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml|type=swagger'  
+databusclient deploy --versionid https://databus.dbpedia.org/user1/group1/artifact1/2022-05-18 --title title1 --abstract abstract1 --description description1 --license http://dalicc.net/licenselibrary/AdaptivePublicLicense10 --apikey MYSTERIOUS 'https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml|type=swagger'  
+```
+
+```
+databusclient deploy --versionid https://dev.databus.dbpedia.org/denis/group1/artifact1/2022-05-18 --title "Client Testing" --abstract "Testing the client...." --description "Testing the client...." --license http://dalicc.net/licenselibrary/AdaptivePublicLicense10 --apikey MYSTERIOUS 'https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml|type=swagger'  
 ```
 
 # API Usage

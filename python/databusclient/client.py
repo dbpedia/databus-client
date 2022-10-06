@@ -1,7 +1,8 @@
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Union
 import requests
 import hashlib
 import json
+from urllib.parse import urldefrag
 
 __debug = False
 
@@ -10,10 +11,18 @@ class DeployError(Exception):
     """Raised if deploy fails"""
 
 
-def __get_content_variants(distribution_str: str) -> Dict[str, str]:
+class BadArgumentException(Exception):
+    """Raised if an argument does not fit its requirements"""
+
+
+def __get_content_variants(distribution_str: str) -> Optional[Dict[str, str]]:
     args = distribution_str.split("|")
 
     # cv string is ALWAYS at position 1 after the URL
+    # if not return empty dict and handle it separately
+    if len(args) < 2 or args[1].strip() == "":
+        return {}
+
     cv_str = args[1].strip("_")
 
     cvs = {}
@@ -50,16 +59,16 @@ def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], O
             # only format -> compression is None
             file_ext = metadata_list[-1]
             compression = None
-
     elif len(metadata_list) == 1:
         # let them be None to be later inferred from URL path
         pass
     else:
         # in any other case: unreadable arguments
-        raise ValueError(
-            f"Cant read the arguments {metadata_list}: Only takes 1-4 elements in arguments after the URL [CVs, "
-            f"format, compression, shasum:length]"
-        )
+        # raise ValueError(
+        #     f"Cant read the arguments {metadata_list}: Only takes 1-4 elements in arguments after the URL [CVs, "
+        #     f"format, compression, shasum:length]"
+        # )
+        pass
 
     return file_ext, compression
 
@@ -105,8 +114,8 @@ def __get_extensions(distribution_str: str) -> Tuple[str, str, str]:
 
 def __get_file_stats(distribution_str: str) -> Tuple[Optional[str], Optional[int]]:
     metadata_list = distribution_str.split("|")[1:]
-    # check whether there is the shasum:length tuple seperated by :
-    if ":" not in metadata_list[-1]:
+    # check whether there is the shasum:length tuple separated by :
+    if len(metadata_list) == 0 or ":" not in metadata_list[-1]:
         return None, None
 
     last_arg_split = metadata_list[-1].split(":")
@@ -184,25 +193,25 @@ def create_distribution(
     return f"{url}|{meta_string}"
 
 
-def createDataset(
-        versionId: str,
+def create_dataset(
+        version_id: str,
         title: str,
         abstract: str,
         description: str,
-        license: str,
+        license_url: str,
         distributions: List[str],
         group_title: str = None,
         group_abstract: str = None,
         group_description: str = None,
-) -> Dict:
-    _versionId = str(versionId).strip("/")
-    _, accountName, groupName, artifactName, version = _versionId.rsplit("/", 4)
+) -> Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]]:
+    _versionId = str(version_id).strip("/")
+    _, account_name, group_name, artifact_name, version = _versionId.rsplit("/", 4)
 
     # could be build from stuff above,
     # was not sure if there are edge cases BASE=http://databus.example.org/"base"/...
-    groupId = _versionId.rsplit("/", 2)[0]
+    group_id = _versionId.rsplit("/", 2)[0]
 
-    distribution = []
+    distribution_list = []
     for dst_string in distributions:
         __url = str(dst_string).split("|")[0]
         (
@@ -212,7 +221,11 @@ def createDataset(
             compression,
             sha256sum,
             content_length,
-        ) = __get_file_info(artifactName, dst_string)
+        ) = __get_file_info(artifact_name, dst_string)
+
+        if not cvs and len(distributions) > 1:
+            raise BadArgumentException("If there are more than one file in the dataset, the files must be annotated "
+                                       "with content variants")
 
         entity = {
             "@id": f"{_versionId}#{name}",
@@ -228,42 +241,48 @@ def createDataset(
         for key, value in cvs.items():
             entity[f"dcv:{key}"] = value
 
-        distribution.append(entity)
+        distribution_list.append(entity)
 
-    group_dict = {
-        "@id": groupId,
-        "@type": "Group",
-    }
+    graphs = []
 
-    # add group metadata if set, else it can be left out
-    for k, val in [
-        ("title", group_title),
-        ("abstract", group_abstract),
-        ("description", group_description),
-    ]:
-        if val is not None:
+    # only add the group graph if the necessary group properties are set
+    if None not in [group_title, group_description, group_abstract]:
+        group_dict = {
+            "@id": group_id,
+            "@type": "Group",
+        }
+
+        # add group metadata if set, else it can be left out
+        for k, val in [
+            ("title", group_title),
+            ("abstract", group_abstract),
+            ("description", group_description),
+        ]:
             group_dict[k] = val
 
-    dataset = {
-        "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-        "@graph": [
-            group_dict,
-            {
+        graphs.append(group_dict)
+
+    # add the dataset graph
+
+    graphs.append({
                 "@type": "Dataset",
                 "@id": f"{_versionId}#Dataset",
                 "hasVersion": version,
                 "title": title,
                 "abstract": abstract,
                 "description": description,
-                "license": license,
-                "distribution": distribution,
-            },
-        ],
+                "license": license_url,
+                "distribution": distribution_list,
+            })
+
+    dataset = {
+        "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+        "@graph": graphs
     }
     return dataset
 
 
-def deploy(dataid, api_key):
+def deploy_deprecated(dataid, api_key):
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
     base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3]) + "/api/publish"
@@ -273,7 +292,30 @@ def deploy(dataid, api_key):
         raise DeployError(f"Could not deploy dataset to databus. Reason: '{resp.text}'")
     if __debug:
         print("---")
-        print(resp.content)
+        print(resp.text)
+
+
+def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]], api_key: str,
+           debug: bool = False):
+    headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
+    data = json.dumps(dataid)
+
+    # get the ID and remove the fragment
+    submission_uri, _ = urldefrag(dataid["@graph"][0]["@id"])
+
+    if debug or __debug:
+        print(f"Trying submitting data to {submission_uri}:")
+        print(data)
+
+    response = requests.put(submission_uri, data=data, headers=headers)
+
+    if response.status_code not in [200, 202]:
+        raise DeployError(f"Could not deploy dataset to databus. Reason: '{response.text}'")
+
+    if debug or __debug:
+        print("---------")
+        print(f"Response of submission to {submission_uri}:")
+        print(response.text)
 
 
 if __name__ == "__main__":

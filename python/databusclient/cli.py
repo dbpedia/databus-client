@@ -22,12 +22,12 @@ def deploy(
         help="distributions in the form of List[URL|CV|fileext|compression|sha256sum:contentlength] where URL is the "
              "download URL and CV the "
              "key=value pairs (_ separted) content variants of a distribution. filext and compression are optional "
-             "and if left out inferred from the path. If the sha256sum:contentlength part is left out it willl be "
-             "calcuted bay downloading the file.",
+             "and if left out inferred from the path. If the sha256sum:contentlength part is left out it will be "
+             "calcuted by downloading the file.",
     ),
 ):
     typer.echo(version_id)
-    dataid = client.createDataset(
+    dataid = client.create_dataset(
         version_id, title, abstract, description, license_uri, distributions
     )
     client.deploy(dataid=dataid, api_key=apikey)
