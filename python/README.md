@@ -25,7 +25,7 @@ Commands:
   deploy
   downoad
 ```
-## Deploy command
+### Deploy command
 ```
 databusclient deploy --help
 ```
