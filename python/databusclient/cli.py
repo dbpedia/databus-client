@@ -27,7 +27,7 @@ def deploy(
     ),
 ):
     typer.echo(version_id)
-    dataid = client.create_dataset(
+    dataid = client.createDataset(
         version_id, title, abstract, description, license_uri, distributions
     )
     client.deploy(dataid=dataid, api_key=apikey)

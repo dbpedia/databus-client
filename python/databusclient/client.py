@@ -41,6 +41,7 @@ def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], O
     metadata_list = distribution_str.split("|")[1:]
 
     if len(metadata_list) == 4:
+        # every parameter is set
         file_ext = metadata_list[-3]
         compression = metadata_list[-2]
     elif len(metadata_list) == 3:
@@ -48,7 +49,7 @@ def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], O
         if ":" in metadata_list[-1]:
             file_ext = metadata_list[-2]
         else:
-            # compression and format
+            # compression and format are set
             file_ext = metadata_list[-2]
             compression = metadata_list[-1]
     elif len(metadata_list) == 2:
@@ -63,11 +64,7 @@ def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], O
         # let them be None to be later inferred from URL path
         pass
     else:
-        # in any other case: unreadable arguments
-        # raise ValueError(
-        #     f"Cant read the arguments {metadata_list}: Only takes 1-4 elements in arguments after the URL [CVs, "
-        #     f"format, compression, shasum:length]"
-        # )
+        # in this case only URI is given, let all be later inferred
         pass
 
     return file_ext, compression
@@ -284,7 +281,7 @@ def createDataset(
     return dataset
 
 
-def deploy_deprecated(dataid, api_key):
+def deploy_deprecated(dataid, api_key) -> None:
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
     base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3]) + "/api/publish"
@@ -298,7 +295,7 @@ def deploy_deprecated(dataid, api_key):
 
 
 def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]], api_key: str,
-           debug: bool = False):
+           debug: bool = False) -> None:
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
 
