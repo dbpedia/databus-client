@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "databusclient"
-version = "0.9"
+version = "0.10"
 description = "A simple client for submitting data to the DBpedia Databus"
 authors = ["DBpedia Association"]
 license = "Apache-2.0 License"
