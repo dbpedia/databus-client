@@ -47,3 +47,51 @@ def test_distribution_cases():
         created_dst_str = create_distribution(uri, cvs, formatExtension, compression, (sha256sum, content_length))
 
         assert dst_string == created_dst_str
+
+
+def test_empty_cvs():
+
+    import json
+
+    dst = [create_distribution(
+        url="https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml",
+        cvs={}
+    )]
+
+    dataset = create_dataset(
+        version_id="https://dev.databus.dbpedia.org/user/group/artifact/1970.01.01/",
+        title="Test Title",
+        abstract="Test abstract blabla",
+        description="Test description blabla",
+        license_url="https://license.url/test/",
+        distributions=dst
+    )
+
+    correct_dataset = {
+        "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+        "@graph": [
+            {
+                "@type": "Dataset",
+                "@id": "https://dev.databus.dbpedia.org/user/group/artifact/1970.01.01#Dataset",
+                "hasVersion": "1970.01.01",
+                "title": "Test Title",
+                "abstract": "Test abstract blabla",
+                "description": "Test description blabla",
+                "license": "https://license.url/test/",
+                "distribution": [
+                    {
+                        "@id": "https://dev.databus.dbpedia.org/user/group/artifact/1970.01.01#artifact.yml",
+                        "@type": "Part",
+                        "file": "https://dev.databus.dbpedia.org/user/group/artifact/1970.01.01/artifact.yml",
+                        "formatExtension": "yml",
+                        "compression": "none",
+                        "downloadURL": "https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml",
+                        "byteSize": 56737,
+                        "sha256sum": "79582a2a7712c0ce78a74bb55b253dc2064931364cf9c17c827370edf9b7e4f1"
+                    }
+                ]
+            }
+        ]
+    }
+
+    return dataset == correct_dataset

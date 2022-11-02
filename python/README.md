@@ -50,7 +50,7 @@ Options:
   --apikey TEXT       apikey  [required]
   --help              Show this message and exit.
 ```
-Example of using deploy command
+Examples of using deploy command
 ```
 databusclient deploy --versionid https://databus.dbpedia.org/user1/group1/artifact1/2022-05-18 --title title1 --abstract abstract1 --description description1 --license http://dalicc.net/licenselibrary/AdaptivePublicLicense10 --apikey MYSTERIOUS 'https://raw.githubusercontent.com/dbpedia/databus/master/server/app/api/swagger.yml|type=swagger'  
 ```

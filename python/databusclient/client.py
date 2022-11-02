@@ -148,7 +148,11 @@ def __get_file_info(
     if __debug:
         print("DEBUG", distribution_str, extension_part)
 
-    name = f"{artifact_name}_{content_variant_part}{extension_part}"
+    # catch case of empty cvs
+    if content_variant_part != "":
+        name = f"{artifact_name}_{content_variant_part}{extension_part}"
+    else:
+        name = f"{artifact_name}{extension_part}"
 
     sha256sum, content_length = __get_file_stats(distribution_str)
 
@@ -281,21 +285,31 @@ def createDataset(
     return dataset
 
 
-def deploy_deprecated(dataid, api_key) -> None:
+def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]],
+           api_key: str,
+           debug: bool = False) -> None:
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
-    base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3]) + "/api/publish"
+    base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3])
+    api_uri = base + "/api/publish"
     resp = requests.post(base, data=data, headers=headers)
+
+    if debug or __debug:
+        dataset_uri = dataid["@graph"][0]["@id"]
+        print(f"Trying submitting data to {dataset_uri}:")
+        print(data)
 
     if resp.status_code != 200:
         raise DeployError(f"Could not deploy dataset to databus. Reason: '{resp.text}'")
-    if __debug:
-        print("---")
+
+    if debug or __debug:
+        print("---------")
         print(resp.text)
 
 
-def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]], api_key: str,
-           debug: bool = False) -> None:
+def deploy_put(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]],
+               api_key: str,
+               debug: bool = False):
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
 
