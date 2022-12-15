@@ -203,6 +203,8 @@ def createDataset(
         description: str,
         license_url: str,
         distributions: List[str],
+        attribution: str= None,
+        derived_from: str = None,
         group_title: str = None,
         group_abstract: str = None,
         group_description: str = None,
@@ -267,7 +269,7 @@ def createDataset(
 
     # add the dataset graph
 
-    graphs.append({
+    dataset_graph = {
                 "@type": "Dataset",
                 "@id": f"{_versionId}#Dataset",
                 "hasVersion": version,
@@ -276,7 +278,16 @@ def createDataset(
                 "description": description,
                 "license": license_url,
                 "distribution": distribution_list,
-            })
+            }
+
+    def append_to_dataset_graph_if_existent(add_key: str, add_value: str):
+        if add_value is not None:
+            dataset_graph[add_key] = add_value
+
+    append_to_dataset_graph_if_existent("attribution", attribution)
+    append_to_dataset_graph_if_existent("wasDerivedFrom", derived_from)
+
+    graphs.append(dataset_graph)
 
     dataset = {
         "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
@@ -292,7 +303,7 @@ def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, L
     data = json.dumps(dataid)
     base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3])
     api_uri = base + "/api/publish"
-    resp = requests.post(base, data=data, headers=headers)
+    resp = requests.post(api_uri, data=data, headers=headers)
 
     if debug or __debug:
         dataset_uri = dataid["@graph"][0]["@id"]
@@ -329,7 +340,3 @@ def deploy_put(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, floa
         print("---------")
         print(f"Response of submission to {submission_uri}:")
         print(response.text)
-
-
-if __name__ == "__main__":
-    print("empty)")
