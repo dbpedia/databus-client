@@ -18,6 +18,7 @@ class BadArgumentException(Exception):
 
 class DeployLogLevel(Enum):
     """Logging levels for the Databus deploy"""
+
     error = 0
     info = 1
     debug = 2
@@ -41,7 +42,9 @@ def __get_content_variants(distribution_str: str) -> Optional[Dict[str, str]]:
     return cvs
 
 
-def __get_filetype_definition(distribution_str: str, ) -> Tuple[Optional[str], Optional[str]]:
+def __get_filetype_definition(
+    distribution_str: str,
+) -> Tuple[Optional[str], Optional[str]]:
     file_ext = None
     compression = None
 
@@ -126,8 +129,10 @@ def __get_file_stats(distribution_str: str) -> Tuple[Optional[str], Optional[int
     last_arg_split = metadata_list[-1].split(":")
 
     if len(last_arg_split) != 2:
-        raise ValueError(f"Can't parse Argument {metadata_list[-1]}. Too many values, submit shasum and "
-                         f"content_length in the form of shasum:length")
+        raise ValueError(
+            f"Can't parse Argument {metadata_list[-1]}. Too many values, submit shasum and "
+            f"content_length in the form of shasum:length"
+        )
 
     sha256sum = last_arg_split[0]
     content_length = int(last_arg_split[1])
@@ -145,9 +150,7 @@ def __load_file_stats(url: str) -> Tuple[str, int]:
     return sha256sum, content_length
 
 
-def __get_file_info(
-        artifact_name: str, distribution_str: str
-) -> Tuple[str, Dict[str, str], str, str, str, int]:
+def __get_file_info(distribution_str: str) -> Tuple[Dict[str, str], str, str, str, int]:
     cvs = __get_content_variants(distribution_str)
     extension_part, format_extension, compression = __get_extensions(distribution_str)
 
@@ -156,24 +159,21 @@ def __get_file_info(
     if __debug:
         print("DEBUG", distribution_str, extension_part)
 
-    # catch case of empty cvs
-    if content_variant_part != "":
-        name = f"{artifact_name}_{content_variant_part}{extension_part}"
-    else:
-        name = f"{artifact_name}{extension_part}"
-
     sha256sum, content_length = __get_file_stats(distribution_str)
 
     if sha256sum is None or content_length is None:
         __url = str(distribution_str).split("|")[0]
         sha256sum, content_length = __load_file_stats(__url)
 
-    return name, cvs, format_extension, compression, sha256sum, content_length
+    return cvs, format_extension, compression, sha256sum, content_length
 
 
 def create_distribution(
-        url: str, cvs: Dict[str, str], file_format: str = None, compression: str = None,
-        sha256_length_tuple: Tuple[str, int] = None
+    url: str,
+    cvs: Dict[str, str],
+    file_format: str = None,
+    compression: str = None,
+    sha256_length_tuple: Tuple[str, int] = None,
 ) -> str:
     """Creates the identifier-string for a distribution used as downloadURLs in the createDataset function.
     url: is the URL of the dataset
@@ -202,19 +202,50 @@ def create_distribution(
     return f"{url}|{meta_string}"
 
 
-def createDataset(
-        version_id: str,
-        title: str,
-        abstract: str,
-        description: str,
-        license_url: str,
-        distributions: List[str],
-        attribution: str= None,
-        derived_from: str = None,
-        group_title: str = None,
-        group_abstract: str = None,
-        group_description: str = None,
+def create_dataset(
+    version_id: str,
+    title: str,
+    abstract: str,
+    description: str,
+    license_url: str,
+    distributions: List[str],
+    attribution: str = None,
+    derived_from: str = None,
+    group_title: str = None,
+    group_abstract: str = None,
+    group_description: str = None,
 ) -> Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]]:
+    """
+    Creates a Databus Dataset as a python dict from distributions and submitted metadata. WARNING: If file stats (sha256sum, content length)
+    were not submitted, the client loads the files and calculates them. This can potentially take a lot of time, depending on the file size.
+    The result can be transformed to a JSON-LD by calling json.dumps(dataset).
+
+    Parameters
+    ----------
+    version_id: str
+        The version ID representing the Dataset. Needs to be in the form of $DATABUS_BASE/$ACCOUNT/$GROUP/$ARTIFACT/$VERSION
+    title: str
+        The title text of the dataset
+    abstract: str
+        A short (one or two sentences) description of the dataset
+    description: str
+        A long description of the dataset. Markdown syntax is supported
+    license_url: str
+        The license of the dataset as a URI.
+    distributions: str
+        Distribution information string as it is in the CLI. Can be created by running the create_distribution function
+    attribution: str
+        OPTIONAL! The attribution information for the Dataset
+    derived_from: str
+        OPTIONAL! Short text explain what the dataset was
+    group_title: str
+        OPTIONAL! Metadata for the Group: Title. NOTE: Is only used if all group metadata is set
+    group_abstract: str
+        OPTIONAL! Metadata for the Group: Abstract. NOTE: Is only used if all group metadata is set
+    group_description: str
+        OPTIONAL! Metadata for the Group: Description. NOTE: Is only used if all group metadata is set
+    """
+
     _versionId = str(version_id).strip("/")
     _, account_name, group_name, artifact_name, version = _versionId.rsplit("/", 4)
 
@@ -226,22 +257,21 @@ def createDataset(
     for dst_string in distributions:
         __url = str(dst_string).split("|")[0]
         (
-            name,
             cvs,
             formatExtension,
             compression,
             sha256sum,
             content_length,
-        ) = __get_file_info(artifact_name, dst_string)
+        ) = __get_file_info(dst_string)
 
         if not cvs and len(distributions) > 1:
-            raise BadArgumentException("If there are more than one file in the dataset, the files must be annotated "
-                                       "with content variants")
+            raise BadArgumentException(
+                "If there are more than one file in the dataset, the files must be annotated "
+                "with content variants"
+            )
 
         entity = {
-            "@id": f"{_versionId}#{name}",
             "@type": "Part",
-            "file": f"{_versionId}/{name}",
             "formatExtension": formatExtension,
             "compression": compression,
             "downloadURL": __url,
@@ -276,15 +306,15 @@ def createDataset(
     # add the dataset graph
 
     dataset_graph = {
-                "@type": "Dataset",
-                "@id": f"{_versionId}#Dataset",
-                "hasVersion": version,
-                "title": title,
-                "abstract": abstract,
-                "description": description,
-                "license": license_url,
-                "distribution": distribution_list,
-            }
+        "@type": ["Version", "Dataset"],
+        "@id": f"{_versionId}#Dataset",
+        "hasVersion": version,
+        "title": title,
+        "abstract": abstract,
+        "description": description,
+        "license": license_url,
+        "distribution": distribution_list,
+    }
 
     def append_to_dataset_graph_if_existent(add_key: str, add_value: str):
         if add_value is not None:
@@ -297,16 +327,18 @@ def createDataset(
 
     dataset = {
         "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-        "@graph": graphs
+        "@graph": graphs,
     }
     return dataset
 
 
-def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]],
-           api_key: str,
-           verify_parts: bool = False,
-           log_level: DeployLogLevel = DeployLogLevel.debug,
-           debug: bool = False) -> None:
+def deploy(
+    dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]],
+    api_key: str,
+    verify_parts: bool = False,
+    log_level: DeployLogLevel = DeployLogLevel.debug,
+    debug: bool = False,
+) -> None:
     """Deploys a dataset to the databus. The endpoint is inferred from the DataID identifier.
     Parameters
     ----------
@@ -321,10 +353,14 @@ def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, L
     debug: bool
         controls whether output shold be printed to the console (stdout)
     """
+
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
     base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3])
-    api_uri = base + f"/api/publish?verify-parts={str(verify_parts).lower()}&log-level={log_level.name}"
+    api_uri = (
+        base
+        + f"/api/publish?verify-parts={str(verify_parts).lower()}&log-level={log_level.name}"
+    )
     resp = requests.post(api_uri, data=data, headers=headers)
 
     if debug or __debug:
@@ -338,4 +374,3 @@ def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, L
     if debug or __debug:
         print("---------")
         print(resp.text)
-

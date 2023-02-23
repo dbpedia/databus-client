@@ -103,29 +103,29 @@ A few notes:
 ### Step 2: Create dataset
 
 ```python
-from databusclient import createDataset
+from databusclient import create_dataset
 
 # minimal way
-dataset = createDataset(
-    version_id="https://dev.databus.dbpedia.org/denis/group1/artifact1/2022-05-18",
-    title="Client Testing",
-    abstract="Testing the client....",
-    description="Testing the client....",
-    license_url="http://dalicc.net/licenselibrary/AdaptivePublicLicense10",
-    distributions=distributions,
+dataset = create_dataset(
+  version_id="https://dev.databus.dbpedia.org/denis/group1/artifact1/2022-05-18",
+  title="Client Testing",
+  abstract="Testing the client....",
+  description="Testing the client....",
+  license_url="http://dalicc.net/licenselibrary/AdaptivePublicLicense10",
+  distributions=distributions,
 )
 
 # with group metadata
-dataset = createDataset(
-    version_id="https://dev.databus.dbpedia.org/denis/group1/artifact1/2022-05-18",
-    title="Client Testing",
-    abstract="Testing the client....",
-    description="Testing the client....",
-    license_url="http://dalicc.net/licenselibrary/AdaptivePublicLicense10",
-    distributions=distributions,
-    group_title="Title of group1",
-    group_abstract="Abstract of group1",
-    group_description="Description of group1"
+dataset = create_dataset(
+  version_id="https://dev.databus.dbpedia.org/denis/group1/artifact1/2022-05-18",
+  title="Client Testing",
+  abstract="Testing the client....",
+  description="Testing the client....",
+  license_url="http://dalicc.net/licenselibrary/AdaptivePublicLicense10",
+  distributions=distributions,
+  group_title="Title of group1",
+  group_abstract="Abstract of group1",
+  group_description="Description of group1"
 )
 ```
 
