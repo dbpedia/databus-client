@@ -307,7 +307,7 @@ def create_dataset(
 
     dataset_graph = {
         "@type": ["Version", "Dataset"],
-        "@id": f"{_versionId}#Dataset",
+        "@id": _versionId,
         "hasVersion": version,
         "title": title,
         "abstract": abstract,
