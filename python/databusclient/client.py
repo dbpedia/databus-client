@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List, Dict, Tuple, Optional, Union
 import requests
 import hashlib
@@ -13,6 +14,13 @@ class DeployError(Exception):
 
 class BadArgumentException(Exception):
     """Raised if an argument does not fit its requirements"""
+
+
+class DeployLogLevel(Enum):
+    """Logging levels for the Databus deploy"""
+    error = 0
+    info = 1
+    debug = 2
 
 
 def __get_content_variants(distribution_str: str) -> Optional[Dict[str, str]]:
@@ -194,8 +202,6 @@ def create_distribution(
     return f"{url}|{meta_string}"
 
 
-
-
 def createDataset(
         version_id: str,
         title: str,
@@ -298,11 +304,27 @@ def createDataset(
 
 def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]],
            api_key: str,
+           verify_parts: bool = False,
+           log_level: DeployLogLevel = DeployLogLevel.debug,
            debug: bool = False) -> None:
+    """Deploys a dataset to the databus. The endpoint is inferred from the DataID identifier.
+    Parameters
+    ----------
+    dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]]
+        The dataid represented as a python dict. Preferably created by the creaateDataset function
+    api_key: str
+        the API key of the user noted in the Dataset identifier
+    verify_parts: bool
+        flag of the publish POST request, prevents the databus from checking shasum and content length (is already handled by the client, reduces load on the Databus). Default is False
+    log_level: DeployLogLevel
+        log level of the deploy output
+    debug: bool
+        controls whether output shold be printed to the console (stdout)
+    """
     headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
     data = json.dumps(dataid)
     base = "/".join(dataid["@graph"][0]["@id"].split("/")[0:3])
-    api_uri = base + "/api/publish"
+    api_uri = base + f"/api/publish?verify-parts={str(verify_parts).lower()}&log-level={log_level.name}"
     resp = requests.post(api_uri, data=data, headers=headers)
 
     if debug or __debug:
@@ -317,26 +339,3 @@ def deploy(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, L
         print("---------")
         print(resp.text)
 
-
-def deploy_put(dataid: Dict[str, Union[List[Dict[str, Union[bool, str, int, float, List]]], str]],
-               api_key: str,
-               debug: bool = False):
-    headers = {"X-API-KEY": f"{api_key}", "Content-Type": "application/json"}
-    data = json.dumps(dataid)
-
-    # get the ID and remove the fragment
-    submission_uri, _ = urldefrag(dataid["@graph"][0]["@id"])
-
-    if debug or __debug:
-        print(f"Trying submitting data to {submission_uri}:")
-        print(data)
-
-    response = requests.put(submission_uri, data=data, headers=headers)
-
-    if response.status_code not in [200, 202]:
-        raise DeployError(f"Could not deploy dataset to databus. Reason: '{response.text}'")
-
-    if debug or __debug:
-        print("---------")
-        print(f"Response of submission to {submission_uri}:")
-        print(response.text)
