@@ -1,12 +1,16 @@
-DBpedia Databus Client [![Java 11 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml) [![Java 8 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml)
-Download and make data fit for applications using SPARQL on the [DBpedia Databus](https://github.com/dbpedia/databus) or on DBpedia's [Online Deployment Platform](https://databus.dbpedia.org/).
+# Databus Client
 
-## Requirements
-**Java:** `JDK 8` or `JDK 11` <br>
-**Maven:**  `Apache Maven 3.3.9`
+DBpedia Databus Client [![Java 11 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml) [![Java 8 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml) Download and make data fit for applications using SPARQL on the [DBpedia Databus](https://github.com/dbpedia/databus) or on DBpedia's [Online Deployment Platform](https://databus.dbpedia.org/). new
 
-## Citation
+### Requirements
+
+**Java:** `JDK 8` or `JDK 11`\
+**Maven:** `Apache Maven 3.3.9`
+
+### Citation
+
 If you use the DBpedia Databus Client in your research, please cite the following paper:
+
 ```bibtex
 @InProceedings{mcdc2021,
   author = {Johannes Frey and Fabian G\"otz and Marvin Hofer and Sebastian Hellmann},
@@ -16,5 +20,6 @@ If you use the DBpedia Databus Client in your research, please cite the followin
 }
 ```
 
-## Documentation
+### Documentation
+
 More documentation is available in our [Gitbook](https://dbpedia.gitbook.io/databus/v/download-client/).
