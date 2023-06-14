@@ -1,31 +1,13 @@
-# Concept
-
-The Databus Client is designed in a modular way to achieve high reusability, which means that the components and functionalities such as the downloading component, and compression converter can be used separately and interchangeably. It leverages 4 functionality layers depicted in the figure below.
+The Databus Client is a modular system designed for high reusability, with components like the downloading and compression converter available interchangeably. It operates across four functionality layers:
 
 <img src="../img/concept.png" alt="Databus Client Concept"/>
 
-## Download-Layer
-The fundamental **Download-Layer** is supposed to download exact copies of data assets via the [DBpedia Databus](https://github.com/dbpedia/databus) in a flexible way.
-It can be understood as a simple extraction phase of the ETL (Extract-Transform-Load) process.
-Moreover, it is supposed to persist the input data provenance by recording stable file identifiers and additional metadata.
-The data assets to be downloaded can be selected in a fine-grained way via an interoperable data dependency specification. and optional compiling configurations tailored to the needs of a consuming app or workflow.
+**Download-Layer:** This layer downloads data assets from the DBpedia Databus, preserving their provenance through stable file identifiers and additional metadata. It allows fine-grained selection of data assets through an interoperable data dependency specification and compiling configurations.
 
-## Compression-Layer
-If any conversion process is required, the **Compression-Layer** takes action. It sniffs for the input compression format and decompresses the file. If the input file format differs from the output file format, the decompressed file is passed to the Format-Layer.
-The Compression-Layer takes the decompressed file, which may be format converted by the Format-Layer or Mapping-Layer, and compresses it to the requested output compression format. This compressed file is passed back to the Download-Layer, after the conversion process has finished.
+**Compression-Layer:** If conversion is needed, this layer detects the input compression format, decompresses the file, and passes it to the Format-Layer if necessary. It then compresses the converted file into the desired output compression format and returns it to the Download-Layer.
 
+**File-Format-Layer:** This layer handles data format conversion, utilizing the Format-Layer and Mapping-Layer as required. It parses the uncompressed file into a unified internal data structure for the corresponding format equivalence class. The Format-Layer serializes this data structure into the desired output format and sends it back to the Compression-Layer.
 
-## File-Format-Layer
-Within the data format conversion process, the Databus Client utilizes the Format-layer and the Mapping-Layer where required.
-The **Format-Layer** receives the uncompressed file and parses it to a unified internal data structure of the corresponding (format) equivalence class.
-Such an equivalence class contains all serialization formats that can be used interchangeably while representing the same amount of information, given a defined common data model for the class (e.g. a set of triples for RDF triple formats, a table of Strings for tabular-structured data formats).
-Subsequently, the Format-Layer serializes the internal data structure to the desired output file format.
-It passes the serialized data back to the Compression-Layer.
+**Mapping-Layer:** Used when the input and output formats belong to different equivalence classes or require data manipulation. Mapping configurations are used to transform the data from the input equivalence class to the internal data structure of the target format. The transformed data is then passed back to the Format-Layer.
 
-## Mapping-Layer
-Whenever the input file format and the requested output file format are in different equivalence classes (e.g. Turtle/RDF triples and TSV/tabular-structured data), the **Mapping-Layer** is additionally used.
-However, it could also be used to manipulate the data of the same equivalence class (e.g. ontology mapping).
-With the aid of mapping configurations, the Mapping-Layer transforms the data represented using the internal data structure of the input equivalence class, to data of the internal data structure of the equivalence class of the target file format.
-After that process has finished, the data is passed back to the Format layer.
-
-The Compression-Layer, File-Format-Layer, and Mapping-Layer represent the transformation-phase of the ETL process.
+The Compression-Layer, File-Format-Layer, and Mapping-Layer collectively represent the transformation phase of the ETL (Extract-Transform-Load) process. The Databus Client's modular design enables efficient data processing, conversion, and manipulation, enhancing reusability and flexibility in data management.
