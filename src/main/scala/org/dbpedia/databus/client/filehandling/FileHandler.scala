@@ -1,11 +1,11 @@
 package org.dbpedia.databus.client.filehandling
 
 import better.files.File
+import org.dbpedia.databus.client.Config
 import org.dbpedia.databus.client.filehandling.FileUtil.copyStream
-import org.dbpedia.databus.client.filehandling.convert.Converter
+import org.dbpedia.databus.client.filehandling.convert.{ConvertConfig, Converter}
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.client.main.CLI_Config
-import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
 import java.io._
@@ -21,7 +21,7 @@ class FileHandler(cliConfig: CLI_Config) {
 
     println(s"input file:\t${inputFile.pathAsString}")
 
-    val config:CompileConfig = new CompileConfig(inputFile,cliConfig).init()
+    val config:ConvertConfig = new ConvertConfig(inputFile,cliConfig).init()
 
     // Without any Conversion
     if ((config.inCompression == config.outCompression) && (config.inFormat == config.outFormat)) {

@@ -3,8 +3,7 @@ package org.dbpedia.databus.client.filehandling.convert.mapping
 import better.files.File
 import org.apache.jena.graph.Triple
 import org.apache.spark.rdd.RDD
-import org.dbpedia.databus.client.filehandling.CompileConfig
-import org.dbpedia.databus.client.filehandling.convert.Spark
+import org.dbpedia.databus.client.filehandling.convert.{ConvertConfig, Spark}
 import org.dbpedia.databus.client.filehandling.convert.mapping.util.MappingInfo
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.deri.tarql.{CSVOptions, TarqlParser, TarqlQueryExecutionFactory}
@@ -14,7 +13,7 @@ import scala.util.control.Breaks.{break, breakable}
 
 object TSD_Mapper {
 
-  def map_to_triples(inputFile: File, conf: CompileConfig): RDD[Triple] = {
+  def map_to_triples(inputFile: File, conf: ConvertConfig): RDD[Triple] = {
     var triples = Spark.context.emptyRDD[org.apache.jena.graph.Triple]
 
     if (conf.mapping != "") {
@@ -22,7 +21,7 @@ object TSD_Mapper {
       triples = readAsTriples(inputFile, conf.inFormat, mappingInfo)
     }
     else {
-      val possibleMappings = QueryHandler.getPossibleMappings(conf.sha)
+      val possibleMappings = QueryHandler.getPossibleMappings(conf.sha, conf.endpoint)
       breakable {
         possibleMappings.foreach(mapping => {
           val mappingInfo = QueryHandler.getMappingFileAndInfo(mapping)

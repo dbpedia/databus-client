@@ -5,6 +5,7 @@ import java.security.{DigestInputStream, MessageDigest}
 import better.files.File
 import org.apache.commons.compress.compressors.{CompressorException, CompressorStreamFactory}
 import org.apache.commons.io.IOUtils
+import org.apache.jena.riot.RiotNotFoundException
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
@@ -53,6 +54,8 @@ object FileUtil {
       out.close()
     }
   }
+
+
 
   /**
    * checks if file is in cache directory
@@ -193,13 +196,10 @@ object FileUtil {
   def getFormatType(inputFile: File, compressionInputFile: String): String = {
     val format ={
       try {
-        if (!(getFormatTypeWithDataID(inputFile) == "")) {
-          getFormatTypeWithDataID(inputFile)
-        } else {
-          getFormatTypeWithoutDataID(inputFile, compressionInputFile)
-        }
+        getFormatTypeWithDataID(inputFile)
       } catch {
         case _: FileNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
+        case _: RiotNotFoundException => getFormatTypeWithoutDataID(inputFile, compressionInputFile)
       }
     }
 
@@ -244,25 +244,25 @@ object FileUtil {
    */
   def getFormatTypeWithDataID(inputFile: File): String = {
     // Suche in Dataid.ttl nach allen Zeilen die den Namen der Datei enthalten
-    val source = Source.fromFile((inputFile.parent / "dataid.ttl").toJava, "UTF-8")
-    val lines = source.getLines().filter(_ contains s"${inputFile.name}")
-
-    val regex = s"<\\S*dataid.ttl#${inputFile.name}\\S*>".r
-    var fileURL = ""
-
-    import scala.util.control.Breaks.{break, breakable}
-
-    for (line <- lines) {
-      breakable {
-        for (x <- regex.findAllMatchIn(line)) {
-          fileURL = x.toString().replace(">", "").replace("<", "")
-          break
-        }
-      }
-    }
-
-    source.close()
-    QueryHandler.getFileExtension(fileURL, inputFile.parent / "dataid.ttl")
+//    val source = Source.fromFile((inputFile.parent / "dataid.jsonld").toJava, "UTF-8")
+//    val lines = source.getLines().filter(_ contains s"${inputFile.name}")
+//
+//    val regex = s"<\\S*#${inputFile.name}\\S*>".r
+//    var fileURL = ""
+//
+//    import scala.util.control.Breaks.{break, breakable}
+//
+//    for (line <- lines) {
+//      breakable {
+//        for (x <- regex.findAllMatchIn(line)) {
+//          fileURL = x.toString().replace(">", "").replace("<", "")
+//          break
+//        }
+//      }
+//    }
+//
+//    source.close()
+    QueryHandler.getFileExtension(inputFile)
   }
 
 

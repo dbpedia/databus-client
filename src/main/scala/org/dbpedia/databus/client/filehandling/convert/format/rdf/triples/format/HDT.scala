@@ -7,7 +7,7 @@ import org.apache.jena.graph.{NodeFactory, Triple}
 import org.dbpedia.databus.client.filehandling.convert.Spark
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.sparql.graph.GraphFactory
-import org.dbpedia.databus.client.filehandling.Config
+import org.dbpedia.databus.client.Config
 import org.rdfhdt.hdt.enums.RDFNotation
 import org.rdfhdt.hdt.hdt.{HDT => HDTFormat}
 import org.rdfhdt.hdt.hdt.HDTManager

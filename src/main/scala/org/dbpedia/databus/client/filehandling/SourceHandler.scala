@@ -2,15 +2,19 @@ package org.dbpedia.databus.client.filehandling
 
 import better.files.File
 import org.apache.commons.io.FileUtils
+import org.apache.hadoop.shaded.com.fasterxml.jackson.databind.BeanProperty
 import org.apache.http.HttpHeaders
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.{BasicResponseHandler, HttpClientBuilder}
+import org.dbpedia.databus.client.Config
 import org.dbpedia.databus.client.filehandling.download.Downloader
 import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.dbpedia.databus.client.sparql.queries.DatabusQueries
 import org.slf4j.LoggerFactory
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.Constructor
 
 
 class SourceHandler(conf:CLI_Config) {
@@ -22,21 +26,37 @@ class SourceHandler(conf:CLI_Config) {
   val cache: File = Config.cache
   val fileHandler = new FileHandler(conf)
 
+
+
   def execute(): Unit={
     if (File(conf.source()).exists()) {
       val sourceFile: File = File(conf.source())
 
       if (sourceFile.hasExtension && sourceFile.extension.get.matches(".sparql|.query")) { // conf.source() is a query file
         val queryString = FileUtil.readQueryFile(sourceFile)
-        handleQuery(queryString)
+        handleQuery(queryString, conf.endpoint())
       }
       else { // conf.source() is an already existing file or directory
         handleSource(sourceFile)
       }
     }
-    else { // conf.source() is a query string
-      handleQuery(conf.source())
+    else { // conf.source() is a query string or a collection uri
+
+      if (isCollection(conf.source())) { // conf.source() is a collection uri
+        val queryStr = getQueryOfCollection(conf.source())
+        val endpoint = { // try to guess sparql endpoint if it is not set in program variables
+          if (conf.endpoint.isDefined) conf.endpoint()
+          else conf.source().split("/").take(3).mkString("/").concat("/sparql")
+        }
+
+        handleQuery(queryStr, endpoint)
+      } else { // conf.source() is a query string
+        handleQuery(conf.source(), conf.endpoint())
+      }
     }
+
+
+
   }
 
   /**
@@ -48,7 +68,7 @@ class SourceHandler(conf:CLI_Config) {
     printTask("source", source.pathAsString, File(conf.target()).pathAsString)
     println(s"CONVERSION TOOL:\n")
 
-    val dataId_string = "dataid.ttl"
+    val dataId_string = "dataid.jsonld"
 
 
     if (source.isDirectory) {
@@ -71,21 +91,13 @@ class SourceHandler(conf:CLI_Config) {
    *
    * @param query sparql query
    */
-  def handleQuery(query: String):Unit = {
-
-    var queryStr = {
-      if (isCollection(query)) getQueryOfCollection(query)
-      else query
-    }
+  def handleQuery(queryStr: String, endpoint:String):Unit = {
 
     printTask("query", queryStr, File(conf.target()).pathAsString)
 
-    //necessary due collection queries query the permament DBpedia URIs not the actual download links
-    if(isCollection(query)) queryStr = DatabusQueries.queryDownloadURLOfDatabusFiles(QueryHandler.executeDownloadQuery(queryStr))
-
     println("DOWNLOAD TOOL:")
 
-    val allSHAs = Downloader.downloadWithQuery(queryStr, cache, conf.overwrite())
+    val allSHAs = Downloader.downloadWithQuery(queryStr, endpoint, cache, conf.overwrite())
 
     println("\n========================================================\n")
     println(s"CONVERSION TOOL:\n")
@@ -105,10 +117,20 @@ class SourceHandler(conf:CLI_Config) {
       LoggerFactory.getLogger("Source Logger").error(s"No source found.")
       println(s"No source set.")
       System.exit(1)
+    } else {
+      if (!isCollection(conf.source())) {
+        if (!conf.endpoint.isDefined) {
+          LoggerFactory.getLogger("Source Logger").error(s"Source is no collection, but there is no endpoint set. The client doesn't know where to get the data from")
+          println(s"Source is no collection, but there is no endpoint set. The client doesn't know where to get the data from")
+          System.exit(1)
+        }
+      }
     }
 
     if (conf.clear()) FileUtils.deleteDirectory(cache.toJava)
     cache.createDirectoryIfNotExists()
+
+
 
     val target = File(conf.target())
     target.createDirectoryIfNotExists()
@@ -151,7 +173,7 @@ class SourceHandler(conf:CLI_Config) {
    * @return
    */
   def isCollection(str: String): Boolean = {
-    val collection = """http[s]?://databus.dbpedia.org/.*/collections/.*""".r
+    val collection = """http[s]?://.*/collections/.*""".r
     str match {
       case collection(_*) => true
       case _ => false

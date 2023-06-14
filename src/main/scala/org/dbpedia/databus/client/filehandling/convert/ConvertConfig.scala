@@ -1,18 +1,21 @@
-package org.dbpedia.databus.client.filehandling
+package org.dbpedia.databus.client.filehandling.convert
 
 import better.files.File
+import org.dbpedia.databus.client.Config
+import org.dbpedia.databus.client.filehandling.{FileUtil, Utils}
 import org.dbpedia.databus.client.main.CLI_Config
 import org.dbpedia.databus.client.sparql.QueryHandler
-import org.slf4j.LoggerFactory
 
 import java.io.FileWriter
 
-class CompileConfig(inputFile:File, cliConfig: CLI_Config) {
+class ConvertConfig(inputFile:File, cliConfig: CLI_Config) {
 
   val inFile: File = inputFile
+  val target:File = File(cliConfig.target())
+  var endpoint:String = _
   var outFormat: String = cliConfig.format()
   var outCompression: String = cliConfig.compression()
-  val target:File = File(cliConfig.target())
+
   val mapping: String = cliConfig.mapping()
   val delimiter:Char = cliConfig.delimiter().toCharArray.head
   val quotation:Char = cliConfig.quotation().toCharArray.head
@@ -24,7 +27,7 @@ class CompileConfig(inputFile:File, cliConfig: CLI_Config) {
   var outFile:File = _
   var sha = ""
 
-  def init(): CompileConfig ={
+  def init(): ConvertConfig ={
     inCompression = FileUtil.getCompressionType(inputFile)
     inFormat = FileUtil.getFormatType(inputFile, inCompression)
 
@@ -36,6 +39,11 @@ class CompileConfig(inputFile:File, cliConfig: CLI_Config) {
     if (outFormat=="same") outFormat = inFormat
     if (outCompression=="same") outCompression = inCompression
     outFile = getOutputFile(inputFile, inCompression)
+
+    endpoint = {
+      if(cliConfig.endpoint.isDefined) cliConfig.endpoint()
+      else Config.endpoint
+    }
 
     this
   }
@@ -52,28 +60,26 @@ class CompileConfig(inputFile:File, cliConfig: CLI_Config) {
 
     val nameWithoutExtension = inputFile.nameWithoutExtension
 
-    val dataIdFile = inputFile.parent / "dataid.ttl"
-
-    val target_dir = File(cliConfig.target())
+    val dataIdFile = inputFile.parent / "dataid.jsonld"
 
     val newOutputFormat = {
-      if (cliConfig.format() == "rdfxml") "rdf"
-      else cliConfig.format()
+      if (outFormat == "rdfxml") "rdf"
+      else outFormat
     }
 
     val outputDir = {
       if (dataIdFile.exists) {
         val pgav = QueryHandler.getTargetDir(dataIdFile)
-        val fw = new FileWriter((target_dir / "identifiers_downloadedFiles.txt").pathAsString, true)
+        val fw = new FileWriter((target / "identifiers_downloadedFiles.txt").pathAsString, true)
         try {
-          fw.append(s"https://databus.dbpedia.org/$pgav/${inputFile.name}\n")
+          fw.append(s"${Utils.urlOneUp(Config.endpoint)}$pgav/${inputFile.name}\n")
         }
         finally fw.close()
 
-        File(s"${target_dir.pathAsString}/$pgav")
+        File(s"${target.pathAsString}/$pgav")
       }
       else
-        File(target_dir.pathAsString.concat("/NoDataID")
+        File(target.pathAsString.concat("/NoDataID")
           .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1
             .replace(File(".").pathAsString, "")
           )
@@ -81,8 +87,8 @@ class CompileConfig(inputFile:File, cliConfig: CLI_Config) {
     }
 
     val newName = {
-      if (cliConfig.compression().isEmpty || cliConfig.compression()=="same" && inCompression=="") s"$nameWithoutExtension.$newOutputFormat"
-      else s"$nameWithoutExtension.$newOutputFormat.${cliConfig.compression()}"
+      if (outCompression.isEmpty) s"$nameWithoutExtension.$newOutputFormat"
+      else s"$nameWithoutExtension.$newOutputFormat.$outCompression"
     }
 
     val outputFile = outputDir / newName
@@ -90,7 +96,7 @@ class CompileConfig(inputFile:File, cliConfig: CLI_Config) {
     //create necessary parent directories to write the outputfile there, later
     outputFile.parent.createDirectoryIfNotExists(createParents = true)
 
-    println(s"output file:\t${outputFile.pathAsString}\n")
+    println(s"output file:${outputFile.pathAsString}\n")
 
     outputFile
   }
