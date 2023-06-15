@@ -4,8 +4,7 @@
 
 * [Databus Client](README.md)
 * [Concept](docs/overview/concept.md)
-* [Features](docs/overview/roadmap.md)
-* [Vision](overview/vision.md)
+* [Features](overview/features.md)
 
 ## Usage
 
