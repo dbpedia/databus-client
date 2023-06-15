@@ -1,16 +1,16 @@
 # Table of contents
 
-* [overview](README.md)
+* [Overview](../README.md)
   * [Concept](overview/concept.md)
-  * [Features](../overview/features.md)
-* [usage](usage/README.md)
+  * [Features](overview/features.md)
+* Usage
   * [Scala/Java API](usage/api.md)
   * [CLI](usage/cli.md)
   * [docker](usage/docker.md)
   * [Docker](usage/docker2.md)
   * [JAR](usage/jar.md)
   * [Quickstart](usage/quickstart.md)
-* [examples](examples/README.md)
+* Examples
   * [Download DBpedia Ontology (CLI)](examples/exampleCLI.md)
   * [Loading geocoordinates from Wikipedia into Virtuoso (Docker)](examples/exampleDocker.md)
   * [Docker Example 2](examples/exampleDocker2.md)
