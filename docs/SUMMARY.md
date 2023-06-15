@@ -1,7 +1,7 @@
 # Table of contents
 
-* [Overview](README.md)
-  * [Databus-Client](overview/readme.md)
+* [Overview](../README.md)
+  * [Databus-Client](overview/README.md)
   * [Concept](overview/concept.md)
   * [Features](overview/features.md)
 * [Usage](usage/README.md)
