@@ -3,9 +3,9 @@
 ## Overview
 
 * [Databus Client](README.md)
-* [newtry](overview/newtry.md)
+* [newtry](docs/overview/newtry.md)
 * [Concept](docs/overview/concept.md)
-* [Features](overview/features.md)
+* [Features](docs/overview/features.md)
 
 ## Usage
 
