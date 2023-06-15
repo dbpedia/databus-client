@@ -6,6 +6,10 @@ description: >-
 
 # Databus Client
 
+## Status
+
+**Beta**: The Databus Client produces expected results for compression conversion and file format conversion. Errors could occure for the mapping process. Please expect some code refactoring and fluctuation.
+
 ## Important Links
 
 * [**Documentation**](https://dbpedia.gitbook.io/databus/v/download-client/overview/readme)
@@ -13,9 +17,7 @@ description: >-
 * [**Latest Release**](https://github.com/dbpedia/databus-client/releases/latest)
 * [**Discord**](https://discord.gg/fB8byAPP7e)**:** Don't hesitate to ask us, if you have any questions.
 
-## Status
 
-**Beta**: The Databus Client produces expected results for compression conversion and file format conversion. Errors could occure for the mapping process. Please expect some code refactoring and fluctuation.
 
 ## Citation
 

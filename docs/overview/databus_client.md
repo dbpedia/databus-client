@@ -6,7 +6,7 @@ To address these issues, we propose a software client that can automatically con
 
 The DBpedia Databus Client is a modular and extendable solution that brings us closer to realizing a unified and efficient data ecosystem, promoting reusability and maintaining clear provenance.
 
-#### Example Application Deployment
+### Example Application Deployment
 
 1. Download the files of 5 datasets as given in the SPARQL query
 2. Transform the compression of all files to `.bz2`
