@@ -22,16 +22,16 @@ The DBpedia Databus Client is a modular and extendable solution that brings us c
    3. use this `XSLT-Mapping` for the `.xml` file in the fifth dataset.
 4. Load and deploy the processed data via Docker to a Virtuoso SPARQL Endpoint.
 
-## Status
-
-**Beta**: The Databus Client produces expected results for compression conversion and file format conversion. Errors could occure for the mapping process. Please expect some code refactoring and fluctuation.
-
 ## Important Links
 
 * [**Documentation**](https://dbpedia.gitbook.io/databus/v/download-client/overview/readme)
 * [**Source Code**](https://github.com/dbpedia/databus-client/tree/master)
 * [**Latest Release**](https://github.com/dbpedia/databus-client/releases/latest)
 * [**Discord**](https://discord.gg/fB8byAPP7e)**:** Don't hesitate to ask us, if you have any questions.
+
+## Status
+
+**Beta**: The Databus Client produces expected results for compression conversion and file format conversion. Errors could occure for the mapping process. Please expect some code refactoring and fluctuation.
 
 ## Citation
 
