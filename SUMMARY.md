@@ -3,6 +3,7 @@
 ## Overview
 
 * [Databus Client](README.md)
+* [newtry](overview/newtry.md)
 * [Concept](docs/overview/concept.md)
 * [Features](overview/features.md)
 
