@@ -1,6 +1,13 @@
-The Databus Client is a modular system designed for high reusability, with components like the downloading and compression converter available interchangeably. It operates across four functionality layers:
+---
+description: >-
+  The client is a modular system designed for high reusability, with components
+  like the downloading and compression converter available interchangeably. It
+  operates across four functionality layers.
+---
 
-<img src="../img/concept.png" alt="Databus Client Concept"/>
+# Concept
+
+<figure><img src="../img/concept.png" alt=""><figcaption><p>data flow of DBpedia's Databus Client </p></figcaption></figure>
 
 **Download-Layer:** This layer downloads data assets from the DBpedia Databus, preserving their provenance through stable file identifiers and additional metadata. It allows fine-grained selection of data assets through an interoperable data dependency specification and compiling configurations.
 

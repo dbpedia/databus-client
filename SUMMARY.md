@@ -3,9 +3,8 @@
 ## Overview
 
 * [Databus Client](README.md)
-* [Vision](docs/overview/vision.md)
 * [Concept](docs/overview/concept.md)
-* [Roadmap](docs/overview/roadmap.md)
+* [Features](docs/overview/roadmap.md)
 
 ## Usage
 
