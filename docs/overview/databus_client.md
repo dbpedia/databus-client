@@ -1,9 +1,3 @@
----
-description: >-
-  Download data from DBpedia Databus with SPARQL and make it data fit for your
-  applications using several conversion tools.
----
-
 # Databus Client
 
 The DBpedia Databus Client simplifies data consumption and compilation from the DBpedia Databus, addressing challenges in using data from different publishers and domains. These files are often released in various serialization and compression formats, requiring conversion before they can be utilized. Additionally, data stored in relational databases or community-specific formats necessitates mapping for integration with knowledge graphs. Currently, mapping efforts are dispersed, leading to reduced reusability and unclear provenance.
@@ -21,27 +15,3 @@ The DBpedia Databus Client is a modular and extendable solution that brings us c
    2. map the `.tsv` file from the second dataset to `RDF-NTriple` using this `RML-Mapping`, and
    3. use this `XSLT-Mapping` for the `.xml` file in the fifth dataset.
 4. Load and deploy the processed data via Docker to a Virtuoso SPARQL Endpoint.
-
-## Important Links
-
-* [**Documentation**](https://dbpedia.gitbook.io/databus/v/download-client/overview/readme)
-* [**Source Code**](https://github.com/dbpedia/databus-client/tree/master)
-* [**Latest Release**](https://github.com/dbpedia/databus-client/releases/latest)
-* [**Discord**](https://discord.gg/fB8byAPP7e)**:** Don't hesitate to ask us, if you have any questions.
-
-## Status
-
-**Beta**: The Databus Client produces expected results for compression conversion and file format conversion. Errors could occure for the mapping process. Please expect some code refactoring and fluctuation.
-
-## Citation
-
-If you use the DBpedia Databus Client in your research, please cite the following paper:
-
-```bibtex
-@InProceedings{mcdc2021,
-  author = {Johannes Frey and Fabian G\"otz and Marvin Hofer and Sebastian Hellmann},
-  title = {Managing and Compiling Data Dependencies for Semantic Applications using Databus Client},
-  booktitle = {Metadata and Semantic Research. MTSR 2021}
-  year = {2021},
-}
-```
