@@ -1,6 +1,6 @@
 ---
 description: >-
-Download data from DBpedia Databus with SPARQL and make it data fit for your applications using several conversion tools.
+ Download data from DBpedia Databus with SPARQL and make it data fit for your applications using several conversion tools.
 ---
 
 # DBpedia Databus Client [![Java 11 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-11.yml) [![Java 8 CI with Maven](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml/badge.svg)](https://github.com/dbpedia/databus-client/actions/workflows/maven-java-8.yml)
