@@ -4,7 +4,7 @@ description: >-
   applications using several conversion tools.
 ---
 
-# Databus Client
+# Overview
 
 ## Status
 
@@ -12,12 +12,10 @@ description: >-
 
 ## Important Links
 
-* [**Documentation**](https://dbpedia.gitbook.io/databus/v/download-client/overview/readme)
+* [**Documentation**](https://dbpedia.gitbook.io/databus/v/download-client/)
 * [**Source Code**](https://github.com/dbpedia/databus-client/tree/master)
 * [**Latest Release**](https://github.com/dbpedia/databus-client/releases/latest)
 * [**Discord**](https://discord.gg/fB8byAPP7e)**:** Don't hesitate to ask us, if you have any questions.
-
-
 
 ## Citation
 
