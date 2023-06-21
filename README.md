@@ -23,7 +23,7 @@ The client brings us closer to realizing a unified and efficient data ecosystem,
 * [**Documentation**](https://dbpedia.gitbook.io/databus/v/download-client/)
 * [**Source Code**](https://github.com/dbpedia/databus-client/tree/master)
 * [**Latest Release**](https://github.com/dbpedia/databus-client/releases/latest)
-* [**Discord**](https://discord.gg/fB8byAPP7e)**:** Don't hesitate to ask us, if you have any questions.
+* [**Discord**](https://discord.gg/fB8byAPP7e)**:** Don't hesitate to ask, if you have any questions.
 
 ## Quickstart
 
