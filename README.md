@@ -1,7 +1,7 @@
 ---
 description: >-
-  DBpedia Databus Client is a download and convertion tool, that makes data from
-  any DBpedia Databus fit for your applications.
+  Download data from DBpedia Databus using SPARQL and make it data fit for your
+  applications.
 ---
 
 # Overview
