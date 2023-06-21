@@ -45,7 +45,7 @@ We use [this query](src/test/resources/queries/query3.sparql) as selection.
 
 ### Download and convert selected data
 
-In order to download the data we need to pass the query as the _`-source`_ argument. Furthermore if we want to convert the files to _.jsonld_ we need to specify if in the _`-format`_ parameter and finally we need to tell the client the desired compression.
+In order to download the data we need to pass the query as the _`-source`_ argument. Furthermore if we want to convert the files to _.jsonld_ we need to specify if in the _`-format`_ parameter and finally we need to tell the client the desired compression.&#x20;
 
 ```
 java -jar databus-client.jar \
@@ -63,6 +63,8 @@ SELECT DISTINCT ?file WHERE {
 -c gz
 ```
 
+Per default the resulting files will be saved to `./files/` . \
+\
 For more information check [usage](docs/usage/ "mention").
 
 ## Contributing
