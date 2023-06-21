@@ -29,24 +29,41 @@ The client brings us closer to realizing a unified and efficient data ecosystem,
 
 ### Requirements
 
-**Java:** `JDK 8` or `JDK 11`\
-**Maven:** `Apache Maven 3.3.9`
+You have multiple options to run the client (shown in [usage](docs/usage/ "mention")). For the standalone approach you only need `Java`installed on your machine.
+
+* **Java:** `JDK 8` or `JDK 11`
 
 ### Installation
 
+Download `databus-client.jar` of the latest [Databus Client release](https://github.com/dbpedia/databus-client/releases/latest).
+
+### Choose Data for your application
+
+To select data from the DBpedia Databus, we can perform queries. Databus offers two mechanisms for that, precisely described [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).
+
+We use [this query](src/test/resources/queries/query3.sparql) as selection.
+
+### Download and convert selected data
+
+In order to download the data we need to pass the query as the _`-source`_ argument. Furthermore if we want to convert the files to _.jsonld_ we need to specify if in the _`-format`_ parameter and finally we need to tell the client the desired compression.
+
 ```
-git clone https://github.com/dbpedia/databus-client.git
-cd databus-client
-mvn clean install
+java -jar databus-client.jar \
+-s "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+SELECT DISTINCT ?file WHERE {
+ 	?dataset dataid:version <https://databus.dbpedia.org/dbpedia/enrichment/specific-mappingbased-properties/2019.03.01> .
+	?dataset dcat:distribution ?distribution .
+	?distribution dcat:downloadURL ?file .
+}" \
+-f jsonld \
+-c gz
 ```
 
-### Execution example
-
-```
-bin/DatabusClient -s ./src/resources/queries/example.sparql -f jsonld -c gz
-```
-
-You will find more information if you set the flag`-h` or in [CLI usage](docs/usage/cli.md).&#x20;
+For more information check [usage](docs/usage/ "mention").
 
 ## Contributing
 
