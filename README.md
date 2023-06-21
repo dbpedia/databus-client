@@ -39,13 +39,13 @@ Download `databus-client.jar` of the latest [Databus Client release](https://git
 
 ### Choose Data for your application
 
-To select data from the DBpedia Databus, we can perform queries. Databus offers two mechanisms for that, precisely described [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).
+To select data from DBpedia Databus, you can perform queries. Databus provides two mechanisms for this, which are described in detail [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).&#x20;
 
-We use [this query](src/test/resources/queries/query3.sparql) as selection.
+We use [this query](src/test/resources/queries/query3.sparql) as selection for this example.
 
 ### Download and convert selected data
 
-In order to download the data we need to pass the query as the _`-source`_ argument. Furthermore if we want to convert the files to _.jsonld_ we need to specify if in the _`-format`_ parameter and finally we need to tell the client the desired compression.&#x20;
+In order to download the data we need to pass the query as the _`-s`_ argument. Furthermore if we want to convert the files to _.jsonld_ we need to specify if in the _`-f`_ parameter and finally we need to tell the client the desired compression. There are more options described in [#cli-options](docs/usage/cli.md#cli-options "mention")
 
 ```
 java -jar databus-client.jar \
@@ -63,7 +63,7 @@ SELECT DISTINCT ?file WHERE {
 -c gz
 ```
 
-Per default the resulting files will be saved to `./files/` .&#x20;
+Per default the resulting files will be saved to `./files/` . &#x20;
 
 ## Contributing
 
