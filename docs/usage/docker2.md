@@ -1,9 +1,10 @@
 # Docker
 
-You can pass all the variables as Environment Variables (**-e**), that are shown in [CLI options](../usage/quickstart.md) (except `target`), but you have to write the Environment Variables in Capital Letters.
+You can pass all the variables as Environment Variables (**-e**), that are shown in [CLI options](broken-reference) (except `target`), but you have to write the Environment Variables in Capital Letters.
 
 ## Example
-```
+
+````
 docker run --name databus-client \
     -v $(pwd)/yourQuery.sparql:/opt/databus-client/query.sparql \
     -v $(pwd)/repo:/var/repo \
@@ -13,3 +14,4 @@ docker run --name databus-client \
     databus-client
 
 docker rm databus-client```
+````
