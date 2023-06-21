@@ -29,7 +29,7 @@ The client brings us closer to realizing a unified and efficient data ecosystem,
 
 ### Requirements
 
-You have multiple options to run the client (shown in [usage](docs/usage/ "mention")). For the standalone approach you only need `Java`installed on your machine.
+You have multiple options to run the client (shown in [usage](docs/usage/ "mention")). For the standalone approach (.jar file) you only need `Java`installed on your machine.
 
 * **Java:** `JDK 8` or `JDK 11`
 
@@ -63,9 +63,7 @@ SELECT DISTINCT ?file WHERE {
 -c gz
 ```
 
-Per default the resulting files will be saved to `./files/` . \
-\
-For more information check [usage](docs/usage/ "mention").
+Per default the resulting files will be saved to `./files/` .&#x20;
 
 ## Contributing
 
