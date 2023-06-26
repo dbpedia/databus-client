@@ -12,9 +12,9 @@ class DownloadTest extends AnyFlatSpec {
 
   "downloader" should "download with query" in {
 
-    val queryFile = testDir / "query1.sparql"
+    val queryFile = testDir / "test.sparql"
     val queryString = FileUtil.readQueryFile(queryFile)
 
-    Downloader.downloadWithQuery(queryString, "https://databus.dbpedia.org/repo/sparql", outDir)
+    Downloader.downloadWithQuery(queryString, "https://dev.databus.dbpedia.org/sparql", outDir)
   }
 }

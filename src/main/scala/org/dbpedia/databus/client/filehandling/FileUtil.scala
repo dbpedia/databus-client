@@ -123,8 +123,9 @@ object FileUtil {
    * @param shaTxt file that contains all paths of files in the cache together with their sha256-sum
    * @return
    */
-  def getFileInCacheWithSHA256(sha: String, shaTxt: File): File = {
+  def getFileInCacheWithSHA256(sha: String, cache: File): File = {
     var fileOfSha = File("")
+    val shaTxt = cache / "shas.txt"
 
     if (shaTxt.exists){
       val bufferedSource = Source.fromFile(shaTxt.pathAsString)

@@ -46,7 +46,7 @@ class SourceHandler(conf:CLI_Config) {
         val queryStr = getQueryOfCollection(conf.source())
         val endpoint = { // try to guess sparql endpoint if it is not set in program variables
           if (conf.endpoint.isDefined) conf.endpoint()
-          else conf.source().split("/").take(3).mkString("/").concat("/sparql")
+          else Utils.getDomainName(conf.source()).concat("/sparql")
         }
 
         handleQuery(queryStr, endpoint)
@@ -103,7 +103,7 @@ class SourceHandler(conf:CLI_Config) {
     println(s"CONVERSION TOOL:\n")
 
     allSHAs.foreach(
-      sha => fileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, File("./target/databus.tmp/cache_dir/shas.txt")))
+      sha => fileHandler.handleFile(FileUtil.getFileInCacheWithSHA256(sha, cache))
     )
 
   }

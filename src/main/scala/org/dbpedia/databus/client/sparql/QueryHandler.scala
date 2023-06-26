@@ -44,6 +44,8 @@ object QueryHandler {
       else QueryExecutionFactory.create(query,source.right.get)
     }
 
+    println(queryString)
+
 //    println(query)
 
     var resultSeq: Seq[QuerySolution] = Seq.empty
@@ -106,13 +108,13 @@ object QueryHandler {
   }
 
 
-  def downloadDataIdFile(url: String, dataIdFile: File, endpoint: String): Boolean = {
+  def downloadDataIdFile(dataIdURL: String, dataIdFile: File): Boolean = {
 
-    val result = executeQuery(DatabusQueries.queryDataId(url), Left(endpoint))
-
-    if (result.nonEmpty) {
-      val sparqlVar = result.head.varNames().next()
-      val dataIdURL = result.head.getResource(sparqlVar).toString
+//    val result = executeQuery(DatabusQueries.queryDataId(url), Left(endpoint))
+//
+//    if (result.nonEmpty) {
+//      val sparqlVar = result.head.varNames().next()
+//      val dataIdURL = result.head.getResource(sparqlVar).toString
 
       try {
         FileUtils.copyURLToFile(new URL(dataIdURL), dataIdFile.toJava)
@@ -125,11 +127,11 @@ object QueryHandler {
           LoggerFactory.getLogger("DownloadLogger").error(s"$dataIdURL: Host not reachable.")
           false
       }
-
-    }
-    else{
-      false
-    }
+//
+//    }
+//    else{
+//      false
+//    }
   }
 
   def getTargetDir(dataIdFile: File): String = {

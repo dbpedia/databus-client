@@ -5,7 +5,7 @@ import java.net.URL
 import better.files.File
 import org.apache.commons.io.IOUtils
 import org.dbpedia.databus.client.Config
-import org.dbpedia.databus.client.filehandling.FileUtil
+import org.dbpedia.databus.client.filehandling.{FileUtil, Utils}
 import org.dbpedia.databus.client.sparql.QueryHandler
 import org.slf4j.LoggerFactory
 
@@ -15,11 +15,12 @@ object Downloader {
     * Download all files of Download-Query
     *
     * @param queryString downloadQuery
-    * @param targetDir directory for downloaded files
+    * @param cacheDir directory for downloaded files
     * @param overwrite overwrite already downloaded files
     * @return Seq of shas of downloaded files
     */
-  def downloadWithQuery(queryString: String, endpoint: String, targetDir: File, overwrite: Boolean = false): Seq[String] = {
+  def downloadWithQuery(queryString: String, endpoint: String, cacheDir: File, overwrite: Boolean = false): Seq[String] = {
+    println("GETTING FILE IRIS")
     val fileIRIs = QueryHandler.executeSingleVarQuery(queryString, Left(endpoint))
     var allSHAs = Seq.empty[String]
 
@@ -27,26 +28,26 @@ object Downloader {
     println("Files to download:")
 
     fileIRIs.foreach(fileIRI => {
-      val fileEndpoint = fileIRI.split("/").take(3).mkString("/").concat("/sparql")
-      val fileInfoOption = QueryHandler.getFileInfo(fileIRI, fileEndpoint)
+//      val fileEndpoint = Utils.getDomainName(fileIRI).concat("/sparql")
+      val fileInfoOption = QueryHandler.getFileInfo(fileIRI, endpoint)
 
         if (fileInfoOption.isDefined) {
           val fileInfo: DownloadConfig = fileInfoOption.get
-          val outputFile = fileInfo.getOutputFile(targetDir)
+          val outputFile = fileInfo.getOutputFile(cacheDir)
 
           def downloadFileWithShaLog(): Unit ={
             downloadFile(fileInfo.downloadURL, fileInfo.sha, outputFile) match {
               case Some(downloadedFile: File) =>
                 allSHAs = allSHAs :+ fileInfo.sha
                 //log sha of file and link to file in cache
-                val fw = new FileWriter(targetDir.pathAsString.concat("/shas.txt"), true)
+                val fw = new FileWriter(cacheDir.pathAsString.concat("/shas.txt"), true)
                 fw.append(s"${fileInfo.sha}\t${outputFile.pathAsString}\n")
                 fw.close()
 
                 //check if belonging dataid.ttl exists. If not, download it.
                 val dataIdFile = downloadedFile.parent / "dataid.jsonld"
                 if (!dataIdFile.exists()) {
-                  QueryHandler.downloadDataIdFile(fileInfo.downloadURL, dataIdFile, fileEndpoint)
+                  QueryHandler.downloadDataIdFile(fileInfo.dataidURL, dataIdFile)
                 }
               case None => ""
             }
@@ -56,7 +57,7 @@ object Downloader {
             downloadFileWithShaLog
           }
           else {
-            if (!FileUtil.checkIfFileInCache(targetDir, fileInfo.sha)) {
+            if (!FileUtil.checkIfFileInCache(cacheDir, fileInfo.sha)) {
               downloadFileWithShaLog
             }
             else {

@@ -78,12 +78,13 @@ class ConvertConfig(inputFile:File, cliConfig: CLI_Config) {
 
         File(s"${target.pathAsString}/$pgav")
       }
-      else
-        File(target.pathAsString.concat("/NoDataID")
-          .concat(inputFile.pathAsString.splitAt(inputFile.pathAsString.lastIndexOf("/"))._1
-            .replace(File(".").pathAsString, "")
+      else {
+
+        File(target.pathAsString.concat("/NoDataID/")
+          .concat(inputFile.pathAsString.split("/").takeRight(5).dropRight(1).mkString("/") // take path (publisher, group, artifact, version, but without filename)
           )
         )
+      }
     }
 
     val newName = {
