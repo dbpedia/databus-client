@@ -3,6 +3,8 @@
 target/
 
 src/test/resources/conversion/output/
+src/test/resources/output/
+
 errorLog.log
 files/
 
