@@ -15,8 +15,8 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
-          username: ${{ DBP_DOCKERHUB_CREDENTIAL_USERNAME }}
-          password: ${{ DBP_DOCKERHUB_CREDENTIAL_TOKEN_PUSHIMAGES }}
+          username: ${{ secrets.DBP_DOCKERHUB_CREDENTIAL_USERNAME }}
+          password: ${{ secrets.DBP_DOCKERHUB_CREDENTIAL_TOKEN_PUSHIMAGES }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
