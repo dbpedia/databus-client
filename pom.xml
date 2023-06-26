@@ -78,7 +78,7 @@
                             <mainClass>org.dbpedia.databus.client.main.Main</mainClass>
                         </transformer>
                     </transformers>
-
+                    <minimizeJar>true</minimizeJar>
                 </configuration>
                 <executions>
                     <execution>
