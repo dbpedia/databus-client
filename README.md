@@ -43,10 +43,10 @@ First, we need to select the Databus, where we want to get our data from. We tak
 
 To select data from a DBpedia Databus, you can perform queries. Databus provides two mechanisms for this, which are described in detail [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).&#x20;
 
-We use the following query as selection for this example:
+We use the following query as selection for this example and write it to the file `test.sparql`:
 
 ```
-PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+echo "PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX databus: <https://dataid.dbpedia.org/databus#>
 
 SELECT ?file WHERE
@@ -58,7 +58,7 @@ SELECT ?file WHERE
                 ?dataset dcat:distribution ?distribution .
                 ?distribution databus:file ?file .
         }
-}
+}" > test.sparql
 ```
 
 ### Download and convert selected data
@@ -67,20 +67,8 @@ In order to download the data we need to pass the query as the _`-s`_ argument. 
 
 ```
 java -jar target/databus-client-v2.1-beta.jar \
--s "PREFIX dcat:   <http://www.w3.org/ns/dcat#>
-PREFIX databus: <https://dataid.dbpedia.org/databus#>
-
-SELECT ?file WHERE
-{
-        GRAPH ?g
-        {
-                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
-                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
-                ?dataset dcat:distribution ?distribution .
-                ?distribution databus:file ?file .
-        }
-}" \
--e "https://dev.databus.dbpedia.org/sparql" \
+-s test.sparql \
+-e https://dev.databus.dbpedia.org/sparql \
 -f nt
 ```
 
