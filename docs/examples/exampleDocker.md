@@ -1,42 +1,88 @@
-Deploy a dataset of geocoordinates of Wikipedia into a Docker SPARQL endpoint (Virtuoso).
+# Loading data into Virtuoso (Docker)
+
+Deploy a dataset into a Docker SPARQL endpoint (Virtuoso).
+
+### Requirements
+
+* **Docker:** `^3.5`
+
+## Execution
+
+### Get docker-compose.yml
+
+get the [docker-compose.yml](../../docker/virtuoso-compose/docker-compose.yml) file of the Databus Client Repository, or create your own:
 
 ```
-git clone https://github.com/dbpedia/databus-client.git
-cd databus-client/docker
+version: '3.5'
 
-docker build -t vosdc -f virtuoso-image/Dockerfile virtuoso-image/
+services:
 
-echo "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+  db:
+    image: tenforce/virtuoso
+    ports:
+      - 8895:8890
+    volumes:
+      - toLoad:/data/toLoad
+    entrypoint: >
+      bash -c 'while [ ! -f /data/toLoad/complete ]; do sleep 1; done
+      && rm -f /data/toLoad/complete && bash /virtuoso.sh'
 
-SELECT DISTINCT ?file  WHERE {
-    ?dataset dataid:version <https://databus.dbpedia.org/marvin/mappings/geo-coordinates-mappingbased/2019.09.01> .
-    ?dataset dcat:distribution ?distribution .
-    ?distribution dcat:downloadURL ?file .
-    ?distribution dataid:contentVariant ?cv .
-     FILTER ( str(?cv) = 'de' )
-}" > query.sparql
+  # To change the file query: Mount an external query
+  # file under volumes between host and container
+  # and apply internal path as environment variable.
 
-# delete docker from previous runs
-# docker rm vosdc
+  databus_client:
+    image: dbpedia/databus-client:latest
+    environment:
+      - SOURCE=/databus-client/query.sparql
+      - ENDPOINT=https://dev.databus.dbpedia.org/sparql
+      - COMPRESSION=gz
+    volumes:
+      - ./myQuery.sparql:/databus-client/query.sparql
+      - toLoad:/var/toLoad
+    entrypoint: >
+      bash -c 'bash /databus-client/entrypoint.sh
+      && mv -t /var/toLoad $$(find /var/repo -name "*.gz");
+      touch /var/toLoad/complete'
 
-# start docker as deamon by adding -d
-docker run --name vosdc \
-    -v $(pwd)/query.sparql:/opt/databus-client/query.sparql \
-    -v $(pwd)/data:/data \
-    -e SOURCE="/opt/databus-client/query.sparql" \
-    -p 8890:8890 \
-    vosdc
+volumes:
+  toLoad:
 ```
 
-Container needs some startup time and endpoint is not immediately reachable, if it is done you can query it with e.g.
+### Select your desired data
+
+Again you need to specify your desired data in a sparql query
 
 ```
-curl --data-urlencode query="SELECT * {<http://de.dbpedia.org/resource/Karlsruhe> ?p ?o }" "http://localhost:8890/sparql"
+echo "PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
+}" > myQuery.sparql
 ```
 
-### Useful commands
+### Start Containers
+
+```
+docker compose up
+```
+
+Container needs some startup time and endpoint is not immediately reachable. If it is done you can query it with directly in your browser at [http://localhost:8895/sparql/](http://localhost:8895/sparql/) or you can query directly in your terminal: e.g.
+
+```
+curl --data-urlencode query="SELECT * {?a <http://xmlns.com/foaf/0.1/account> ?o }" "http://localhost:8895/sparql"
+```
+
+#### Useful commands
+
 Stopping and reseting the docker with name `databus-client`, e.g. to change the query
 
 ```
