@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: push latest jar release to DockerHub
 
 on:
   release:
