@@ -1,6 +1,6 @@
 # CLI
 
-## DBpedia Databus Client
+Instead of using the .jar you can also use Maven to execute the Databus Client.
 
 ### Requirements
 

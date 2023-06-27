@@ -1,3 +1,10 @@
+---
+description: >-
+  The client has many parameters, which describe what data needs to be
+  downloaded, and how it needs to be converted. There are many ways to use the
+  client, which are described in the following chapters.
+---
+
 # Usage
 
 ## Databus Client Parameters
