@@ -28,8 +28,8 @@ object Downloader {
     println("Files to download:")
 
     fileIRIs.foreach(fileIRI => {
-//      val fileEndpoint = Utils.getDomainName(fileIRI).concat("/sparql")
-      val fileInfoOption = QueryHandler.getFileInfo(fileIRI, endpoint)
+      val fileEndpoint = Utils.getDomainName(fileIRI).concat("/sparql")
+      val fileInfoOption = QueryHandler.getFileInfo(fileIRI, fileEndpoint)
 
         if (fileInfoOption.isDefined) {
           val fileInfo: DownloadConfig = fileInfoOption.get

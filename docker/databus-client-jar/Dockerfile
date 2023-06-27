@@ -1,23 +1,17 @@
 FROM openjdk:11
 
-ENV SOURCE /opt/databus-client/query.sparql
+ENV SOURCE /databus-client/query.sparql
 
-RUN mkdir "/opt/databus-client"
-WORKDIR /opt/databus-client
+RUN mkdir "/databus-client"
+WORKDIR /databus-client
 
-#RUN
 #ARG JAR_DOWNLOAD_URI=$(curl -s https://api.github.com/repos/dbpedia/databus-client/releases/latest | grep browser_download_url | cut -d '"' -f 4)
+#COPY ./databus-client-v2.1-beta.jar /databus-client/databus-client.jar
+#RUN export jarDownloadUri=$(curl -s https://api.github.com/repos/dbpedia/databus-client/releases/latest | grep browser_download_url | cut -d '"' -f 4); wget -O databus-client.jar $jarDownloadUri;
+RUN curl -s https://api.github.com/repos/dbpedia/databus-client/releases/latest | grep browser_download_url | cut -d '"' -f 4 | xargs -I{} curl -L {} > /databus-client/databus-client.jar
 
-RUN export jarDownloadUri=$(curl -s https://api.github.com/repos/dbpedia/databus-client/releases/latest | grep browser_download_url | cut -d '"' -f 4); wget -O databus-client.jar $jarDownloadUri;
-
-COPY ./entrypoint.sh /opt/databus-client/
-
-WORKDIR /opt/databus-client
-
-#RUN git checkout a3772ef1e3bd835ac503f38807b94b7fa005028a  \
-# && mvn install
-#RUN mvn install
+COPY ./entrypoint.sh ./
 
 RUN mkdir -p /var/repo && mkdir -p /var/toLoad
-
-ENTRYPOINT ["/bin/bash","/opt/databus-client/entrypoint.sh"]
+#ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash","/databus-client/entrypoint.sh"]

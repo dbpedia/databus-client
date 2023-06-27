@@ -20,5 +20,6 @@ if { [ -z "$FORMAT" ] && [ ! -z "$F" ]; } || { [ ! -z "$FORMAT" ] && [ -z "$F" ]
     args="$args --format $FORMAT$F"
 fi
 
+echo $args
 
 java -jar databus-client.jar $args

@@ -1,0 +1,16 @@
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+SELECT ?file WHERE
+{
+	GRAPH ?g
+	{
+		?dataset databus:artifact <https://dev.databus.dbpedia.org/fabi/testgroup/testArtifact> .
+		{ ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-25' . }
+		?dataset dcat:distribution ?distribution .
+		?distribution databus:file ?file .
+	}
+}
