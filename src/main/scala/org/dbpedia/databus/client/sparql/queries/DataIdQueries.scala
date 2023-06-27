@@ -4,23 +4,23 @@ object DataIdQueries {
 
   def queryDirStructure(): String = {
     s"""
-       |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+       |PREFIX databus: <https://dataid.dbpedia.org/databus#>
        |PREFIX dct: <http://purl.org/dc/terms/>
        |
        |SELECT ?publisher ?group ?artifact ?version {
        |  ?dataset  dct:publisher ?publisher .
-       |  ?group a dataid:Group .
-       |  ?artifact a dataid:Artifact .
-       |  ?version a dataid:Version .
+       |  ?group a databus:Group .
+       |  ?artifact a databus:Artifact .
+       |  ?version a databus:Version .
        |}
     """.stripMargin
   }
 
   def queryFileExtension(fileName: String): String = {
     s"""
-       |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+       |PREFIX databus: <https://dataid.dbpedia.org/databus#>
        |SELECT ?type {
-       |  ?distribution dataid:formatExtension ?type .
+       |  ?distribution databus:formatExtension ?type .
        |  FILTER regex(str(?distribution), "#$fileName") .
        |}
     """.stripMargin
