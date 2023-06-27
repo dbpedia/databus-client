@@ -2,6 +2,7 @@ name: push latest jar release to DockerHub
 
 on:
   release:
+    types: [published]
 
 jobs:
   push_to_registry:
