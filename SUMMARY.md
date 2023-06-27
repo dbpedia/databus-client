@@ -10,3 +10,4 @@
   * [Scala/Java API](docs/usage/api.md)
 * [Examples](docs/examples/README.md)
   * [Loading data into Virtuoso (Docker)](docs/examples/exampleDocker.md)
+  * [Download data using Collection Uri](examples/download-data-using-collection-uri.md)
