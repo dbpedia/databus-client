@@ -9,6 +9,6 @@
   * [Scala/Java API](docs/usage/api.md)
 * [Examples](docs/examples/README.md)
   * [Test](docs/examples/exampleCLI.md)
-  * [Download DBpedia Ontology (CLI)](docs/examples/exampleCLI.md)
+  *
   * [Loading geocoordinates from Wikipedia into Virtuoso (Docker)](docs/examples/exampleDocker.md)
   * [Docker Example 2](docs/examples/exampleDocker2.md)

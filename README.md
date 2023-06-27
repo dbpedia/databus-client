@@ -39,28 +39,49 @@ Download `databus-client.jar` of the latest [Databus Client release](https://git
 
 ### Choose Data for your application
 
-To select data from DBpedia Databus, you can perform queries. Databus provides two mechanisms for this, which are described in detail [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).&#x20;
+First, we need to select the Databus, where we want to get our data from. We take [this](https://dev.databus.dbpedia.org/) databus. Its SPARQL Endpoint is located here: [https://dev.databus.dbpedia.org/sparql](https://dev.databus.dbpedia.org/sparql) .
 
-We use [this query](src/test/resources/queries/query3.sparql) as selection for this example.
+To select data from a DBpedia Databus, you can perform queries. Databus provides two mechanisms for this, which are described in detail [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).&#x20;
+
+We use the following query as selection for this example:
+
+```
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
+}
+```
 
 ### Download and convert selected data
 
-In order to download the data we need to pass the query as the _`-s`_ argument. Furthermore if we want to convert the files to _.jsonld_ we need to specify if in the _`-f`_ parameter and finally we need to tell the client the desired compression. There are more options described in [#cli-options](docs/usage/cli.md#cli-options "mention")
+In order to download the data we need to pass the query as the _`-s`_ argument. Additionaly we need to specify where the query needs to be asked to. This is done using the `-e` argument. Furthermore if we want to convert the files to _.nt_ we need to specify if in the _`-f`_ parameter and finally we need to tell the client the desired compression. There are more options described in [#cli-options](docs/usage/cli.md#cli-options "mention")
 
 ```
-java -jar databus-client.jar \
--s "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
-PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+java -jar target/databus-client-v2.1-beta.jar \
+-s "PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 
-SELECT DISTINCT ?file WHERE {
- 	?dataset dataid:version <https://databus.dbpedia.org/dbpedia/enrichment/specific-mappingbased-properties/2019.03.01> .
-	?dataset dcat:distribution ?distribution .
-	?distribution dcat:downloadURL ?file .
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
 }" \
--f jsonld \
--c gz
+-e "https://dev.databus.dbpedia.org/sparql" \
+-f nt
 ```
 
 Per default the resulting files will be saved to `./files/` . &#x20;
