@@ -44,8 +44,6 @@ object QueryHandler {
       else QueryExecutionFactory.create(query,source.right.get)
     }
 
-    println(queryString)
-
 //    println(query)
 
     var resultSeq: Seq[QuerySolution] = Seq.empty

@@ -20,7 +20,7 @@ object Downloader {
     * @return Seq of shas of downloaded files
     */
   def downloadWithQuery(queryString: String, endpoint: String, cacheDir: File, overwrite: Boolean = false): Seq[String] = {
-    println("GETTING FILE IRIS")
+
     val fileIRIs = QueryHandler.executeSingleVarQuery(queryString, Left(endpoint))
     var allSHAs = Seq.empty[String]
 

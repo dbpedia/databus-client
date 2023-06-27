@@ -44,7 +44,7 @@ class HDT(baseURI:String) extends Format[RDD[Triple]]{
            triple.getSubject.toString.asInstanceOf[CharSequence],
           triple.getPredicate.toString.asInstanceOf[CharSequence],
           triple.getObject.toString.asInstanceOf[CharSequence])
-          println(tripleString)
+
          tripleString
        }
     )

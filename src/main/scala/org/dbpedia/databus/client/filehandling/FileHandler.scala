@@ -22,9 +22,6 @@ class FileHandler(cliConfig: CLI_Config) {
     println(s"input file:\t${inputFile.pathAsString}")
 
     val config:ConvertConfig = new ConvertConfig(inputFile,cliConfig).init()
-    println("OUTPUT FILE")
-    println(config.outFile)
-    println(config.target)
 
     // Without any Conversion
     if ((config.inCompression == config.outCompression) && (config.inFormat == config.outFormat)) {
