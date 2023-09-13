@@ -3,7 +3,10 @@ from typing import List, Dict, Tuple, Optional, Union
 import requests
 import hashlib
 import json
+from tqdm import tqdm
+from SPARQLWrapper import SPARQLWrapper, JSON
 from urllib.parse import urldefrag
+from hashlib import sha256
 
 __debug = False
 
@@ -374,3 +377,100 @@ def deploy(
     if debug or __debug:
         print("---------")
         print(resp.text)
+
+
+def __download_file__(url, filename):
+    """
+    Download a file from the internet with a progress bar using tqdm.
+
+    Parameters:
+    - url: the URL of the file to download
+    - filename: the local file path where the file should be saved
+    """
+    print("download "+url)
+    response = requests.get(url, stream=True)
+    total_size_in_bytes= int(response.headers.get('content-length', 0))
+    block_size = 1024 # 1 Kibibyte
+
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+    with open(filename, 'wb') as file:
+        for data in response.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+        print("ERROR, something went wrong")
+
+
+def __query_sparql__(endpoint_url, query)-> dict:
+    """
+    Query a SPARQL endpoint and return results in JSON format.
+
+    Parameters:
+    - endpoint_url: the URL of the SPARQL endpoint
+    - query: the SPARQL query string
+
+    Returns:
+    - Dictionary containing the query results
+    """
+    sparql = SPARQLWrapper(endpoint_url)
+    sparql.method = 'POST'
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    return results
+
+
+def __handle__databus_file_query__(endpoint_url, query) -> List[str]:
+    result_dict = __query_sparql__(endpoint_url,query)
+    for binding in result_dict['results']['bindings']:
+        if len(binding.keys()) > 1:
+            print("Error multiple bindings in query response")
+            break
+        else:
+            value = binding[next(iter(binding.keys()))]['value']
+        yield value
+
+
+def wsha256(raw: str):
+    return sha256(raw.encode('utf-8')).hexdigest()
+
+
+def __handle_databus_collection__(endpoint, uri: str)-> str:
+    headers = {"Accept": "text/sparql"}
+    return requests.get(uri, headers=headers).text
+
+
+def __download_list__(urls: List[str], localDir: str):
+    for url in urls:
+        __download_file__(url=url,filename=localDir+"/"+wsha256(url))
+
+
+def download(
+    localDir: str,
+    endpoint: str,
+    databusURIs: List[str]
+) -> None:
+    """
+    Download datasets to local storage from databus registry
+    ------
+    localDir: the local directory
+    databusURIs: identifiers to access databus registered datasets
+    """
+    for databusURI in databusURIs:
+        # dataID or databus collection
+        if databusURI.startswith("http://") or databusURI.startswith("https://"):
+            # databus collection
+            if "/collections/" in databusURI:
+                query = __handle_databus_collection__(endpoint,databusURI)
+                res = __handle__databus_file_query__(endpoint, query)
+            else:
+                print("dataId not supported yet")
+        # query in local file
+        elif databusURI.startswith("file://"):
+            print("query in file not supported yet")
+        # query as argument
+        else:
+            print("QUERY {}", databusURI.replace("\n"," "))
+            res = __handle__databus_file_query__(endpoint,databusURI)
+            __download_list__(res,localDir)

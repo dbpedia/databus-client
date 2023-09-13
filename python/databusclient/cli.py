@@ -35,5 +35,9 @@ def deploy(
 
 
 @app.command()
-def download(collection: str):
-    typer.echo(f"TODO")
+def download(
+    localDir: str = typer.Option(..., help="local databus folder"),
+    databus: str = typer.Option(..., help="databus URL"),
+    databusURIs: List[str] = typer.Argument(...,help="any kind of these: databus identifier, databus collection identifier, query file")
+):
+    client.download(localDir=localDir,endpoint=databus,databusURIs=databusURIs)
